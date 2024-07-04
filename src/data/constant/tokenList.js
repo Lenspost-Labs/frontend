@@ -34,6 +34,14 @@ export const TOKEN_LIST = {
       decimals: 18,
       logoURI: "https://icons.llamao.fi/icons/chains/rsz_base.jpg",
     },
+    {
+      id: 8453,
+      address: "0xE3086852A4B125803C815a158249ae468A3254Ca",
+      symbol: "$mfer",
+      name: "mfercoin",
+      decimals: 18,
+      logoURI: "https://basescan.org/token/images/mfercoinbase_32.png",
+    },
   ],
   Degen: [
     {

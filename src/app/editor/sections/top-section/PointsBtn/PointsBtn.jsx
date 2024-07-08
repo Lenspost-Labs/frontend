@@ -1,3 +1,4 @@
+
 import { Fragment, useContext, useEffect, useState } from "react";
 import { ShareIcon } from "../../../../../assets/assets";
 import {
@@ -8,7 +9,6 @@ import {
 } from "../../right-section";
 import { Drawer } from "@blueprintjs/core";
 import { Context } from "../../../../../providers/context";
-import FarcasterShareWrapper from "../../right-section/share/farcaster-share/FarcasterShareWrapper";
 import { useAccount } from "wagmi";
 import { getAvatar } from "../../../../../utils";
 import { Avatar } from "@material-tailwind/react";

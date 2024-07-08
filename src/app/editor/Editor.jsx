@@ -38,6 +38,7 @@ import { getFarUserDetails } from '../../services/apis/BE-apis'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { watermarkBase64 } from '../../assets/base64/watermark'
 import { PagesTimeline } from 'polotno/pages-timeline';
+import { toast } from 'react-toastify'
 
 // enable animations
 unstable_setAnimationsEnabled(true)
@@ -96,6 +97,7 @@ const Editor = () => {
 		setFarcasterStates,
 	} = useContext(Context)
 
+	const componentMounted = useRef(false);
 	// initialize watermark
 	// useEffect(() => {
 	//   waterMark(store);
@@ -329,7 +331,7 @@ const Editor = () => {
 		}, 3000)
 
 		// Load the Watermark
-		fnLoadWatermark()
+		// fnLoadWatermark()
 	}
 
 	// ------ Testing Share Canvas Start --------
@@ -405,37 +407,43 @@ const Editor = () => {
 		})
 	}
 
-	useEffect(() => {
-		fnLoadWatermark()
-	}, [store])
+	// useEffect(() => {
+	// 	fnLoadWatermark()
+	// }, [store])
 
 	// Effect to check with the slugId and fetch the image changes
+	// useEffect(() => {
+	// 	const fetchImage = async () => {
+	// 		if (!slugId) return
+	// 		try {
+	// 			const imageUrl = await apiGetOgImageForSlug(slugId)
+	// 			if (imageUrl) {
+	// 				consoleLogonlyDev('Image url from slug', imageUrl)
+
+	// 				// Update OG meta tags dynamically
+	// 				fnUpdateOgMetaTags(imageUrl)
+	// 			} else {
+	// 				consoleLogonlyDev('Failed to fetch image', imageUrl)
+	// 			}
+	// 		} catch (error) {
+	// 			consoleLogonlyDev('Error fetching image:', error)
+	// 		}
+	// 	}
+
+	// 	fetchImage()
+	// }, [])
+	
+	// This has essential checks for the slugId and isAuthenticated and loads the data on the canvas 
 	useEffect(() => {
-		const fetchImage = async () => {
-			if (!slugId) return
-			try {
-				const imageUrl = await apiGetOgImageForSlug(slugId)
-				if (imageUrl) {
-					consoleLogonlyDev('Image url from slug', imageUrl)
-
-					// Update OG meta tags dynamically
-					fnUpdateOgMetaTags(imageUrl)
-				} else {
-					consoleLogonlyDev('Failed to fetch image', imageUrl)
-				}
-			} catch (error) {
-				consoleLogonlyDev('Error fetching image:', error)
-			}
+		// if (!componentMounted.current) {
+			if (slugId && isAuthenticated) {
+				fnLoadDataOnCanvas();
+			} else if (!isAuthenticated && slugId && !componentMounted.current) {
+				toast.error('Please login to remix the template');
+			// }
+			componentMounted.current = true;
 		}
-
-		fetchImage()
-	}, [])
-
-	useEffect(() => {
-		if (slugId) {
-			fnLoadDataOnCanvas()
-		}
-	}, [location, navigate, slugId])
+	}, [slugId, isAuthenticated]);
 
 	// -------- Testing Share Canvas End ----------
 

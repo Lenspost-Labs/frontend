@@ -3,7 +3,7 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import { ShareIcon } from "../../../../../assets/assets";
 import {
   ShareSection,
-  SolanaMint,
+  SolanaMintWrapper,
   ZoraMint,
   LensShareWrapper,
 } from "../../right-section";

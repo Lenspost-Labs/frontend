@@ -19,10 +19,9 @@ const useUser = () => {
   });
 
   const { data: farcasterData, error: farcasterError } = useQuery({
+    queryKey: ["farcaster", { address }],
     queryFn: () => getFarcasterDetails(address),
   });
-
-  console.log(farcasterData, "farcasterData");
 
   const fnGetUserLevel = async () => {
     if (data?.message?.points < 500) {

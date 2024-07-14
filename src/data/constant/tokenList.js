@@ -4,7 +4,7 @@ export const TOKEN_LIST = {
   Base: [
     {
       id: 8453,
-      address: "0x0000000000000000000000000000000000000000",
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       symbol: "ETH",
       name: "Ether",
       decimals: 18,
@@ -34,8 +34,24 @@ export const TOKEN_LIST = {
       decimals: 18,
       logoURI: "https://icons.llamao.fi/icons/chains/rsz_base.jpg",
     },
+    {
+      id: 8453,
+      address: "0xE3086852A4B125803C815a158249ae468A3254Ca",
+      symbol: "$mfer",
+      name: "mfercoin",
+      decimals: 18,
+      logoURI: "https://basescan.org/token/images/mfercoinbase_32.png",
+    },
   ],
   Degen: [
+    {
+      id: 666666666,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "DEGEN",
+      name: "Degen",
+      decimals: 18,
+      logoURI: "https://basescan.org/token/images/degentips_32.png",
+    },
     {
       id: 666666666,
       address: "0xEb54dACB4C2ccb64F8074eceEa33b5eBb38E5387",
@@ -53,6 +69,34 @@ export const TOKEN_LIST = {
       name: "Ether",
       decimals: 18,
       logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+  ],
+  Og: [
+    {
+      id: 16600,
+      address: "0xeE597D163C3Fef7B594cC11746BC4099F4323Fd3",
+      symbol: "AOGI",
+      name: "AOGI",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+  ],
+  "Arbitrum One": [
+    {
+      id: 42161,
+      address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      symbol: "USDT",
+      name: "Tether USD",
+      decimals: 18,
+      logoURI: "https://arbiscan.io/token/images/tether_32.png",
+    },
+    {
+      id: 42161,
+      address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      symbol: "USDC",
+      name: "USD Coin",
+      decimals: 18,
+      logoURI: "https://arbiscan.io/token/images/centre-usdc_28.png",
     },
   ],
 };

@@ -48,11 +48,12 @@ const App = () => {
     dialogOpen,
     explorerLink,
     handleOpen,
+    session,
+    setSession,
   } = useContext(Context);
   const [sign, setSign] = useState("");
   const { address, isConnected, isDisconnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const [session, setSession] = useState("");
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
   const getEvmAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const getSolanaAuth = getFromLocalStorage(LOCAL_STORAGE.solanaAuth);
@@ -76,7 +77,6 @@ const App = () => {
     SolanaWalletErrorContext
   );
   const { logout } = useLogout();
-
 
   // clear the session if it is expired (24hrs)
   useEffect(() => {
@@ -138,9 +138,9 @@ const App = () => {
       walletAddress: solanaAddress,
       signature: solanaSignature,
       message: SOLANA_MESSAGE,
-    })                                                                                                  
+    })
       .then((res) => {
-        if (res?.status === "success") {                                    
+        if (res?.status === "success") {
           setIsLoading(false);
           setText("");
           toast.success("Login successful");
@@ -162,7 +162,7 @@ const App = () => {
           });
         } else {
           toast.error(ERROR.SOMETHING_WENT_WRONG);
-          disconnect();
+          solanaDisconnect();
           setIsLoading(false);
           setText("");
           toast.error(res);
@@ -171,7 +171,7 @@ const App = () => {
       .catch((err) => {
         console.log(err);
         toast.error(errorMessage(err));
-        disconnect();
+        solanaDisconnect();
         setIsLoading(false);
         setText("");
       });
@@ -212,7 +212,6 @@ const App = () => {
     }
   }, []);
 
-
   useEffect(() => {
     if (solanaWalletError.isError) {
       saveToLocalStorage(LOCAL_STORAGE.hasUserSeenTheApp, true);
@@ -235,7 +234,6 @@ const App = () => {
       updateNft();
     }
   }, [session]);
-
 
   useEffect(() => {
     if (solanaSignature) {

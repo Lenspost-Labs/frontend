@@ -1,7 +1,7 @@
 import { LOCAL_STORAGE } from "../../data";
 
 const useAppAuth = () => {
-  const isAuthenticated = localStorage.getItem(LOCAL_STORAGE.userAuthToken) || localStorage.getItem(LOCAL_STORAGE.privy)
+  const isAuthenticated = localStorage.getItem(LOCAL_STORAGE.userAuthToken);
   return { isAuthenticated };
 };
 

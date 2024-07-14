@@ -35,7 +35,9 @@ const api = axios.create();
 // Add a request interceptor
 api.interceptors.request.use(
   (config) => {
-    const jwtToken = getFromLocalStorage(LOCAL_STORAGE.userAuthToken);
+    const jwtToken =
+      getFromLocalStorage(LOCAL_STORAGE.userAuthToken) ||
+      getFromLocalStorage(LOCAL_STORAGE.privy);
 
     // Exclude the login API from adding the default header
 

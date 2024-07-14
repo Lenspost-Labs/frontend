@@ -59,7 +59,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
     .toString();
 
   config.transports = {
-    [chain.id]: http(),
+    [chain?.id]: http(),
   };
   const payForMints = isCustomCurrMint
     ? payForMintsForCustomCurr
@@ -151,7 +151,11 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
         <List>
           <ListItem
             className="flex justify-between items-center gap-2"
-            onClick={() => switchNetwork && switchNetwork(base?.id)}
+            onClick={() =>
+              switchChain({
+                chainId: base?.id,
+              })
+            }
           >
             <Typography variant="h6" color="blue-gray">
               Click here to switch to Base chain

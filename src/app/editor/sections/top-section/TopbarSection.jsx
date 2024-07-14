@@ -21,7 +21,7 @@ import { saveToLocalStorage } from "../../../../utils";
 import * as Sentry from "@sentry/react";
 
 const TopbarSection = () => {
-  const { openedLoginModal, posthog, setText, setIsLoading } =
+  const { openedLoginModal, posthog, setText, setIsLoading, setSession } =
     useContext(Context);
   const { isAuthenticated } = useAppAuth();
   const { chain } = useAccount();
@@ -41,14 +41,6 @@ const TopbarSection = () => {
       loginMethod,
       linkedAccount
     ) => {
-      console.log("user");
-      console.log(
-        user,
-        isNewUser,
-        wasAlreadyAuthenticated,
-        loginMethod,
-        linkedAccount
-      );
       // Any logic you'd like to execute if the user is/becomes authenticated while this
       // component is mounteds
 

@@ -3,40 +3,6 @@ import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from "polotno";
 import { Toolbar } from "polotno/toolbar/toolbar";
 import { ZoomButtons } from "polotno/toolbar/zoom-buttons";
 import {
-  SidePanel,
-  TextSection,
-  BackgroundSection,
-  LayersSection,
-} from "polotno/side-panel";
-import { Workspace } from "polotno/canvas/workspace";
-import { useAccount } from "wagmi";
-import {
-  ENVIRONMENT,
-  apiGetJSONDataForSlug,
-  apiGetOgImageForSlug,
-  checkDispatcher,
-  createCanvas,
-  getProfileData,
-  updateCanvas,
-} from "../../services";
-import { Context } from "../../providers/context/ContextProvider";
-import { addGlobalFont, unstable_setAnimationsEnabled } from "polotno/config";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  errorMessage,
-  loadFile,
-  base64Stripper,
-  wait,
-  getFromLocalStorage,
-  saveToLocalStorage,
-  consoleLogonlyDev,
-  waterMark,
-} from "../../utils";
-import { useTour } from "@reactour/tour";
-import FcIdea from "@meronex/icons/fc/FcIdea";
-import { useStore } from "../../hooks/polotno";
-import { TopbarSection } from "./sections/top-section";
-import {
   AIImageSection,
   BannerSection,
   DesignSection,
@@ -59,6 +25,40 @@ import { useAppAuth, useLocalStorage } from "../../hooks/app";
 import { getFarUserDetails } from "../../services/apis/BE-apis";
 import { useLocation, useNavigate } from "react-router-dom";
 import { watermarkBase64 } from "../../assets/base64/watermark";
+import { PagesTimeline } from "polotno/pages-timeline";
+import { toast } from "react-toastify";
+import { addGlobalFont, unstable_setAnimationsEnabled } from "polotno/config";
+import {
+  BackgroundSection,
+  LayersSection,
+  TextSection,
+  SidePanel,
+} from "polotno/side-panel";
+import { useStore } from "../../hooks/polotno";
+import { useAccount } from "wagmi";
+import { useTour } from "@reactour/tour";
+import { Context } from "../../providers/context";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  checkDispatcher,
+  createCanvas,
+  updateCanvas,
+  apiGetOgImageForSlug,
+  apiGetJSONDataForSlug,
+} from "../../services";
+import { Workspace } from "polotno/canvas/workspace";
+import {
+  errorMessage,
+  loadFile,
+  base64Stripper,
+  wait,
+  getFromLocalStorage,
+  saveToLocalStorage,
+  consoleLogonlyDev,
+  waterMark,
+} from "../../utils";
+import FcIdea from "@meronex/icons/fc/FcIdea";
+import { TopbarSection } from "./sections/top-section";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -117,8 +117,7 @@ const Editor = () => {
     setFarcasterStates,
   } = useContext(Context);
 
-  console.log({ isAuthenticated });
-
+  const componentMounted = useRef(false);
   // initialize watermark
   // useEffect(() => {
   //   waterMark(store);
@@ -359,7 +358,7 @@ const Editor = () => {
     }, 3000);
 
     // Load the Watermark
-    fnLoadWatermark();
+    // fnLoadWatermark()
   };
 
   // ------ Testing Share Canvas Start --------
@@ -437,37 +436,43 @@ const Editor = () => {
     });
   };
 
-  useEffect(() => {
-    fnLoadWatermark();
-  }, [store]);
+  // useEffect(() => {
+  // 	fnLoadWatermark()
+  // }, [store])
 
   // Effect to check with the slugId and fetch the image changes
+  // useEffect(() => {
+  // 	const fetchImage = async () => {
+  // 		if (!slugId) return
+  // 		try {
+  // 			const imageUrl = await apiGetOgImageForSlug(slugId)
+  // 			if (imageUrl) {
+  // 				consoleLogonlyDev('Image url from slug', imageUrl)
+
+  // 				// Update OG meta tags dynamically
+  // 				fnUpdateOgMetaTags(imageUrl)
+  // 			} else {
+  // 				consoleLogonlyDev('Failed to fetch image', imageUrl)
+  // 			}
+  // 		} catch (error) {
+  // 			consoleLogonlyDev('Error fetching image:', error)
+  // 		}
+  // 	}
+
+  // 	fetchImage()
+  // }, [])
+
+  // This has essential checks for the slugId and isAuthenticated and loads the data on the canvas
   useEffect(() => {
-    const fetchImage = async () => {
-      if (!slugId) return;
-      try {
-        const imageUrl = await apiGetOgImageForSlug(slugId);
-        if (imageUrl) {
-          consoleLogonlyDev("Image url from slug", imageUrl);
-
-          // Update OG meta tags dynamically
-          fnUpdateOgMetaTags(imageUrl);
-        } else {
-          consoleLogonlyDev("Failed to fetch image", imageUrl);
-        }
-      } catch (error) {
-        consoleLogonlyDev("Error fetching image:", error);
-      }
-    };
-
-    fetchImage();
-  }, []);
-
-  useEffect(() => {
-    if (slugId) {
+    // if (!componentMounted.current) {
+    if (slugId && isAuthenticated) {
       fnLoadDataOnCanvas();
+    } else if (!isAuthenticated && slugId && !componentMounted.current) {
+      toast.error("Please login to remix the template");
+      // }
+      componentMounted.current = true;
     }
-  }, [location, navigate, slugId]);
+  }, [slugId, isAuthenticated]);
 
   // -------- Testing Share Canvas End ----------
 
@@ -579,9 +584,10 @@ const Editor = () => {
               />
 
               {/* Bottom section */}
-              <div className="mt-2 mb-2 mr-2 p-1/2 flex flex-row justify-between align-middle border border-black-300 rounded-lg ">
+              <ZoomButtons store={store} />
+              <PagesTimeline store={store} />
+              <div className="flex flex-row justify-between items-center border border-black-300 rounded-lg ">
                 <BgRemover />
-                <ZoomButtons store={store} />
 
                 {/* Quick Tour on the main page */}
                 <div className="flex flex-row ">
@@ -601,10 +607,8 @@ const Editor = () => {
                       }
                     }}
                   >
-                    <FcIdea className="m-2" size="16" />{" "}
-                    <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">
-                      Need an intro?
-                    </div>
+                    <FcIdea className="m-2" size="16" />
+                    {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
                   </div>
                 </div>
               </div>

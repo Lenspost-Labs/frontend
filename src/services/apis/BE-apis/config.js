@@ -28,8 +28,6 @@ api.interceptors.request.use(
       getFromLocalStorage(LOCAL_STORAGE.userAuthToken) ||
       getFromLocalStorage(LOCAL_STORAGE.privy);
 
-    console.log({ jwtToken });
-
     // Exclude the login API from adding the default header
 
     // Add your default header here

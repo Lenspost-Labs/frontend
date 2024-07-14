@@ -1,4 +1,4 @@
-import { useAccount , useDisconnect } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import ShareButton from "./share/ShareButton";
 import DownloadBtn from "./download/DownloadBtn";
 import { ENVIRONMENT } from "../../../../services";
@@ -19,8 +19,10 @@ import { usePrivy } from "@privy-io/react-auth";
 import { toast } from "react-toastify";
 import { saveToLocalStorage } from "../../../../utils";
 import * as Sentry from "@sentry/react";
+
 const TopbarSection = () => {
-  const { openedLoginModal , posthog } = useContext(Context);
+  const { openedLoginModal, posthog, setText, setIsLoading } =
+    useContext(Context);
   const { isAuthenticated } = useAppAuth();
   const { chain } = useAccount();
   const { logout } = usePrivy();
@@ -51,17 +53,17 @@ const TopbarSection = () => {
       // component is mounteds
 
       evmAuthAsync({
-        walletAddress: user.wallet.address,                                           
+        walletAddress: user.wallet.address,
       }).then((res) => {
         toast.success("Login successful");
         saveToLocalStorage(LOCAL_STORAGE.evmAuth, true);
-        saveToLocalStorage(LOCAL_STORAGE.userAuthToken, res.jwt);    
+        saveToLocalStorage(LOCAL_STORAGE.userAuthToken, res.jwt);
         saveToLocalStorage(LOCAL_STORAGE.userAuthTime, new Date().getTime());
         saveToLocalStorage(LOCAL_STORAGE.userAddress, user.wallet.address);
         saveToLocalStorage(LOCAL_STORAGE.lensAuth, {
           profileId: res?.profileId,
-          profileHandle: res?.profileHandle,                          
-        });                                                                                                                                                                                                                                                           
+          profileHandle: res?.profileHandle,
+        });
         saveToLocalStorage(LOCAL_STORAGE.userId, res?.userId);
         Sentry.setUser({
           id: res?.userId,

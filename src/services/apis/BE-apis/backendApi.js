@@ -35,7 +35,9 @@ const api = axios.create();
 // Add a request interceptor
 api.interceptors.request.use(
   (config) => {
-    const jwtToken = getFromLocalStorage(LOCAL_STORAGE.userAuthToken);
+    const jwtToken =
+      getFromLocalStorage(LOCAL_STORAGE.userAuthToken) ||
+      getFromLocalStorage(LOCAL_STORAGE.privy);
 
     // Exclude the login API from adding the default header
 
@@ -54,12 +56,20 @@ api.interceptors.request.use(
 const limit = 10;
 
 // evm auth apis start
-export const evmAuth = async ({ walletAddress, signature, message }) => {
-  const result = await api.post(`${API}/auth/evm`, {
-    evm_address: walletAddress,
-    signature: signature,
-    message: message,
-  });
+export const evmAuth = async ({ walletAddress }) => {
+  const jwtToken = getFromLocalStorage(LOCAL_STORAGE.privy);
+
+  const result = await axios.post(
+    `${API}/auth/evm`,
+    {
+      evm_address: walletAddress,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+  );
 
   return result?.data;
 };

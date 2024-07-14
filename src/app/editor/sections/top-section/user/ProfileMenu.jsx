@@ -5,10 +5,8 @@ import { toast } from 'react-toastify'
 import { Context } from '../../../../../providers/context/ContextProvider'
 import { Typography, Button, Menu, MenuHandler, MenuList, MenuItem, Avatar } from '@material-tailwind/react'
 
-import { ClipboardIcon, PowerIcon } from '@heroicons/react/24/outline'
 import { useSolanaWallet } from '../../../../../hooks/solana'
 import { useLogout } from '../../../../../hooks/app'
-import { useAccountModal } from '@rainbow-me/rainbowkit'
 import { isMobile as useIsMobile } from '../../../../../hooks/app/useIsMobile'
 
 const ProfileMenu = () => {

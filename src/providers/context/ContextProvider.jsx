@@ -9,6 +9,7 @@ export const Context = createContext();
 
 const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [session, setSession] = useState("");
   const [text, setText] = useState("");
   const contextCanvasIdRef = useRef(null);
   const canvasBase64Ref = useRef([]);
@@ -661,6 +662,10 @@ const ContextProvider = ({ children }) => {
         // for solana tab
         solanaTab,
         setSolanaTab,
+
+        // session
+        session,
+        setSession,
       }}
     >
       {children}

@@ -1,6 +1,4 @@
-import "@rainbow-me/rainbowkit/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import {
   polygon,
   mainnet,
@@ -10,16 +8,35 @@ import {
   polygonMumbai,
   baseSepolia,
   arbitrum,
+  degen,
 } from "wagmi/chains";
 import {
   ALCHEMY_API_KEY,
   ENVIRONMENT,
   WALLETCONNECT_PROJECT_ID,
 } from "../../services";
-import { WagmiProvider, http } from "wagmi";
-import { degen, ham, og } from "../../data";
+import { http } from "wagmi";
+import { ham, og } from "../../data";
 
-export const config = getDefaultConfig({
+import { PrivyProvider } from "@privy-io/react-auth";
+import { WagmiProvider, createConfig } from "@privy-io/wagmi";
+
+// Replace this with your Privy config
+export const privyConfig = {
+  appearance: {
+    loginMessage: "Login to Poster.fun",
+    walletList: ["coinbase_wallet", "detected_wallets", "wallet_connect"],
+    showWalletLoginFirst: true,
+  },
+  loginMethods: ["wallet", "farcaster"],
+  externalWallets: {
+    coinbaseWallet: {
+      connectionOptions: "all",
+    },
+  },
+};
+
+export const config = createConfig({
   appName: "Poster.fun",
   projectId: WALLETCONNECT_PROJECT_ID,
   chains:
@@ -27,16 +44,17 @@ export const config = getDefaultConfig({
       ? [base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og]
       : [base, baseSepolia, arbitrum, polygonMumbai, degen, ham, og],
   transports: {
+    [base.id]: http(),
     [mainnet.id]: http(),
-    [polygon.id]: http(),
     [zora.id]: http(),
     [optimism.id]: http(),
-    [base.id]: http(),
+    [polygon.id]: http(),
+    [degen.id]: http(),
+    [ham.id]: http(),
+    [og.id]: http(),
     [polygonMumbai.id]: http(),
     [baseSepolia.id]: http(),
     [arbitrum.id]: http(),
-    [degen.id]: http(),
-    [ham.id]: http(),
   },
 });
 
@@ -44,11 +62,11 @@ const queryClient = new QueryClient();
 
 const EVMWalletProvider = ({ children }) => {
   return (
-    <WagmiProvider config={config}>
+    <PrivyProvider appId="clvysua9y0a63qk92kex0ulud" config={privyConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider coolMode={true}>{children}</RainbowKitProvider>
+        <WagmiProvider config={config}>{children}</WagmiProvider>
       </QueryClientProvider>
-    </WagmiProvider>
+    </PrivyProvider>
   );
 };
 

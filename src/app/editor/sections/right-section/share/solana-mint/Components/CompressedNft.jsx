@@ -1,35 +1,24 @@
 import React, { useState } from "react";
 import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
 import BsPlus from "@meronex/icons/bs/BsPlus";
-import { Button, Option, Select } from "@material-tailwind/react";
-import { DateTimePicker } from "@atlaskit/datetime-picker";
+import { Button } from "@material-tailwind/react";
 import { useContext } from "react";
 import { useEffect } from "react";
 import { Switch } from "@headlessui/react";
 import { Context } from "../../../../../../../providers/context";
-import { APP_SOLANA_ADDRESS, LOCAL_STORAGE } from "../../../../../../../data";
-import { SolanaWallets } from "../../../../top-section/auth/wallets";
 import {
-  errorMessage,
-  getFromLocalStorage,
-  jsConfettiFn,
-} from "../../../../../../../utils";
+  APP_SOLANA_ADDRESS,
+  FRAME_URL,
+  LOCAL_STORAGE,
+} from "../../../../../../../data";
+import { SolanaWallets } from "../../../../top-section/auth/wallets";
+import { errorMessage, getFromLocalStorage } from "../../../../../../../utils";
 import { toast } from "react-toastify";
 import { shareOnSocials } from "../../../../../../../services";
 import { useMutation } from "@tanstack/react-query";
-import TiDelete from "@meronex/icons/ti/TiDelete";
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { useSolanaWallet } from "../../../../../../../hooks/solana";
 import { useAppAuth, useReset } from "../../../../../../../hooks/app";
-import {
-  clusterApiUrl,
-  Keypair,
-  Connection,
-  Transaction,
-  VersionedTransaction,
-} from "@solana/web3.js";
-import base58 from "bs58";
-import { SwitchGroup, SharePanelHeaders } from "../../components";
 import { createBLinks } from "../../../../../../../services/apis/BE-apis";
 
 const CompressedNft = () => {
@@ -329,26 +318,27 @@ const CompressedNft = () => {
     }));
   };
 
-  // mint on solana
-  const sharePost = (platform) => {
-    // TODO:  enables some checks here
-
-    // check if canvasId is provided
+  const validateForm = () => {
     if (contextCanvasIdRef.current === null) {
       toast.error("Please select a design");
-      return;
+      return false;
     }
-    // check if description is provided
+
+    if (!postName) {
+      toast.error("Please provide a name");
+      return false;
+    }
+
     if (!postDescription) {
       toast.error("Please provide a description");
-      return;
+      return false;
     }
 
     if (solanaEnabled.isSellerFeeBasisPoints) {
-      if (solanaStatesError.isSellerFeeError) return;
+      if (solanaStatesError.isSellerFeeError) return false;
     }
 
-    if (solanaStatesError.isSplitError) return;
+    if (solanaStatesError.isSplitError) return false;
 
     if (isAddressDuplicate()) {
       setSolanaStatesError({
@@ -356,14 +346,14 @@ const CompressedNft = () => {
         isSplitError: true,
         splitErrorMessage: "Duplicate address or handle found",
       });
-      return;
+      return false;
     } else if (!isPercentage100()) {
       setSolanaStatesError({
         ...solanaStatesError,
         isSplitError: true,
         splitErrorMessage: "Total split should be 100%",
       });
-      return;
+      return false;
     } else {
       setSolanaStatesError({
         ...solanaStatesError,
@@ -372,7 +362,30 @@ const CompressedNft = () => {
       });
     }
 
-    // return;
+    if (
+      solanaEnabled.sellerFeeBasisPoints < 1 ||
+      solanaEnabled.sellerFeeBasisPoints > 100
+    ) {
+      setSolanaStatesError({
+        ...solanaStatesError,
+        isSellerFeeError: true,
+        sellerFeeErrorMessage: "Royalty should be between 1% to 100%",
+      });
+    } else {
+      setSolanaStatesError({
+        ...solanaStatesError,
+        isSellerFeeError: false,
+        sellerFeeErrorMessage: "",
+      });
+    }
+
+    return true;
+  };
+
+  // mint on solana
+  const sharePost = (platform) => {
+    if (!validateForm()) return;
+
     setSharing(true);
 
     const canvasData = {
@@ -428,6 +441,8 @@ const CompressedNft = () => {
   };
 
   const handleCreateBlink = () => {
+    if (!validateForm()) return;
+
     const id = toast.loading(`Creating Blink...`);
 
     const params = {
@@ -450,6 +465,15 @@ const CompressedNft = () => {
             isLoading: false,
             autoClose: 3000,
           });
+
+          window.open(
+            `https://x.com/intent/post?text=${FRAME_URL}/action/${res?.blinkId}`,
+            "_blank"
+          );
+
+          setTimeout(() => {
+            resetState();
+          }, 1000);
         } else {
           toast.update(id, {
             render: `Error creating Blink`,
@@ -587,9 +611,7 @@ const CompressedNft = () => {
       </div>
 
       <div
-        className={`${
-          !solanaEnabled.isSellerFeeBasisPoints && "hidden"
-        } ml-4 mr-4`}
+        className={`${!solanaEnabled.isSellerFeeBasisPoints && "hidden"} mx-4`}
       >
         <div className="flex flex-col w-full py-2">
           {/* <label htmlFor="price">Collect limit</label> */}
@@ -607,27 +629,55 @@ const CompressedNft = () => {
         </div>
       </div>
 
+      <div className="mb-4 m-4">
+        <div className="flex justify-between">
+          <h2 className="text-lg mb-2"> Share as Blink </h2>
+          <Switch
+            checked={solanaEnabled?.isBlink}
+            onChange={() =>
+              setSolanaEnabled((prevEnabled) => ({
+                ...prevEnabled,
+                isBlink: !prevEnabled.isBlink,
+              }))
+            }
+            className={`${
+              solanaEnabled?.isBlink ? "bg-[#e1f16b]" : "bg-gray-200"
+            } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+          >
+            <span
+              className={`${
+                solanaEnabled?.isBlink ? "translate-x-6" : "translate-x-1"
+              } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+            />{" "}
+          </Switch>
+        </div>
+        <div className="w-4/5 opacity-75"> Share as Mintable Blink on X. </div>
+      </div>
+
       {/* Switch Number 7 End */}
       {getSolanaAuth ? (
         <div className="flex flex-col gap-2">
-          <Button
-            disabled={sharing}
-            onClick={() => sharePost("solana-cnft")}
-            color="yellow"
-            className="w-full"
-          >
-            {" "}
-            Mint as cNFT{" "}
-          </Button>
-          <Button
-            disabled={sharing}
-            onClick={handleCreateBlink}
-            color="yellow"
-            className="w-full"
-          >
-            {" "}
-            Create Blink{" "}
-          </Button>
+          {solanaEnabled.isBlink ? (
+            <Button
+              disabled={sharing}
+              onClick={handleCreateBlink}
+              color="yellow"
+              className="w-full"
+            >
+              {" "}
+              Create a Blink{" "}
+            </Button>
+          ) : (
+            <Button
+              disabled={sharing}
+              onClick={() => sharePost("solana-cnft")}
+              color="yellow"
+              className="w-full"
+            >
+              {" "}
+              Mint as cNFT{" "}
+            </Button>
+          )}
         </div>
       ) : (
         <SolanaWallets title="Login with Solana" className="w-full" />

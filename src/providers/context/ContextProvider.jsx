@@ -133,6 +133,8 @@ const ContextProvider = ({ children }) => {
 
     isTokenGate: false,
     tokenGateContractAddresses: [""],
+
+    isBlink: false,
   });
 
   const [solanaStatesError, setSolanaStatesError] = useState({

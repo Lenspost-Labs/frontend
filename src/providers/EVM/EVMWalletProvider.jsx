@@ -8,26 +8,27 @@ import {
   polygonMumbai,
   baseSepolia,
   arbitrum,
+  degen,
 } from "wagmi/chains";
 import { ENVIRONMENT, WALLETCONNECT_PROJECT_ID } from "../../services";
 import { http } from "wagmi";
+import { ham } from "../../data";
 
 import { PrivyProvider } from "@privy-io/react-auth";
 import { WagmiProvider, createConfig } from "@privy-io/wagmi";
 
 // Replace this with your Privy config
 export const privyConfig = {
-  embeddedWallets: {
-    createOnLogin: "users-without-wallets",
-    requireUserPasswordOnCreate: true,
-    noPromptOnSignature: false,
-  },
   appearance: {
     loginMessage: "Login to Poster.fun",
-  },
-  loginMethods: ["wallet", "email", "sms", "farcaster"],
-  appearance: {
+    walletList: ["coinbase_wallet", "detected_wallets", "wallet_connect"],
     showWalletLoginFirst: true,
+  },
+  loginMethods: ["wallet","farcaster"],
+  externalWallets: {
+    coinbaseWallet: {
+      connectionOptions: "all",
+    },
   },
 };
 
@@ -47,8 +48,8 @@ export const config = createConfig({
     [polygonMumbai.id]: http(),
     [baseSepolia.id]: http(),
     [arbitrum.id]: http(),
-    [degen.id]: http(),
-    [ham.id]: http(),
+    // [degen.id]: http(),
+    // [ham.id]: http(),
   },
 });
 

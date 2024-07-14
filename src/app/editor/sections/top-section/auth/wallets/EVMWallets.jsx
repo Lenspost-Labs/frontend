@@ -1,10 +1,12 @@
 import { Button } from "@material-tailwind/react";
-import { usePrivy } from "@privy-io/react-auth";
+import { useLogin } from "@privy-io/react-auth";
 import React from "react";
 import { EVMLogo } from "../../../../../../assets";
+import { evmAuth } from "../../../../../../services";
+import { useMutation } from "@tanstack/react-query";
 
-const EVMWallets = ({ title, className }) => {
-  const { login } = usePrivy();
+const EVMWallets = ({ title, className , login }) => {
+  // set login with hooks for priv
 
   return (
     <Button

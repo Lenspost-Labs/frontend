@@ -1,7 +1,12 @@
 import axios from "axios";
 import { getFromLocalStorage } from "../../../utils";
 import { LOCAL_STORAGE } from "../../../data";
-import { BACKEND_DEV_URL, BACKEND_LOCAL_URL, BACKEND_PROD_URL, ENVIRONMENT } from "../../env/env";
+import {
+  BACKEND_DEV_URL,
+  BACKEND_LOCAL_URL,
+  BACKEND_PROD_URL,
+  ENVIRONMENT,
+} from "../../env/env";
 
 export const API =
   ENVIRONMENT === "production"
@@ -19,7 +24,9 @@ export const api = axios.create();
 // Add a request interceptor
 api.interceptors.request.use(
   (config) => {
-    const jwtToken = getFromLocalStorage(LOCAL_STORAGE.userAuthToken);
+    const jwtToken =
+      getFromLocalStorage(LOCAL_STORAGE.userAuthToken) ||
+      getFromLocalStorage(LOCAL_STORAGE.privy);
 
     // Exclude the login API from adding the default header
 

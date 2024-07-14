@@ -13,6 +13,7 @@ import {
 import {
   ALCHEMY_API_KEY,
   ENVIRONMENT,
+  PRIVY_APP_ID,
   WALLETCONNECT_PROJECT_ID,
 } from "../../services";
 import { http } from "wagmi";
@@ -62,7 +63,7 @@ const queryClient = new QueryClient();
 
 const EVMWalletProvider = ({ children }) => {
   return (
-    <PrivyProvider appId="clvysua9y0a63qk92kex0ulud" config={privyConfig}>
+    <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={config}>{children}</WagmiProvider>
       </QueryClientProvider>

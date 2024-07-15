@@ -20,6 +20,7 @@ import {
   SolanaWallets,
 } from "../../editor/sections/top-section/auth/wallets";
 import { useSolanaWallet } from "../../../hooks/solana";
+import usePrivyAuth from "../../../hooks/privy-auth/usePrivyAuth";
 
 const AuthComponent = () => {
   const getHasUserSeenTheApp = getFromLocalStorage("hasUserSeenTheApp");
@@ -31,7 +32,7 @@ const AuthComponent = () => {
   const navigate = useNavigate();
   const [isUserEligible, setIsUserEligible] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
-
+  const { login } = usePrivyAuth();
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["isHolderOfCollection"],
     queryFn: () => getIsUserWhitelisted(address || solanaAddress),
@@ -297,7 +298,7 @@ const AuthComponent = () => {
                   <div className="mb-2 p-2 flex flex-row justify-center gap-2">
                     {/* {<ConnectButton />} */}
                     <SolanaWallets title="Solana" />
-                    <EVMWallets title="EVM" />
+                    <EVMWallets title="EVM" login={login} />
                   </div>
                 </>
               )}

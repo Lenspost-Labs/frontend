@@ -19,6 +19,7 @@ const useUser = () => {
   });
 
   const { data: farcasterData, error: farcasterError } = useQuery({
+    queryKey: ["farcasterDetails"],
     queryFn: () => getFarcasterDetails(address),
   });
 

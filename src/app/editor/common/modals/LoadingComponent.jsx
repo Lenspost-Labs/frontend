@@ -57,7 +57,6 @@ const LoadingComponent = ({ isLoading, text }) => {
 
         <DialogFooter>
           <Button
-            ripple="light"
             className="ml-4 outline-none"
             color="red"
             onClick={() => {

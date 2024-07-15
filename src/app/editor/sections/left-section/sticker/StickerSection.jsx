@@ -32,6 +32,7 @@ import {
 } from "@material-tailwind/react";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { useAppAuth } from "../../../../../hooks/app";
+import { Stickers_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/Stickers-notSelected";
 
 const API = "https://api.polotno.dev/api";
 // const API = 'http://localhost:3001/api';
@@ -242,7 +243,8 @@ const StickerSection = {
   name: "Elements",
   Tab: (props) => (
     <SectionTab name="Stickers" {...props}>
-      <Icon icon="emoji" />
+      {/* <Icon icon="emoji" /> */}
+      <Stickers_NotSelected/>
     </SectionTab>
   ),
   // we need observer to update component automatically on any store changes

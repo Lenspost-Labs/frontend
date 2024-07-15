@@ -39,6 +39,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { watermarkBase64 } from '../../assets/base64/watermark'
 import { PagesTimeline } from 'polotno/pages-timeline';
 import { toast } from 'react-toastify'
+import { VideosSection } from './sections/left-section/default-polotno/VideoSection'
+import { BackgroundsSection } from './sections/left-section/default-polotno/BackgroundSection'
 
 // enable animations
 unstable_setAnimationsEnabled(true)
@@ -51,8 +53,9 @@ const sections = [
 	DesignSection,
 	StickerSection,
 	BannerSection,
+	VideosSection,
 	AIImageSection,
-	BackgroundSection,
+	BackgroundsSection,
 	ShapeSection,
 	UploadSection,
 	LayersSection,
@@ -519,7 +522,14 @@ const Editor = () => {
 	//     isWatermark.current = false;
 	//   }
 	// }, [isPageActive.current]);
+	
+	useEffect( () => {
+		console.log('openedSidePanel', store?.openedSidePanel)
+	}, [store, store?.openSidePanel, store?.openedSidePanel]);
 
+	useEffect( () => {
+		console.log('openedSidePanel', store?.openedSidePanel)
+	}, [store?.openSidePanel]);
 	return (
 		<>
 			<div

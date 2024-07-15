@@ -47,6 +47,7 @@ import {
 } from "@material-tailwind/react";
 import { useAppAuth } from "../../../../../hooks/app";
 import posthog from "posthog-js";
+import { Templates_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/Templates-notSelected";
 
 // Design card component start
 const DesignCard = ({
@@ -586,7 +587,8 @@ const TemplateSection = {
   name: "Templates",
   Tab: (props) => (
     <SectionTab name="Templates" {...props}>
-      <MdcImageMultipleOutline size="16" />
+      {/* <MdcImageMultipleOutline size="16" /> */}
+      <Templates_NotSelected/>
     </SectionTab>
   ),
   // we need observer to update component automatically on any store changes

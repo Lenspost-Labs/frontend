@@ -49,6 +49,7 @@ import {
 } from "@material-tailwind/react";
 import { LOCAL_STORAGE } from "../../../../../data";
 import { EVMWallets, SolanaWallets } from "../../top-section/auth/wallets";
+import { NFT_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/NFT-notSelected";
 
 const NFTPanel = () => {
   const [tab, setTab] = useState("wallet");
@@ -93,7 +94,8 @@ const NFTSection = {
   name: "NFT",
   Tab: (props) => (
     <SectionTab name="NFT" {...props}>
-      <NFTIcon />
+      {/* <NFTIcon /> */}
+      <NFT_NotSelected/>
     </SectionTab>
   ),
   // we need observer to update component automatically on any store changes

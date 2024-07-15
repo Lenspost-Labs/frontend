@@ -45,6 +45,7 @@ import {
 } from "../../../../../services";
 import useUser from "../../../../../hooks/user/useUser";
 import { toast } from "react-toastify";
+import AI_EditorIcon from "../../../../../assets/Editor-IconsV2/NotSelected/AI-EditorIcon";
 
 // Tab1 - Search Tab
 
@@ -494,12 +495,14 @@ const AIImagePanel = () => {
   );
 };
 
+const store = useStore();
 // define the new custom section
 const AIImageSection = {
   name: "AIImage",
   Tab: (props) => (
     <SectionTab name="AI Image" {...props}>
-      <AIIcon />
+      {/* <AIIcon /> */}
+      <AI_EditorIcon isSelected={store?.openedSidePanel === "AIImage"? true : false}/>
     </SectionTab>
   ),
   // we need observer to update component automatically on any store changes

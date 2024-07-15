@@ -4,6 +4,7 @@ import { Button } from "@blueprintjs/core";
 import { useEffect, useState } from "react";
 import { ResizeIcon } from "../../../../../assets/assets";
 import { useStore } from "../../../../../hooks/polotno";
+import { Resize_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/Resize-notSelected";
 
 const AVAILABLE_SIZES = [
   // {
@@ -140,7 +141,8 @@ const ResizePanel = () => {
   name: "sizes",
   Tab: (props) => (
     <SectionTab name="Sizes" {...props}>
-      <ResizeIcon />
+      {/* <ResizeIcon /> */}
+      <Resize_NotSelected/>
     </SectionTab>
   ),
   Panel: ResizePanel,

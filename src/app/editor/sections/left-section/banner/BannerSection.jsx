@@ -20,6 +20,7 @@ import {
 } from "@material-tailwind/react";
 import { useAppAuth } from "../../../../../hooks/app";
 import { useQuery } from "@tanstack/react-query";
+import { NFTBGs_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/NFTBGs-notSelected";
 
 export const BannerPanel = () => {
   const { isAuthenticated } = useAppAuth();
@@ -115,7 +116,8 @@ const BannerSection = {
   name: "Backgrounds2",
   Tab: (props) => (
     <SectionTab name={`NFT ${"\n"} Banners`} {...props}>
-      <CgImage size="16" />
+      {/* <CgImage size="16" /> */}
+      <NFTBGs_NotSelected/>
     </SectionTab>
   ),
   // we need observer to update component automatically on any store changes

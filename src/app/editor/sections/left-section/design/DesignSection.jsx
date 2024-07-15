@@ -37,6 +37,7 @@ import { LoadingAnimatedComponent } from "../../../common";
 import { fnPageHasElements } from "../../../../../utils/fnPageHasElements";
 import { useAppAuth, useReset } from "../../../../../hooks/app";
 import DesignCard from "./components/cards/DesignCard";
+import { MyFiles_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/MyFiles-notSelected";
 
 export const DesignPanel = () => {
   const { isAuthenticated } = useAppAuth();
@@ -286,7 +287,8 @@ const DesignSection = {
   name: "My Designs",
   Tab: (props) => (
     <SectionTab name="My Files" {...props}>
-      <MyDesignIcon />
+      {/* <MyDesignIcon /> */}
+      <MyFiles_NotSelected/>
     </SectionTab>
   ),
   // we need observer to update component automatically on any store changes

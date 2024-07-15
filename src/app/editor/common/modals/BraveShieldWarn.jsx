@@ -52,7 +52,7 @@ const BraveShieldWarn = () => {
         <DialogFooter>
           <Checkbox
             color="yellow"
-            className="outline-none"
+            className="outline-none bg-[#e1f16b] text-black"
             label="Don't show this again"
             onChange={handleCheckbox}
           />

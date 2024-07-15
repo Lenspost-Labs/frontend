@@ -4,6 +4,7 @@ import { SectionTab } from "polotno/side-panel";
 import { Shapes } from "polotno/side-panel/elements-panel";
 import { Icon } from "@blueprintjs/core";
 import { useStore } from "../../../../../hooks/polotno";
+import { Shapes_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/Shapes-notSelected";
 
  const ShapePanel = () => {
   const store = useStore();
@@ -15,7 +16,8 @@ import { useStore } from "../../../../../hooks/polotno";
   name: "shapes",
   Tab: (props) => (
     <SectionTab name="Shapes" {...props}>
-      <Icon icon="shapes" />
+      {/* <Icon icon="shapes" /> */}
+      <Shapes_NotSelected/>
     </SectionTab>
   ),
   // we need observer to update component automatically on any store changes

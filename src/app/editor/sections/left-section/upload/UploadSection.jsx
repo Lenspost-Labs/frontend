@@ -27,6 +27,7 @@ import { errorMessage, fnLoadMore } from "../../../../../utils";
 import { UploadFileDropzone } from "./components";
 import { LoadingAnimatedComponent } from "../../../common";
 import { useAppAuth } from "../../../../../hooks/app";
+import { Upload_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/Upload-notSelected";
 
 const UploadPanel = () => {
   const { isAuthenticated } = useAppAuth();
@@ -147,7 +148,8 @@ const UploadSection = {
   name: "Upload",
   Tab: (props) => (
     <SectionTab name="Upload" {...props}>
-      <UploadIcon />
+      {/* <UploadIcon /> */}
+      <Upload_NotSelected/>
     </SectionTab>
   ),
   Panel: UploadPanel,

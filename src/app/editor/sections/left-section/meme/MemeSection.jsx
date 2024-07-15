@@ -18,6 +18,7 @@ import {
 import BiSearch from "@meronex/icons/bi/BiSearch";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAppAuth } from "../../../../../hooks/app";
+import { Memes_NotSelected } from "../../../../../assets/Editor-IconsV2/NotSelected/Memes-notSelected";
 
 export const MemePanel = () => {
   const { isAuthenticated } = useAppAuth();
@@ -120,7 +121,8 @@ const MemeSection = {
   name: "Memes",
   Tab: (props) => (
     <SectionTab name={`Memes`} {...props}>
-      <AiOutlineFire size={16} />
+      {/* <AiOutlineFire size={16} /> */}
+      <Memes_NotSelected/>
     </SectionTab>
   ),
   // we need observer to update component automatically on any store changes

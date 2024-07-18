@@ -14,7 +14,8 @@ import { useStore } from "../../../../../hooks/polotno";
 import posthog from "posthog-js";
 import { Context } from "../../../../../providers/context";
 import { downloadFile } from "polotno/utils/download";
-import { POLOTNO_API_KEY } from "../../../../../services";
+import { claimReward, POLOTNO_API_KEY } from "../../../../../services";
+import { useUser } from "../../../../../hooks/user";
 
 const DownloadBtn = () => {
   const store = useStore();
@@ -25,6 +26,7 @@ const DownloadBtn = () => {
   const { contextCanvasIdRef } = useContext(Context);
   const [progress, setProgress] = useState(0);
   const [progressStatus, setProgressStatus] = useState("");
+  const { points } = useUser();
 
   const getName = () => {
     const texts = [];
@@ -81,6 +83,22 @@ const DownloadBtn = () => {
         onProgress(jobData.progress, jobData.status);
       }
       await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+  };
+
+  const fnHandleClaim = async () => {
+    if (!points || points < 1) {
+      toast.error("Not enough $POSTER points");
+      return;
+    } else {
+      // Claim the task for the user
+      const res = await claimReward({
+        taskId: 16,
+      });
+
+      if (res) {
+        console.log("res", res);
+      }
     }
   };
 
@@ -242,11 +260,16 @@ const DownloadBtn = () => {
                   });
                 });
               }
-
+              fnHandleClaim();
               captureEvent();
             }}
           >
             Download {type.toUpperCase()}
+            <img
+              className="h-4 -mt-1 ml-2"
+              src="/public/svgs/coin.svg"
+              alt=""
+            />
           </Button>
         </Menu>
       }

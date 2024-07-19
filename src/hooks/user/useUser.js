@@ -36,6 +36,16 @@ const useUser = () => {
     }
   };
 
+  const fnGetFarcasterDetails = async () => {
+    if (!address) {
+      consoleLogonlyDev("Address not found");
+      return;
+    }
+    const result = await getFarcasterDetails(address, `farcaster`);
+    setFarcasterDetails(result.Social?.[0]);
+    setProfileImage(result.Social?.[0]?.profileImage);
+  };
+
   useEffect(() => {
     fnGetUserLevel();
   }, [data, address]);

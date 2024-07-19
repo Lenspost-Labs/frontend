@@ -10,7 +10,8 @@ import { LOCAL_STORAGE } from "../../data";
 import * as Sentry from "@sentry/react";
 
 const usePrivyAuth = () => {
-  const { posthog, setText, setIsLoading, setSession } = useContext(Context);
+  const { posthog, setText, setIsLoading, setSession, setOpenedLoginModal } =
+    useContext(Context);
   const { logout } = usePrivy();
   const { disconnect } = useDisconnect();
 
@@ -22,27 +23,38 @@ const usePrivyAuth = () => {
   const { login } = useLogin({
     onComplete: (user) => {
       evmAuthAsync({
-        walletAddress: user.wallet.address,
-      }).then((res) => {
-        toast.success("Login successful");
-        saveToLocalStorage(LOCAL_STORAGE.evmAuth, true);
-        saveToLocalStorage(LOCAL_STORAGE.userAuthToken, res.jwt);
-        saveToLocalStorage(LOCAL_STORAGE.userAuthTime, new Date().getTime());
-        saveToLocalStorage(LOCAL_STORAGE.userAddress, user.wallet.address);
-        saveToLocalStorage(LOCAL_STORAGE.lensAuth, {
-          profileId: res?.profileId,
-          profileHandle: res?.profileHandle,
-        });
-        saveToLocalStorage(LOCAL_STORAGE.userId, res?.userId);
-        Sentry.setUser({
-          id: res?.userId,
-        });
-        setSession(res.jwt);
+        walletAddress: user?.wallet?.address,
+      })
+        .then((res) => {
+          toast.success("Login successful");
+          saveToLocalStorage(LOCAL_STORAGE.evmAuth, true);
+          saveToLocalStorage(LOCAL_STORAGE.userAuthToken, res.jwt);
+          saveToLocalStorage(LOCAL_STORAGE.userAuthTime, new Date().getTime());
+          saveToLocalStorage(LOCAL_STORAGE.userAddress, user.wallet.address);
+          saveToLocalStorage(LOCAL_STORAGE.lensAuth, {
+            profileId: res?.profileId,
+            profileHandle: res?.profileHandle,
+          });
+          saveToLocalStorage(LOCAL_STORAGE.userId, res?.userId);
+          Sentry.setUser({
+            id: res?.userId,
+          });
+          setSession(res.jwt);
 
-        posthog.identify(res?.userId, {
-          evm_address: user.wallet.address,
+          posthog.identify(res?.userId, {
+            evm_address: user.wallet.address,
+          });
+        })
+        .catch((error) => {
+          console.log("error by auth endpoint");
+          console.log(error);
+          toast.error("Something went wrong");
+          logout();
+          disconnect();
+          setIsLoading(false);
+          setOpenedLoginModal(false);
+          setText("");
         });
-      });
     },
     onError: (error) => {
       console.log("error by privy");
@@ -51,6 +63,7 @@ const usePrivyAuth = () => {
       logout();
       disconnect();
       setIsLoading(false);
+      setOpenedLoginModal(false);
       setText("");
     },
   });

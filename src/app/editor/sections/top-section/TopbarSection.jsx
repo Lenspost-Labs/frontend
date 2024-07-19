@@ -60,7 +60,7 @@ const TopbarSection = () => {
           ) : null}
         </div>
       </div>
-      {openedLoginModal && <LoginModal />}
+      {openedLoginModal && <LoginModal login={login} />}
     </>
   );
 };

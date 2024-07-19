@@ -21,11 +21,13 @@ import {
 } from "../../editor/sections/top-section/auth/wallets";
 import { useSolanaWallet } from "../../../hooks/solana";
 import usePrivyAuth from "../../../hooks/privy-auth/usePrivyAuth";
+import { usePrivy } from "@privy-io/react-auth";
 
 const AuthComponent = () => {
   const getHasUserSeenTheApp = getFromLocalStorage("hasUserSeenTheApp");
   const getifUserEligible = getFromLocalStorage("ifUserEligible");
   const { address, isConnected } = useAccount();
+  const { logout } = usePrivy();
   const { disconnect } = useDisconnect();
   const { solanaDisconnect, solanaConnected, solanaAddress } =
     useSolanaWallet();
@@ -280,7 +282,7 @@ const AuthComponent = () => {
                   <Button
                     className="bg-[#2c346b]"
                     onClick={() => {
-                      disconnect();
+                      logout();
                       solanaDisconnect();
                     }}
                   >

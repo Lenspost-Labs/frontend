@@ -37,8 +37,8 @@ const useUser = () => {
       return;
     }
     const result = await getFarcasterDetails(address, `farcaster`);
-    setFarcasterDetails(result.Social[0]);
-    setProfileImage(result.Social[0]?.profileImage);
+    setFarcasterDetails(result.Social?.[0]);
+    setProfileImage(result.Social?.[0]?.profileImage);
   };
 
   useEffect(() => {

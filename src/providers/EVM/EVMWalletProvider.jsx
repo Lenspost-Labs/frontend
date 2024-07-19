@@ -29,7 +29,7 @@ export const privyConfig = {
     walletList: ["coinbase_wallet", "detected_wallets", "wallet_connect"],
     showWalletLoginFirst: true,
   },
-  loginMethods: ["wallet", "farcaster"],
+  loginMethods: ["wallet"],
   externalWallets: {
     coinbaseWallet: {
       connectionOptions: "all",

@@ -12,8 +12,7 @@ const useLogout = () => {
   const { disconnect } = useDisconnect();
   const { posthog } = useContext(Context);
   const { resetState } = useReset();
-  const { logout : privyLogout } = usePrivy();
-  
+  const { logout: privyLogout } = usePrivy();
 
   const logout = () => {
     privyLogout();

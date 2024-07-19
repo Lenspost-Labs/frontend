@@ -23,8 +23,6 @@ const useUser = () => {
     queryFn: () => getFarcasterDetails(address),
   });
 
-  console.log(farcasterData, "farcasterData");
-
   const fnGetUserLevel = async () => {
     if (data?.message?.points < 500) {
       setUserLevel("Normie");
@@ -36,16 +34,6 @@ const useUser = () => {
     }
   };
 
-  const fnGetFarcasterDetails = async () => {
-    if (!address) {
-      consoleLogonlyDev("Address not found");
-      return;
-    }
-    const result = await getFarcasterDetails(address, `farcaster`);
-    setFarcasterDetails(result.Social?.[0]);
-    setProfileImage(result.Social?.[0]?.profileImage);
-  };
-
   useEffect(() => {
     fnGetUserLevel();
   }, [data, address]);
@@ -55,9 +43,9 @@ const useUser = () => {
     username: data?.message?.username,
     email: data?.message?.mail,
     lensHandle: data?.message?.lens_handle,
-    farcasterHandle: farcasterData?.Social[0]?.profileHandle,
+    farcasterHandle: farcasterData?.Social?.[0]?.profileHandle,
     points: data?.message?.points,
-    profileImage: farcasterData?.Social[0]?.profileImage,
+    profileImage: farcasterData?.Social?.[0]?.profileImage,
     error,
     isError,
     isLoading,

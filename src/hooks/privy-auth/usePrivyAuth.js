@@ -40,6 +40,7 @@ const usePrivyAuth = () => {
             id: res?.userId,
           });
           setSession(res.jwt);
+          setOpenedLoginModal(false);
 
           posthog.identify(res?.userId, {
             evm_address: user.wallet.address,

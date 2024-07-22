@@ -59,6 +59,7 @@ import {
 } from "../../utils";
 import FcIdea from "@meronex/icons/fc/FcIdea";
 import { TopbarSection } from "./sections/top-section";
+import AIStartupModal from "./common/modals/AIStartupModal";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -590,7 +591,8 @@ const Editor = () => {
                 <BgRemover />
 
                 {/* Quick Tour on the main page */}
-                <div className="flex flex-row ">
+                <div className="flex flex-row">
+                  <AIStartupModal />
                   {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
                   <SpeedDialX />
 

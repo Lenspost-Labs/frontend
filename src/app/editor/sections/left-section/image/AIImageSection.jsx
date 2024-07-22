@@ -64,7 +64,7 @@ const RANDOM_QUERIES2 = [
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = ["Mountains", "Hearts", "Robots", "NFTS", "Elon"];
 
-const CompSearch = () => {
+export const CompSearch = () => {
   const store = useStore();
   const { points } = useUser();
 
@@ -151,7 +151,7 @@ const CompSearch = () => {
             type="search"
           />
           <MatButton className="mb-4" onClick={fnGenerateImages}>
-            Generate
+            Generate 
             <img className="h-4 -mt-1 ml-2" src="/public/svgs/coin.svg" alt="" />
           </MatButton>
           {/* 
@@ -464,7 +464,7 @@ const CompInstructImage = () => {
   );
 };
 
-const AIImagePanel = () => {
+export const AIImagePanel = () => {
   const [currentTab, setCurrentTab] = useState("prompt");
 
   const tabsArray = ["prompt", "instruct"];

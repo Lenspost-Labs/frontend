@@ -59,6 +59,7 @@ import {
 } from "../../utils";
 import FcIdea from "@meronex/icons/fc/FcIdea";
 import { TopbarSection } from "./sections/top-section";
+import MobileNavbar from "./sections/bottom-section/bottomBar/MobileNavbar";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -115,6 +116,10 @@ const Editor = () => {
     canvasBase64Ref,
     farcasterStates,
     setFarcasterStates,
+
+    // Mobile UI
+    isMobile,
+    setIsMobile,
   } = useContext(Context);
 
   const componentMounted = useRef(false);
@@ -548,6 +553,16 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
+  useEffect(() => {
+    console.log("window height", window.innerHeight);
+    console.log("window width", window.innerWidth);
+    if (window.innerWidth < 768) {
+      setIsMobile(true);
+    }
+    if (window.innerWidth > 768) {
+      setIsMobile(false);
+    }
+  });
 
   return (
     <>
@@ -561,13 +576,19 @@ const Editor = () => {
         }}
         onDrop={handleDrop}
       >
-        <div style={{ height: "calc(100% - 75px)" }}>
-          <div className="">
-            <TopbarSection />
-          </div>
+        <div
+          style={{
+            height: isMobile ? "calc(100% - 8px)" : "calc(100% - 75px)",
+          }}
+        >
+          {!isMobile && (
+            <div className="">
+              <TopbarSection />
+            </div>
+          )}
           <PolotnoContainer className="min-h-400 md:min-h-full">
-            <div id="second-step" className="mx-0 md:mx-2">
-              <SidePanelWrap>
+            <div id="second-step" className={`${isMobile ? "hidden" : ""} md:block mx-0 md:mx-2`}>
+              <SidePanelWrap> 
                 <SidePanel store={store} sections={sections} />
               </SidePanelWrap>
             </div>

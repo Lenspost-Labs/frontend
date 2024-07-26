@@ -495,6 +495,9 @@ const ContextProvider = ({ children }) => {
   // console.log("ContextProvider", farcasterStates?.frameData);
   // console.log("ContextProvider", zoraErc721StatesError);
 
+  const [isMobile, setIsMobile] = useState(false);
+  const [ curOpenedPanel, setCurOpenedPanel ] = useState("");
+
   return (
     <Context.Provider
       value={{
@@ -666,6 +669,13 @@ const ContextProvider = ({ children }) => {
         // session
         session,
         setSession,
+
+        // Mobile UI 
+        isMobile,
+        setIsMobile,
+        // for mobile Tabs : 
+        curOpenedPanel,
+        setCurOpenedPanel,
       }}
     >
       {children}

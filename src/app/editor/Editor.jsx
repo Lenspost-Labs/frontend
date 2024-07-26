@@ -562,7 +562,7 @@ const Editor = () => {
     if (window.innerWidth > 768) {
       setIsMobile(false);
     }
-  });
+  }, [window.innerWidth, window.innerHeight]);
 
   return (
     <>
@@ -587,13 +587,16 @@ const Editor = () => {
             </div>
           )}
           <PolotnoContainer className="min-h-400 md:min-h-full">
-            <div id="second-step" className={`${isMobile ? "hidden" : ""} md:block mx-0 md:mx-2`}>
-              <SidePanelWrap> 
+            <div
+              id="second-step"
+              className={`${isMobile ? "hidden" : ""} md:block mx-0 md:mx-2`}
+            >
+              <SidePanelWrap>
                 <SidePanel store={store} sections={sections} />
               </SidePanelWrap>
             </div>
             <WorkspaceWrap>
-              <div className="mb-2 md:ml-0 mx-2">
+              <div className="mb-2 md:ml-0 mx-2 my-2">
                 <Toolbar store={store} />
               </div>
               <Workspace
@@ -605,34 +608,40 @@ const Editor = () => {
               />
 
               {/* Bottom section */}
-              <ZoomButtons store={store} />
-              <PagesTimeline store={store} />
-              <div className="flex flex-row justify-between items-center border border-black-300 rounded-lg ">
-                <BgRemover />
+              {!isMobile && <ZoomButtons store={store} />}
+              {!isMobile && <PagesTimeline store={store} />}
+              <div className="flex flex-col">
+                <SpeedDialX />
+                <MobileNavbar />
+              </div>
 
-                {/* Quick Tour on the main page */}
-                <div className="flex flex-row ">
-                  {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
-                  <SpeedDialX />
+              {!isMobile && (
+                <div className="flex flex-row justify-between items-center rounded-lg ">
+                  <BgRemover />
+                  {/* Quick Tour on the main page */}
+                  <div className="flex flex-row ">
+                    {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
+                    <SpeedDialX />
 
-                  <div
-                    className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
-                    onClick={async () => {
-                      setCurrentStep(0);
-                      if (isConnected) {
-                        setIsOpen(true);
-                        setSteps(OnboardingStepsWithShare);
-                      } else {
-                        setIsOpen(true);
-                        setSteps(OnboardingSteps);
-                      }
-                    }}
-                  >
-                    <FcIdea className="m-2" size="16" />
-                    {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
+                    <div
+                      className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
+                      onClick={async () => {
+                        setCurrentStep(0);
+                        if (isConnected) {
+                          setIsOpen(true);
+                          setSteps(OnboardingStepsWithShare);
+                        } else {
+                          setIsOpen(true);
+                          setSteps(OnboardingSteps);
+                        }
+                      }}
+                    >
+                      <FcIdea className="m-2" size="16" />
+                      {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </WorkspaceWrap>
           </PolotnoContainer>
         </div>

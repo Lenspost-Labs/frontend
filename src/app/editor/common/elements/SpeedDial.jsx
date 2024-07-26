@@ -39,7 +39,7 @@ export function SpeedDialX() {
   };
 
   return (
-    <div className="relative h-10 mb-1">
+    <div className="relative h-8 mb-6 mr-2">
       <div className="md: absolute bottom-0 right-0">
         <SpeedDial>
           <SpeedDialHandler>

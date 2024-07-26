@@ -28,7 +28,7 @@ import { UploadFileDropzone } from "./components";
 import { LoadingAnimatedComponent } from "../../../common";
 import { useAppAuth } from "../../../../../hooks/app";
 
-const UploadPanel = () => {
+export const UploadPanel = () => {
   const { isAuthenticated } = useAppAuth();
   const { isDisconnected, address } = useAccount();
   const queryClient = useQueryClient();

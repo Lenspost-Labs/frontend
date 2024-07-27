@@ -612,10 +612,12 @@ const Editor = () => {
               {/* Bottom section */}
               {!isMobile && <ZoomButtons store={store} />}
               {!isMobile && <PagesTimeline store={store} />}
-              <div className="flex flex-col">
-                <SpeedDialX />
-                <MobileNavbar />
-              </div>
+              {isMobile && (
+                <div className="flex flex-col">
+                  <SpeedDialX />
+                  <MobileNavbar />
+                </div>
+              )}
 
               {!isMobile && (
                 <div className="flex flex-row justify-between items-center rounded-lg ">

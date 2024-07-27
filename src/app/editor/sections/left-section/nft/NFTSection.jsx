@@ -103,7 +103,7 @@ const NFTSection = {
 export default NFTSection;
 
 // catogoery component (child component of LenspostNFT component)
-const RenderCategories = ({ contractAddressRef, setActiveCat, searchId }) => {
+export const RenderCategories = ({ contractAddressRef, setActiveCat, searchId }) => {
   const { isAuthenticated } = useAppAuth();
   const { address, isDisconnected } = useAccount();
   const [query, setQuery] = useState("");

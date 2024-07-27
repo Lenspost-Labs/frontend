@@ -215,7 +215,7 @@ const TemplatePanel = () => {
   );
 };
 
-const LenspostTemplates = () => {
+export const LenspostTemplates = () => {
   const { isAuthenticated } = useAppAuth();
   const store = useStore();
   const { address, isDisconnected } = useAccount();

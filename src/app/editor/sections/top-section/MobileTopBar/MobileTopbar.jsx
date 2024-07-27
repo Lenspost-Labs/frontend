@@ -6,6 +6,7 @@ import { Context } from "../../../../../providers/context";
 import { Drawer } from "@material-tailwind/react";
 import EditIconRight from "../../../../../assets/EditIconsMobile/EditIconRight";
 import Logo from "../logo/Logo";
+import MobileLoginBtn from "../auth/MobileLoginBtn";
 
 const MobileTopbar = () => {
   const store = useStore();
@@ -33,11 +34,14 @@ const MobileTopbar = () => {
       >
         <div className="flex justify-between items-center">
           <Logo propHeight={16} />
-          <div
-            onClick={() => setOpenLeftBar(!openLeftBar)}
-            className="bg-white p-2 rounded-lg"
-          >
-            <EditIconRight />
+          <div className="flex gap-2 items-center">
+            <MobileLoginBtn />
+            <div
+              onClick={() => setOpenLeftBar(!openLeftBar)}
+              className="bg-white p-2 rounded-lg"
+            >
+              <EditIconRight />
+            </div>
           </div>
         </div>
         {curOpenedPanel === "mobPanelUpload" && <> Test </>}

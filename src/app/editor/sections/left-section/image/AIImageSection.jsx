@@ -64,7 +64,7 @@ const RANDOM_QUERIES2 = [
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = ["Mountains", "Hearts", "Robots", "NFTS", "Elon"];
 
-const CompSearch = () => {
+export const CompSearch = () => {
   const store = useStore();
   const { points } = useUser();
 
@@ -152,7 +152,11 @@ const CompSearch = () => {
           />
           <MatButton className="mb-4" onClick={fnGenerateImages}>
             Generate
-            <img className="h-4 -mt-1 ml-2" src="/public/svgs/coin.svg" alt="" />
+            <img
+              className="h-4 -mt-1 ml-2"
+              src="/public/svgs/coin.svg"
+              alt=""
+            />
           </MatButton>
           {/* 
 			<button className="bg-[#e1f16b] w-full px-4 p-1  mb-4 rounded-md hover:bg-[#e0f26cce]" onClick={fnGenerateImages}>Generate</button>

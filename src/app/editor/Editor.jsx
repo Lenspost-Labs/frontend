@@ -60,6 +60,7 @@ import {
 import FcIdea from "@meronex/icons/fc/FcIdea";
 import { TopbarSection } from "./sections/top-section";
 import MobileNavbar from "./sections/bottom-section/bottomBar/MobileNavbar";
+import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -597,7 +598,8 @@ const Editor = () => {
             </div>
             <WorkspaceWrap>
               <div className="mb-2 md:ml-0 mx-2 my-2">
-                <Toolbar store={store} />
+                {!isMobile && <Toolbar store={store} />}
+                {isMobile && <MobileTopbar />}
               </div>
               <Workspace
                 store={store}

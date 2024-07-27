@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../../../../../providers/context";
 import EditIconShare from "../../../../../assets/EditIconsMobile/EditIconShare";
 import EditIconStickers from "../../../../../assets/EditIconsMobile/EditIconStickers";
@@ -11,8 +11,8 @@ import UploadSection, {
 import { TextSection } from "polotno/side-panel";
 
 const MobileNavbar = () => {
-  const { curOpenedPanel, setCurOpenedPanel } = useContext(Context);
-  const [openBottomBar, setOpenBottomBar] = React.useState(false);
+  const { curOpenedPanel, setCurOpenedPanel, openBottomBar, setOpenBottomBar } =
+    useContext(Context);
 
   return (
     <>
@@ -65,7 +65,7 @@ const MobileNavbar = () => {
         </div>
 
         <Drawer
-          size={`${window.innerHeight - 100}px`}
+          size={Number(window && window?.innerHeight - 100) || 0}
           placement="bottom"
           open={openBottomBar}
           onClose={() => setOpenBottomBar(!openBottomBar)}
@@ -77,7 +77,7 @@ const MobileNavbar = () => {
             </>
           )}
 
-          {curOpenedPanel === "mobPanelText" && <>{TextSection.Panel}</>}
+          {/* {curOpenedPanel === "mobPanelText" && <>{TextSection.Panel()}</>} */}
         </Drawer>
       </div>
     </>

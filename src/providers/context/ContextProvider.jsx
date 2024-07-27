@@ -497,6 +497,8 @@ const ContextProvider = ({ children }) => {
 
   const [isMobile, setIsMobile] = useState(false);
   const [ curOpenedPanel, setCurOpenedPanel ] = useState("");
+  const [openLeftBar, setOpenLeftBar] = useState(false);
+  const [openBottomBar, setOpenBottomBar] = useState(false);
 
   return (
     <Context.Provider
@@ -676,6 +678,10 @@ const ContextProvider = ({ children }) => {
         // for mobile Tabs : 
         curOpenedPanel,
         setCurOpenedPanel,
+        openLeftBar,
+        setOpenLeftBar,
+        openBottomBar,
+        setOpenBottomBar,
       }}
     >
       {children}

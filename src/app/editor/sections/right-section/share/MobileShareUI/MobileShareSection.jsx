@@ -131,13 +131,13 @@ const MobileShareSection = () => {
     <>
       <div className="flex h-full flex-col overflow-y-scroll bg-white rounded-lg  rounded-r-none ">
         {/* <div className=""> */}
-          {/* <Dialog.Title className="w-full text-white text-xl leading-6 p-6 fixed bg-gray-900 z-10">
+        {/* <Dialog.Title className="w-full text-white text-xl leading-6 p-6 fixed bg-gray-900 z-10">
           Share this Design
         </Dialog.Title> */}
 
-          {/* Don't add - `fixed` solved major Bug */}
-            {/* For alignment */}
-          {/* <div className="flex flex-row justify-between top-0 w-full text-white text-xl leading-6 p-4 bg-gray-900 rounded-lg rounded-r-none ">
+        {/* Don't add - `fixed` solved major Bug */}
+        {/* For alignment */}
+        {/* <div className="flex flex-row justify-between top-0 w-full text-white text-xl leading-6 p-4 bg-gray-900 rounded-lg rounded-r-none ">
             <div className=""> {""} </div>
             <div className="">Share this Design</div>
             <div
@@ -255,7 +255,7 @@ const MobileShareSection = () => {
         <div className={`relative mt-6 px-4 sm:px-6`}>
           <p className="text-lg">Share on socials</p>
           <div className="flex ">
-            <div className="flex items-center space-x-12 py-5">
+            {/* <div className="flex items-center space-x-12 py-5">
               <div onClick={() => setMenu("lensmonetization")}>
                 {" "}
                 <img
@@ -264,7 +264,7 @@ const MobileShareSection = () => {
                   alt="Lens"
                 />{" "}
               </div>
-            </div>
+            </div> */}
 
             <div className="flex items-center space-x-12 py-5 ml-8">
               <div onClick={() => setMenu("farcasterShare")}>

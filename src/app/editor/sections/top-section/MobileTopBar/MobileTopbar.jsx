@@ -35,6 +35,8 @@ const MobileTopbar = () => {
     "https://fal.media/files/monkey/riSVL2tWeSBIGatnuqgh7.jpeg",
     "https://fal.media/files/penguin/zgIytfvFc64PB77YJ8Wu3.jpeg",
     "https://fal.media/files/zebra/uHLqe_-pHJ0jQGi1AzbeD.jpeg",
+    "https://fal.media/files/panda/bDddS2m9bojQ1jrl7EfI8.jpeg",
+    "https://fal.media/files/koala/RUilq65w1LsE8IyALvB_p.jpeg",
   ];
 
   const MemesMob = [
@@ -76,7 +78,7 @@ const MobileTopbar = () => {
             <Logo propHeight={16} />
             <div className="flex gap-2 items-center">
               {!isAuthenticated && (
-                <Button size="md" color="black" title="EVM" login={login}>
+                <Button size="md" color="black" title="EVM" onClick={login}>
                   <img
                     src={EVMLogo}
                     alt="evm"
@@ -153,14 +155,21 @@ const MobileTopbar = () => {
                   </div>
 
                   <div className="flex w-full overflow-x-auto">
-                    {stickersMob.map((img, index) => (
+                    {/* {stickersMob.map((img, index) => (
                       <CustomImageComponent
                         imgClassName="h-32"
                         className="h-32"
                         preview={img}
                         key={index}
                       />
-                    ))}
+                    ))} */}
+
+                    {/* Featured Stickers */}
+                    <CustomHorizontalScroller
+                      type="props"
+                      author="ham"
+                      campaign={null}
+                    />
                   </div>
                 </div>
               </div>
@@ -171,7 +180,7 @@ const MobileTopbar = () => {
                 <CompSearch />
               </div>
             )}
-            {curOpenedPanel === "mobPanelMyFiles" && <DesignPanel />}
+            {curOpenedPanel === "mobPanelMyFiles" && <DesignPanel isMobile />}
           </div>
           {/* Bottom bar for Home page  */}
           <div className="">

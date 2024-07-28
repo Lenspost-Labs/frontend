@@ -121,11 +121,12 @@ const MobileNavbar = () => {
 
         <Dialog
           // size={Number(window && window?.innerHeight - 100) || 0}
-          size="xl"
+          size="xxl"
+          className="h-[100%] w-full"
           open={openBottomBar}
           handler={() => setOpenBottomBar(!openBottomBar)}
         >
-          <DialogBody className="w-full h-[72vh] mb-4">
+          <DialogBody className="w-full h-[64%] mb-32">
             {curOpenedPanel === "mobPanelUpload" && (
               <>
                 <Tabs value="upload">

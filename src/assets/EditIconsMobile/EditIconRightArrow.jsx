@@ -1,6 +1,6 @@
 import React from "react";
 
-const EditIconLeftArrow = ({
+const EditIconRightArrow = ({
   width = 18,
   height = 18,
   stroke = "#1C274C",
@@ -25,4 +25,4 @@ const EditIconLeftArrow = ({
   );
 };
 
-export default EditIconLeftArrow;
+export default EditIconRightArrow;

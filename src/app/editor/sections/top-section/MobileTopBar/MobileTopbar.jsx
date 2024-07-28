@@ -3,21 +3,53 @@ import React, { useContext } from "react";
 import { useStore } from "../../../../../hooks/polotno";
 import EditIconLeft from "../../../../../assets/EditIconsMobile/EditIconLeft";
 import { Context } from "../../../../../providers/context";
-import { Drawer } from "@material-tailwind/react";
+import { Button, Drawer } from "@material-tailwind/react";
 import EditIconRight from "../../../../../assets/EditIconsMobile/EditIconRight";
 import Logo from "../logo/Logo";
 import MobileLoginBtn from "../auth/MobileLoginBtn";
-import EditIconLeftArrow from "../../../../../assets/EditIconsMobile/EditIconLeftArrow";
+import EditIconRightArrow from "../../../../../assets/EditIconsMobile/EditIconRightArrow";
 import EditIconHome from "../../../../../assets/EditIconsMobile/EditIconHome";
 import EditIconMyFIles from "../../../../../assets/EditIconsMobile/EditIconMyFIles";
 import EditIconAI from "../../../../../assets/EditIconsMobile/EditIconAI";
 import { DesignPanel } from "../../left-section/design/DesignSection";
 import { CompSearch } from "../../left-section/image/AIImageSection";
+import {
+  CustomHorizontalScroller,
+  CustomImageComponent,
+} from "../../../common";
+import { EVMWallets } from "../auth/wallets";
+import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
+import { useAppAuth } from "../../../../../hooks/app";
+import { EVMLogo } from "../../../../../assets";
+import PointsBtn from "../PointsBtn/PointsBtn";
 
 const MobileTopbar = () => {
   const store = useStore();
   const { openLeftBar, setOpenLeftBar, curOpenedPanel, setCurOpenedPanel } =
     useContext(Context);
+  const { login } = usePrivyAuth();
+  const { isAuthenticated } = useAppAuth();
+
+  const AIImagesMob = [
+    "https://fal.media/files/monkey/cVoNvipRF_fUCUKcl7R-e.jpeg",
+    "https://fal.media/files/monkey/riSVL2tWeSBIGatnuqgh7.jpeg",
+    "https://fal.media/files/penguin/zgIytfvFc64PB77YJ8Wu3.jpeg",
+    "https://fal.media/files/zebra/uHLqe_-pHJ0jQGi1AzbeD.jpeg",
+  ];
+
+  const MemesMob = [
+    "https://i.imgflip.com/30b1gx.jpg",
+    "https://i.imgflip.com/1g8my4.jpg",
+    "https://i.imgflip.com/1b42wl.jpg",
+  ];
+
+  const stickersMob = [
+    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-229.png",
+    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-237.png",
+    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-242.png",
+    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-248.png",
+    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-252.png",
+  ];
 
   return (
     <>
@@ -40,10 +72,24 @@ const MobileTopbar = () => {
       >
         <div className="flex flex-col justify-between h-full">
           {/* Top bar for Home page */}
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mx-2 my-1">
             <Logo propHeight={16} />
             <div className="flex gap-2 items-center">
-              <MobileLoginBtn />
+              {!isAuthenticated && (
+                <Button size="md" color="black" title="EVM" login={login}>
+                  <img
+                    src={EVMLogo}
+                    alt="evm"
+                    className="h-4 w-4 object-contain bg-cover mr-2"
+                  />
+                  Login
+                </Button>
+              )}
+              {isAuthenticated && (
+                <div onClick={() => setOpenLeftBar(!openLeftBar)} className="">
+                  <PointsBtn />
+                </div>
+              )}
               <div
                 onClick={() => setOpenLeftBar(!openLeftBar)}
                 className="bg-white p-2 rounded-lg"
@@ -52,38 +98,81 @@ const MobileTopbar = () => {
               </div>
             </div>
           </div>
+          {/* Middle Section */}
+          <div className="h-full overflow-y-auto">
+            {/* Categories */}
+            {curOpenedPanel === "mobPanelHome" && (
+              <div className="flex flex-col mx-4 gap-4">
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg p-2 "> GEN AI </div>
+                    <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                      {" "}
+                      <EditIconRightArrow />{" "}
+                    </div>
+                  </div>
 
-          {/* Categories */}
-          {curOpenedPanel === "mobPanelHome" && (
-            <div className="flex flex-col">
-              <div className="flex justify-between items-center">
-                <div className=""> GEN AI </div>
-                <div className="">
-                  {" "}
-                  <EditIconLeftArrow />{" "}
+                  <div className="flex overflow-x-auto">
+                    {AIImagesMob.map((img, index) => (
+                      <CustomImageComponent
+                        imgClassName="object-cover"
+                        preview={img}
+                        key={index}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg p-2 "> Memes </div>
+                    <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                      {" "}
+                      <EditIconRightArrow />{" "}
+                    </div>
+                  </div>
+
+                  <div className="flex w-full overflow-x-auto">
+                    {MemesMob.map((img, index) => (
+                      <CustomImageComponent
+                        imgClassName="h-40"
+                        className="h-40"
+                        preview={img}
+                        key={index}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg p-2 "> Stickers </div>
+                    <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                      {" "}
+                      <EditIconRightArrow />{" "}
+                    </div>
+                  </div>
+
+                  <div className="flex w-full overflow-x-auto">
+                    {stickersMob.map((img, index) => (
+                      <CustomImageComponent
+                        imgClassName="h-32"
+                        className="h-32"
+                        preview={img}
+                        key={index}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              <div className="flex justify-between items-center">
-                <div className=""> Memes </div>
-                <div className="">
-                  {" "}
-                  <EditIconLeftArrow />{" "}
-                </div>
+            )}
+            {curOpenedPanel === "mobPanelAI" && (
+              <div className="mx-4 mt-16">
+                {" "}
+                <CompSearch />
               </div>
-
-              <div className="flex justify-between items-center">
-                <div className=""> Stickers</div>
-                <div className="">
-                  {" "}
-                  <EditIconLeftArrow />{" "}
-                </div>
-              </div>
-            </div>
-          )}
-          {curOpenedPanel === "mobPanelAI" && <CompSearch />}
-          {curOpenedPanel === "mobPanelMyFiles" && <DesignPanel />}
-
+            )}
+            {curOpenedPanel === "mobPanelMyFiles" && <DesignPanel />}
+          </div>
           {/* Bottom bar for Home page  */}
           <div className="">
             <div className="flex flex-col items-center  mx-2 my-1 ">

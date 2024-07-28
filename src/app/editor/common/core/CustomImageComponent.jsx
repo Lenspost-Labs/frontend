@@ -25,6 +25,9 @@ const CustomImageComponent = ({
   recipientWallet,
   showAuthor,
   author,
+
+  // For TopbarMobile
+  imgClassName
 }) => {
   const store = useStore();
   const [base64Data, setBase64Data] = useState("");
@@ -142,15 +145,15 @@ const CustomImageComponent = ({
         onDragEnd={handleClickOrDrop}
         onClick={handleClickOrDrop}
       >
-        <div className="mb-3">
+        {/* <div className="mb-3"> */}
           <LazyLoadImage
-            className="rounded-lg"
+            className={`rounded-lg ${imgClassName}`}
             placeholderSrc={base64Data}
             effect="blur"
             src={base64Data}
             alt="Preview Image"
           />
-        </div>
+        {/* </div> */}
 
         {/* if nft is a lens collect */}
         {isLensCollect?.isLensCollect ||

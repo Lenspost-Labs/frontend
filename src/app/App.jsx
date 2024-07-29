@@ -50,6 +50,9 @@ const App = () => {
     handleOpen,
     session,
     setSession,
+
+    setIsMobile,
+    setOpenLeftBar
   } = useContext(Context);
   const [sign, setSign] = useState("");
   const { address, isConnected, isDisconnected } = useAccount();
@@ -272,6 +275,19 @@ const App = () => {
       });
     });
   }, []);
+
+  // Logic to Set isMobile variable
+  useEffect(() => {
+    console.log("window height", window.innerHeight);
+    console.log("window width", window.innerWidth);
+    if (window.innerWidth < 768) {
+      setIsMobile(true);
+      setOpenLeftBar(true)
+    }
+    if (window.innerWidth > 768) {
+      setIsMobile(false);
+    }
+  }, [window.innerWidth, window.innerHeight]);
 
   return (
     <>

@@ -298,11 +298,7 @@ export const LenspostTemplates = () => {
             hasSeeMore
             seeMoreFn={() => store.openSidePanel("Backgrounds2")}
           />
-          <CompCarousel
-            type="background"
-            author="kitty"
-            campaign="kitty"
-          />
+          <CompCarousel type="background" author="kitty" campaign="kitty" />
 
           {/*  Featured Panels : Stickers */}
           <SecNameHeading
@@ -314,7 +310,6 @@ export const LenspostTemplates = () => {
           <CustomHorizontalScroller type="props" author="ham" campaign={null} />
 
           <div className="ml-2 mt-4 mb-1 "> Lenspost Templates </div>
-
           {/* <div className=" overflow-y-scroll">  */}
           {data?.pages[0]?.data?.length > 0 ? (
             <>
@@ -357,91 +352,37 @@ export const LenspostTemplates = () => {
         {/* Reference Link: https://www.material-tailwind.com/docs/react/tabs */}
 
         <div className="sm:hidden">
-          <Tabs id="custom-animation" value="featStickers">
-            <div className="m-3 mt-0 mb-0">
-              <TabsHeader>
-                <Tab value={"featStickers"}>
-                  {" "}
-                  <div className="appFont text-xs">
-                    {" "}
-                    Featured <br /> Stickers{" "}
-                  </div>{" "}
-                </Tab>
-                <Tab value={"featBackgrounds"}>
-                  {" "}
-                  <div className="appFont text-xs">
-                    {" "}
-                    Featured <br /> Backgrounds{" "}
-                  </div>
-                </Tab>
-                <Tab value={"lpTemplates"}>
-                  {" "}
-                  <div className="appFont text-xs">
-                    {" "}
-                    Lenspost <br /> Templates{" "}
-                  </div>{" "}
-                </Tab>
-                {/* ))} */}
-              </TabsHeader>
-            </div>
-            <TabsBody
-              animate={{
-                initial: { y: 250 },
-                mount: { y: 0 },
-                unmount: { y: 250 },
-              }}
-            >
-              <TabPanel value={"featStickers"}>
-                <SecNameHeading
-                  hasSeeMore
-                  seeMoreFn={() => store.openSidePanel("Elements")}
-                />
-                <CustomHorizontalScroller type="stickers" />
-              </TabPanel>
-              <TabPanel value={"featBackgrounds"}>
-                <SecNameHeading
-                  hasSeeMore
-                  seeMoreFn={() => store.openSidePanel("Backgrounds2")}
-                />
-                <CompCarousel type="background" />
-              </TabPanel>
-              <TabPanel value={"lpTemplates"}>
-                <div className="h-64 overflow-y-scroll">
-                  {data?.pages[0]?.data?.length > 0 ? (
-                    <>
-                      <div className="columns-2 gap-1">
-                        {data?.pages
-                          .flatMap((item) => item?.data)
-                          .map((item, index) => {
-                            return (
-                              <DesignCard
-                                item={item}
-                                id={item?.id}
-                                referredFrom={item?.referredFrom}
-                                isGated={item?.isGated}
-                                gatedWith={item?.gatedWith}
-                                json={item?.data}
-                                ownerAddress={item?.ownerAddress}
-                                preview={item?.image}
-                                key={index}
-                                modal={modal}
-                                setModal={setModal}
-                              />
-                            );
-                          })}
-                      </div>
-                      <LoadMoreComponent
-                        hasNextPage={hasNextPage}
-                        isFetchingNextPage={isFetchingNextPage}
-                      />
-                    </>
-                  ) : (
-                    <MessageComponent message="No Results" />
-                  )}
+          <div className="h-full overflow-y-scroll">
+            {data?.pages[0]?.data?.length > 0 && (
+              <>
+                <div className="columns-2 gap-1">
+                  {data?.pages
+                    .flatMap((item) => item?.data)
+                    .map((item, index) => {
+                      return (
+                        <DesignCard
+                          item={item}
+                          id={item?.id}
+                          referredFrom={item?.referredFrom}
+                          isGated={item?.isGated}
+                          gatedWith={item?.gatedWith}
+                          json={item?.data}
+                          ownerAddress={item?.ownerAddress}
+                          preview={item?.image}
+                          key={index}
+                          modal={modal}
+                          setModal={setModal}
+                        />
+                      );
+                    })}
                 </div>
-              </TabPanel>
-            </TabsBody>
-          </Tabs>
+                <LoadMoreComponent
+                  hasNextPage={hasNextPage}
+                  isFetchingNextPage={isFetchingNextPage}
+                />
+              </>
+            )}
+          </div>
         </div>
         {/* Tabs for Mobile : End */}
       </div>

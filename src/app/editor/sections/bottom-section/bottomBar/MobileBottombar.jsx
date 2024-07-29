@@ -27,6 +27,7 @@ import { MemePanel } from "../../left-section/meme/MemeSection";
 import { RenderCategories } from "../../left-section/nft/NFTSection";
 import MobileShareSection from "../../right-section/share/MobileShareUI/MobileShareSection";
 import ShareButton from "../../top-section/share/ShareButton";
+import BsX from "@meronex/icons/bs/BsX";
 
 const MobileBottombar = () => {
   const {
@@ -131,11 +132,18 @@ const MobileBottombar = () => {
         <Dialog
           // size={Number(window && window?.innerHeight - 100) || 0}
           size="xxl"
-          className="h-[100%] w-full mb-32"
+          // className="w-full mb-32 h-full"
+          className="min-h-96"
           open={openBottomBar}
           handler={() => setOpenBottomBar(!openBottomBar)}
         >
           <DialogBody className="w-full h-[64%] mb-32">
+            <div className="flex align-middle justify-end p-4">
+              <BsX
+                size={24}
+                onClick={() => setOpenBottomBar(!openBottomBar)}
+              />
+            </div>
             {curOpenedPanel === "mobPanelUpload" && (
               <>
                 <Tabs value="upload">

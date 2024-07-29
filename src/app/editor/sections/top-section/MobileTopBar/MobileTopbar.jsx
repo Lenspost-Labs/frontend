@@ -108,7 +108,7 @@ const MobileTopbar = () => {
                 </Button>
               )}
               {isAuthenticated && (
-                <div onClick={() => setOpenLeftBar(!openLeftBar)} className="">
+                <div onClick={() => setOpenLeftBar(false)} className="">
                   <PointsBtn />
                 </div>
               )}

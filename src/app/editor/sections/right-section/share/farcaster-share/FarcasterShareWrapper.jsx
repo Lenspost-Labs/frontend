@@ -5,7 +5,7 @@ import { FarcasterNormalPost, FarcasterSmartPost } from "./components";
 import { Context } from "../../../../../../providers/context";
 
 const FarcasterShareWrapper = () => {
-  const { farcasterTab, setFarcasterTab } = useContext(Context);
+  const { farcasterTab, setFarcasterTab, isMobile,  } = useContext(Context);
 
   return (
     <>
@@ -25,18 +25,21 @@ const FarcasterShareWrapper = () => {
                   {" "}
                   Normal{" "}
                 </Tab>
-                <Tab
-                  value={"smartPost"}
-                  className="appFont"
-                  onClick={() => setFarcasterTab("smartPost")}
-                >
-                  {" "}
-                  Smart Post{" "}
-                </Tab>
+                {!isMobile && (
+                  <Tab
+                    value={"smartPost"}
+                    className="appFont"
+                    onClick={() => setFarcasterTab("smartPost")}
+                  >
+                    {" "}
+                    Smart Post{" "}
+                  </Tab>
+                )}
               </TabsHeader>
 
               {/* add components */}
               {farcasterTab === "normalPost" && <FarcasterNormalPost />}
+
               {farcasterTab === "smartPost" && <FarcasterSmartPost />}
             </Tabs>
           </>

@@ -555,17 +555,6 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
-  useEffect(() => {
-    console.log("window height", window.innerHeight);
-    console.log("window width", window.innerWidth);
-    if (window.innerWidth < 768) {
-      setIsMobile(true);
-    }
-    if (window.innerWidth > 768) {
-      setIsMobile(false);
-    }
-  }, [window.innerWidth, window.innerHeight]);
-
   return (
     <>
       <div

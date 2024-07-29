@@ -5,17 +5,18 @@
 // `propWidth` - width of the Image
 // --------
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Styles/index.css";
 import CustomImageComponent from "../CustomImageComponent";
 import BsChevronLeft from "@meronex/icons/bs/BsChevronLeft";
 import BsChevronRight from "@meronex/icons/bs/BsChevronRight";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getAssetByQuery, getFeaturedAssets } from "../../../../../services";
+import { Context } from "../../../../../providers/context";
 
 const CustomHorizontalScroller = ({ type, author, campaign }) => {
   const [arrImages, setArrImages] = useState();
-
+  const { isMobile, setOpenLeftBar, openLeftBar } = useContext(Context);
   const {
     data,
     isLoading,
@@ -72,7 +73,15 @@ const CustomHorizontalScroller = ({ type, author, campaign }) => {
                 .slice(0, 10)
                 .map((item, index) => {
                   return (
-                    <div id={index} className="eachDiv">
+                    <div
+                      id={index}
+                      className="eachDiv"
+                      onClick={() => {
+                        if (isMobile) {
+                          setOpenLeftBar(!openLeftBar);
+                        }
+                      }}
+                    >
                       {" "}
                       <CustomImageComponent
                         key={index}

@@ -93,8 +93,9 @@ const MobileTopbar = () => {
       >
         <div className="flex flex-col justify-between h-full overflow-x-auto">
           {/* Top bar for Home page */}
-          <div className="flex justify-between items-center m-4 mx-6">
-            <Logo propHeight={16} />
+          <div className="flex justify-between items-center m-2">
+            <Logo propHeight={30} />
+
             <div className="flex gap-2 items-center">
               {!isAuthenticated && (
                 <Button size="md" color="black" title="EVM" onClick={login}>
@@ -107,9 +108,13 @@ const MobileTopbar = () => {
                 </Button>
               )}
               {isAuthenticated && (
-                <div onClick={() => setOpenLeftBar(false)} className="">
-                  <PointsBtn />
-                </div>
+                <>
+                  <div onClick={() => setOpenLeftBar(false)} className="">
+                    <PointsBtn />
+                  </div>
+
+                  <div className="">{}</div>
+                </>
               )}
               <div
                 onClick={() => setOpenLeftBar(!openLeftBar)}
@@ -133,10 +138,7 @@ const MobileTopbar = () => {
                     </div> */}
                   </div>
 
-                  <div
-                    onClick={() => setOpenLeftBar(!openLeftBar)}
-                    className="flex overflow-x-auto whitespace-nowrap"
-                  >
+                  <div className="flex overflow-x-auto whitespace-nowrap">
                     <ImagesWithArrows imagesArr={AIImagesMob} />
                   </div>
                 </div>
@@ -149,17 +151,11 @@ const MobileTopbar = () => {
                     </div> */}
                   </div>
 
-                  <div
-                    className="flex w-full overflow-x-auto"
-                    onClick={() => setOpenLeftBar(!openLeftBar)}
-                  >
+                  <div className="flex w-full overflow-x-auto">
                     <ImagesWithArrows imagesArr={MemesMob} />
                   </div>
                 </div>
-                <div
-                  className="flex flex-col"
-                  onClick={() => setOpenLeftBar(!openLeftBar)}
-                >
+                <div className="flex flex-col">
                   <div className="flex justify-between items-center">
                     <div className="text-lg p-2 "> Featured backgrounds </div>
                     {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
@@ -178,10 +174,7 @@ const MobileTopbar = () => {
                     </div> */}
                   </div>
 
-                  <div
-                    onClick={() => setOpenLeftBar(!openLeftBar)}
-                    className="flex w-full overflow-x-auto"
-                  >
+                  <div className="flex w-full overflow-x-auto">
                     {/* {stickersMob.map((img, index) => (
                       <CustomImageComponent
                         imgClassName="h-32"

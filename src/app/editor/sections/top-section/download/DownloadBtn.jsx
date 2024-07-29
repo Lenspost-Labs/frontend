@@ -86,6 +86,7 @@ const DownloadBtn = () => {
 
   return (
     <Popover2
+    style={{ zIndex: 999999 }}
       content={
         <Menu className="p-4 border border-gray-300 shadow-2xl">
           <li class="bp4-menu-header">
@@ -253,7 +254,7 @@ const DownloadBtn = () => {
       position={Position.BOTTOM_RIGHT}
     >
       <ExportIcon
-        className="inline-flex w-full justify-center border-none px-4 py-2 text-sm font-medium "
+        className="inline-flex w-full justify-center border-none px-4 py-2 text-sm font-medium cursor-pointer"
         loading={saving}
         onClick={() => {
           setQuality(1);

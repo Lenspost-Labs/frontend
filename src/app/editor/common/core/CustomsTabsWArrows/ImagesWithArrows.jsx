@@ -5,15 +5,17 @@
 // `propWidth` - width of the Image
 // --------
 
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import "./Styles/index.css";
 import CustomImageComponent from "../CustomImageComponent";
 import BsChevronLeft from "@meronex/icons/bs/BsChevronLeft";
 import BsChevronRight from "@meronex/icons/bs/BsChevronRight";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getAssetByQuery } from "../../../../../services";
+import { Context } from "../../../../../providers/context";
 
 const ImagesWithArrows = ({ imagesArr }) => {
+  const { isMobile, setOpenLeftBar, openLeftBar } = useContext(Context);
   const scrollWrapperRef = useRef(null);
 
   const distance = 300;
@@ -51,7 +53,15 @@ const ImagesWithArrows = ({ imagesArr }) => {
           <div className="divsWrapper" id="insiderImg">
             {imagesArr.map((item, index) => {
               return (
-                <div id={index} className="eachDiv">
+                <div
+                  id={index}
+                  className="eachDiv"
+                  onClick={() => {
+                    if (isMobile) {
+                      setOpenLeftBar(!openLeftBar);
+                    }
+                  }}
+                >
                   {" "}
                   <CustomImageComponent
                     imgClassName={"object-cover w-48"}

@@ -41,6 +41,23 @@ const MobileBottombar = () => {
 
   const store = useStore();
 
+  const openPanel = (panelName) => {
+    setOpenBottomBar(true);
+    setCurOpenedPanel(panelName);
+  };
+
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setOpenBottomBar(false);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
   const uploadTabsData = [
     {
       label: "Upload",
@@ -80,11 +97,12 @@ const MobileBottombar = () => {
   return (
     <>
       <div className="bg-[#F8F8F8]">
-        <div className="flex justify-between align-middle mx-6 my-2 z-[10000]">
+        <div className="flex justify-between align-middle mx-6 my-2 z-[999999]">
           <div
             onClick={() => {
-              setCurOpenedPanel("mobPanelUpload");
-              setOpenBottomBar(!openBottomBar);
+              // setOpenBottomBar(!openBottomBar);
+              // setCurOpenedPanel("mobPanelUpload");
+              openPanel("mobPanelUpload");
             }}
             className={`${
               curOpenedPanel === "mobPanelUpload" ? "bg-[#e1f16b]" : ""
@@ -94,8 +112,9 @@ const MobileBottombar = () => {
           </div>
           <div
             onClick={() => {
-              setCurOpenedPanel("mobPanelText");
-              setOpenBottomBar(!openBottomBar);
+              // setCurOpenedPanel("mobPanelText");
+              // setOpenBottomBar(!openBottomBar);
+              openPanel("mobPanelText");
             }}
             className={`${
               curOpenedPanel === "mobPanelText" ? "bg-[#e1f16b]" : ""
@@ -105,8 +124,9 @@ const MobileBottombar = () => {
           </div>
           <div
             onClick={() => {
-              setCurOpenedPanel("mobPanelStickers");
-              setOpenBottomBar(!openBottomBar);
+              // setCurOpenedPanel("mobPanelStickers");
+              // setOpenBottomBar(!openBottomBar);
+              openPanel("mobPanelStickers");
             }}
             className={`${
               curOpenedPanel === "mobPanelStickers" ? "bg-[#e1f16b]" : ""
@@ -116,6 +136,7 @@ const MobileBottombar = () => {
           </div>
           <div
             onClick={() => {
+              setOpenBottomBar(false);
               setCurOpenedPanel("mobPanelShare");
               // setOpenBottomBar(!openBottomBar);
               // setMenu("share");
@@ -129,72 +150,70 @@ const MobileBottombar = () => {
           </div>
         </div>
 
-        <Drawer
-          placement="top"
-          className={`${
-            openBottomBar === false
-              ? "min-h-[calc(0vh)] max-h-[calc(0vh)] overflow-y-auto"
-              : `min-h-[calc(100vh-5rem)] max-h-[calc(100vh-5rem)] overflow-y-auto`
+        {/* Custom Drawer for Bottom Bar - Pure tailwind CSS only */}
+        <div
+          // on escape press
+          className={`fixed ${
+            openBottomBar ? "bottom-20" : "bottom-0"
+          } h-[calc(100vh-5rem)] z-[999] overflow-y-auto left-0 right-0 bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+            openBottomBar ? "translate-y-0" : "translate-y-full"
           }`}
-          open={openBottomBar}
-          onClose={() => setOpenBottomBar(!openBottomBar)}
-          // handler={() => setOpenBottomBar(!openBottomBar)}
         >
-          <>
-            {/* <DialogBody className=""> */}
-            <div className="flex align-middle justify-end p-4 pt-2">
-              <BsX
-                className="cursor-pointer bg-[#f8f8f8] rounded-lg"
-                size={24}
-                onClick={() => setOpenBottomBar(!openBottomBar)}
-              />
-            </div>
-            {curOpenedPanel === "mobPanelUpload" && (
-              <>
-                <Tabs value="upload">
-                  <TabsHeader>
-                    {uploadTabsData.map(({ label, value }) => (
-                      <Tab key={value} value={value}>
-                        {label}
-                      </Tab>
-                    ))}
-                  </TabsHeader>
-                  <TabsBody>
-                    {uploadTabsData.map(({ value, desc }) => (
-                      <TabPanel key={value} value={value}>
-                        {desc}
-                      </TabPanel>
-                    ))}
-                  </TabsBody>
-                </Tabs>
-              </>
-            )}
-            {curOpenedPanel === "mobPanelText" && TextSection.Panel({ store })}
+          <div className="p-4">
+            <>
+              <div className="flex align-middle justify-end p-4 pt-2">
+                <BsX
+                  className="cursor-pointer bg-[#f8f8f8] rounded-lg"
+                  size={24}
+                  onClick={() => setOpenBottomBar(!openBottomBar)}
+                />
+              </div>
+              {curOpenedPanel === "mobPanelUpload" && (
+                <>
+                  <Tabs value="upload">
+                    <TabsHeader>
+                      {uploadTabsData.map(({ label, value }) => (
+                        <Tab key={value} value={value}>
+                          {label}
+                        </Tab>
+                      ))}
+                    </TabsHeader>
+                    <TabsBody>
+                      {uploadTabsData.map(({ value, desc }) => (
+                        <TabPanel key={value} value={value}>
+                          {desc}
+                        </TabPanel>
+                      ))}
+                    </TabsBody>
+                  </Tabs>
+                </>
+              )}
+              {curOpenedPanel === "mobPanelText" &&
+                TextSection.Panel({ store })}
 
-            {curOpenedPanel === "mobPanelStickers" && (
-              <>
-                <Tabs value="stickers">
-                  <TabsHeader>
-                    {stickersTabsData.map(({ label, value }) => (
-                      <Tab key={value} value={value}>
-                        {label}
-                      </Tab>
-                    ))}
-                  </TabsHeader>
-                  <TabsBody>
-                    {stickersTabsData.map(({ value, desc }) => (
-                      <TabPanel key={value} value={value}>
-                        {desc}
-                      </TabPanel>
-                    ))}
-                  </TabsBody>
-                </Tabs>
-              </>
-            )}
-            {/* {curOpenedPanel === "mobPanelShare" && <MobileShareSection />} */}
-            {/* </DialogBody> */}
-          </>{" "}
-        </Drawer>
+              {curOpenedPanel === "mobPanelStickers" && (
+                <>
+                  <Tabs value="stickers">
+                    <TabsHeader>
+                      {stickersTabsData.map(({ label, value }) => (
+                        <Tab key={value} value={value}>
+                          {label}
+                        </Tab>
+                      ))}
+                    </TabsHeader>
+                    <TabsBody>
+                      {stickersTabsData.map(({ value, desc }) => (
+                        <TabPanel key={value} value={value}>
+                          {desc}
+                        </TabPanel>
+                      ))}
+                    </TabsBody>
+                  </Tabs>
+                </>
+              )}
+            </>
+          </div>
+        </div>
       </div>
     </>
   );

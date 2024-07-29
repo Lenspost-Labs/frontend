@@ -28,7 +28,7 @@ import { RenderCategories } from "../../left-section/nft/NFTSection";
 import MobileShareSection from "../../right-section/share/MobileShareUI/MobileShareSection";
 import ShareButton from "../../top-section/share/ShareButton";
 
-const MobileNavbar = () => {
+const MobileBottombar = () => {
   const {
     curOpenedPanel,
     setCurOpenedPanel,
@@ -186,4 +186,4 @@ const MobileNavbar = () => {
   );
 };
 
-export default MobileNavbar;
+export default MobileBottombar;

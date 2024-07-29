@@ -5,7 +5,7 @@ import { DateTimePicker } from "@atlaskit/datetime-picker";
 import { chainLogo, getFromLocalStorage } from "../../../../../utils";
 import { Context } from "../../../../../providers/context/ContextProvider";
 import BsX from "@meronex/icons/bs/BsX";
-import { Textarea, Typography } from "@material-tailwind/react";
+import { Button, Textarea, Typography } from "@material-tailwind/react";
 import logoSolana from "../../../../../assets/logos/logoSolana.png";
 import logoFarcaster from "../../../../../assets/logos/logoFarcaster.jpg";
 import { InputBox } from "../../../common";
@@ -117,6 +117,9 @@ const ShareSection = () => {
 
     if (name === "title") {
       setPostName(value);
+      if (isMobile) {
+        setPostName("Default Title");
+      }
     } else if (name === "description") {
       if (byteLength > maxByteLimit) {
         setCharLimitError("Maximun character limit exceeded");
@@ -154,13 +157,13 @@ const ShareSection = () => {
         <div className="relative mt-0 px-4 pt-1 pb-1 sm:px-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between"></div>
-            <InputBox
+            {/* <InputBox
               label={"Title"}
               name="title"
               autoFocus={true}
               onChange={(e) => handleInputChange(e)}
               value={postName}
-            />
+            /> */}
             <div className="space-x-2">
               <Textarea
                 label="Description"
@@ -254,45 +257,46 @@ const ShareSection = () => {
         </div>
 
         {/* Share - Icons - 18Jun2023 */}
-        <hr />
-        <div className={`relative mt-6 px-4 sm:px-6`}>
-          <p className="text-lg">Share on socials</p>
+        {isMobile && <Button className="mx-6" onClick={() => setMenu("farcasterShare")}>Share on Farcaster 
+          {/* <img src="" alt="" /> */}
+          </Button>}
+        {!isMobile && (
+          <>
+            <hr />
+            <div className={`relative mt-6 px-4 sm:px-6`}>
+              <p className="text-lg">Share on socials</p>
+              <div className="flex ">
+                <>
+                  <div className="flex items-center space-x-12 py-5">
+                    <div onClick={() => setMenu("lensmonetization")}>
+                      {" "}
+                      <img
+                        className="w-10 cursor-pointer"
+                        src="/other-icons/share-section/iconLens.png"
+                        alt="Lens"
+                      />{" "}
+                    </div>
+                  </div>
+                </>
 
-          <div className="flex ">
-            {!isMobile && (
-              <>
-                <div className="flex items-center space-x-12 py-5">
-                  <div onClick={() => setMenu("lensmonetization")}>
+                <div
+                  className={`flex items-center py-5 space-x-12 ${
+                    !isMobile ? "ml-8" : " "
+                  }`}
+                >
+                  <div onClick={() => setMenu("farcasterShare")}>
                     {" "}
                     <img
-                      className="w-10 cursor-pointer"
-                      src="/other-icons/share-section/iconLens.png"
-                      alt="Lens"
+                      className="w-10 cursor-pointer rounded-md"
+                      src={logoFarcaster}
+                      alt="Farcaster"
                     />{" "}
                   </div>
                 </div>
-              </>
-            )}
-            <div
-              className={`flex items-center py-5 space-x-12 ${
-                !isMobile ? "ml-8" : " "
-              }`}
-            >
-              <div onClick={() => setMenu("farcasterShare")}>
-                {" "}
-                <img
-                  className="w-10 cursor-pointer rounded-md"
-                  src={logoFarcaster}
-                  alt="Farcaster"
-                />{" "}
               </div>
             </div>
-          </div>
-        </div>
-        <hr />
+            <hr />
 
-        {!isMobile && (
-          <>
             <hr />
             <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Mint as an NFT on EVM</p>

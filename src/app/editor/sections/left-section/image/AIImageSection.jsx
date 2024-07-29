@@ -65,6 +65,7 @@ const RANDOM_QUERIES2 = [
 const RANDOM_QUERIES3 = ["Mountains", "Hearts", "Robots", "NFTS", "Elon"];
 
 export const CompSearch = () => {
+  const {setOpenLeftBar, openLeftBar, isMobile } = useContext(Context);
   const store = useStore();
   const { points } = useUser();
 
@@ -203,7 +204,13 @@ export const CompSearch = () => {
       {!isLoading && stStatusCode === 200 && (
         <>
           {data?.images.map((val, key) => (
-            <CustomImageComponent key={key} preview={val.url} />
+            <div
+              onClick={() => {
+                isMobile ? setOpenLeftBar(!openLeftBar) : "";
+              }}
+            >
+              <CustomImageComponent key={key} preview={val.url} />
+            </div>
           ))}
         </>
       )}

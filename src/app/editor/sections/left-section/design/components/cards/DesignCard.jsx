@@ -25,6 +25,7 @@ const DesignCard = ({
     preStoredRecipientDataRef,
     designModal,
     setDesignModal,
+    isMobile
   } = useContext(Context);
   const store = useStore();
 
@@ -72,14 +73,16 @@ const DesignCard = ({
         }}
       >
         <Button icon="trash" onClick={onDelete} />
-        <Button
-          className="ml-1"
-          onClick={() => {
-            setDesignModal(true);
-            onOpenTagModal();
-          }}
-          icon="share"
-        />
+        {!isMobile && (
+          <Button
+            className="ml-1"
+            onClick={() => {
+              setDesignModal(true);
+              onOpenTagModal();
+            }}
+            icon="share"
+          />
+        )}
       </div>
     </Card>
   );

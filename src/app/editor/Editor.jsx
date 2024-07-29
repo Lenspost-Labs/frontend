@@ -59,8 +59,9 @@ import {
 } from "../../utils";
 import FcIdea from "@meronex/icons/fc/FcIdea";
 import { TopbarSection } from "./sections/top-section";
-import MobileNavbar from "./sections/bottom-section/bottomBar/MobileNavbar";
+
 import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
+import MobileBottombar from "./sections/bottom-section/bottomBar/MobileBottombar";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -615,7 +616,7 @@ const Editor = () => {
               {isMobile && (
                 <div className="flex flex-col">
                   <SpeedDialX />
-                  <MobileNavbar />
+                  <MobileBottombar />
                 </div>
               )}
 

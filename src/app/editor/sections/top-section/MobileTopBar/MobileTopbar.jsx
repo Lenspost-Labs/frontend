@@ -1,5 +1,5 @@
 import Toolbar from "polotno/toolbar/toolbar";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useStore } from "../../../../../hooks/polotno";
 import EditIconLeft from "../../../../../assets/EditIconsMobile/EditIconLeft";
 import { Context } from "../../../../../providers/context";
@@ -14,6 +14,7 @@ import EditIconAI from "../../../../../assets/EditIconsMobile/EditIconAI";
 import { DesignPanel } from "../../left-section/design/DesignSection";
 import { CompSearch } from "../../left-section/image/AIImageSection";
 import {
+  CompCarousel,
   CustomHorizontalScroller,
   CustomImageComponent,
 } from "../../../common";
@@ -22,6 +23,7 @@ import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 import { useAppAuth } from "../../../../../hooks/app";
 import { EVMLogo } from "../../../../../assets";
 import PointsBtn from "../PointsBtn/PointsBtn";
+import ImagesWithArrows from "../../../common/core/CustomsTabsWArrows/ImagesWithArrows";
 
 const MobileTopbar = () => {
   const store = useStore();
@@ -43,6 +45,11 @@ const MobileTopbar = () => {
     "https://i.imgflip.com/30b1gx.jpg",
     "https://i.imgflip.com/1g8my4.jpg",
     "https://i.imgflip.com/1b42wl.jpg",
+    "https://i.imgflip.com/1b42wl.jpg",
+    "https://i.imgflip.com/1b42wl.jpg",
+    "https://i.imgflip.com/1b42wl.jpg",
+    "https://i.imgflip.com/1b42wl.jpg",
+    "https://i.imgflip.com/1b42wl.jpg",
   ];
 
   const stickersMob = [
@@ -53,9 +60,17 @@ const MobileTopbar = () => {
     "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-252.png",
   ];
 
+  // To open Home on Panel Open
+  useEffect(() => {
+    if (!openLeftBar) {
+      setCurOpenedPanel("");
+    } else {
+      setCurOpenedPanel("mobPanelHome");
+    }
+  }, [openLeftBar]);
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 overflow-x-scroll">
         <div
           onClick={() => setOpenLeftBar(!openLeftBar)}
           className="bg-white p-2 rounded-lg"
@@ -72,9 +87,9 @@ const MobileTopbar = () => {
         onClose={() => setOpenLeftBar(!openLeftBar)}
         className=""
       >
-        <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col justify-between h-full overflow-x-auto">
           {/* Top bar for Home page */}
-          <div className="flex justify-between items-center mx-2 my-1">
+          <div className="flex justify-between items-center m-4 mx-6">
             <Logo propHeight={16} />
             <div className="flex gap-2 items-center">
               {!isAuthenticated && (
@@ -101,60 +116,68 @@ const MobileTopbar = () => {
             </div>
           </div>
           {/* Middle Section */}
-          <div className="h-full overflow-y-auto">
+          <div className="h-full overflow-y-auto overflow-x-auto">
             {/* Categories */}
             {curOpenedPanel === "mobPanelHome" && (
-              <div className="flex flex-col mx-4 gap-4">
+              <div className="flex flex-col mx-4 gap-4 overflow-x-auto">
                 <div className="flex flex-col">
                   <div className="flex justify-between items-center">
-                    <div className="text-lg p-2 "> GEN AI </div>
-                    <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                    <div className="text-lg p-2 "> Gen AI </div>
+                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
                       {" "}
                       <EditIconRightArrow />{" "}
-                    </div>
+                    </div> */}
                   </div>
 
-                  <div className="flex overflow-x-auto">
-                    {AIImagesMob.map((img, index) => (
-                      <CustomImageComponent
-                        imgClassName="object-cover"
-                        preview={img}
-                        key={index}
-                      />
-                    ))}
+                  <div
+                    onClick={() => setOpenLeftBar(!openLeftBar)}
+                    className="flex overflow-x-auto whitespace-nowrap"
+                  >
+                    <ImagesWithArrows imagesArr={AIImagesMob} />
                   </div>
                 </div>
                 <div className="flex flex-col">
                   <div className="flex justify-between items-center">
                     <div className="text-lg p-2 "> Memes </div>
-                    <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
                       {" "}
                       <EditIconRightArrow />{" "}
-                    </div>
+                    </div> */}
                   </div>
 
-                  <div className="flex w-full overflow-x-auto">
-                    {MemesMob.map((img, index) => (
-                      <CustomImageComponent
-                        imgClassName="h-40"
-                        className="h-40"
-                        preview={img}
-                        key={index}
-                      />
-                    ))}
+                  <div
+                    className="flex w-full overflow-x-auto"
+                    onClick={() => setOpenLeftBar(!openLeftBar)}
+                  >
+                    <ImagesWithArrows imagesArr={MemesMob} />
                   </div>
                 </div>
-
+                <div
+                  className="flex flex-col"
+                  onClick={() => setOpenLeftBar(!openLeftBar)}
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg p-2 "> Featured backgrounds </div>
+                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                      {" "}
+                      <EditIconRightArrow />{" "}
+                    </div> */}
+                  </div>
+                  <CompCarousel type="background" />
+                </div>
                 <div className="flex flex-col">
                   <div className="flex justify-between items-center">
                     <div className="text-lg p-2 "> Stickers </div>
-                    <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
                       {" "}
                       <EditIconRightArrow />{" "}
-                    </div>
+                    </div> */}
                   </div>
 
-                  <div className="flex w-full overflow-x-auto">
+                  <div
+                    onClick={() => setOpenLeftBar(!openLeftBar)}
+                    className="flex w-full overflow-x-auto"
+                  >
                     {/* {stickersMob.map((img, index) => (
                       <CustomImageComponent
                         imgClassName="h-32"
@@ -180,7 +203,7 @@ const MobileTopbar = () => {
                 <CompSearch />
               </div>
             )}
-            {curOpenedPanel === "mobPanelMyFiles" && <DesignPanel isMobile />}
+            {curOpenedPanel === "mobPanelMyFiles" && <div className="mx-4 mt-2"><DesignPanel isMobile /></div> }
           </div>
           {/* Bottom bar for Home page  */}
           <div className="">

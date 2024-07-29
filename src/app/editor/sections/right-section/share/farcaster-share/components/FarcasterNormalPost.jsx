@@ -73,14 +73,16 @@ import { XCircleIcon } from "@heroicons/react/24/outline";
 import { useBalance } from "wagmi";
 import { base, baseSepolia } from "viem/chains";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const FarcasterNormalPost = () => {
   const { resetState } = useReset();
   const { address } = useAccount();
   const { chain } = useAccount();
-  const { userLOA } = useLocalStorage();
+  const { userLOA, actionType } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
+  const { login } = usePrivyAuth();
 
   // farcaster states
   const [isShareLoading, setIsShareLoading] = useState(false);
@@ -493,7 +495,27 @@ const FarcasterNormalPost = () => {
 
   // share post on lens
   const sharePost = async (platform) => {
+    console.log("sahing start");
     setIsShareLoading(true);
+
+    if (isMobile && actionType === "composer") {
+      console.log("on mobile");
+      window.parent.postMessage(
+        {
+          type: "createCast",
+          data: {
+            cast: {
+              text: postDescription,
+              embeds: [FRAME_URL + "/frame/" + frameId],
+            },
+          },
+        },
+        "*"
+      );
+      setIsShareLoading(false);
+      console.log("shared");
+      return;
+    }
 
     const canvasData = {
       id: contextCanvasIdRef.current,
@@ -1838,14 +1860,15 @@ const FarcasterNormalPost = () => {
       </div>
 
       <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
-        {!getEVMAuth ? (
-          <EVMWallets title="Login with EVM" className="mx-2" />
+        {!getEVMAuth && !isMobile ? (
+          <EVMWallets title="Login with EVM" className="mx-2" login={login} />
         ) : !isFarcasterAuth ? (
           <FarcasterAuth />
         ) : farcasterStates?.frameData?.isFrame &&
           !farcasterStates?.frameData?.isCustomCurrMint &&
           !farcasterStates?.frameData?.isCreatorSponsored &&
-          chain?.id != chainId ? (
+          chain?.id != chainId &&
+          !isMobile ? (
           <div className="mx-2 outline-none">
             <Button
               className="w-full outline-none flex justify-center items-center gap-2"

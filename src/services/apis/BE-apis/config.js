@@ -26,12 +26,13 @@ api.interceptors.request.use(
   (config) => {
     const jwtToken =
       getFromLocalStorage(LOCAL_STORAGE.userAuthToken) ||
-      getFromLocalStorage(LOCAL_STORAGE.privy);
+      getFromLocalStorage(LOCAL_STORAGE.privy) ||
+      getFromLocalStorage(LOCAL_STORAGE.FcComposerAuth);
 
     // Exclude the login API from adding the default header
 
     // Add your default header here
-    config.headers["Authorization"] = `Bearer ${jwtToken}`;
+    config.headers["Authorization"] = `${jwtToken}`;
     config.headers["Content-Type"] = "application/json";
     config.headers["Access-Control-Allow-Origin"] = "*";
     config.headers["Access-Control-Allow-Methods"] = "*";

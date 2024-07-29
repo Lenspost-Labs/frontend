@@ -12,6 +12,7 @@ import {
 } from "@material-tailwind/react";
 import { EVMWallets, SolanaWallets } from "./wallets";
 import { Context } from "../../../../../providers/context";
+import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 
 const LoginModal = ({ login }) => {
   const { openedLoginModal, setOpenedLoginModal } = useContext(Context);

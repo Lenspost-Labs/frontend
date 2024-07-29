@@ -30,6 +30,8 @@ const useLocalStorage = () => {
   const userId = getFromLocalStorage(LOCAL_STORAGE.userId);
   const isWatermark = getFromLocalStorage(LOCAL_STORAGE.isWatermark);
   const userLOA = getFromLocalStorage(LOCAL_STORAGE.userLOA);
+  const fcComposerAuth = getFromLocalStorage(LOCAL_STORAGE.FcComposerAuth);
+  const actionType = getFromLocalStorage(LOCAL_STORAGE.actionType);
 
   return {
     authToken,
@@ -47,6 +49,8 @@ const useLocalStorage = () => {
     userId,
     isWatermark,
     userLOA,
+    fcComposerAuth,
+    actionType,
   };
 };
 

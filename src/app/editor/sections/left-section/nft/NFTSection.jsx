@@ -49,9 +49,12 @@ import {
 } from "@material-tailwind/react";
 import { LOCAL_STORAGE } from "../../../../../data";
 import { EVMWallets, SolanaWallets } from "../../top-section/auth/wallets";
+import { usePrivy } from "@privy-io/react-auth";
+import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 
 const NFTPanel = () => {
   const [tab, setTab] = useState("wallet");
+  const { login } = usePrivyAuth();
   const { isConnected } = useAccount();
   return (
     <div className="h-full flex flex-col">
@@ -103,7 +106,11 @@ const NFTSection = {
 export default NFTSection;
 
 // catogoery component (child component of LenspostNFT component)
-export const RenderCategories = ({ contractAddressRef, setActiveCat, searchId }) => {
+export const RenderCategories = ({
+  contractAddressRef,
+  setActiveCat,
+  searchId,
+}) => {
   const { isAuthenticated } = useAppAuth();
   const { address, isDisconnected } = useAccount();
   const [query, setQuery] = useState("");
@@ -644,7 +651,7 @@ const WalletNFT = () => {
                       Or connect the EVM Wallet to see your NFTs
                     </Typography>
                     <div className=" flex justify-center">
-                      <EVMWallets title="EVM" />
+                      <EVMWallets title="EVM" login={login} />
                     </div>
                   </>
                 ) : null}

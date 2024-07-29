@@ -13,7 +13,7 @@ const ContextProvider = ({ children }) => {
   const [text, setText] = useState("");
   const contextCanvasIdRef = useRef(null);
   const canvasBase64Ref = useRef([]);
-  const [postName, setPostName] = useState("");
+  const [postName, setPostName] = useState("Default name");
   const [postDescription, setPostDescription] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -496,7 +496,7 @@ const ContextProvider = ({ children }) => {
   // console.log("ContextProvider", zoraErc721StatesError);
 
   const [isMobile, setIsMobile] = useState(false);
-  const [ curOpenedPanel, setCurOpenedPanel ] = useState("");
+  const [curOpenedPanel, setCurOpenedPanel] = useState("");
   const [openLeftBar, setOpenLeftBar] = useState(false);
   const [openBottomBar, setOpenBottomBar] = useState(false);
 
@@ -672,10 +672,10 @@ const ContextProvider = ({ children }) => {
         session,
         setSession,
 
-        // Mobile UI 
+        // Mobile UI
         isMobile,
         setIsMobile,
-        // for mobile Tabs : 
+        // for mobile Tabs :
         curOpenedPanel,
         setCurOpenedPanel,
         openLeftBar,

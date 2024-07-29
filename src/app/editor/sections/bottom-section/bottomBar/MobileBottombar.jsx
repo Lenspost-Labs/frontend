@@ -24,7 +24,7 @@ import { CompSearch } from "../../left-section/image/AIImageSection";
 import { LenspostTemplates } from "../../left-section/template/TemplateSection";
 import { StickerPanel } from "../../left-section/sticker/StickerSection";
 import { MemePanel } from "../../left-section/meme/MemeSection";
-import { RenderCategories } from "../../left-section/nft/NFTSection";
+import { LenspostNFT, RenderCategories } from "../../left-section/nft/NFTSection";
 import MobileShareSection from "../../right-section/share/MobileShareUI/MobileShareSection";
 import ShareButton from "../../top-section/share/ShareButton";
 import BsX from "@meronex/icons/bs/BsX";
@@ -44,6 +44,10 @@ const MobileBottombar = () => {
   const openPanel = (panelName) => {
     setOpenBottomBar(true);
     setCurOpenedPanel(panelName);
+    if (panelName === curOpenedPanel) {
+      setOpenBottomBar(false);
+      setCurOpenedPanel(null);
+    }
   };
 
   useEffect(() => {
@@ -90,7 +94,7 @@ const MobileBottombar = () => {
     {
       label: "CC0",
       value: "cc0",
-      desc: <RenderCategories />,
+      desc: <LenspostNFT />,
     },
   ];
 
@@ -154,8 +158,8 @@ const MobileBottombar = () => {
         <div
           // on escape press
           className={`fixed ${
-            openBottomBar ? "bottom-20" : "bottom-0"
-          } h-[calc(100vh-5rem)] z-[999] overflow-y-auto left-0 right-0 bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+            openBottomBar ? "bottom-16" : "bottom-0"
+          } h-[calc(100vh-5rem)] z-[999] overflow-y-auto left-0 right-0 bg-white transition-transform duration-300 ease-in-out ${
             openBottomBar ? "translate-y-0" : "translate-y-full"
           }`}
         >

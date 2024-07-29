@@ -220,7 +220,7 @@ const UserCard = ({ username }) => {
                   {!loadingInvite && inviteCodesArr?.length > 0 ? (
                     <div
                       className="flex align-middle "
-                      onClick={() => handleCopy(`Invite Code`, inviteCodesArr)}
+                      onClick={() => handleCopy(`Invite Code`, inviteCodesArr[0])}
                     >
                       <div className="">{inviteCodesArr[0]}</div>
                       <BiCopy className="ml-1 mt-1 cursor-pointer" size={12} />

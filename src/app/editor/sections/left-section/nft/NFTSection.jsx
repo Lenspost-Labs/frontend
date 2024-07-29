@@ -360,7 +360,7 @@ const RenderSearchedNFTs = ({
   );
 };
 
-const LenspostNFT = () => {
+export const LenspostNFT = () => {
   const { isAuthenticated } = useAppAuth();
   const [activeCat, setActiveCat] = useState("");
   const { address, isDisconnected, isConnected } = useAccount();

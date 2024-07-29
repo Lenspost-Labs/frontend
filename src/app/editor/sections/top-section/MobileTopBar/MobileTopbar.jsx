@@ -25,13 +25,22 @@ import { EVMLogo } from "../../../../../assets";
 import PointsBtn from "../PointsBtn/PointsBtn";
 import ImagesWithArrows from "../../../common/core/CustomsTabsWArrows/ImagesWithArrows";
 import DownloadBtn from "../download/DownloadBtn";
+import { useUser } from "../../../../../hooks/user";
 
 const MobileTopbar = () => {
   const store = useStore();
-  const { openLeftBar, setOpenLeftBar, curOpenedPanel, setCurOpenedPanel } =
-    useContext(Context);
+  const {
+    openLeftBar,
+    setOpenLeftBar,
+    curOpenedPanel,
+    setCurOpenedPanel,
+    setIsProfileOpen,
+    isProfileOpen,
+    setMenu,
+  } = useContext(Context);
   const { login } = usePrivyAuth();
   const { isAuthenticated } = useAppAuth();
+  const { points } = useUser();
 
   const AIImagesMob = [
     "https://fal.media/files/monkey/cVoNvipRF_fUCUKcl7R-e.jpeg",
@@ -93,7 +102,7 @@ const MobileTopbar = () => {
       >
         <div className="flex flex-col justify-between h-full overflow-x-auto">
           {/* Top bar for Home page */}
-          <div className="flex justify-between items-center m-2">
+          <div className="flex justify-between items-center m-2 border-b-2 pb-4 rounded-xl shadow-sm">
             <Logo propHeight={30} />
 
             <div className="flex gap-2 items-center">
@@ -109,11 +118,25 @@ const MobileTopbar = () => {
               )}
               {isAuthenticated && (
                 <>
-                  <div onClick={() => setOpenLeftBar(false)} className="">
+                  <div className="flex gap-2">
                     <PointsBtn />
-                  </div>
 
-                  <div className="">{}</div>
+                    <div
+                      onClick={() => {
+                        setMenu("profile");
+                        setIsProfileOpen(!isProfileOpen);
+                        setOpenLeftBar(false);
+                      }}
+                      className="cursor-pointer flex gap-1 items-center bg-[#edecec] px-2 rounded-md my-2"
+                    >
+                      <div className="text-2xl">{points} </div>
+                      <img
+                        className="h-5 mb-1"
+                        src="/public/svgs/coin.svg"
+                        alt=""
+                      />
+                    </div>
+                  </div>
                 </>
               )}
               <div
@@ -221,7 +244,7 @@ const MobileTopbar = () => {
                 }  p-2 rounded-full -mb-4 shadow-xl ease-in-out duration-300`}
               >
                 {" "}
-                <EditIconAI />{" "}
+                <EditIconAI needAnimation={true} />
               </div>
             </div>
 

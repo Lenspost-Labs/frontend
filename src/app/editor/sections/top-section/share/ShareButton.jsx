@@ -15,7 +15,8 @@ import EditIconShare from "../../../../../assets/EditIconsMobile/EditIconShare";
 const ShareButton = () => {
   const [transitionRtoL, setTransitionRtoL] = useState(false);
 
-  const { menu, setMenu, isShareOpen, setIsShareOpen, isMobile } = useContext(Context);
+  const { menu, setMenu, isShareOpen, setIsShareOpen, isMobile } =
+    useContext(Context);
 
   // const [isShareOpen, setIsShareOpen] = useState(false);
 
@@ -27,18 +28,30 @@ const ShareButton = () => {
 
   return (
     <>
-      <button
-        onClick={() => {
-          // setIsShareOpen(!isShareOpen);
-          setIsShareOpen(true);
-          setMenu("share");
-        }}
-        className="outline-none"
-      >
-        {!isMobile && <ShareIcon />}
-        {isMobile && <EditIconShare />}
-      </button>
+      {!isMobile && (
+        <button
+          onClick={() => {
+            // setIsShareOpen(!isShareOpen);
+            setIsShareOpen(true);
+            setMenu("share");
+          }}
+          className="outline-none"
+        >
+          <ShareIcon />
+        </button>
+      )}
 
+      {isMobile && (
+        <div
+          onClick={() => {
+            setIsShareOpen(true);
+            setMenu("share");
+          }}
+          className="flex items-center"
+        >
+          <EditIconShare />
+        </div>
+      )}
       <Drawer
         transitionDuration={200}
         isOpen={isShareOpen}

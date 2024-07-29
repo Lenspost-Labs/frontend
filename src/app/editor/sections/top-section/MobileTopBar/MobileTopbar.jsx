@@ -46,11 +46,10 @@ const MobileTopbar = () => {
     "https://i.imgflip.com/30b1gx.jpg",
     "https://i.imgflip.com/1g8my4.jpg",
     "https://i.imgflip.com/1b42wl.jpg",
-    "https://i.imgflip.com/1b42wl.jpg",
-    "https://i.imgflip.com/1b42wl.jpg",
-    "https://i.imgflip.com/1b42wl.jpg",
-    "https://i.imgflip.com/1b42wl.jpg",
-    "https://i.imgflip.com/1b42wl.jpg",
+    "https://i.imgflip.com/28j0te.jpg",
+    "https://i.imgflip.com/9ehk.jpg",
+    "https://i.imgflip.com/2ybua0.png",
+    "https://i.imgflip.com/1bhk.jpg",
   ];
 
   const stickersMob = [

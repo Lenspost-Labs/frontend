@@ -80,7 +80,7 @@ const MobileBottombar = () => {
   return (
     <>
       <div className="bg-[#F8F8F8]">
-        <div className="flex justify-between align-middle mx-6 my-2">
+        <div className="flex justify-between align-middle mx-6 my-2 z-[10000]">
           <div
             onClick={() => {
               setCurOpenedPanel("mobPanelUpload");
@@ -123,23 +123,28 @@ const MobileBottombar = () => {
             }}
             className={`${
               curOpenedPanel === "mobPanelShare" ? "bg-[#e1f16b]" : ""
-            } rounded-lg`}
+            } p-1 rounded-lg`}
           >
             <ShareButton />
           </div>
         </div>
 
-        <Dialog
-          // size={Number(window && window?.innerHeight - 100) || 0}
-          size="xxl"
-          // className="w-full mb-32 h-full"
-          className="min-h-96"
+        <Drawer
+          placement="top"
+          className={`${
+            openBottomBar === false
+              ? "min-h-[calc(0vh)] max-h-[calc(0vh)] overflow-y-auto"
+              : `min-h-[calc(100vh-5rem)] max-h-[calc(100vh-5rem)] overflow-y-auto`
+          }`}
           open={openBottomBar}
-          handler={() => setOpenBottomBar(!openBottomBar)}
+          onClose={() => setOpenBottomBar(!openBottomBar)}
+          // handler={() => setOpenBottomBar(!openBottomBar)}
         >
-          <DialogBody className="w-full h-[64%] mb-32">
-            <div className="flex align-middle justify-end p-4">
+          <>
+            {/* <DialogBody className=""> */}
+            <div className="flex align-middle justify-end p-4 pt-2">
               <BsX
+                className="cursor-pointer bg-[#f8f8f8] rounded-lg"
                 size={24}
                 onClick={() => setOpenBottomBar(!openBottomBar)}
               />
@@ -187,8 +192,9 @@ const MobileBottombar = () => {
               </>
             )}
             {/* {curOpenedPanel === "mobPanelShare" && <MobileShareSection />} */}
-          </DialogBody>
-        </Dialog>
+            {/* </DialogBody> */}
+          </>{" "}
+        </Drawer>
       </div>
     </>
   );

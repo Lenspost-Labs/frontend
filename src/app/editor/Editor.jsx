@@ -172,33 +172,17 @@ const Editor = () => {
   // 03June2023
 
   // check for Farcaster auth
-  const { data } = useQuery({
+  const { data: fcLoginData } = useQuery({
     queryKey: ["farUserDetails"],
     queryFn: getFarUserDetails,
-    onSuccess: (res) => {
-      saveToLocalStorage(LOCAL_STORAGE.farcasterAuth, res?.message);
-      setFarcasterStates({
-        ...farcasterStates,
-        isFarcasterAuth: res?.message,
-      });
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
     enabled: isAuthenticated ? true : false,
     retry: 1,
   });
 
   //  check for Lens dispatcher
-  const { data: lensDispatcher } = useQuery({
+  const { data: lensDispatcherData } = useQuery({
     queryKey: ["lensDispatcher"],
     queryFn: checkDispatcher,
-    onSuccess: (res) => {
-      saveToLocalStorage(LOCAL_STORAGE.dispatcher, res?.message);
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
     enabled: isAuthenticated ? true : false,
     retry: 1,
   });
@@ -548,6 +532,18 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
+
+  useEffect(() => {
+    if (fcLoginData) {
+      saveToLocalStorage(LOCAL_STORAGE.farcasterAuth, fcLoginData?.message);
+    }
+
+    console.log({ checkLens: lensDispatcherData ? true : false });
+    if (lensDispatcherData) {
+      console.log({ lensDispatcherData });
+      saveToLocalStorage(LOCAL_STORAGE.dispatcher, lensDispatcherData?.status);
+    }
+  }, [isAuthenticated]);
 
   return (
     <>

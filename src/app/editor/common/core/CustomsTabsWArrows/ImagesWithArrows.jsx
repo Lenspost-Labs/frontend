@@ -6,7 +6,7 @@
 // --------
 
 import React, { useContext, useRef, useState } from "react";
-import "./Styles/index.css";
+import "./styles/index.css";
 import CustomImageComponent from "../CustomImageComponent";
 import BsChevronLeft from "@meronex/icons/bs/BsChevronLeft";
 import BsChevronRight from "@meronex/icons/bs/BsChevronRight";

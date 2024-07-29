@@ -10,6 +10,7 @@ import logoSolana from "../../../../../assets/logos/logoSolana.png";
 import logoFarcaster from "../../../../../assets/logos/logoFarcaster.jpg";
 import { InputBox } from "../../../common";
 import { X_Logo } from "../../../../../assets";
+import DownloadBtn from "../../top-section/download/DownloadBtn";
 
 const ShareSection = () => {
   const { isConnected } = useAccount();
@@ -257,9 +258,12 @@ const ShareSection = () => {
         </div>
 
         {/* Share - Icons - 18Jun2023 */}
-        {isMobile && <Button className="mx-6" onClick={() => setMenu("farcasterShare")}>Share on Farcaster 
-          {/* <img src="" alt="" /> */}
-          </Button>}
+        {isMobile && (
+          <Button className="mx-6" onClick={() => setMenu("farcasterShare")}>
+            Share on Farcaster
+            {/* <img src="" alt="" /> */}
+          </Button>
+        )}
         {!isMobile && (
           <>
             <hr />

@@ -24,6 +24,7 @@ import { useAppAuth } from "../../../../../hooks/app";
 import { EVMLogo } from "../../../../../assets";
 import PointsBtn from "../PointsBtn/PointsBtn";
 import ImagesWithArrows from "../../../common/core/CustomsTabsWArrows/ImagesWithArrows";
+import DownloadBtn from "../download/DownloadBtn";
 
 const MobileTopbar = () => {
   const store = useStore();
@@ -78,6 +79,10 @@ const MobileTopbar = () => {
           <EditIconLeft />
         </div>
         <Toolbar store={store} />
+
+        <div className="bg-white rounded-lg p-3">
+          <DownloadBtn />
+        </div>
       </div>
 
       <Drawer
@@ -203,7 +208,11 @@ const MobileTopbar = () => {
                 <CompSearch />
               </div>
             )}
-            {curOpenedPanel === "mobPanelMyFiles" && <div className="mx-4 mt-2"><DesignPanel isMobile /></div> }
+            {curOpenedPanel === "mobPanelMyFiles" && (
+              <div className="mx-4 mt-2">
+                <DesignPanel isMobile />
+              </div>
+            )}
           </div>
           {/* Bottom bar for Home page  */}
           <div className="">

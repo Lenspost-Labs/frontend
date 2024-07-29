@@ -131,7 +131,7 @@ const MobileBottombar = () => {
         <Dialog
           // size={Number(window && window?.innerHeight - 100) || 0}
           size="xxl"
-          className="h-[100%] w-full"
+          className="h-[100%] w-full mb-32"
           open={openBottomBar}
           handler={() => setOpenBottomBar(!openBottomBar)}
         >

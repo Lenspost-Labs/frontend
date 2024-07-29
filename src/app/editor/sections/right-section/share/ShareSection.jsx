@@ -29,6 +29,8 @@ const ShareSection = () => {
 
     isShareOpen,
     setIsShareOpen,
+
+    isMobile,
   } = useContext(Context);
   const getTwitterAuth = getFromLocalStorage("twitterAuth");
   const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false);
@@ -255,19 +257,27 @@ const ShareSection = () => {
         <hr />
         <div className={`relative mt-6 px-4 sm:px-6`}>
           <p className="text-lg">Share on socials</p>
-          <div className="flex ">
-            <div className="flex items-center space-x-12 py-5">
-              <div onClick={() => setMenu("lensmonetization")}>
-                {" "}
-                <img
-                  className="w-10 cursor-pointer"
-                  src="/other-icons/share-section/iconLens.png"
-                  alt="Lens"
-                />{" "}
-              </div>
-            </div>
 
-            <div className="flex items-center space-x-12 py-5 ml-8">
+          <div className="flex ">
+            {!isMobile && (
+              <>
+                <div className="flex items-center space-x-12 py-5">
+                  <div onClick={() => setMenu("lensmonetization")}>
+                    {" "}
+                    <img
+                      className="w-10 cursor-pointer"
+                      src="/other-icons/share-section/iconLens.png"
+                      alt="Lens"
+                    />{" "}
+                  </div>
+                </div>
+              </>
+            )}
+            <div
+              className={`flex items-center py-5 space-x-12 ${
+                !isMobile ? "ml-8" : " "
+              }`}
+            >
               <div onClick={() => setMenu("farcasterShare")}>
                 {" "}
                 <img
@@ -281,47 +291,53 @@ const ShareSection = () => {
         </div>
         <hr />
 
-        <hr />
-        <div className={`relative mt-6 px-4 sm:px-6`}>
-          <p className="text-lg">Mint as an NFT on EVM</p>
-          <div className="flex flex-wrap items-center gap-10 my-3">
-            {filterChains().map((item) => {
-              return (
+        {!isMobile && (
+          <>
+            <hr />
+            <div className={`relative mt-6 px-4 sm:px-6`}>
+              <p className="text-lg">Mint as an NFT on EVM</p>
+              <div className="flex flex-wrap items-center gap-10 my-3">
+                {filterChains().map((item) => {
+                  return (
+                    <div
+                      key={item?.id}
+                      className="cursor-pointer flex flex-col items-center"
+                      onClick={() => setMenu(item?.id)}
+                    >
+                      {" "}
+                      <img
+                        className="w-10 h-10"
+                        src={chainLogo(item?.id)}
+                        alt={item?.name}
+                      />{" "}
+                      <Typography className="text-md font-semibold">
+                        {item?.name}
+                      </Typography>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <hr />
+
+            <div className={`relative mt-6 px-4 sm:px-6`}>
+              <p className="text-lg">Mint as an NFT on Solana</p>
+              <div className="flex flex-wrap items-center gap-10 my-3">
                 <div
-                  key={item?.id}
                   className="cursor-pointer flex flex-col items-center"
-                  onClick={() => setMenu(item?.id)}
+                  onClick={() => setMenu("solanaMint")}
                 >
                   {" "}
-                  <img
-                    className="w-10 h-10"
-                    src={chainLogo(item?.id)}
-                    alt={item?.name}
-                  />{" "}
+                  <img className="w-10" src={logoSolana} alt="Solana" />{" "}
                   <Typography className="text-md font-semibold">
-                    {item?.name}
+                    Solana
                   </Typography>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-        <hr />
-
-        <div className={`relative mt-6 px-4 sm:px-6`}>
-          <p className="text-lg">Mint as an NFT on Solana</p>
-          <div className="flex flex-wrap items-center gap-10 my-3">
-            <div
-              className="cursor-pointer flex flex-col items-center"
-              onClick={() => setMenu("solanaMint")}
-            >
-              {" "}
-              <img className="w-10" src={logoSolana} alt="Solana" />{" "}
-              <Typography className="text-md font-semibold">Solana</Typography>
+              </div>
             </div>
-          </div>
-        </div>
-        <hr />
+            <hr />
+          </>
+        )}
       </div>
     </>
   );

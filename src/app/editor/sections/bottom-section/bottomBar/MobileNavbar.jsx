@@ -26,10 +26,17 @@ import { StickerPanel } from "../../left-section/sticker/StickerSection";
 import { MemePanel } from "../../left-section/meme/MemeSection";
 import { RenderCategories } from "../../left-section/nft/NFTSection";
 import MobileShareSection from "../../right-section/share/MobileShareUI/MobileShareSection";
+import ShareButton from "../../top-section/share/ShareButton";
 
 const MobileNavbar = () => {
-  const { curOpenedPanel, setCurOpenedPanel, openBottomBar, setOpenBottomBar } =
-    useContext(Context);
+  const {
+    curOpenedPanel,
+    setCurOpenedPanel,
+    openBottomBar,
+    setOpenBottomBar,
+    setMenu,
+    setIsShareOpen,
+  } = useContext(Context);
 
   const store = useStore();
 
@@ -109,13 +116,15 @@ const MobileNavbar = () => {
           <div
             onClick={() => {
               setCurOpenedPanel("mobPanelShare");
-              setOpenBottomBar(!openBottomBar);
+              // setOpenBottomBar(!openBottomBar);
+              // setMenu("share");
+              // setIsShareOpen(true);
             }}
             className={`${
               curOpenedPanel === "mobPanelShare" ? "bg-[#e1f16b]" : ""
-            } p-1 rounded-lg`}
+            } rounded-lg`}
           >
-            <EditIconShare />
+            <ShareButton />
           </div>
         </div>
 
@@ -169,7 +178,7 @@ const MobileNavbar = () => {
                 </Tabs>
               </>
             )}
-            {curOpenedPanel === "mobPanelShare" && <MobileShareSection />}
+            {/* {curOpenedPanel === "mobPanelShare" && <MobileShareSection />} */}
           </DialogBody>
         </Dialog>
       </div>

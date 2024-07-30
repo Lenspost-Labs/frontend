@@ -53,6 +53,7 @@ import {
   getOrCreateWallet,
   mintToXchain,
   postFrame,
+  uploadAsset,
 } from "../../../../../../../services/apis/BE-apis";
 import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
 import Topup from "./Topup";
@@ -124,6 +125,7 @@ const FarcasterNormalPost = () => {
     splitError,
     setSplitError,
     parentRecipientListRef,
+    fastPreview,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
 
@@ -166,6 +168,11 @@ const FarcasterNormalPost = () => {
   const { mutateAsync: storeZoraLinkMutation } = useMutation({
     mutationKey: "storeZoraLink",
     mutationFn: mintToXchain,
+  });
+
+  const { mutate: uploadAssetFn, data: uploadAssetData } = useMutation({
+    mutationKey: "uploadAssets",
+    mutationFn: uploadAsset,
   });
 
   // upload to IPFS Mutation
@@ -499,6 +506,12 @@ const FarcasterNormalPost = () => {
     setIsShareLoading(true);
 
     if (isMobile && actionType === "composer") {
+      uploadAssetFn(fastPreview[0]);
+      console.log("upload", uploadAssetData);
+
+      const embeds = farcasterStates?.frameData?.isFrame
+        ? FRAME_URL + "/frame/" + frameId
+        : uploadAssetFn(fastPreview[0]);
       console.log("on mobile");
       window.parent.postMessage(
         {
@@ -506,7 +519,7 @@ const FarcasterNormalPost = () => {
           data: {
             cast: {
               text: postDescription,
-              embeds: [FRAME_URL + "/frame/" + frameId],
+              embeds: ["https://frames.poster.fun/frame/764"],
             },
           },
         },
@@ -561,7 +574,7 @@ const FarcasterNormalPost = () => {
     }
 
     // check if name is provided
-    if (!postName) {
+    if (!isMobile && !postName) {
       toast.error("Please provide a name");
       return;
     }
@@ -1860,15 +1873,16 @@ const FarcasterNormalPost = () => {
       </div>
 
       <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
-        {!getEVMAuth && !isMobile ? (
+        {!getEVMAuth && !isMobile && actionType === "composer" ? (
           <EVMWallets title="Login with EVM" className="mx-2" login={login} />
-        ) : !isFarcasterAuth ? (
+        ) : !isFarcasterAuth && !isMobile && actionType === "composer" ? (
           <FarcasterAuth />
         ) : farcasterStates?.frameData?.isFrame &&
           !farcasterStates?.frameData?.isCustomCurrMint &&
           !farcasterStates?.frameData?.isCreatorSponsored &&
           chain?.id != chainId &&
-          !isMobile ? (
+          !isMobile &&
+          actionType === "composer" ? (
           <div className="mx-2 outline-none">
             <Button
               className="w-full outline-none flex justify-center items-center gap-2"

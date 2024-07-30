@@ -14,3 +14,11 @@ export const searchChannelFar = async (channel) => {
 
   return result.data;
 };
+
+export const uploadAsset = async (image) => {
+  const result = await api.post(`${API}/util/upload-image`, {
+    image,
+  });
+
+  return result.data;
+};

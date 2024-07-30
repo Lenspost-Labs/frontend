@@ -75,6 +75,7 @@ import { useBalance } from "wagmi";
 import { base, baseSepolia } from "viem/chains";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
+import { usePrivy } from "@privy-io/react-auth";
 
 const FarcasterNormalPost = () => {
   const { resetState } = useReset();
@@ -83,6 +84,7 @@ const FarcasterNormalPost = () => {
   const { userLOA, actionType } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
+  const { login: privyLogin, authenticated } = usePrivy();
   const { login } = usePrivyAuth();
 
   // farcaster states
@@ -170,7 +172,7 @@ const FarcasterNormalPost = () => {
     mutationFn: mintToXchain,
   });
 
-  const { mutate: uploadAssetFn, data: uploadAssetData } = useMutation({
+  const { mutateAsync: uploadAssetMutate } = useMutation({
     mutationKey: "uploadAssets",
     mutationFn: uploadAsset,
   });
@@ -502,24 +504,26 @@ const FarcasterNormalPost = () => {
 
   // share post on lens
   const sharePost = async (platform) => {
-    console.log("sahing start");
     setIsShareLoading(true);
 
     if (isMobile && actionType === "composer") {
-      uploadAssetFn(fastPreview[0]);
-      console.log("upload", uploadAssetData);
+      const imageUrl = await uploadAssetMutate(
+        canvasBase64Ref.current?.[0]
+      ).then((res) => {
+        return res?.s3link;
+      });
 
       const embeds = farcasterStates?.frameData?.isFrame
         ? FRAME_URL + "/frame/" + frameId
-        : uploadAssetFn(fastPreview[0]);
-      console.log("on mobile");
+        : imageUrl;
+      console.log(embeds);
       window.parent.postMessage(
         {
           type: "createCast",
           data: {
             cast: {
               text: postDescription,
-              embeds: ["https://frames.poster.fun/frame/764"],
+              embeds: [embeds],
             },
           },
         },
@@ -574,7 +578,7 @@ const FarcasterNormalPost = () => {
     }
 
     // check if name is provided
-    if (!isMobile && !postName) {
+    if (!postName) {
       toast.error("Please provide a name");
       return;
     }
@@ -1873,9 +1877,9 @@ const FarcasterNormalPost = () => {
       </div>
 
       <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
-        {!getEVMAuth && !isMobile && actionType === "composer" ? (
-          <EVMWallets title="Login with EVM" className="mx-2" login={login} />
-        ) : !isFarcasterAuth && !isMobile && actionType === "composer" ? (
+        {!getEVMAuth ? (
+          <EVMWallets title={"Login with EVM"} className="mx-2" login={login} />
+        ) : !isFarcasterAuth && (!isMobile || actionType !== "composer") ? (
           <FarcasterAuth />
         ) : farcasterStates?.frameData?.isFrame &&
           !farcasterStates?.frameData?.isCustomCurrMint &&

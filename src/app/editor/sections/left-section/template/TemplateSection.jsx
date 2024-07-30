@@ -64,7 +64,7 @@ const DesignCard = ({
   assetsRecipientElementData,
 }) => {
   const store = useStore();
-  const { referredFromRef, preStoredRecipientDataRef } = useContext(Context);
+  const { referredFromRef, preStoredRecipientDataRef, isMobile, setOpenBottomBar } = useContext(Context);
 
   const [stPreviewIndex, setStPreviewIndex] = useState(0);
   const [stHovered, setStHovered] = useState(false);
@@ -91,12 +91,20 @@ const DesignCard = ({
           referredFrom: referredFrom,
           preStoredRecipientObj: assetsRecipientElementData,
         });
+
+        // To close the mobile Bottom Bar
+        if (isMobile) {
+          setOpenBottomBar(false);
+        }
       } else {
         // If not load the clicked JSON
         fnLoadJsonOnPage(store, json);
         if (tab === "user") {
           referredFromRef.current = referredFrom;
           preStoredRecipientDataRef.current = assetsRecipientElementData;
+        }
+        if (isMobile) {
+          setOpenBottomBar(false);
         }
       }
     }
@@ -216,6 +224,7 @@ const TemplatePanel = () => {
 };
 
 export const LenspostTemplates = () => {
+  const { isMobile } = useContext(Context);
   const { isAuthenticated } = useAppAuth();
   const store = useStore();
   const { address, isDisconnected } = useAccount();
@@ -352,37 +361,39 @@ export const LenspostTemplates = () => {
         {/* Reference Link: https://www.material-tailwind.com/docs/react/tabs */}
 
         <div className="sm:hidden">
-          <div className="h-full overflow-y-scroll">
-            {data?.pages[0]?.data?.length > 0 && (
-              <>
-                <div className="columns-2 gap-1">
-                  {data?.pages
-                    .flatMap((item) => item?.data)
-                    .map((item, index) => {
-                      return (
-                        <DesignCard
-                          item={item}
-                          id={item?.id}
-                          referredFrom={item?.referredFrom}
-                          isGated={item?.isGated}
-                          gatedWith={item?.gatedWith}
-                          json={item?.data}
-                          ownerAddress={item?.ownerAddress}
-                          preview={item?.image}
-                          key={index}
-                          modal={modal}
-                          setModal={setModal}
-                        />
-                      );
-                    })}
-                </div>
-                <LoadMoreComponent
-                  hasNextPage={hasNextPage}
-                  isFetchingNextPage={isFetchingNextPage}
-                />
-              </>
-            )}
-          </div>
+          {isMobile && (
+            <div className="h-full overflow-y-scroll">
+              {data?.pages[0]?.data?.length > 0 && (
+                <>
+                  <div className="columns-2 gap-1">
+                    {data?.pages
+                      .flatMap((item) => item?.data)
+                      .map((item, index) => {
+                        return (
+                          <DesignCard
+                            item={item}
+                            id={item?.id}
+                            referredFrom={item?.referredFrom}
+                            isGated={item?.isGated}
+                            gatedWith={item?.gatedWith}
+                            json={item?.data}
+                            ownerAddress={item?.ownerAddress}
+                            preview={item?.image}
+                            key={index}
+                            modal={modal}
+                            setModal={setModal}
+                          />
+                        );
+                      })}
+                  </div>
+                  <LoadMoreComponent
+                    hasNextPage={hasNextPage}
+                    isFetchingNextPage={isFetchingNextPage}
+                  />
+                </>
+              )}
+            </div>
+          )}
         </div>
         {/* Tabs for Mobile : End */}
       </div>

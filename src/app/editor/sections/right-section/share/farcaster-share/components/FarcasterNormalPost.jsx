@@ -892,7 +892,7 @@ const FarcasterNormalPost = () => {
       const deployArgs = {
         contract_type: "721",
         canvasId: contextCanvasIdRef.current,
-        chainId: base?.id,
+        chainId: chainId,
         args: argsArr,
       };
       deployZoraContractFn(deployArgs);

@@ -32,7 +32,7 @@ api.interceptors.request.use(
     // Exclude the login API from adding the default header
 
     // Add your default header here
-    config.headers["Authorization"] = fcAuthToken || `${jwtToken}`;
+    config.headers["Authorization"] = fcAuthToken || `Bearer ${jwtToken}`;
     config.headers["Content-Type"] = "application/json";
     config.headers["Access-Control-Allow-Origin"] = "*";
     config.headers["Access-Control-Allow-Methods"] = "*";

@@ -206,14 +206,14 @@ const App = () => {
     }
   };
 
-  useEffect(() => {
-    // if false redirect to ifUserEligible page but only in production
-    if (ENVIRONMENT === "production") {
-      if (!isUserEligible()) {
-        navigate("/ifUserEligible");
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   // if false redirect to ifUserEligible page but only in production
+  //   if (ENVIRONMENT === "production") {
+  //     if (!isUserEligible()) {
+  //       navigate("/ifUserEligible");
+  //     }
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (solanaWalletError.isError) {
@@ -278,8 +278,6 @@ const App = () => {
 
   // Logic to Set isMobile variable
   useEffect(() => {
-    console.log("window height", window.innerHeight);
-    console.log("window width", window.innerWidth);
     if (window.innerWidth < 768) {
       setIsMobile(true);
       setOpenLeftBar(true);
@@ -302,7 +300,7 @@ const App = () => {
   return (
     <>
       <Editor />
-      {window.navigator?.brave && !isBraveShieldWarn && <BraveShieldWarn />}
+      {/* {window.navigator?.brave && !isBraveShieldWarn && <BraveShieldWarn />} */}
       {isUpdateAvailable && <UpdateAvailable />}
       <CheckInternetConnection />
       <LoadingComponent isLoading={isLoading} text={text} />

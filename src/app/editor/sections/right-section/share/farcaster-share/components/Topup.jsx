@@ -15,6 +15,8 @@ import { useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 import { http, parseEther } from "viem";
 import { toast } from "react-toastify";
 import { config } from "../../../../../../../providers/EVM/EVMWalletProvider";
+import { useLocalStorage } from "../../../../../../../hooks/app";
+import { usePrivy } from "@privy-io/react-auth";
 
 const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
   const { farcasterStates, setFarcasterStates } = useContext(Context);
@@ -44,7 +46,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
   const selectedNetwork = farcasterStates?.frameData?.selectedNetwork;
   const isCustomCurrMint = farcasterStates?.frameData?.isCustomCurrMint;
   const TxFeeForDeployment = 0.00009;
-  const txFeeForMint = isCustomCurrMint ? 0.00001 : 0.00002;
+  const txFeeForMint = isCustomCurrMint ? 0.00003 : 0.00005;
 
   //   bcoz first 10 is free so we are subtracting 10 from total mints
   const numberOfExtraMints = allowedMints - sponsored;

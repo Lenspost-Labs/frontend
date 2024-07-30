@@ -11,9 +11,12 @@ import logoFarcaster from "../../../../../assets/logos/logoFarcaster.jpg";
 import { InputBox } from "../../../common";
 import { X_Logo } from "../../../../../assets";
 import DownloadBtn from "../../top-section/download/DownloadBtn";
+import { usePrivy } from "@privy-io/react-auth";
+import { useLocalStorage } from "../../../../../hooks/app";
+import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
+import { EVMWallets } from "../../top-section/auth/wallets";
 
 const ShareSection = () => {
-  const { isConnected } = useAccount();
   const chains = useChains();
   const {
     setMenu,
@@ -33,9 +36,11 @@ const ShareSection = () => {
 
     isMobile,
   } = useContext(Context);
-  const getTwitterAuth = getFromLocalStorage("twitterAuth");
   const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false);
   const [charLimitError, setCharLimitError] = useState("");
+  const { authenticated, login: privyLogin } = usePrivy();
+  const { actionType, evmAuth } = useLocalStorage();
+  const { login } = usePrivyAuth();
 
   const chainsArray = [
     {
@@ -76,14 +81,6 @@ const ShareSection = () => {
       window.open(res?.data?.message, "_parent");
     } else if (res?.error) {
       toast.error(res?.error);
-    }
-  };
-
-  const handleTwitterClick = () => {
-    if (isConnected && getTwitterAuth) {
-      sharePost("twitter");
-    } else {
-      twitterAuth();
     }
   };
 
@@ -258,12 +255,25 @@ const ShareSection = () => {
         </div>
 
         {/* Share - Icons - 18Jun2023 */}
-        {isMobile && (
-          <Button className="mx-6" onClick={() => setMenu("farcasterShare")}>
-            Share on Farcaster
-            {/* <img src="" alt="" /> */}
-          </Button>
-        )}
+        {isMobile &&
+          (!evmAuth && actionType !== "composer" ? (
+            <EVMWallets
+              title={"Login with EVM"}
+              className="mx-2"
+              login={login}
+            />
+          ) : !authenticated ? (
+            <EVMWallets
+              title={"Connect wallet"}
+              className="mx-2"
+              login={privyLogin}
+            />
+          ) : (
+            <Button className="mx-6" onClick={() => setMenu("farcasterShare")}>
+              Share on Farcaster
+            </Button>
+          ))}
+
         {!isMobile && (
           <>
             <hr />

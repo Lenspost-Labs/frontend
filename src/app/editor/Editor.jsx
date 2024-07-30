@@ -56,6 +56,7 @@ import {
   saveToLocalStorage,
   consoleLogonlyDev,
   waterMark,
+  randomId,
 } from "../../utils";
 import FcIdea from "@meronex/icons/fc/FcIdea";
 import { TopbarSection } from "./sections/top-section";
@@ -118,6 +119,7 @@ const Editor = () => {
     canvasBase64Ref,
     farcasterStates,
     setFarcasterStates,
+    setPostName,
 
     // Mobile UI
     isMobile,
@@ -178,37 +180,34 @@ const Editor = () => {
   });
   // 03June2023
 
-  // check for Farcaster auth
-  const { data } = useQuery({
-    queryKey: ["farUserDetails"],
-    queryFn: getFarUserDetails,
-    onSuccess: (res) => {
-      saveToLocalStorage(LOCAL_STORAGE.farcasterAuth, res?.message);
-      setFarcasterStates({
-        ...farcasterStates,
-        isFarcasterAuth: res?.message,
-      });
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
-    enabled: isAuthenticated ? true : false,
-    retry: 1,
-  });
+  useEffect(() => {
+    const checks = async () => {
+      try {
+        const [farUserDetails, dispatcherStatus] = await Promise.all([
+          getFarUserDetails(),
+          checkDispatcher(),
+        ]);
 
-  //  check for Lens dispatcher
-  const { data: lensDispatcher } = useQuery({
-    queryKey: ["lensDispatcher"],
-    queryFn: checkDispatcher,
-    onSuccess: (res) => {
-      saveToLocalStorage(LOCAL_STORAGE.dispatcher, res?.message);
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
-    enabled: isAuthenticated ? true : false,
-    retry: 1,
-  });
+        saveToLocalStorage(
+          LOCAL_STORAGE.farcasterAuth,
+          farUserDetails?.message
+        );
+
+        saveToLocalStorage(
+          LOCAL_STORAGE.dispatcher,
+          dispatcherStatus?.status === "success"
+            ? dispatcherStatus?.message
+            : false
+        );
+      } catch (error) {
+        console.error("Error performing checks:", error);
+      }
+    };
+
+    if (isAuthenticated) {
+      checks();
+    }
+  }, [isAuthenticated]);
 
   // function to filter the recipient data
   const recipientDataFilter = () => {
@@ -544,6 +543,10 @@ const Editor = () => {
       off();
     };
   }, []);
+
+  useEffect(() => {
+    setPostName(`#${randomId(5)}`);
+  }, [contextCanvasIdRef.current]);
 
   // watermark
   // useEffect(() => {

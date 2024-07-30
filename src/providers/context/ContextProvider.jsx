@@ -1,5 +1,6 @@
 import React, { createContext, useRef, useState } from "react";
 import posthog from "posthog-js";
+import { randomId } from "../../utils";
 
 posthog.init("phc_CvXLACFkyLdhJjiGLxlix6ihbGjumRvGjUFSinPWJYD", {
   api_host: "https://eu.posthog.com",
@@ -13,7 +14,7 @@ const ContextProvider = ({ children }) => {
   const [text, setText] = useState("");
   const contextCanvasIdRef = useRef(null);
   const canvasBase64Ref = useRef([]);
-  const [postName, setPostName] = useState("Default name");
+  const [postName, setPostName] = useState("");
   const [postDescription, setPostDescription] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -493,7 +494,7 @@ const ContextProvider = ({ children }) => {
   });
 
   // console.log("ContextProvider", farcasterStates?.frameData);
-  // console.log("ContextProvider", zoraErc721StatesError);
+  // console.log("randomNum ", postName);
 
   const [isMobile, setIsMobile] = useState(false);
   const [curOpenedPanel, setCurOpenedPanel] = useState("");

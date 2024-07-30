@@ -52,7 +52,7 @@ const App = () => {
     setSession,
 
     setIsMobile,
-    setOpenLeftBar
+    setOpenLeftBar,
   } = useContext(Context);
   const [sign, setSign] = useState("");
   const { address, isConnected, isDisconnected } = useAccount();
@@ -282,12 +282,22 @@ const App = () => {
     console.log("window width", window.innerWidth);
     if (window.innerWidth < 768) {
       setIsMobile(true);
-      setOpenLeftBar(true)
+      setOpenLeftBar(true);
     }
     if (window.innerWidth > 768) {
       setIsMobile(false);
     }
   }, [window.innerWidth, window.innerHeight]);
+
+  // get the fc auth for composer action
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    const authParam = params.get("fc-auth");
+    const actionType = params.get("actionType");
+    saveToLocalStorage(LOCAL_STORAGE.FcComposerAuth, authParam);
+    saveToLocalStorage(LOCAL_STORAGE.actionType, actionType);
+  }, []);
 
   return (
     <>

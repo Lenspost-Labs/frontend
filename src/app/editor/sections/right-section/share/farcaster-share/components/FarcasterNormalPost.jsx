@@ -53,6 +53,7 @@ import {
   getOrCreateWallet,
   mintToXchain,
   postFrame,
+  uploadAsset,
 } from "../../../../../../../services/apis/BE-apis";
 import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
 import Topup from "./Topup";
@@ -73,14 +74,16 @@ import { XCircleIcon } from "@heroicons/react/24/outline";
 import { useBalance } from "wagmi";
 import { base, baseSepolia } from "viem/chains";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const FarcasterNormalPost = () => {
   const { resetState } = useReset();
   const { address } = useAccount();
   const { chain } = useAccount();
-  const { userLOA } = useLocalStorage();
+  const { userLOA, actionType } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
+  const { login } = usePrivyAuth();
 
   // farcaster states
   const [isShareLoading, setIsShareLoading] = useState(false);
@@ -122,6 +125,7 @@ const FarcasterNormalPost = () => {
     splitError,
     setSplitError,
     parentRecipientListRef,
+    fastPreview,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
 
@@ -164,6 +168,11 @@ const FarcasterNormalPost = () => {
   const { mutateAsync: storeZoraLinkMutation } = useMutation({
     mutationKey: "storeZoraLink",
     mutationFn: mintToXchain,
+  });
+
+  const { mutate: uploadAssetFn, data: uploadAssetData } = useMutation({
+    mutationKey: "uploadAssets",
+    mutationFn: uploadAsset,
   });
 
   // upload to IPFS Mutation
@@ -493,7 +502,33 @@ const FarcasterNormalPost = () => {
 
   // share post on lens
   const sharePost = async (platform) => {
+    console.log("sahing start");
     setIsShareLoading(true);
+
+    if (isMobile && actionType === "composer") {
+      uploadAssetFn(fastPreview[0]);
+      console.log("upload", uploadAssetData);
+
+      const embeds = farcasterStates?.frameData?.isFrame
+        ? FRAME_URL + "/frame/" + frameId
+        : uploadAssetFn(fastPreview[0]);
+      console.log("on mobile");
+      window.parent.postMessage(
+        {
+          type: "createCast",
+          data: {
+            cast: {
+              text: postDescription,
+              embeds: ["https://frames.poster.fun/frame/764"],
+            },
+          },
+        },
+        "*"
+      );
+      setIsShareLoading(false);
+      console.log("shared");
+      return;
+    }
 
     const canvasData = {
       id: contextCanvasIdRef.current,
@@ -539,7 +574,7 @@ const FarcasterNormalPost = () => {
     }
 
     // check if name is provided
-    if (!postName) {
+    if (!isMobile && !postName) {
       toast.error("Please provide a name");
       return;
     }
@@ -1838,14 +1873,16 @@ const FarcasterNormalPost = () => {
       </div>
 
       <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
-        {!getEVMAuth ? (
-          <EVMWallets title="Login with EVM" className="mx-2" />
-        ) : !isFarcasterAuth ? (
+        {!getEVMAuth && !isMobile && actionType === "composer" ? (
+          <EVMWallets title="Login with EVM" className="mx-2" login={login} />
+        ) : !isFarcasterAuth && !isMobile && actionType === "composer" ? (
           <FarcasterAuth />
         ) : farcasterStates?.frameData?.isFrame &&
           !farcasterStates?.frameData?.isCustomCurrMint &&
           !farcasterStates?.frameData?.isCreatorSponsored &&
-          chain?.id != chainId ? (
+          chain?.id != chainId &&
+          !isMobile &&
+          actionType === "composer" ? (
           <div className="mx-2 outline-none">
             <Button
               className="w-full outline-none flex justify-center items-center gap-2"

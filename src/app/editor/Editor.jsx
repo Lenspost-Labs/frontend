@@ -538,9 +538,7 @@ const Editor = () => {
       saveToLocalStorage(LOCAL_STORAGE.farcasterAuth, fcLoginData?.message);
     }
 
-    console.log({ checkLens: lensDispatcherData ? true : false });
     if (lensDispatcherData) {
-      console.log({ lensDispatcherData });
       saveToLocalStorage(LOCAL_STORAGE.dispatcher, lensDispatcherData?.status);
     }
   }, [isAuthenticated]);

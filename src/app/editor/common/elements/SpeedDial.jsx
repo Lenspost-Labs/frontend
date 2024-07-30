@@ -20,10 +20,13 @@ import { useStore } from "../../../../hooks/polotno";
 import { useReset } from "../../../../hooks/app";
 import { toast } from "react-toastify";
 import { BgRemover } from "../../sections/bottom-section";
+import { useContext } from "react";
+import { Context } from "../../../../providers/context";
 
 export function SpeedDialX() {
   const store = useStore();
   const { resetState } = useReset();
+  const { isMobile } = useContext(Context);
 
   const labelProps = {
     variant: "small",
@@ -50,24 +53,26 @@ export function SpeedDialX() {
 
           {/* Content */}
           <SpeedDialContent>
-            <div className="">
-              <SpeedDialAction className="relative">
-                <BgRemover inSpeedDial={true} />
-                <Typography {...labelProps}>{`Remove BG`}</Typography>
-              </SpeedDialAction>
-            </div>
-
-            <div className="" onClick={() => store.setSize(1080, 1080)}>
-              <SpeedDialAction className="relative">
-                <SuCapture className="h-5 w-5" />
-                <Typography {...labelProps}>{`Resize`}</Typography>
-              </SpeedDialAction>
-            </div>
+            {!isMobile && (
+              <div className="" onClick={() => store.setSize(1080, 1080)}>
+                <SpeedDialAction className="relative">
+                  <SuCapture className="h-5 w-5" />
+                  <Typography {...labelProps}>{`Resize`}</Typography>
+                </SpeedDialAction>
+              </div>
+            )}
 
             <div className="" onClick={() => clearAllData()}>
               <SpeedDialAction className="relative">
                 <SuCreate className="h-5 w-5" />
                 <Typography {...labelProps}>{`Clear`}</Typography>
+              </SpeedDialAction>
+            </div>
+
+            <div className="">
+              <SpeedDialAction className="relative">
+                <BgRemover inSpeedDial={true} />
+                <Typography {...labelProps}>{`Remove BG`}</Typography>
               </SpeedDialAction>
             </div>
           </SpeedDialContent>

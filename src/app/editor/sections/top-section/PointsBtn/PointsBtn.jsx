@@ -20,7 +20,7 @@ const PointsBtn = () => {
   const [transitionRtoL, setTransitionRtoL] = useState(false);
   const { profileImage } = useUser();
 
-  const { menu, setMenu, isProfileOpen, setIsProfileOpen } =
+  const { menu, setMenu, isProfileOpen, setIsProfileOpen, setOpenLeftBar } =
     useContext(Context);
   const { address } = useAccount();
 
@@ -40,6 +40,7 @@ const PointsBtn = () => {
         onClick={() => {
           setMenu("profile");
           setIsProfileOpen(!isProfileOpen);
+          setOpenLeftBar(false);
         }}
         className="outline-none"
       >

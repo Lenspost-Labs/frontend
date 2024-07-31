@@ -263,11 +263,11 @@ const ShareSection = () => {
             </div>
           </div>
         </div>
-{/* 
+        {/* 
         <Button className="mx-6" onClick={fnCallRemoveWatermark}>
           Remove Watermark
         </Button> */}
-        
+
         {/* Share - Icons - 18Jun2023 */}
         {isMobile &&
           (!evmAuth && actionType !== "composer" ? (
@@ -275,12 +275,6 @@ const ShareSection = () => {
               title={"Login with EVM"}
               className="mx-2"
               login={login}
-            />
-          ) : !authenticated ? (
-            <EVMWallets
-              title={"Connect wallet"}
-              className="mx-2"
-              login={privyLogin}
             />
           ) : (
             <Button className="mx-6" onClick={() => setMenu("farcasterShare")}>

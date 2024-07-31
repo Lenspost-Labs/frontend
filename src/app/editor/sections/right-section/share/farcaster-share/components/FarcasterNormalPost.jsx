@@ -344,6 +344,9 @@ const FarcasterNormalPost = () => {
           newState.frameData.allowedMintsIsError = true;
           newState.frameData.allowedMintsError =
             "Please enter a valid number of mints";
+        } else if (actionType === "composer" && value > 10) {
+          newState.frameData.allowedMintsIsError = true;
+          newState.frameData.allowedMintsError = "Only 10 free mints allowed";
         } else {
           newState.frameData.allowedMintsIsError = false;
           newState.frameData.allowedMintsError = "";
@@ -600,7 +603,7 @@ const FarcasterNormalPost = () => {
       (farcasterStates.frameData?.allowedMintsIsError ||
         !farcasterStates.frameData?.allowedMints)
     ) {
-      toast.error("Please enter allowed mints");
+      toast.error("Please enter valid allowed mints");
       return;
     }
 
@@ -608,6 +611,7 @@ const FarcasterNormalPost = () => {
     if (
       farcasterStates.frameData?.isFrame &&
       farcasterStates.frameData?.isCreatorSponsored &&
+      actionType !== "composer" &&
       farcasterStates.frameData?.allowedMints > walletData?.sponsored &&
       !farcasterStates.frameData?.isSufficientBalance
     ) {
@@ -1003,6 +1007,19 @@ const FarcasterNormalPost = () => {
       refetchWallet();
     }, 1000);
   }, [farcasterStates?.frameData?.selectedNetwork?.name]);
+
+  useEffect(() => {
+    if (actionType === "composer") {
+      setFarcasterStates({
+        ...farcasterStates,
+        frameData: {
+          ...farcasterStates.frameData,
+          isCreatorSponsored: true,
+          isCustomCurrMint: false,
+        },
+      });
+    }
+  }, []);
 
   console.log({ topUp_balance: walletData?.balance });
 
@@ -1741,6 +1758,7 @@ const FarcasterNormalPost = () => {
               <h2 className="text-lg mb-2"> Sponsor Mints </h2>
               <Switch
                 checked={farcasterStates.frameData?.isCreatorSponsored}
+                disabled={actionType === "composer"}
                 onChange={() =>
                   setFarcasterStates({
                     ...farcasterStates,
@@ -1831,7 +1849,8 @@ const FarcasterNormalPost = () => {
                 />
               )}
 
-              {farcasterStates.frameData?.isCreatorSponsored &&
+              {actionType !== "composer" &&
+                farcasterStates.frameData?.isCreatorSponsored &&
                 farcasterStates.frameData?.allowedMints >
                   walletData?.sponsored && (
                   <Topup
@@ -1871,7 +1890,7 @@ const FarcasterNormalPost = () => {
           </div>
         </>
         {/* // )} */}
-        {walletData?.balance > 0 && (
+        {actionType !== "composer" && walletData?.balance > 0 && (
           <WithdrawFunds refetchWallet={refetchWallet} />
         )}
       </div>

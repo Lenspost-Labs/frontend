@@ -449,7 +449,7 @@ const FarcasterNormalPost = () => {
       chainId: farcasterStates?.frameData?.isCustomCurrMint
         ? farcasterStates?.frameData?.selectedNetwork?.id
         : farcasterStates?.frameData?.isCreatorSponsored
-        ? base?.id
+        ? chainId
         : chainId,
       creatorSponsored: farcasterStates.frameData?.isCreatorSponsored,
       gatedChannels: farcasterStates.frameData?.channelValue?.id,

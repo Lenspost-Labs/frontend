@@ -20,7 +20,7 @@ const TopbarSection = () => {
     <>
       <div className="bg-white mb-2 w-full px-3 py-2 sm:overflow-x-auto sm:overflow-y-hidden sm:max-w-[100vw] sticky border">
         <div className="flex items-center justify-between">
-          <Logo />
+          <Logo propHeight={96} propWidth={96} />
 
           {!isAuthenticated && (
             <>

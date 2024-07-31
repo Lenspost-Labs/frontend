@@ -25,10 +25,15 @@ const DesignCard = ({
     preStoredRecipientDataRef,
     designModal,
     setDesignModal,
+    isMobile,
+    setOpenLeftBar
   } = useContext(Context);
   const store = useStore();
 
   const handleClickOrDrop = () => {
+    if(isMobile) {
+      setOpenLeftBar(false)
+    }
     store.loadJSON(json);
     contextCanvasIdRef.current = item.id;
     referredFromRef.current = item.referredFrom;
@@ -72,14 +77,16 @@ const DesignCard = ({
         }}
       >
         <Button icon="trash" onClick={onDelete} />
-        <Button
-          className="ml-1"
-          onClick={() => {
-            setDesignModal(true);
-            onOpenTagModal();
-          }}
-          icon="share"
-        />
+        {!isMobile && (
+          <Button
+            className="ml-1"
+            onClick={() => {
+              setDesignModal(true);
+              onOpenTagModal();
+            }}
+            icon="share"
+          />
+        )}
       </div>
     </Card>
   );

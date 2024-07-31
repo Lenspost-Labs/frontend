@@ -38,7 +38,7 @@ import { fnPageHasElements } from "../../../../../utils/fnPageHasElements";
 import { useAppAuth, useReset } from "../../../../../hooks/app";
 import DesignCard from "./components/cards/DesignCard";
 
-export const DesignPanel = () => {
+export const DesignPanel = ({ isMobile }) => {
   const { isAuthenticated } = useAppAuth();
   const { resetState } = useReset();
   const { fastPreview, contextCanvasIdRef, designModal } = useContext(Context);
@@ -163,57 +163,59 @@ export const DesignPanel = () => {
   return (
     <div className="h-full flex flex-col">
       {/* <h1 className="text-lg">My Files</h1> */}
+      {!isMobile && (
+        <>
+          <Button
+            className="m-2 p-1"
+            onClick={() => {
+              if (fnPageHasElements(store)) {
+                setModal({ ...modal, isOpen: true, isNewDesign: true });
+              }
+            }}
+          >
+            Create new design
+          </Button>
 
-      <Button
-        className="m-2 p-1"
-        onClick={() => {
-          if (fnPageHasElements(store)) {
-            setModal({ ...modal, isOpen: true, isNewDesign: true });
-          }
-        }}
-      >
-        Create new design
-      </Button>
-
-      {modal.isOpen && modal.isTokengate && (
-        <CompModal
-          modal={modal}
-          setModal={setModal}
-          tokengatingIp="contract address / Lenster post link"
-          icon={"lock"}
-          ModalTitle={"Tokengate this template"}
-          ModalMessage={`
+          {modal.isOpen && modal.isTokengate && (
+            <CompModal
+              modal={modal}
+              setModal={setModal}
+              tokengatingIp="contract address / Lenster post link"
+              icon={"lock"}
+              ModalTitle={"Tokengate this template"}
+              ModalMessage={`
           Please enter the Contract Address or the Lenster Post Link to tokengate this template.
           `}
-          customBtn={"Confirm"}
-          onClickFunction={() =>
-            tokengateCanvas({
-              id: modal.canvasId,
-              gatewith: modal.stTokengateIpValue,
-            })
-          }
-        />
+              customBtn={"Confirm"}
+              onClickFunction={() =>
+                tokengateCanvas({
+                  id: modal.canvasId,
+                  gatewith: modal.stTokengateIpValue,
+                })
+              }
+            />
+          )}
+
+          {modal.isOpen && modal.isNewDesign && (
+            <CompModal
+              modal={modal}
+              setModal={setModal}
+              ModalTitle={"Are you sure to create a new design?"}
+              ModalMessage={"This will remove all the content from your canvas"}
+              onClickFunction={() => fnDeleteCanvas()}
+            />
+          )}
+
+          <SearchComponent
+            onClick={false}
+            query={query}
+            setQuery={setQuery}
+            placeholder="Search designs by id"
+          />
+
+          <MyDesignReacTour />
+        </>
       )}
-
-      {modal.isOpen && modal.isNewDesign && (
-        <CompModal
-          modal={modal}
-          setModal={setModal}
-          ModalTitle={"Are you sure to create a new design?"}
-          ModalMessage={"This will remove all the content from your canvas"}
-          onClickFunction={() => fnDeleteCanvas()}
-        />
-      )}
-
-      <SearchComponent
-        onClick={false}
-        query={query}
-        setQuery={setQuery}
-        placeholder="Search designs by id"
-      />
-
-      <MyDesignReacTour />
-
       {isError ? (
         <ErrorComponent error={error} />
       ) : data?.pages[0]?.data?.length > 0 ? (
@@ -248,8 +250,9 @@ export const DesignPanel = () => {
                       setModal({
                         ...modal,
                         canvasId: item?.id,
-                      })
-                      setModalImageLink(item?.imageLink)}}
+                      });
+                      setModalImageLink(item?.imageLink);
+                    }}
                     openTokengateModal={() =>
                       setModal({
                         ...modal,
@@ -276,7 +279,12 @@ export const DesignPanel = () => {
       )}
 
       {/* New Design card end - 23Jun2023 */}
-      {designModal && <ShareWithTagsModal canvasId={modal.canvasId} displayImg={modalImageLink}  />}
+      {designModal && (
+        <ShareWithTagsModal
+          canvasId={modal.canvasId}
+          displayImg={modalImageLink}
+        />
+      )}
     </div>
   );
 };

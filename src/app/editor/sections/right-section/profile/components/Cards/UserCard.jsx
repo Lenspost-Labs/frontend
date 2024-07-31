@@ -93,7 +93,7 @@ const UserCard = ({ username }) => {
                       : NormieDP
                   }
                   alt=""
-                  className="absolute object-cover"
+                  className="absolute object-cover w-full h-full"
                 />
               </div>
               <div className="relative w-[32px] h-[32px] mt-[-16px]">
@@ -220,7 +220,7 @@ const UserCard = ({ username }) => {
                   {!loadingInvite && inviteCodesArr?.length > 0 ? (
                     <div
                       className="flex align-middle "
-                      onClick={() => handleCopy(`Invite Code`, inviteCodesArr)}
+                      onClick={() => handleCopy(`Invite Code`, inviteCodesArr[0])}
                     >
                       <div className="">{inviteCodesArr[0]}</div>
                       <BiCopy className="ml-1 mt-1 cursor-pointer" size={12} />

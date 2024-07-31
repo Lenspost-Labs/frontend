@@ -56,9 +56,13 @@ import {
   saveToLocalStorage,
   consoleLogonlyDev,
   waterMark,
+  randomId,
 } from "../../utils";
 import FcIdea from "@meronex/icons/fc/FcIdea";
 import { TopbarSection } from "./sections/top-section";
+
+import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
+import MobileBottombar from "./sections/bottom-section/bottomBar/MobileBottombar";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -115,6 +119,11 @@ const Editor = () => {
     canvasBase64Ref,
     farcasterStates,
     setFarcasterStates,
+    setPostName,
+
+    // Mobile UI
+    isMobile,
+    setIsMobile,
   } = useContext(Context);
 
   const componentMounted = useRef(false);
@@ -171,21 +180,34 @@ const Editor = () => {
   });
   // 03June2023
 
-  // check for Farcaster auth
-  const { data: fcLoginData } = useQuery({
-    queryKey: ["farUserDetails"],
-    queryFn: getFarUserDetails,
-    enabled: isAuthenticated ? true : false,
-    retry: 1,
-  });
+  useEffect(() => {
+    const checks = async () => {
+      try {
+        const [farUserDetails, dispatcherStatus] = await Promise.all([
+          getFarUserDetails(),
+          checkDispatcher(),
+        ]);
 
-  //  check for Lens dispatcher
-  const { data: lensDispatcherData } = useQuery({
-    queryKey: ["lensDispatcher"],
-    queryFn: checkDispatcher,
-    enabled: isAuthenticated ? true : false,
-    retry: 1,
-  });
+        saveToLocalStorage(
+          LOCAL_STORAGE.farcasterAuth,
+          farUserDetails?.message
+        );
+
+        saveToLocalStorage(
+          LOCAL_STORAGE.dispatcher,
+          dispatcherStatus?.status === "success"
+            ? dispatcherStatus?.message
+            : false
+        );
+      } catch (error) {
+        console.error("Error performing checks:", error);
+      }
+    };
+
+    if (isAuthenticated) {
+      checks();
+    }
+  }, [isAuthenticated]);
 
   // function to filter the recipient data
   const recipientDataFilter = () => {
@@ -522,6 +544,10 @@ const Editor = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setPostName(`#${randomId(5)}`);
+  }, [contextCanvasIdRef.current]);
+
   // watermark
   // useEffect(() => {
   //   console.log("isPageActive", store?.pages.length);
@@ -532,17 +558,7 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
-
-  useEffect(() => {
-    if (fcLoginData) {
-      saveToLocalStorage(LOCAL_STORAGE.farcasterAuth, fcLoginData?.message);
-    }
-
-    if (lensDispatcherData) {
-      saveToLocalStorage(LOCAL_STORAGE.dispatcher, lensDispatcherData?.status);
-    }
-  }, [isAuthenticated]);
-
+  
   return (
     <>
       <div
@@ -555,19 +571,29 @@ const Editor = () => {
         }}
         onDrop={handleDrop}
       >
-        <div style={{ height: "calc(100% - 75px)" }}>
-          <div className="">
-            <TopbarSection />
-          </div>
+        <div
+          style={{
+            height: isMobile ? "calc(100% - 8px)" : "calc(100% - 75px)",
+          }}
+        >
+          {!isMobile && (
+            <div className="">
+              <TopbarSection />
+            </div>
+          )}
           <PolotnoContainer className="min-h-400 md:min-h-full">
-            <div id="second-step" className="mx-0 md:mx-2">
+            <div
+              id="second-step"
+              className={`${isMobile ? "hidden" : ""} md:block mx-0 md:mx-2`}
+            >
               <SidePanelWrap>
                 <SidePanel store={store} sections={sections} />
               </SidePanelWrap>
             </div>
             <WorkspaceWrap>
-              <div className="mb-2 md:ml-0 mx-2">
-                <Toolbar store={store} />
+              <div className="mb-2 md:ml-0 mx-2 my-2">
+                {!isMobile && <Toolbar store={store} />}
+                {isMobile && <MobileTopbar />}
               </div>
               <Workspace
                 store={store}
@@ -578,34 +604,42 @@ const Editor = () => {
               />
 
               {/* Bottom section */}
-              <ZoomButtons store={store} />
-              <PagesTimeline store={store} />
-              <div className="flex flex-row justify-between items-center border border-black-300 rounded-lg ">
-                <BgRemover />
-
-                {/* Quick Tour on the main page */}
-                <div className="flex flex-row ">
-                  {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
+              {!isMobile && <ZoomButtons store={store} />}
+              {!isMobile && <PagesTimeline store={store} />}
+              {isMobile && (
+                <div className="flex flex-col">
                   <SpeedDialX />
+                  <MobileBottombar />
+                </div>
+              )}
 
-                  <div
-                    className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
-                    onClick={async () => {
-                      setCurrentStep(0);
-                      if (isConnected) {
-                        setIsOpen(true);
-                        setSteps(OnboardingStepsWithShare);
-                      } else {
-                        setIsOpen(true);
-                        setSteps(OnboardingSteps);
-                      }
-                    }}
-                  >
-                    <FcIdea className="m-2" size="16" />
-                    {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
+              {!isMobile && (
+                <div className="flex flex-row justify-between items-center rounded-lg ">
+                  <BgRemover />
+                  {/* Quick Tour on the main page */}
+                  <div className="flex flex-row ">
+                    {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
+                    <SpeedDialX />
+
+                    <div
+                      className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
+                      onClick={async () => {
+                        setCurrentStep(0);
+                        if (isConnected) {
+                          setIsOpen(true);
+                          setSteps(OnboardingStepsWithShare);
+                        } else {
+                          setIsOpen(true);
+                          setSteps(OnboardingSteps);
+                        }
+                      }}
+                    >
+                      <FcIdea className="m-2" size="16" />
+                      {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </WorkspaceWrap>
           </PolotnoContainer>
         </div>

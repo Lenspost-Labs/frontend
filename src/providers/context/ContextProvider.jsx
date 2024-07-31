@@ -1,5 +1,6 @@
 import React, { createContext, useRef, useState } from "react";
 import posthog from "posthog-js";
+import { randomId } from "../../utils";
 
 posthog.init("phc_CvXLACFkyLdhJjiGLxlix6ihbGjumRvGjUFSinPWJYD", {
   api_host: "https://eu.posthog.com",
@@ -493,7 +494,12 @@ const ContextProvider = ({ children }) => {
   });
 
   // console.log("ContextProvider", farcasterStates?.frameData);
-  // console.log("ContextProvider", zoraErc721StatesError);
+  // console.log("randomNum ", postName);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [curOpenedPanel, setCurOpenedPanel] = useState("");
+  const [openLeftBar, setOpenLeftBar] = useState(false);
+  const [openBottomBar, setOpenBottomBar] = useState(false);
 
   return (
     <Context.Provider
@@ -666,6 +672,17 @@ const ContextProvider = ({ children }) => {
         // session
         session,
         setSession,
+
+        // Mobile UI
+        isMobile,
+        setIsMobile,
+        // for mobile Tabs :
+        curOpenedPanel,
+        setCurOpenedPanel,
+        openLeftBar,
+        setOpenLeftBar,
+        openBottomBar,
+        setOpenBottomBar,
       }}
     >
       {children}

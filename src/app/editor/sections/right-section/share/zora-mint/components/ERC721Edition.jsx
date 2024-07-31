@@ -67,9 +67,11 @@ import { ZoraLogo } from "../../../../../../../assets";
 import { config } from "../../../../../../../providers/EVM/EVMWalletProvider";
 import { http } from "viem";
 import { degen, polygon } from "viem/chains";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const { address } = useAccount();
+  const { login } = usePrivyAuth();
   const { isAuthenticated } = useAppAuth();
   const { isFarcasterAuth, lensAuth, dispatcher } = useLocalStorage();
   const chainId = useChainId();
@@ -1758,7 +1760,11 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       ) : null}
 
       {!getEVMAuth ? (
-        <EVMWallets title="Login with EVM" className="mx-2 w-[97%]" />
+        <EVMWallets
+          title="Login with EVM"
+          login={login}
+          className="mx-2 w-[97%]"
+        />
       ) : isFarcaster && !isFarcasterAuth ? (
         <FarcasterAuth />
       ) : isOpenAction && !lensAuth?.profileHandle ? (

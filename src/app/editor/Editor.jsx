@@ -558,6 +558,7 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
+  
   return (
     <>
       <div

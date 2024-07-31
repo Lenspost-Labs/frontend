@@ -6,8 +6,8 @@ const Logo = ({ propWidth, propHeight }) => {
       <img
         width={propWidth}
         height={propHeight}
-        className="flex items-center justify-start object-contain"
-        src="/logo.png"
+        className="flex items-center justify-start object-contain h-20"
+        src="/logo-trans-bg.svg"
         alt="lenspost"
       />
     </div>

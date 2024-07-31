@@ -56,9 +56,13 @@ import {
   saveToLocalStorage,
   consoleLogonlyDev,
   waterMark,
+  randomId,
 } from "../../utils";
 import FcIdea from "@meronex/icons/fc/FcIdea";
 import { TopbarSection } from "./sections/top-section";
+
+import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
+import MobileBottombar from "./sections/bottom-section/bottomBar/MobileBottombar";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -115,6 +119,13 @@ const Editor = () => {
     canvasBase64Ref,
     farcasterStates,
     setFarcasterStates,
+    setPostName,
+
+    // Mobile UI
+    isMobile,
+    setIsMobile,
+    removedWMarkCanvas,
+    setRemovedWMarkCanvas,
   } = useContext(Context);
 
   const componentMounted = useRef(false);
@@ -171,37 +182,34 @@ const Editor = () => {
   });
   // 03June2023
 
-  // check for Farcaster auth
-  const { data } = useQuery({
-    queryKey: ["farUserDetails"],
-    queryFn: getFarUserDetails,
-    onSuccess: (res) => {
-      saveToLocalStorage(LOCAL_STORAGE.farcasterAuth, res?.message);
-      setFarcasterStates({
-        ...farcasterStates,
-        isFarcasterAuth: res?.message,
-      });
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
-    enabled: isAuthenticated ? true : false,
-    retry: 1,
-  });
+  useEffect(() => {
+    const checks = async () => {
+      try {
+        const [farUserDetails, dispatcherStatus] = await Promise.all([
+          getFarUserDetails(),
+          checkDispatcher(),
+        ]);
 
-  //  check for Lens dispatcher
-  const { data: lensDispatcher } = useQuery({
-    queryKey: ["lensDispatcher"],
-    queryFn: checkDispatcher,
-    onSuccess: (res) => {
-      saveToLocalStorage(LOCAL_STORAGE.dispatcher, res?.message);
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
-    enabled: isAuthenticated ? true : false,
-    retry: 1,
-  });
+        saveToLocalStorage(
+          LOCAL_STORAGE.farcasterAuth,
+          farUserDetails?.message
+        );
+
+        saveToLocalStorage(
+          LOCAL_STORAGE.dispatcher,
+          dispatcherStatus?.status === "success"
+            ? dispatcherStatus?.message
+            : false
+        );
+      } catch (error) {
+        console.error("Error performing checks:", error);
+      }
+    };
+
+    if (isAuthenticated) {
+      checks();
+    }
+  }, [isAuthenticated]);
 
   // function to filter the recipient data
   const recipientDataFilter = () => {
@@ -398,47 +406,89 @@ const Editor = () => {
   const fnLoadWatermark = () => {
     if (!store) return;
     consoleLogonlyDev(store.toJSON());
-
+  
     let w = store.width;
     let h = store.height;
-    const watermarkbase64 = "/watermark.png";
-
-    // Check if watermark is already added
-    store.pages.forEach((page, index) => {
+    const watermarkBase64 = "/watermark.png";
+  
+    // Define the desired watermark size relative to the canvas
+    const watermarkSizeFactor = 0.1; // 10% of the canvas dimension
+  
+    // Load the watermark image dimensions (assuming you have these values)
+    const originalWatermarkWidth = 100; // Original width of the watermark image
+    const originalWatermarkHeight = 100; // Original height of the watermark image
+  
+    // Calculate the aspect ratio of the original watermark
+    const watermarkAspectRatio = originalWatermarkWidth / originalWatermarkHeight;
+  
+    // Determine the watermark size based on the canvas width
+    let watermarkWidth = w * watermarkSizeFactor;
+    let watermarkHeight = watermarkWidth / watermarkAspectRatio;
+  
+    // If the calculated height exceeds the canvas height limit, adjust the size
+    if (watermarkHeight > h * watermarkSizeFactor) {
+      watermarkHeight = h * watermarkSizeFactor;
+      watermarkWidth = watermarkHeight * watermarkAspectRatio;
+    }
+  
+    // Calculate the watermark's position to be at the bottom-right corner
+    let watermarkX = w - watermarkWidth - 10; // 10px padding from the right edge
+    let watermarkY = h - watermarkHeight - 10; // 10px padding from the bottom edge
+  
+    // Check if the watermark is already added
+    store.pages.forEach((page) => {
       let watermarkAdded = false;
       page.children.forEach((pageItem) => {
         if (pageItem.name === "watermark") {
           console.log("Watermark already added to the page");
-          // pageItem.x = w - w / 8; // Adjusted x position to bottom-right
-          // pageItem.y = h - h / 8; // Adjusted y position to bottom-right
+          // Update the watermark position and size
+          pageItem.set({
+            x: watermarkX,
+            y: watermarkY,
+            width: watermarkWidth,
+            height: watermarkHeight,
+          });
           watermarkAdded = true;
         }
       });
-
-      // Add watermark
+  
+      // Add watermark if not present
       if (!watermarkAdded) {
         page.addElement({
-          x: w - w / 8, // Adjusted x position to bottom-right
-          y: h - h / 8, // Adjusted y position to bottom-right
+          x: watermarkX,
+          y: watermarkY,
           type: "image",
           name: "watermark",
-          src: watermarkbase64,
+          src: watermarkBase64,
           selectable: false,
           alwaysOnTop: true,
           showInExport: true,
-          height: h / 8,
-          width: w / 8,
+          height: watermarkHeight,
+          width: watermarkWidth,
         });
         console.log(
-          `Watermark added to ${page} page, at x: ${w}, y: ${h - 16}`
+          `Watermark added to page at x: ${watermarkX}, y: ${watermarkY}`
         );
       }
     });
   };
-
+  
   // useEffect(() => {
-  // 	fnLoadWatermark()
-  // }, [store])
+  //   fnLoadWatermark();
+  // }, []);
+
+  useEffect(() => {
+    if (Number(removedWMarkCanvas) === Number(contextCanvasIdRef?.current)) {
+      return;
+    } else {
+      fnLoadWatermark();
+    }
+  }, [
+    store?.width,
+    store?.height,
+    // store?.pages?.length,
+    // store?.pages[0]?.children?.length,
+  ]);
 
   // Effect to check with the slugId and fetch the image changes
   // useEffect(() => {
@@ -538,6 +588,10 @@ const Editor = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setPostName(`#${randomId(5)}`);
+  }, [contextCanvasIdRef.current]);
+
   // watermark
   // useEffect(() => {
   //   console.log("isPageActive", store?.pages.length);
@@ -548,7 +602,7 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
-
+  
   return (
     <>
       <div
@@ -561,19 +615,29 @@ const Editor = () => {
         }}
         onDrop={handleDrop}
       >
-        <div style={{ height: "calc(100% - 75px)" }}>
-          <div className="">
-            <TopbarSection />
-          </div>
+        <div
+          style={{
+            height: isMobile ? "calc(100% - 8px)" : "calc(100% - 75px)",
+          }}
+        >
+          {!isMobile && (
+            <div className="">
+              <TopbarSection />
+            </div>
+          )}
           <PolotnoContainer className="min-h-400 md:min-h-full">
-            <div id="second-step" className="mx-0 md:mx-2">
+            <div
+              id="second-step"
+              className={`${isMobile ? "hidden" : ""} md:block mx-0 md:mx-2`}
+            >
               <SidePanelWrap>
                 <SidePanel store={store} sections={sections} />
               </SidePanelWrap>
             </div>
             <WorkspaceWrap>
-              <div className="mb-2 md:ml-0 mx-2">
-                <Toolbar store={store} />
+              <div className="mb-2 md:ml-0 mx-2 my-2">
+                {!isMobile && <Toolbar store={store} />}
+                {isMobile && <MobileTopbar />}
               </div>
               <Workspace
                 store={store}
@@ -584,34 +648,42 @@ const Editor = () => {
               />
 
               {/* Bottom section */}
-              <ZoomButtons store={store} />
-              <PagesTimeline store={store} />
-              <div className="flex flex-row justify-between items-center border border-black-300 rounded-lg ">
-                <BgRemover />
-
-                {/* Quick Tour on the main page */}
-                <div className="flex flex-row ">
-                  {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
+              {!isMobile && <ZoomButtons store={store} />}
+              {!isMobile && <PagesTimeline store={store} />}
+              {isMobile && (
+                <div className="flex flex-col">
                   <SpeedDialX />
+                  <MobileBottombar />
+                </div>
+              )}
 
-                  <div
-                    className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
-                    onClick={async () => {
-                      setCurrentStep(0);
-                      if (isConnected) {
-                        setIsOpen(true);
-                        setSteps(OnboardingStepsWithShare);
-                      } else {
-                        setIsOpen(true);
-                        setSteps(OnboardingSteps);
-                      }
-                    }}
-                  >
-                    <FcIdea className="m-2" size="16" />
-                    {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
+              {!isMobile && (
+                <div className="flex flex-row justify-between items-center rounded-lg ">
+                  <BgRemover />
+                  {/* Quick Tour on the main page */}
+                  <div className="flex flex-row ">
+                    {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
+                    <SpeedDialX />
+
+                    <div
+                      className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
+                      onClick={async () => {
+                        setCurrentStep(0);
+                        if (isConnected) {
+                          setIsOpen(true);
+                          setSteps(OnboardingStepsWithShare);
+                        } else {
+                          setIsOpen(true);
+                          setSteps(OnboardingSteps);
+                        }
+                      }}
+                    >
+                      <FcIdea className="m-2" size="16" />
+                      {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </WorkspaceWrap>
           </PolotnoContainer>
         </div>

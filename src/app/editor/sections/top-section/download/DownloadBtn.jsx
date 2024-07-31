@@ -14,7 +14,8 @@ import { useStore } from "../../../../../hooks/polotno";
 import posthog from "posthog-js";
 import { Context } from "../../../../../providers/context";
 import { downloadFile } from "polotno/utils/download";
-import { POLOTNO_API_KEY } from "../../../../../services";
+import { claimReward, POLOTNO_API_KEY } from "../../../../../services";
+import { posterTokenSymbol } from "../../../../../data";
 
 const DownloadBtn = () => {
   const store = useStore();
@@ -84,8 +85,25 @@ const DownloadBtn = () => {
     }
   };
 
+  const fnHandleClaim = async () => {
+    if (!points || points < 1) {
+      toast.error(`Not enough ${posterTokenSymbol} points`);
+      return;
+    } else {
+      // Claim the task for the user
+      const res = await claimReward({
+        taskId: 16,
+      });
+
+      if (res) {
+        console.log("res", res);
+      }
+    }
+  };
+
   return (
     <Popover2
+      style={{ zIndex: 999999 }}
       content={
         <Menu className="p-4 border border-gray-300 shadow-2xl">
           <li class="bp4-menu-header">
@@ -242,18 +260,23 @@ const DownloadBtn = () => {
                   });
                 });
               }
-
+              fnHandleClaim();
               captureEvent();
             }}
           >
             Download {type.toUpperCase()}
+            <img
+              className="h-4 -mt-1 ml-2"
+              src="/public/svgs/coin.svg"
+              alt=""
+            />
           </Button>
         </Menu>
       }
       position={Position.BOTTOM_RIGHT}
     >
       <ExportIcon
-        className="inline-flex w-full justify-center border-none px-4 py-2 text-sm font-medium "
+        className="inline-flex w-full justify-center border-none px-4 py-2 text-sm font-medium cursor-pointer"
         loading={saving}
         onClick={() => {
           setQuality(1);

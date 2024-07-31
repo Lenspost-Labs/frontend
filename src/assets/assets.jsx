@@ -51,6 +51,7 @@ export const AIIcon = () => {
 };
 
 export const ExportIcon = () => {
+  const {isMobile} = useContext(Context)
   return (
     <div className="flex flex-col justify-center items-center cursor-pointer">
       {/* <img
@@ -59,7 +60,7 @@ export const ExportIcon = () => {
 			/> */}
 
       <SuDownloadAlt size="24" />
-      <p className="mt-1 text-md">Export</p>
+      {!isMobile && <p className="mt-1 text-md">Export</p>}
     </div>
   );
 };
@@ -80,5 +81,7 @@ export const ShareIcon = () => {
 
 // image + icons export
 import SolanaLogo from "./svgs/solanaLogoMark.svg";
+import { useContext } from "react";
+import { Context } from "../providers/context";
 
 export { SolanaLogo, ServerErrorImg };

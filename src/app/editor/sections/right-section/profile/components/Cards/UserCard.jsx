@@ -21,10 +21,13 @@ import BsArrowRepeat from "@meronex/icons/bs/BsArrowRepeat";
 // import                 src/assets/logos/logoFarcaster.jpg
 import farcasterLogo from "../../../../../../../assets/logos/logoFarcaster.jpg";
 import { Spinner } from "@material-tailwind/react";
+import { useLocalStorage } from "../../../../../../../hooks/app";
+import { posterTokenSymbol } from "../../../../../../../data";
 
 const UserCard = ({ username }) => {
   const { points, profileImage, userLevel, farcasterHandle } = useUser();
   const [loadingInvite, setLoadingInvite] = useState(false);
+  const { actionType } = useLocalStorage();
 
   // const { address } = useAccount();
 
@@ -50,7 +53,6 @@ const UserCard = ({ username }) => {
     console.log("result", result);
     refetch();
     setLoadingInvite(false);
-
   };
 
   const fnGetSocialDetails = async () => {
@@ -61,7 +63,6 @@ const UserCard = ({ username }) => {
   useEffect(() => {
     setInviteCodesArr(inviteCodeList);
   }, [inviteCodeList, data]);
-
 
   return (
     <>
@@ -93,7 +94,7 @@ const UserCard = ({ username }) => {
                       : NormieDP
                   }
                   alt=""
-                  className="absolute object-cover"
+                  className="absolute object-cover w-full h-full"
                 />
               </div>
               <div className="relative w-[32px] h-[32px] mt-[-16px]">
@@ -208,7 +209,7 @@ const UserCard = ({ username }) => {
               <div className="m-1 text-lg mr-2 ml-2">{points} </div>
               <div className="m-1 flex items-center gap-2">
                 <img className="h-6" src={Coin} alt="Coin" />
-                <div className="">$POSTER</div>
+                <div className="">{posterTokenSymbol}</div>
               </div>
             </div>
 
@@ -220,7 +221,9 @@ const UserCard = ({ username }) => {
                   {!loadingInvite && inviteCodesArr?.length > 0 ? (
                     <div
                       className="flex align-middle "
-                      onClick={() => handleCopy(`Invite Code`, inviteCodesArr)}
+                      onClick={() =>
+                        handleCopy(`Invite Code`, inviteCodesArr[0])
+                      }
                     >
                       <div className="">{inviteCodesArr[0]}</div>
                       <BiCopy className="ml-1 mt-1 cursor-pointer" size={12} />
@@ -241,7 +244,7 @@ const UserCard = ({ username }) => {
                 </div>
               </div>
             </div>
-            <LogoutBtn />
+            {actionType !== "composer" && <LogoutBtn />}
           </div>
         </div>
       </div>

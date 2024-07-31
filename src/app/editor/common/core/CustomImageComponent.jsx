@@ -25,6 +25,9 @@ const CustomImageComponent = ({
   recipientWallet,
   showAuthor,
   author,
+
+  // For TopbarMobile
+  imgClassName,
 }) => {
   const store = useStore();
   const [base64Data, setBase64Data] = useState("");
@@ -32,6 +35,10 @@ const CustomImageComponent = ({
     lensCollectNftRecipientDataRef,
     assetsRecipientDataRef,
     nftRecipientDataRef,
+
+    isMobile,
+    setOpenBottomBar,
+    setCurOpenedPanel,
   } = useContext(Context);
 
   // convert to base64
@@ -55,6 +62,10 @@ const CustomImageComponent = ({
 
   // Function to add image on the Canvas/Page
   const handleClickOrDrop = () => {
+    if (isMobile) {
+      setOpenBottomBar(false);
+      setCurOpenedPanel(null);
+    }
     changeCanvasDimension &&
       store.setSize(
         dimensions[0] || item?.width,
@@ -142,15 +153,15 @@ const CustomImageComponent = ({
         onDragEnd={handleClickOrDrop}
         onClick={handleClickOrDrop}
       >
-        <div className="mb-3">
-          <LazyLoadImage
-            className="rounded-lg"
-            placeholderSrc={base64Data}
-            effect="blur"
-            src={base64Data}
-            alt="Preview Image"
-          />
-        </div>
+        {/* <div className="mb-3"> */}
+        <LazyLoadImage
+          className={`rounded-lg ${imgClassName}`}
+          placeholderSrc={base64Data}
+          effect="blur"
+          src={base64Data}
+          alt="Preview Image"
+        />
+        {/* </div> */}
 
         {/* if nft is a lens collect */}
         {isLensCollect?.isLensCollect ||

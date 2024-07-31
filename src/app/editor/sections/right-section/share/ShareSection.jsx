@@ -5,14 +5,20 @@ import { DateTimePicker } from "@atlaskit/datetime-picker";
 import { chainLogo, getFromLocalStorage } from "../../../../../utils";
 import { Context } from "../../../../../providers/context/ContextProvider";
 import BsX from "@meronex/icons/bs/BsX";
-import { Textarea, Typography } from "@material-tailwind/react";
+import { Button, Textarea, Typography } from "@material-tailwind/react";
 import logoSolana from "../../../../../assets/logos/logoSolana.png";
 import logoFarcaster from "../../../../../assets/logos/logoFarcaster.jpg";
 import { InputBox } from "../../../common";
 import { X_Logo } from "../../../../../assets";
+import DownloadBtn from "../../top-section/download/DownloadBtn";
+import { usePrivy } from "@privy-io/react-auth";
+import { useLocalStorage } from "../../../../../hooks/app";
+import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
+import { EVMWallets } from "../../top-section/auth/wallets";
+import { claimReward } from "../../../../../services";
+import WatermarkRemover from "./components/WatermarkRemover";
 
 const ShareSection = () => {
-  const { isConnected } = useAccount();
   const chains = useChains();
   const {
     setMenu,
@@ -29,10 +35,16 @@ const ShareSection = () => {
 
     isShareOpen,
     setIsShareOpen,
+
+    contextCanvasIdRef,
+
+    isMobile,
   } = useContext(Context);
-  const getTwitterAuth = getFromLocalStorage("twitterAuth");
   const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false);
   const [charLimitError, setCharLimitError] = useState("");
+  const { authenticated, login: privyLogin } = usePrivy();
+  const { actionType, evmAuth } = useLocalStorage();
+  const { login } = usePrivyAuth();
 
   const chainsArray = [
     {
@@ -76,14 +88,6 @@ const ShareSection = () => {
     }
   };
 
-  const handleTwitterClick = () => {
-    if (isConnected && getTwitterAuth) {
-      sharePost("twitter");
-    } else {
-      twitterAuth();
-    }
-  };
-
   // Calendar Functions:
   const onCalChange = (value, dateString) => {
     const dateTime = new Date(value);
@@ -115,6 +119,9 @@ const ShareSection = () => {
 
     if (name === "title") {
       setPostName(value);
+      if (isMobile) {
+        setPostName("Default Title");
+      }
     } else if (name === "description") {
       if (byteLength > maxByteLimit) {
         setCharLimitError("Maximun character limit exceeded");
@@ -152,13 +159,13 @@ const ShareSection = () => {
         <div className="relative mt-0 px-4 pt-1 pb-1 sm:px-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between"></div>
-            <InputBox
+            {/* <InputBox
               label={"Title"}
               name="title"
               autoFocus={true}
               onChange={(e) => handleInputChange(e)}
               value={postName}
-            />
+            /> */}
             <div className="space-x-2">
               <Textarea
                 label="Description"
@@ -250,78 +257,110 @@ const ShareSection = () => {
             </div>
           </div>
         </div>
+        {/* 
+        <Button className="mx-6" onClick={fnCallRemoveWatermark}>
+          Remove Watermark
+        </Button> */}
 
         {/* Share - Icons - 18Jun2023 */}
-        <hr />
-        <div className={`relative mt-6 px-4 sm:px-6`}>
-          <p className="text-lg">Share on socials</p>
-          <div className="flex ">
-            <div className="flex items-center space-x-12 py-5">
-              <div onClick={() => setMenu("lensmonetization")}>
-                {" "}
-                <img
-                  className="w-10 cursor-pointer"
-                  src="/other-icons/share-section/iconLens.png"
-                  alt="Lens"
-                />{" "}
-              </div>
-            </div>
+        {isMobile &&
+          (!evmAuth && actionType !== "composer" ? (
+            <EVMWallets
+              title={"Login with EVM"}
+              className="mx-2"
+              login={login}
+            />
+          ) : (
+            <Button className="mx-6" onClick={() => setMenu("farcasterShare")}>
+              Share on Farcaster
+            </Button>
+          ))}
 
-            <div className="flex items-center space-x-12 py-5 ml-8">
-              <div onClick={() => setMenu("farcasterShare")}>
-                {" "}
-                <img
-                  className="w-10 cursor-pointer rounded-md"
-                  src={logoFarcaster}
-                  alt="Farcaster"
-                />{" "}
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr />
+        {!isMobile && (
+          <>
+            <hr />
+            <div className={`relative mt-6 px-4 sm:px-6`}>
+              <p className="text-lg">Share on socials</p>
+              <div className="flex ">
+                <>
+                  <div className="flex items-center space-x-12 py-5">
+                    <div onClick={() => setMenu("lensmonetization")}>
+                      {" "}
+                      <img
+                        className="w-10 cursor-pointer"
+                        src="/other-icons/share-section/iconLens.png"
+                        alt="Lens"
+                      />{" "}
+                    </div>
+                  </div>
+                </>
 
-        <hr />
-        <div className={`relative mt-6 px-4 sm:px-6`}>
-          <p className="text-lg">Mint as an NFT on EVM</p>
-          <div className="flex flex-wrap items-center gap-10 my-3">
-            {filterChains().map((item) => {
-              return (
                 <div
-                  key={item?.id}
+                  className={`flex items-center py-5 space-x-12 ${
+                    !isMobile ? "ml-8" : " "
+                  }`}
+                >
+                  <div onClick={() => setMenu("farcasterShare")}>
+                    {" "}
+                    <img
+                      className="w-10 cursor-pointer rounded-md"
+                      src={logoFarcaster}
+                      alt="Farcaster"
+                    />{" "}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+
+            <hr />
+            <div className={`relative mt-6 px-4 sm:px-6`}>
+              <p className="text-lg">Mint as an NFT on EVM</p>
+              <div className="flex flex-wrap items-center gap-10 my-3">
+                {filterChains().map((item) => {
+                  return (
+                    <div
+                      key={item?.id}
+                      className="cursor-pointer flex flex-col items-center"
+                      onClick={() => setMenu(item?.id)}
+                    >
+                      {" "}
+                      <img
+                        className="w-10 h-10"
+                        src={chainLogo(item?.id)}
+                        alt={item?.name}
+                      />{" "}
+                      <Typography className="text-md font-semibold">
+                        {item?.name}
+                      </Typography>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <hr />
+
+            <div className={`relative mt-6 px-4 sm:px-6`}>
+              <p className="text-lg">Mint as an NFT on Solana</p>
+              <div className="flex flex-wrap items-center gap-10 my-3">
+                <div
                   className="cursor-pointer flex flex-col items-center"
-                  onClick={() => setMenu(item?.id)}
+                  onClick={() => setMenu("solanaMint")}
                 >
                   {" "}
-                  <img
-                    className="w-10 h-10"
-                    src={chainLogo(item?.id)}
-                    alt={item?.name}
-                  />{" "}
+                  <img className="w-10" src={logoSolana} alt="Solana" />{" "}
                   <Typography className="text-md font-semibold">
-                    {item?.name}
+                    Solana
                   </Typography>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-        <hr />
-
-        <div className={`relative mt-6 px-4 sm:px-6`}>
-          <p className="text-lg">Mint as an NFT on Solana</p>
-          <div className="flex flex-wrap items-center gap-10 my-3">
-            <div
-              className="cursor-pointer flex flex-col items-center"
-              onClick={() => setMenu("solanaMint")}
-            >
-              {" "}
-              <img className="w-10" src={logoSolana} alt="Solana" />{" "}
-              <Typography className="text-md font-semibold">Solana</Typography>
+              </div>
             </div>
-          </div>
-        </div>
-        <hr />
+            <hr />
+          </>
+        )}
+        {isMobile && <hr className="my-6" />}
+        <div className={`${isMobile ? "mt-0" : "mt-4"}`}></div>
+        <WatermarkRemover />
       </div>
     </>
   );

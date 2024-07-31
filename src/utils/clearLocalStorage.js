@@ -12,4 +12,8 @@ export const clearAllLocalStorageData = () => {
   removeFromLocalStorage(LOCAL_STORAGE.lensAuth);
   removeFromLocalStorage(LOCAL_STORAGE.ifUserEligible);
   removeFromLocalStorage(LOCAL_STORAGE.dispatcher);
+  removeFromLocalStorage(LOCAL_STORAGE.actionType);
+  removeFromLocalStorage(LOCAL_STORAGE.farcasterAuth);
+  removeFromLocalStorage(LOCAL_STORAGE.privy);
+  removeFromLocalStorage(LOCAL_STORAGE.FcComposerAuth);
 };

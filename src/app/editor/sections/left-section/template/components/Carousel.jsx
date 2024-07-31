@@ -7,9 +7,12 @@ import { Carousel } from "@material-tailwind/react";
 import { CustomImageComponent } from "../../../../common";
 import { getAssetByQuery, getFeaturedAssets } from "../../../../../../services";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Context } from "../../../../../../providers/context";
 
 const CompCarousel = ({ type, author, campaign }) => {
+  const { isMobile, setOpenLeftBar, openLeftBar } = useContext(Context);
+
   const {
     data,
     isLoading,
@@ -50,21 +53,30 @@ const CompCarousel = ({ type, author, campaign }) => {
           .slice(0, 6)
           .map((item, index) => {
             return (
-              <CustomImageComponent
-                key={index}
-                item={item}
-                assetType={null}
-                collectionName={null}
-                preview={item?.image}
-                dimensions={item?.dimensions != null && item.dimensions}
-                hasOptionBtn={null}
-                onDelete={null}
-                isLensCollect={item?.wallet}
-                changeCanvasDimension={true}
-                recipientWallet={item?.wallet}
-                showAuthor={true}
-                author={item?.author}
-              />
+              <div
+                className=""
+                onClick={() => {
+                  if (isMobile) {
+                    setOpenLeftBar(!openLeftBar);
+                  }
+                }}
+              >
+                <CustomImageComponent
+                  key={index}
+                  item={item}
+                  assetType={null}
+                  collectionName={null}
+                  preview={item?.image}
+                  dimensions={item?.dimensions != null && item.dimensions}
+                  hasOptionBtn={null}
+                  onDelete={null}
+                  isLensCollect={item?.wallet}
+                  changeCanvasDimension={true}
+                  recipientWallet={item?.wallet}
+                  showAuthor={true}
+                  author={item?.author}
+                />
+              </div>
             );
           })}
     </Carousel>

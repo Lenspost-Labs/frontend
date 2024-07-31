@@ -31,3 +31,4 @@ export const DEGEN_CURRENCY_ADDRESS =
   "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed";
 
 export const isSponsoredChain = [8453, 42161];
+export const posterTokenSymbol = "xPOSTER";

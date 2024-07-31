@@ -1,5 +1,8 @@
 import React, { createContext, useRef, useState } from "react";
 import posthog from "posthog-js";
+import { randomId } from "../../utils";
+import { ENVIRONMENT } from "../../services";
+import { base, baseSepolia } from "viem/chains";
 
 posthog.init("phc_CvXLACFkyLdhJjiGLxlix6ihbGjumRvGjUFSinPWJYD", {
   api_host: "https://eu.posthog.com",
@@ -493,7 +496,14 @@ const ContextProvider = ({ children }) => {
   });
 
   // console.log("ContextProvider", farcasterStates?.frameData);
-  // console.log("ContextProvider", zoraErc721StatesError);
+  // console.log("randomNum ", postName);
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [curOpenedPanel, setCurOpenedPanel] = useState("");
+  const [openLeftBar, setOpenLeftBar] = useState(false);
+  const [openBottomBar, setOpenBottomBar] = useState(false);
+  const [removedWMarkCanvas, setRemovedWMarkCanvas] = useState();
+  const chainId = ENVIRONMENT === "production" ? base?.id : baseSepolia?.id;
 
   return (
     <Context.Provider
@@ -666,6 +676,22 @@ const ContextProvider = ({ children }) => {
         // session
         session,
         setSession,
+
+        // Mobile UI
+        isMobile,
+        setIsMobile,
+        // for mobile Tabs :
+        curOpenedPanel,
+        setCurOpenedPanel,
+        openLeftBar,
+        setOpenLeftBar,
+        openBottomBar,
+        setOpenBottomBar,
+        // For watermark
+        removedWMarkCanvas,
+        setRemovedWMarkCanvas,
+
+        chainId,
       }}
     >
       {children}

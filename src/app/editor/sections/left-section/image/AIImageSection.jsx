@@ -45,6 +45,7 @@ import {
 } from "../../../../../services";
 import useUser from "../../../../../hooks/user/useUser";
 import { toast } from "react-toastify";
+import { posterTokenSymbol } from "../../../../../data";
 
 // Tab1 - Search Tab
 
@@ -64,7 +65,14 @@ const RANDOM_QUERIES2 = [
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = ["Mountains", "Hearts", "Robots", "NFTS", "Elon"];
 
-const CompSearch = () => {
+export const CompSearch = () => {
+  const {
+    setOpenLeftBar,
+    openLeftBar,
+    openBottomBar,
+    setOpenBottomBar,
+    isMobile,
+  } = useContext(Context);
   const store = useStore();
   const { points } = useUser();
 
@@ -82,11 +90,11 @@ const CompSearch = () => {
       return;
     }
     if (!points) {
-      toast.error("Error Fetching $POSTER Points");
+      toast.error(`Error Fetching ${posterTokenSymbol} Points`);
       return;
     }
     if (points < 1) {
-      toast.error("Not enough $POSTER points");
+      toast.error(`Not enough ${posterTokenSymbol} points`);
       return;
     }
     async function load() {
@@ -152,7 +160,11 @@ const CompSearch = () => {
           />
           <MatButton className="mb-4" onClick={fnGenerateImages}>
             Generate
-            <img className="h-4 -mt-1 ml-2" src="/public/svgs/coin.svg" alt="" />
+            <img
+              className="h-4 -mt-1 ml-2"
+              src="/public/svgs/coin.svg"
+              alt=""
+            />
           </MatButton>
           {/* 
 			<button className="bg-[#e1f16b] w-full px-4 p-1  mb-4 rounded-md hover:bg-[#e0f26cce]" onClick={fnGenerateImages}>Generate</button>
@@ -199,7 +211,20 @@ const CompSearch = () => {
       {!isLoading && stStatusCode === 200 && (
         <>
           {data?.images.map((val, key) => (
-            <CustomImageComponent key={key} preview={val.url} />
+            <div
+              onClick={() => {
+                if (isMobile) {
+                  if (openBottomBar) {
+                    setOpenBottomBar(false);
+                  }
+                  if (openLeftBar) {
+                    setOpenLeftBar(false);
+                  }
+                }
+              }}
+            >
+              <CustomImageComponent key={key} preview={val.url} />
+            </div>
           ))}
         </>
       )}
@@ -289,11 +314,11 @@ const CompInstructImage = () => {
 
   const fnCallInstructImgAPI = async () => {
     if (!points) {
-      toast.error("Error Fetching $POSTER Points ");
+      toast.error(`Error Fetching ${posterTokenSymbol} Points`);
       return;
     }
     if (points < 1) {
-      toast.error("Not enough $POSTER points");
+      toast.error(`Not enough ${posterTokenSymbol} points`);
       return;
     }
 

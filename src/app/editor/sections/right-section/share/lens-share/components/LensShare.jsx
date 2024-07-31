@@ -72,6 +72,7 @@ import {
 import { EVMWallets } from "../../../../top-section/auth/wallets";
 import { SharePanelHeaders } from "../../components";
 import BsPlus from "@meronex/icons/bs/BsPlus";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const LensShare = () => {
   const [recipientsLensHandle, setRecipientsLensHandle] = useState([]);
@@ -93,6 +94,7 @@ const LensShare = () => {
     isSuccess: isSuccessSwitchNetwork,
     switchChain,
   } = useSwitchChain();
+  const { login } = usePrivyAuth();
 
   const {
     setIsLoading,
@@ -123,7 +125,7 @@ const LensShare = () => {
   const [currentTab, setCurrentTab] = useState("smartPost");
 
   const isUnsupportedChain = () => {
-    if (chain?.id != chains[0]?.id) return true; 
+    if (chain?.id != chains[0]?.id) return true;
     return false;
   };
 
@@ -1003,7 +1005,7 @@ const LensShare = () => {
         </div>
 
         {!getEVMAuth ? (
-          <EVMWallets title="Login with EVM" className="mx-2" />
+          <EVMWallets title="Login with EVM" login={login} className="mx-2" />
         ) : isUnsupportedChain() ? (
           <div className="mx-2 outline-none">
             <Button

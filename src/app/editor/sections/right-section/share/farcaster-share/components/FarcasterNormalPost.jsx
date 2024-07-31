@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import {
-  ENVIRONMENT,
   claimReward,
   getENSDomain,
   shareOnSocials,
@@ -17,20 +16,13 @@ import {
   chainLogo,
   priceFormatter,
 } from "../../../../../../../utils";
-import {
-  useAppAuth,
-  useLocalStorage,
-  useReset,
-} from "../../../../../../../hooks/app";
+import { useAppAuth, useLocalStorage } from "../../../../../../../hooks/app";
 import {
   APP_ETH_ADDRESS,
-  DEGEN_CURRENCY_ADDRESS,
-  ERROR,
   FRAME_URL,
   LOCAL_STORAGE,
   TOKEN_LIST,
   URL_REGEX,
-  degen,
   isSponsoredChain,
 } from "../../../../../../../data";
 import {
@@ -39,7 +31,6 @@ import {
   Option,
   Select,
   Spinner,
-  Typography,
 } from "@material-tailwind/react";
 import { EVMWallets } from "../../../../top-section/auth/wallets";
 import FarcasterAuth from "./FarcasterAuth";
@@ -49,7 +40,6 @@ import { ZoraDialog } from "../../zora-mint/components";
 import logoFarcaster from "../../../../../../../assets/logos/logoFarcaster.jpg";
 import {
   deployZoraContract,
-  getFrame,
   getOrCreateWallet,
   mintToXchain,
   postFrame,
@@ -65,23 +55,18 @@ import {
 } from "wagmi";
 import WithdrawFunds from "./WithdrawFunds";
 import { zoraNftCreatorV1Config } from "@zoralabs/zora-721-contracts";
-import { zoraURLErc721 } from "../../zora-mint/utils";
 import { http } from "viem";
 import { config } from "../../../../../../../providers/EVM/EVMWalletProvider";
-import TiDelete from "@meronex/icons/ti/TiDelete";
 import BsPlus from "@meronex/icons/bs/BsPlus";
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import { useBalance } from "wagmi";
-import { base, baseSepolia } from "viem/chains";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 import { usePrivy } from "@privy-io/react-auth";
 
 const FarcasterNormalPost = () => {
-  const { resetState } = useReset();
   const { address } = useAccount();
   const { chain } = useAccount();
-  const { userLOA, actionType } = useLocalStorage();
+  const { userLOA, actionType, userAddress } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
   const { login: privyLogin, authenticated } = usePrivy();
@@ -93,12 +78,7 @@ const FarcasterNormalPost = () => {
   const [isError, setIsError] = useState(false);
   const [farTxHash, setFarTxHash] = useState("");
 
-  // FC Split recipients
-  const [recipientsLensHandle, setRecipientsLensHandle] = useState([]);
-  const [totalPercentage, setTotalPercentage] = useState(0);
-
   // zora contract deploy states
-  // const [isDeployingZoraContract, setIsDeployingZoraContract] = useState(false);
   const [isDeployingZoraContractError, setIsDeployingZoraContractError] =
     useState(false);
   const [isDeployingZoraContractSuccess, setIsDeployingZoraContractSuccess] =
@@ -202,8 +182,8 @@ const FarcasterNormalPost = () => {
     postName?.split(" ")[0].toUpperCase(),
     allowedMints,
     "500",
-    address,
-    isCreatorSponsored ? LOA : address,
+    address || userAddress,
+    isCreatorSponsored ? LOA : address || userAddress,
     {
       publicSalePrice: "0",
       maxSalePurchasePerAddress: "4294967295",
@@ -434,7 +414,7 @@ const FarcasterNormalPost = () => {
 
     const params = {
       canvasId: contextCanvasIdRef.current,
-      owner: address,
+      owner: address || userAddress,
       isTopUp: farcasterStates.frameData?.isTopup,
       allowedMints: Number(farcasterStates.frameData?.allowedMints),
       metadata: {
@@ -1807,32 +1787,43 @@ const FarcasterNormalPost = () => {
                   : "You don't have any free mint. please Topup with Base ETH to mint"}{" "}
                 {actionType === "composer" && "10 mints are free"}
               </p>
-              <p className="text-end mt-4">
-                <span>Topup account:</span>
-                {actionType !== "composer" &&
-                (isWalletLoading || isWalletRefetching) ? (
-                  <span className="text-blue-500"> Loading address... </span>
-                ) : (
-                  <span
-                    className="text-blue-500 cursor-pointer"
-                    onClick={() => {
-                      navigator.clipboard.writeText(walletData?.publicAddress);
-                      toast.success("Copied topup account address");
-                    }}
-                  >
-                    {" "}
-                    {addressCrop(walletData?.publicAddress)}
-                  </span>
-                )}
-              </p>
-              <p className="text-end">
-                <span>Topup balance:</span>
-                {isWalletLoading || isWalletRefetching ? (
-                  <span className="text-blue-500"> Loading balance... </span>
-                ) : (
-                  <span> {walletData?.balance} Base ETH</span>
-                )}
-              </p>
+
+              {actionType !== "composer" ? (
+                <>
+                  <p className="text-end mt-4">
+                    <span>Topup account:</span>
+                    isWalletLoading || isWalletRefetching ? (
+                    <span className="text-blue-500"> Loading address... </span>)
+                    : (
+                    <span
+                      className="text-blue-500 cursor-pointer"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          walletData?.publicAddress
+                        );
+                        toast.success("Copied topup account address");
+                      }}
+                    >
+                      {" "}
+                      {addressCrop(walletData?.publicAddress)}
+                    </span>
+                    )
+                  </p>
+
+                  <p className="text-end">
+                    <span>Topup balance:</span>
+                    {isWalletLoading || isWalletRefetching ? (
+                      <span className="text-blue-500">
+                        {" "}
+                        Loading balance...{" "}
+                      </span>
+                    ) : (
+                      <span> {walletData?.balance} Base ETH</span>
+                    )}
+                  </p>
+                </>
+              ) : null}
+
               <div className="flex flex-col w-full py-2">
                 <NumberInputBox
                   min={1}

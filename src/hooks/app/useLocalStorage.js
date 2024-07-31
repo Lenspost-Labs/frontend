@@ -32,6 +32,7 @@ const useLocalStorage = () => {
   const userLOA = getFromLocalStorage(LOCAL_STORAGE.userLOA);
   const fcComposerAuth = getFromLocalStorage(LOCAL_STORAGE.FcComposerAuth);
   const actionType = getFromLocalStorage(LOCAL_STORAGE.actionType);
+  const userAddress = getFromLocalStorage(LOCAL_STORAGE.userAddress);
 
   return {
     authToken,
@@ -51,6 +52,7 @@ const useLocalStorage = () => {
     userLOA,
     fcComposerAuth,
     actionType,
+    userAddress,
   };
 };
 

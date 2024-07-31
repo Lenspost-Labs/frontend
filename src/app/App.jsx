@@ -293,8 +293,10 @@ const App = () => {
     const params = new URLSearchParams(url.search);
     const authParam = params.get("fc-auth");
     const actionType = params.get("actionType");
+    const userAddress = params.get("address");
     saveToLocalStorage(LOCAL_STORAGE.FcComposerAuth, authParam);
     saveToLocalStorage(LOCAL_STORAGE.actionType, actionType);
+    saveToLocalStorage(LOCAL_STORAGE.userAddress, userAddress);
   }, []);
 
   return (

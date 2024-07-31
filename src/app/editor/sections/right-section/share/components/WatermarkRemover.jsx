@@ -16,6 +16,11 @@ const WatermarkRemover = () => {
 
   const fnRemoveWatermark = () => {
     toast?.loading("Removing watermark");
+    if (!contextCanvasIdRef?.current) {
+      toast.dismiss();
+      toast.error("Please remove watermark after adding something on the canvas");
+      return;
+    }
     if (points < 5 || !points) {
       toast.dismiss();
       toast.error("Not enough $POSTER points");

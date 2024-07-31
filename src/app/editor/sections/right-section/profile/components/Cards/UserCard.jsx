@@ -208,7 +208,7 @@ const UserCard = ({ username }) => {
               <div className="m-1 text-lg mr-2 ml-2">{points} </div>
               <div className="m-1 flex items-center gap-2">
                 <img className="h-6" src={Coin} alt="Coin" />
-                <div className="">$POSTER</div>
+                <div className="">{posterTokenSymbol}</div>
               </div>
             </div>
 

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { consoleLogonlyDev } from "../../../../../../utils";
 import { claimReward } from "../../../../../../services";
 import { Context } from "../../../../../../providers/context";
+import { posterTokenSymbol } from "../../../../../../data";
 
 const WatermarkRemover = () => {
   const store = useStore();
@@ -18,12 +19,14 @@ const WatermarkRemover = () => {
     toast?.loading("Removing watermark");
     if (!contextCanvasIdRef?.current) {
       toast.dismiss();
-      toast.error("Please remove watermark after adding something on the canvas");
+      toast.error(
+        "Please remove watermark after adding something on the canvas"
+      );
       return;
     }
     if (points < 5 || !points) {
       toast.dismiss();
-      toast.error("Not enough $POSTER points");
+      toast.error(`Not enough ${posterTokenSymbol} points`);
       return;
     }
     consoleLogonlyDev("Remove watermark called");
@@ -63,11 +66,11 @@ const WatermarkRemover = () => {
             <BsDroplet size="24" />
           </div>
           <div className="text-md text-white">
-            Remove watermark with your $POSTER Tokens
+            Remove watermark with your {posterTokenSymbol} Tokens
           </div>
           <div className="text-sm bg-[#FFFFFF40] text-white p-1 px-2 rounded-l-full rounded-r-md">
             <span className="mr-2">5</span>
-            <span>$POSTER</span>
+            <span>{posterTokenSymbol}</span>
           </div>
         </div>
       </div>

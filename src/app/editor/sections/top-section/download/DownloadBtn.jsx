@@ -86,7 +86,7 @@ const DownloadBtn = () => {
 
   const fnHandleClaim = async () => {
     if (!points || points < 1) {
-      toast.error("Not enough $POSTER points");
+      toast.error(`Not enough ${posterTokenSymbol} points`);
       return;
     } else {
       // Claim the task for the user

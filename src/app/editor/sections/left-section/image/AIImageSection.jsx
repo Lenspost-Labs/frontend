@@ -45,6 +45,7 @@ import {
 } from "../../../../../services";
 import useUser from "../../../../../hooks/user/useUser";
 import { toast } from "react-toastify";
+import { posterTokenSymbol } from "../../../../../data";
 
 // Tab1 - Search Tab
 
@@ -89,11 +90,11 @@ export const CompSearch = () => {
       return;
     }
     if (!points) {
-      toast.error("Error Fetching $POSTER Points");
+      toast.error(`Error Fetching ${posterTokenSymbol} Points`);
       return;
     }
     if (points < 1) {
-      toast.error("Not enough $POSTER points");
+      toast.error(`Not enough ${posterTokenSymbol} points`);
       return;
     }
     async function load() {
@@ -313,11 +314,11 @@ const CompInstructImage = () => {
 
   const fnCallInstructImgAPI = async () => {
     if (!points) {
-      toast.error("Error Fetching $POSTER Points ");
+      toast.error(`Error Fetching ${posterTokenSymbol} Points`);
       return;
     }
     if (points < 1) {
-      toast.error("Not enough $POSTER points");
+      toast.error(`Not enough ${posterTokenSymbol} points`);
       return;
     }
 

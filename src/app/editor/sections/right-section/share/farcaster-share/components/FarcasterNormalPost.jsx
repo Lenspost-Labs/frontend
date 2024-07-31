@@ -1777,16 +1777,19 @@ const FarcasterNormalPost = () => {
             } mt-2`}
           >
             <div className="my-2">
-              <p className="text-sm">
-                {" "}
-                {actionType !== "composer" && walletData?.sponsored > 0
-                  ? `${
-                      walletData?.sponsored
-                    } mints are free. Topup with Base ETH if you want
+              {actionType === "composer" ? (
+                <p className="text-sm">
+                  {" "}
+                  {walletData?.sponsored > 0
+                    ? `${
+                        walletData?.sponsored
+                      } mints are free. Topup with Base ETH if you want
               to drop more than ${walletData?.sponsored} mints ${" "}`
-                  : "You don't have any free mint. please Topup with Base ETH to mint"}{" "}
-                {actionType === "composer" && "10 mints are free"}
-              </p>
+                    : "You don't have any free mint. please Topup with Base ETH to mint"}{" "}
+                </p>
+              ) : (
+                actionType === "composer" && "10 mints are free"
+              )}
 
               {actionType !== "composer" ? (
                 <>

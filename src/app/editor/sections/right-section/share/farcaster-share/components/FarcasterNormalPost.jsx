@@ -1777,7 +1777,7 @@ const FarcasterNormalPost = () => {
             } mt-2`}
           >
             <div className="my-2">
-              {actionType === "composer" ? (
+              {actionType !== "composer" ? (
                 <p className="text-sm">
                   {" "}
                   {walletData?.sponsored > 0
@@ -1788,7 +1788,7 @@ const FarcasterNormalPost = () => {
                     : "You don't have any free mint. please Topup with Base ETH to mint"}{" "}
                 </p>
               ) : (
-                actionType === "composer" && "10 mints are free"
+                "10 mints are free"
               )}
 
               {actionType !== "composer" ? (

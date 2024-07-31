@@ -261,6 +261,7 @@ export const DesignPanel = ({ isMobile }) => {
                         canvasId: item?.id,
                       })
                     }
+                    hasWatermark={item?.watermark}
                   />
                 </>
               );

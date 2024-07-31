@@ -17,6 +17,7 @@ const DesignCard = ({
   isPublic,
   openTokengateModal,
   onOpenTagModal,
+  hasWatermark,
 }) => {
   const {
     fastPreview,
@@ -26,16 +27,20 @@ const DesignCard = ({
     designModal,
     setDesignModal,
     isMobile,
-    setOpenLeftBar
+    setOpenLeftBar,
+    setRemovedWMarkCanvas,
   } = useContext(Context);
   const store = useStore();
 
   const handleClickOrDrop = () => {
-    if(isMobile) {
-      setOpenLeftBar(false)
+    if (isMobile) {
+      setOpenLeftBar(false);
+    }
+    contextCanvasIdRef.current = item.id;
+    if (!hasWatermark) {
+      setRemovedWMarkCanvas(item?.id);
     }
     store.loadJSON(json);
-    contextCanvasIdRef.current = item.id;
     referredFromRef.current = item.referredFrom;
     preStoredRecipientDataRef.current = item.assetsRecipientElementData;
   };

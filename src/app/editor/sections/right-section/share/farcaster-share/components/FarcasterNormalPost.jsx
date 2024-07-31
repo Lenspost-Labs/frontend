@@ -130,6 +130,7 @@ const FarcasterNormalPost = () => {
     fastPreview,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
+    chainId,
 
     // For Mobile only
     isMobile,
@@ -147,7 +148,7 @@ const FarcasterNormalPost = () => {
     isRefetching: isWalletRefetching,
   } = useQuery({
     queryKey: ["getOrCreateWallet"],
-    queryFn: () => getOrCreateWallet(chain?.id || base?.id),
+    queryFn: () => getOrCreateWallet(chain?.id || chainId),
     refetchOnWindowFocus: false,
   });
 
@@ -192,7 +193,6 @@ const FarcasterNormalPost = () => {
     },
   });
 
-  const chainId = ENVIRONMENT === "production" ? base?.id : baseSepolia?.id;
   const isCreatorSponsored = farcasterStates?.frameData?.isCreatorSponsored;
   const LOA = walletData?.publicAddress ? walletData?.publicAddress : userLOA;
   const allowedMints = farcasterStates?.frameData?.allowedMints;
@@ -1799,16 +1799,18 @@ const FarcasterNormalPost = () => {
             <div className="my-2">
               <p className="text-sm">
                 {" "}
-                {walletData?.sponsored > 0
+                {actionType !== "composer" && walletData?.sponsored > 0
                   ? `${
                       walletData?.sponsored
                     } mints are free. Topup with Base ETH if you want
               to drop more than ${walletData?.sponsored} mints ${" "}`
                   : "You don't have any free mint. please Topup with Base ETH to mint"}{" "}
+                {actionType === "composer" && "10 mints are free"}
               </p>
               <p className="text-end mt-4">
                 <span>Topup account:</span>
-                {isWalletLoading || isWalletRefetching ? (
+                {actionType !== "composer" &&
+                (isWalletLoading || isWalletRefetching) ? (
                   <span className="text-blue-500"> Loading address... </span>
                 ) : (
                   <span

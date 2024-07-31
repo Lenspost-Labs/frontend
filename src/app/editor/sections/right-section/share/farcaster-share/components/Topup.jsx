@@ -10,16 +10,15 @@ import {
 } from "@material-tailwind/react";
 
 import { useEstimateFeesPerGas, useAccount, useSwitchChain } from "wagmi";
-import { base } from "wagmi/chains";
+import { base, baseSepolia } from "wagmi/chains";
 import { useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 import { http, parseEther } from "viem";
 import { toast } from "react-toastify";
 import { config } from "../../../../../../../providers/EVM/EVMWalletProvider";
-import { useLocalStorage } from "../../../../../../../hooks/app";
-import { usePrivy } from "@privy-io/react-auth";
+import { ENVIRONMENT } from "../../../../../../../services";
 
 const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
-  const { farcasterStates, setFarcasterStates } = useContext(Context);
+  const { farcasterStates, setFarcasterStates, chainId } = useContext(Context);
   const [extraPayForMints, setExtraPayForMints] = useState(null);
   const { chain } = useAccount();
   const {
@@ -147,7 +146,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
     }
   }, [isError, isTxError]);
 
-  if (farcasterStates.frameData.isCreatorSponsored && chain?.id !== base?.id) {
+  if (farcasterStates.frameData.isCreatorSponsored && chain?.id !== chainId) {
     return (
       <Card className="my-2">
         <List>
@@ -155,12 +154,13 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
             className="flex justify-between items-center gap-2"
             onClick={() =>
               switchChain({
-                chainId: base?.id,
+                chainId: chainId,
               })
             }
           >
             <Typography variant="h6" color="blue-gray">
-              Click here to switch to Base chain
+              Click here to switch to{" "}
+              {ENVIRONMENT === "production" ? "Base" : "BaseSepolia"} chain
             </Typography>
           </ListItem>
         </List>

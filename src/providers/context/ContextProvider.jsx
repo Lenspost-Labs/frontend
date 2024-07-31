@@ -1,6 +1,8 @@
 import React, { createContext, useRef, useState } from "react";
 import posthog from "posthog-js";
 import { randomId } from "../../utils";
+import { ENVIRONMENT } from "../../services";
+import { base, baseSepolia } from "viem/chains";
 
 posthog.init("phc_CvXLACFkyLdhJjiGLxlix6ihbGjumRvGjUFSinPWJYD", {
   api_host: "https://eu.posthog.com",
@@ -501,6 +503,7 @@ const ContextProvider = ({ children }) => {
   const [openLeftBar, setOpenLeftBar] = useState(false);
   const [openBottomBar, setOpenBottomBar] = useState(false);
   const [removedWMarkCanvas, setRemovedWMarkCanvas] = useState();
+  const chainId = ENVIRONMENT === "production" ? base?.id : baseSepolia?.id;
 
   return (
     <Context.Provider
@@ -684,9 +687,11 @@ const ContextProvider = ({ children }) => {
         setOpenLeftBar,
         openBottomBar,
         setOpenBottomBar,
-        // For watermark 
+        // For watermark
         removedWMarkCanvas,
         setRemovedWMarkCanvas,
+
+        chainId,
       }}
     >
       {children}

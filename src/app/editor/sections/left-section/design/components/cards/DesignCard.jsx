@@ -25,11 +25,15 @@ const DesignCard = ({
     preStoredRecipientDataRef,
     designModal,
     setDesignModal,
-    isMobile
+    isMobile,
+    setOpenLeftBar
   } = useContext(Context);
   const store = useStore();
 
   const handleClickOrDrop = () => {
+    if(isMobile) {
+      setOpenLeftBar(false)
+    }
     store.loadJSON(json);
     contextCanvasIdRef.current = item.id;
     referredFromRef.current = item.referredFrom;

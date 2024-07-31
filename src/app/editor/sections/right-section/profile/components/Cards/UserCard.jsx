@@ -93,7 +93,7 @@ const UserCard = ({ username }) => {
                       : NormieDP
                   }
                   alt=""
-                  className="absolute object-cover"
+                  className="absolute object-cover w-full h-full"
                 />
               </div>
               <div className="relative w-[32px] h-[32px] mt-[-16px]">

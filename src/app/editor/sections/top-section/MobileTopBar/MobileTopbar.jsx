@@ -28,6 +28,10 @@ import DownloadBtn from "../download/DownloadBtn";
 import { useUser } from "../../../../../hooks/user";
 
 const MobileTopbar = () => {
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+  const actionType = params.get("actionType");
+
   const store = useStore();
   const {
     openLeftBar,
@@ -87,10 +91,11 @@ const MobileTopbar = () => {
           <EditIconLeft />
         </div>
         <Toolbar store={store} />
-
-        <div className="bg-white rounded-lg p-3">
-          <DownloadBtn />
-        </div>
+        {actionType !== "composer" && (
+          <div className="bg-white rounded-lg p-3">
+            <DownloadBtn />
+          </div>
+        )}
       </div>
 
       <Drawer

@@ -15,6 +15,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useLocalStorage } from "../../../../../hooks/app";
 import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 import { EVMWallets } from "../../top-section/auth/wallets";
+import { claimReward } from "../../../../../services";
 
 const ShareSection = () => {
   const chains = useChains();
@@ -33,6 +34,8 @@ const ShareSection = () => {
 
     isShareOpen,
     setIsShareOpen,
+
+    contextCanvasIdRef,
 
     isMobile,
   } = useContext(Context);
@@ -129,6 +132,13 @@ const ShareSection = () => {
         setPostDescription(value);
       }
     }
+  };
+
+  const fnCallRemoveWatermark = () => {
+    claimReward({
+      taskId: 1,
+      canvasId: contextCanvasIdRef.current,
+    });
   };
 
   return (
@@ -253,7 +263,11 @@ const ShareSection = () => {
             </div>
           </div>
         </div>
-
+{/* 
+        <Button className="mx-6" onClick={fnCallRemoveWatermark}>
+          Remove Watermark
+        </Button> */}
+        
         {/* Share - Icons - 18Jun2023 */}
         {isMobile &&
           (!evmAuth && actionType !== "composer" ? (

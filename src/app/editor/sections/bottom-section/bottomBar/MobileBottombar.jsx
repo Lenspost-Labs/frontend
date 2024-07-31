@@ -162,38 +162,36 @@ const MobileBottombar = () => {
           // on escape press
           className={`fixed ${
             openBottomBar ? "bottom-16" : "bottom-0"
-          } h-[calc(100vh-3rem)] z-[999] overflow-y-auto left-0 right-0 bg-white transition-transform duration-300 ease-in-out ${
+          } h-[calc(100vh-6rem)] z-[999] overflow-y-auto left-0 right-0 bg-white transition-transform duration-300 ease-in-out ${
             openBottomBar ? "translate-y-0" : "translate-y-full"
           }`}
         >
           <div className="p-4">
             <>
-              <div className="flex align-middle justify-end p-4 pt-2">
-                {/* <BsX
-                  className="cursor-pointer bg-[#f8f8f8] rounded-lg"
-                  size={24}
-                  onClick={() => setOpenBottomBar(!openBottomBar)}
-                /> */}
-              </div>
+              <div className="flex align-middle justify-end p-4 pt-2"></div>
               {curOpenedPanel === "mobPanelUpload" && (
                 <>
                   <Tabs value="upload">
-                    <div className="flex items-center align-middle justify-between">
-                      <TabsHeader>
-                        {uploadTabsData.map(({ label, value }) => (
-                          <Tab key={value} value={value}>
-                            {label}
-                          </Tab>
-                        ))}
-                      </TabsHeader>
-                      <BsX
-                        className="cursor-pointer bg-[#f8f8f8] rounded-lg"
-                        size={24}
-                        onClick={() => {
-                          setOpenBottomBar(false);
-                          setCurOpenedPanel(null);
-                        }}
-                      />
+                    <div className="flex gap-2 items-center">
+                      <div className="w-full">
+                        <TabsHeader>
+                          {uploadTabsData.map(({ label, value }) => (
+                            <Tab key={value} value={value}>
+                              {label}
+                            </Tab>
+                          ))}
+                        </TabsHeader>
+                      </div>
+                      <div className="bg-[#f8f8f8] rounded-full p-1">
+                        <BsX
+                          className="cursor-pointer text-blue-gray-600"
+                          size={32}
+                          onClick={() => {
+                            setOpenBottomBar(false);
+                            setCurOpenedPanel(null);
+                          }}
+                        />
+                      </div>
                     </div>
                     <TabsBody>
                       {uploadTabsData.map(({ value, desc }) => (
@@ -214,13 +212,27 @@ const MobileBottombar = () => {
               {curOpenedPanel === "mobPanelStickers" && (
                 <>
                   <Tabs value="stickers">
-                    <TabsHeader>
-                      {stickersTabsData.map(({ label, value }) => (
-                        <Tab key={value} value={value}>
-                          {label}
-                        </Tab>
-                      ))}
-                    </TabsHeader>
+                    <div className="flex gap-2 items-center">
+                      <div className="w-full">
+                        <TabsHeader>
+                          {stickersTabsData.map(({ label, value }) => (
+                            <Tab key={value} value={value}>
+                              {label}
+                            </Tab>
+                          ))}
+                        </TabsHeader>
+                      </div>
+                      <div className="bg-[#f8f8f8] rounded-full p-1">
+                        <BsX
+                          className="cursor-pointer text-blue-gray-600"
+                          size={32}
+                          onClick={() => {
+                            setOpenBottomBar(false);
+                            setCurOpenedPanel(null);
+                          }}
+                        />
+                      </div>
+                    </div>
                     <TabsBody>
                       {stickersTabsData.map(({ value, desc }) => (
                         <TabPanel key={value} value={value}>

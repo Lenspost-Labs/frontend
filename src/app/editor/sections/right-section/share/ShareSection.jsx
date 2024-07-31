@@ -16,6 +16,7 @@ import { useLocalStorage } from "../../../../../hooks/app";
 import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 import { EVMWallets } from "../../top-section/auth/wallets";
 import { claimReward } from "../../../../../services";
+import WatermarkRemover from "./components/WatermarkRemover";
 
 const ShareSection = () => {
   const chains = useChains();
@@ -132,13 +133,6 @@ const ShareSection = () => {
         setPostDescription(value);
       }
     }
-  };
-
-  const fnCallRemoveWatermark = () => {
-    claimReward({
-      taskId: 1,
-      canvasId: contextCanvasIdRef.current,
-    });
   };
 
   return (
@@ -364,6 +358,9 @@ const ShareSection = () => {
             <hr />
           </>
         )}
+        {isMobile && <hr className="my-6" />}
+        <div className={`${isMobile ? "mt-0" : "mt-4"}`}></div>
+        <WatermarkRemover />
       </div>
     </>
   );

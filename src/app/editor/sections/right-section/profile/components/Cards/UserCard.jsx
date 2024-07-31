@@ -21,10 +21,12 @@ import BsArrowRepeat from "@meronex/icons/bs/BsArrowRepeat";
 // import                 src/assets/logos/logoFarcaster.jpg
 import farcasterLogo from "../../../../../../../assets/logos/logoFarcaster.jpg";
 import { Spinner } from "@material-tailwind/react";
+import { useLocalStorage } from "../../../../../../../hooks/app";
 
 const UserCard = ({ username }) => {
   const { points, profileImage, userLevel, farcasterHandle } = useUser();
   const [loadingInvite, setLoadingInvite] = useState(false);
+  const { actionType } = useLocalStorage();
 
   // const { address } = useAccount();
 
@@ -50,7 +52,6 @@ const UserCard = ({ username }) => {
     console.log("result", result);
     refetch();
     setLoadingInvite(false);
-
   };
 
   const fnGetSocialDetails = async () => {
@@ -61,7 +62,6 @@ const UserCard = ({ username }) => {
   useEffect(() => {
     setInviteCodesArr(inviteCodeList);
   }, [inviteCodeList, data]);
-
 
   return (
     <>
@@ -220,7 +220,9 @@ const UserCard = ({ username }) => {
                   {!loadingInvite && inviteCodesArr?.length > 0 ? (
                     <div
                       className="flex align-middle "
-                      onClick={() => handleCopy(`Invite Code`, inviteCodesArr[0])}
+                      onClick={() =>
+                        handleCopy(`Invite Code`, inviteCodesArr[0])
+                      }
                     >
                       <div className="">{inviteCodesArr[0]}</div>
                       <BiCopy className="ml-1 mt-1 cursor-pointer" size={12} />
@@ -241,7 +243,7 @@ const UserCard = ({ username }) => {
                 </div>
               </div>
             </div>
-            <LogoutBtn />
+            {actionType !== "composer" && <LogoutBtn />}
           </div>
         </div>
       </div>

@@ -500,6 +500,7 @@ const ContextProvider = ({ children }) => {
   const [curOpenedPanel, setCurOpenedPanel] = useState("");
   const [openLeftBar, setOpenLeftBar] = useState(false);
   const [openBottomBar, setOpenBottomBar] = useState(false);
+  const [removedWMarkCanvas, setRemovedWMarkCanvas] = useState();
 
   return (
     <Context.Provider
@@ -683,6 +684,9 @@ const ContextProvider = ({ children }) => {
         setOpenLeftBar,
         openBottomBar,
         setOpenBottomBar,
+        // For watermark 
+        removedWMarkCanvas,
+        setRemovedWMarkCanvas,
       }}
     >
       {children}

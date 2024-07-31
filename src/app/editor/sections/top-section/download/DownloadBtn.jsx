@@ -15,6 +15,7 @@ import posthog from "posthog-js";
 import { Context } from "../../../../../providers/context";
 import { downloadFile } from "polotno/utils/download";
 import { claimReward, POLOTNO_API_KEY } from "../../../../../services";
+import { posterTokenSymbol } from "../../../../../data";
 
 const DownloadBtn = () => {
   const store = useStore();

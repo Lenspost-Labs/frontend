@@ -22,6 +22,7 @@ import BsArrowRepeat from "@meronex/icons/bs/BsArrowRepeat";
 import farcasterLogo from "../../../../../../../assets/logos/logoFarcaster.jpg";
 import { Spinner } from "@material-tailwind/react";
 import { useLocalStorage } from "../../../../../../../hooks/app";
+import { posterTokenSymbol } from "../../../../../../../data";
 
 const UserCard = ({ username }) => {
   const { points, profileImage, userLevel, farcasterHandle } = useUser();

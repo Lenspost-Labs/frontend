@@ -26,6 +26,7 @@ import PointsBtn from "../PointsBtn/PointsBtn";
 import ImagesWithArrows from "../../../common/core/CustomsTabsWArrows/ImagesWithArrows";
 import DownloadBtn from "../download/DownloadBtn";
 import { useUser } from "../../../../../hooks/user";
+import EditIconCreate from "../../../../../assets/EditIconsMobile/EditIconCreate";
 
 const MobileTopbar = () => {
   const url = new URL(window.location.href);
@@ -148,7 +149,7 @@ const MobileTopbar = () => {
                 onClick={() => setOpenLeftBar(!openLeftBar)}
                 className="bg-white p-2 rounded-lg"
               >
-                <EditIconRight />
+                <EditIconCreate />
               </div>
             </div>
           </div>
@@ -159,15 +160,10 @@ const MobileTopbar = () => {
               <div className="flex flex-col mx-4 gap-4 overflow-x-auto">
                 <div className="flex flex-col">
                   <div className="flex justify-between items-center">
-                    <div className="text-lg p-2 "> Gen AI </div>
                     {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
                       {" "}
                       <EditIconRightArrow />{" "}
                     </div> */}
-                  </div>
-
-                  <div className="flex overflow-x-auto whitespace-nowrap">
-                    <ImagesWithArrows imagesArr={AIImagesMob} />
                   </div>
                 </div>
                 <div className="flex flex-col">
@@ -182,16 +178,6 @@ const MobileTopbar = () => {
                   <div className="flex w-full overflow-x-auto">
                     <ImagesWithArrows imagesArr={MemesMob} />
                   </div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex justify-between items-center">
-                    <div className="text-lg p-2 "> Featured backgrounds </div>
-                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
-                      {" "}
-                      <EditIconRightArrow />{" "}
-                    </div> */}
-                  </div>
-                  <CompCarousel type="background" />
                 </div>
                 <div className="flex flex-col">
                   <div className="flex justify-between items-center">
@@ -220,6 +206,21 @@ const MobileTopbar = () => {
                     />
                   </div>
                 </div>
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg p-2 "> Featured backgrounds </div>
+                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                      {" "}
+                      <EditIconRightArrow />{" "}
+                    </div> */}
+                  </div>
+                  <CompCarousel type="background" />
+                </div>
+                <div className="text-lg p-2 "> Gen AI </div>
+
+                <div className="flex overflow-x-auto whitespace-nowrap">
+                  <ImagesWithArrows imagesArr={AIImagesMob} />
+                </div>
               </div>
             )}
             {curOpenedPanel === "mobPanelAI" && (
@@ -246,7 +247,7 @@ const MobileTopbar = () => {
                   curOpenedPanel === "mobPanelAI"
                     ? "bg-[#e1f16b]"
                     : "bg-[#F8F8F8]"
-                }  p-2 rounded-full -mb-4 shadow-xl ease-in-out duration-300`}
+                }  p-2 rounded-full -mb-8 shadow-xl ease-in-out duration-300`}
               >
                 {" "}
                 <EditIconAI needAnimation={true} />

@@ -326,7 +326,8 @@ const FarcasterNormalPost = () => {
             "Please enter a valid number of mints";
         } else if (actionType === "composer" && value > 10) {
           newState.frameData.allowedMintsIsError = true;
-          newState.frameData.allowedMintsError = "Only 10 free mints allowed";
+          newState.frameData.allowedMintsError =
+            "Only 10 free mints are allowed";
         } else {
           newState.frameData.allowedMintsIsError = false;
           newState.frameData.allowedMintsError = "";
@@ -1788,7 +1789,7 @@ const FarcasterNormalPost = () => {
                     : "You don't have any free mint. please Topup with Base ETH to mint"}{" "}
                 </p>
               ) : (
-                "10 mints are free"
+                "Only 10 mints are free"
               )}
 
               {actionType !== "composer" ? (

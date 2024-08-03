@@ -213,6 +213,14 @@ const Editor = () => {
 
   // function to filter the recipient data
   const recipientDataFilter = () => {
+    // From BE Appending
+    // referredFromRef.current = <from BE>
+    // preStoredRecipientDataRef.current  - <assetsRecipientElementData>
+    preStoredRecipientDataRef.current = {
+      ...preStoredRecipientDataRef.current,
+      slugRefferedFrom,
+    };
+
     parentRecipientDataRef.current = [
       ...preStoredRecipientDataRef.current, // recipient data geting from BE
       ...lensCollectNftRecipientDataRef.current, // recipient data of lens collect
@@ -260,6 +268,10 @@ const Editor = () => {
   const recipientDataCombiner = () => {
     const { loggedInUserAddress } = useLocalStorage();
 
+    referredFromRef.current = {
+      ...referredFromRef.current,
+      slugAssetsRecipientElementData,
+    };
     // Get unique recipients by creating a Set
     const recipientsSet = new Set([
       ...(referredFromRef.current.length > 0 &&
@@ -382,29 +394,18 @@ const Editor = () => {
     }
   };
 
+  let slugRefferedFrom, slugAssetsRecipientElementData;
+
   // Function to load the data on the canvas
   const fnLoadDataOnCanvas = async () => {
     const dataForSlug = await apiGetJSONDataForSlug(slugId);
     consoleLogonlyDev("dataForSlug", dataForSlug?.data);
 
-    const slugRefferedFrom = dataForSlug?.data?.referredFrom;
-    const slugAssetsRecipientElementData =
-      dataForSlug?.data?.assetsRecipientElementData;
-
-    // From BE Appending
-    // referredFromRef.current = <from BE>
-    // preStoredRecipientDataRef.current  - <assetsRecipientElementData>
-    referredFromRef.current = {
-      ...referredFromRef.current,
-      ...slugRefferedFrom,
-    };
-    preStoredRecipientDataRef.current = {
-      ...preStoredRecipientDataRef.current,
-      ...slugAssetsRecipientElementData,
-    };
-
     // Load the data on Canvas
     store.loadJSON(dataForSlug?.data?.data);
+    slugRefferedFrom = dataForSlug?.data?.referredFrom;
+    slugAssetsRecipientElementData =
+      dataForSlug?.data?.assetsRecipientElementData;
 
     // Update the meta tag in case there is any change in the image
     const ogImageLink = dataForSlug?.data?.image;

@@ -201,21 +201,23 @@ const MobileTopbar = () => {
                     {/* Featured Stickers */}
                     <CustomHorizontalScroller
                       type="props"
-                      author="ham"
+                      author="phi"
                       campaign={null}
                     />
                   </div>
                 </div>
-                <div className="flex flex-col">
-                  <div className="flex justify-between items-center">
-                    <div className="text-lg p-2 "> Featured backgrounds </div>
-                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                {actionType !== "composer" && (
+                  <div className="flex flex-col">
+                    <div className="flex justify-between items-center">
+                      <div className="text-lg p-2 "> Featured backgrounds </div>
+                      {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
                       {" "}
                       <EditIconRightArrow />{" "}
                     </div> */}
+                    </div>
+                    <CompCarousel type="background" />
                   </div>
-                  <CompCarousel type="background" />
-                </div>
+                )}
                 <div className="text-lg p-2 "> Gen AI </div>
 
                 <div className="flex overflow-x-auto whitespace-nowrap">
@@ -230,9 +232,16 @@ const MobileTopbar = () => {
               </div>
             )}
             {curOpenedPanel === "mobPanelMyFiles" && (
-              <div className="mx-4 mt-2">
-                <DesignPanel isMobile />
-              </div>
+              <>
+              {actionType == "composer" && (
+                "We're cooking it yet" 
+              )}
+                {actionType !== "composer" && (
+                  <div className="mx-4 mt-2">
+                    <DesignPanel isMobile />
+                  </div>
+                )}
+              </>
             )}
           </div>
           {/* Bottom bar for Home page  */}

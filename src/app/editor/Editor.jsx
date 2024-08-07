@@ -211,16 +211,39 @@ const Editor = () => {
     }
   }, [isAuthenticated]);
 
+  // From Slug data
+  let arrSlugAssetRecipients = [];
+  let arrSlugReferredFrom = [];
+
+  // Function to load the data on the canvas
+  const fnLoadDataOnCanvas = async () => {
+    const dataForSlug = await apiGetJSONDataForSlug(slugId);
+    consoleLogonlyDev("dataForSlug", dataForSlug?.data);
+
+    // Load the data on Canvas
+    store.loadJSON(dataForSlug?.data?.data);
+
+    // Load the recipients
+    arrSlugAssetRecipients = dataForSlug?.data?.assetsRecipientElementData;
+    arrSlugReferredFrom = dataForSlug?.data?.referredFrom;
+
+    // Update the meta tag in case there is any change in the image
+    const ogImageLink = dataForSlug?.data?.image;
+    let metaTag = document.querySelector('meta[property="og:image"]');
+    if (!metaTag) {
+      // If the meta tag doesn't exist, create it
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("property", "og:image");
+      document.getElementsByTagName("head")[0].appendChild(metaTag);
+    }
+    // Set or update the content of the meta tag
+    metaTag.setAttribute("content", ogImageLink);
+  };
+
   // function to filter the recipient data
   const recipientDataFilter = () => {
-    // From BE Appending
-    // referredFromRef.current = <from BE>
-    // preStoredRecipientDataRef.current  - <assetsRecipientElementData>
-    preStoredRecipientDataRef.current = {
-      ...preStoredRecipientDataRef.current,
-      slugRefferedFrom,
-    };
-
+    // From Slug data
+    preStoredRecipientDataRef.current = arrSlugAssetRecipients;
     parentRecipientDataRef.current = [
       ...preStoredRecipientDataRef.current, // recipient data geting from BE
       ...lensCollectNftRecipientDataRef.current, // recipient data of lens collect
@@ -267,11 +290,8 @@ const Editor = () => {
   // function to add the all recipient handles / address
   const recipientDataCombiner = () => {
     const { loggedInUserAddress } = useLocalStorage();
-
-    referredFromRef.current = {
-      ...referredFromRef.current,
-      slugAssetsRecipientElementData,
-    };
+    // From Slug data
+    referredFromRef.current = arrSlugReferredFrom || [];
     // Get unique recipients by creating a Set
     const recipientsSet = new Set([
       ...(referredFromRef.current.length > 0 &&
@@ -394,32 +414,6 @@ const Editor = () => {
     }
   };
 
-  let slugRefferedFrom, slugAssetsRecipientElementData;
-
-  // Function to load the data on the canvas
-  const fnLoadDataOnCanvas = async () => {
-    const dataForSlug = await apiGetJSONDataForSlug(slugId);
-    consoleLogonlyDev("dataForSlug", dataForSlug?.data);
-
-    // Load the data on Canvas
-    store.loadJSON(dataForSlug?.data?.data);
-    slugRefferedFrom = dataForSlug?.data?.referredFrom;
-    slugAssetsRecipientElementData =
-      dataForSlug?.data?.assetsRecipientElementData;
-
-    // Update the meta tag in case there is any change in the image
-    const ogImageLink = dataForSlug?.data?.image;
-    let metaTag = document.querySelector('meta[property="og:image"]');
-    if (!metaTag) {
-      // If the meta tag doesn't exist, create it
-      metaTag = document.createElement("meta");
-      metaTag.setAttribute("property", "og:image");
-      document.getElementsByTagName("head")[0].appendChild(metaTag);
-    }
-    // Set or update the content of the meta tag
-    metaTag.setAttribute("content", ogImageLink);
-  };
-
   const fnLoadWatermark = () => {
     if (!store) return;
     consoleLogonlyDev(store.toJSON());
@@ -436,8 +430,7 @@ const Editor = () => {
     const originalWatermarkHeight = 100; // Original height of the watermark image
 
     // Calculate the aspect ratio of the original watermark
-    const watermarkAspectRatio =
-      originalWatermarkWidth / originalWatermarkHeight;
+    const watermarkAspectRatio = originalWatermarkWidth / originalWatermarkHeight;
 
     // Determine the watermark size based on the canvas width
     let watermarkWidth = w * watermarkSizeFactor;

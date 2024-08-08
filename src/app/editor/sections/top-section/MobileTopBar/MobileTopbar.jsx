@@ -181,7 +181,14 @@ const MobileTopbar = () => {
                 </div>
                 <div className="flex flex-col">
                   <div className="flex justify-between items-center">
-                    <div className="text-lg p-2 "> Featured campaign <span className="text-[#2C346B] italic bg-[#ecff5f] py-0.5 px-4 rounded-full border"> #SummerOfPhi </span></div>
+                    <div className="text-lg p-2 ">
+                      {" "}
+                      Featured campaign{" "}
+                      <span className="text-[#2C346B] italic bg-[#ecff5f] py-0.5 px-4 rounded-full border">
+                        {" "}
+                        #SummerOfPhi{" "}
+                      </span>
+                    </div>
                     {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
                       {" "}
                       <EditIconRightArrow />{" "}
@@ -189,7 +196,6 @@ const MobileTopbar = () => {
                   </div>
 
                   <div className="flex w-full overflow-x-auto">
-
                     {/* Featured Stickers */}
                     <CustomHorizontalScroller
                       type="props"
@@ -206,7 +212,6 @@ const MobileTopbar = () => {
                   </div>
 
                   <div className="flex w-full overflow-x-auto">
-
                     {/* Featured Stickers */}
                     <CustomHorizontalScroller
                       type="props"
@@ -215,18 +220,18 @@ const MobileTopbar = () => {
                     />
                   </div>
                 </div>
-                {actionType !== "composer" && (
-                  <div className="flex flex-col">
-                    <div className="flex justify-between items-center">
-                      <div className="text-lg p-2 "> Featured backgrounds </div>
-                      {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg p-2 "> Featured backgrounds </div>
+                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
                       {" "}
                       <EditIconRightArrow />{" "}
                     </div> */}
-                    </div>
-                    <CompCarousel type="background" />
                   </div>
-                )}
+                  <CompCarousel type="background" />
+                </div>
+
                 <div className="text-lg p-2 "> Gen AI </div>
 
                 <div className="flex overflow-x-auto whitespace-nowrap">
@@ -242,14 +247,9 @@ const MobileTopbar = () => {
             )}
             {curOpenedPanel === "mobPanelMyFiles" && (
               <>
-              {actionType == "composer" && (
-                "We're cooking it yet" 
-              )}
-                {actionType !== "composer" && (
-                  <div className="mx-4 mt-2">
-                    <DesignPanel isMobile />
-                  </div>
-                )}
+                <div className="mx-4 mt-2">
+                  <DesignPanel isMobile />
+                </div>
               </>
             )}
           </div>

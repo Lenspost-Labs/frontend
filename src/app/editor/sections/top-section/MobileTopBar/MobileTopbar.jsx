@@ -181,7 +181,7 @@ const MobileTopbar = () => {
                 </div>
                 <div className="flex flex-col">
                   <div className="flex justify-between items-center">
-                    <div className="text-lg p-2 "> Stickers </div>
+                    <div className="text-lg p-2 "> Featured campaign <span className="text-[#2C346B] italic bg-[#ecff5f] py-0.5 px-4 rounded-full border"> #SummerOfPhi </span></div>
                     {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
                       {" "}
                       <EditIconRightArrow />{" "}
@@ -189,19 +189,28 @@ const MobileTopbar = () => {
                   </div>
 
                   <div className="flex w-full overflow-x-auto">
-                    {/* {stickersMob.map((img, index) => (
-                      <CustomImageComponent
-                        imgClassName="h-32"
-                        className="h-32"
-                        preview={img}
-                        key={index}
-                      />
-                    ))} */}
 
                     {/* Featured Stickers */}
                     <CustomHorizontalScroller
                       type="props"
                       author="phi"
+                      campaign={null}
+                    />
+                  </div>
+                  <div className="flex justify-between items-center mt-4">
+                    <div className="text-lg p-2 "> Featured community </div>
+                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                      {" "}
+                      <EditIconRightArrow />{" "}
+                    </div> */}
+                  </div>
+
+                  <div className="flex w-full overflow-x-auto">
+
+                    {/* Featured Stickers */}
+                    <CustomHorizontalScroller
+                      type="props"
+                      author="ham"
                       campaign={null}
                     />
                   </div>

@@ -33,15 +33,16 @@ import ShareButton from "../../top-section/share/ShareButton";
 import BsX from "@meronex/icons/bs/BsX";
 import useMobilePanelFunctions from "../../../common/mobileHooks/useMobilePanelFunctions";
 
-
 const MobileBottombar = () => {
   const {
     curOpenedPanel,
     setCurOpenedPanel,
     openBottomBar,
     setOpenBottomBar,
-    setMenu,
-    setIsShareOpen,
+    curOpenedTabLevel1,
+    setCurOpenedTabLevel1,
+    curOpenedTabLevel2,
+    setCurOpenedTabLevel2,
   } = useContext(Context);
   const store = useStore();
 
@@ -205,7 +206,7 @@ const MobileBottombar = () => {
 
               {curOpenedPanel === "mobPanelStickers" && (
                 <>
-                  <Tabs value="stickers">
+                  <Tabs value={curOpenedTabLevel1 || "stickers"}>
                     <div className="flex gap-2 items-center">
                       <div className="w-full">
                         <TabsHeader>

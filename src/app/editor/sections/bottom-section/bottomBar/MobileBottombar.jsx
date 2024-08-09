@@ -31,6 +31,8 @@ import {
 import MobileShareSection from "../../right-section/share/MobileShareUI/MobileShareSection";
 import ShareButton from "../../top-section/share/ShareButton";
 import BsX from "@meronex/icons/bs/BsX";
+import useMobilePanelFunctions from "../../../common/mobileHooks/useMobilePanelFunctions";
+
 
 const MobileBottombar = () => {
   const {
@@ -41,17 +43,9 @@ const MobileBottombar = () => {
     setMenu,
     setIsShareOpen,
   } = useContext(Context);
-
   const store = useStore();
 
-  const openPanel = (panelName) => {
-    setOpenBottomBar(true);
-    setCurOpenedPanel(panelName);
-    if (panelName === curOpenedPanel) {
-      setOpenBottomBar(false);
-      setCurOpenedPanel(null);
-    }
-  };
+  const { fnOpenPanel } = useMobilePanelFunctions();
 
   useEffect(() => {
     const handleEscape = (event) => {
@@ -109,7 +103,7 @@ const MobileBottombar = () => {
             onClick={() => {
               // setOpenBottomBar(!openBottomBar);
               // setCurOpenedPanel("mobPanelUpload");
-              openPanel("mobPanelUpload");
+              fnOpenPanel("mobPanelUpload");
             }}
             className={`${
               curOpenedPanel === "mobPanelUpload" ? "bg-[#e1f16b]" : ""
@@ -121,7 +115,7 @@ const MobileBottombar = () => {
             onClick={() => {
               // setCurOpenedPanel("mobPanelText");
               // setOpenBottomBar(!openBottomBar);
-              openPanel("mobPanelText");
+              fnOpenPanel("mobPanelText");
             }}
             className={`${
               curOpenedPanel === "mobPanelText" ? "bg-[#e1f16b]" : ""
@@ -133,7 +127,7 @@ const MobileBottombar = () => {
             onClick={() => {
               // setCurOpenedPanel("mobPanelStickers");
               // setOpenBottomBar(!openBottomBar);
-              openPanel("mobPanelStickers");
+              fnOpenPanel("mobPanelStickers");
             }}
             className={`${
               curOpenedPanel === "mobPanelStickers" ? "bg-[#e1f16b]" : ""

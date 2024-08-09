@@ -316,7 +316,7 @@ export const LenspostTemplates = () => {
             hasSeeMore
             seeMoreFn={() => store.openSidePanel("Elements")}
           />
-          <CustomHorizontalScroller type="props" author="ham" campaign={null} />
+          <CustomHorizontalScroller type="props" author="phi" campaign={null} />
 
           <div className="ml-2 mt-4 mb-1 "> Lenspost Templates </div>
           {/* <div className=" overflow-y-scroll">  */}

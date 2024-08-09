@@ -406,35 +406,36 @@ const Editor = () => {
   const fnLoadWatermark = () => {
     if (!store) return;
     consoleLogonlyDev(store.toJSON());
-  
+
     let w = store.width;
     let h = store.height;
     const watermarkBase64 = "/watermark.png";
-  
+
     // Define the desired watermark size relative to the canvas
     const watermarkSizeFactor = 0.1; // 10% of the canvas dimension
-  
+
     // Load the watermark image dimensions (assuming you have these values)
     const originalWatermarkWidth = 100; // Original width of the watermark image
     const originalWatermarkHeight = 100; // Original height of the watermark image
-  
+
     // Calculate the aspect ratio of the original watermark
-    const watermarkAspectRatio = originalWatermarkWidth / originalWatermarkHeight;
-  
+    const watermarkAspectRatio =
+      originalWatermarkWidth / originalWatermarkHeight;
+
     // Determine the watermark size based on the canvas width
     let watermarkWidth = w * watermarkSizeFactor;
     let watermarkHeight = watermarkWidth / watermarkAspectRatio;
-  
+
     // If the calculated height exceeds the canvas height limit, adjust the size
     if (watermarkHeight > h * watermarkSizeFactor) {
       watermarkHeight = h * watermarkSizeFactor;
       watermarkWidth = watermarkHeight * watermarkAspectRatio;
     }
-  
+
     // Calculate the watermark's position to be at the bottom-right corner
     let watermarkX = w - watermarkWidth - 10; // 10px padding from the right edge
     let watermarkY = h - watermarkHeight - 10; // 10px padding from the bottom edge
-  
+
     // Check if the watermark is already added
     store.pages.forEach((page) => {
       let watermarkAdded = false;
@@ -451,7 +452,7 @@ const Editor = () => {
           watermarkAdded = true;
         }
       });
-  
+
       // Add watermark if not present
       if (!watermarkAdded) {
         page.addElement({
@@ -472,7 +473,7 @@ const Editor = () => {
       }
     });
   };
-  
+
   // useEffect(() => {
   //   fnLoadWatermark();
   // }, []);
@@ -588,10 +589,6 @@ const Editor = () => {
     };
   }, []);
 
-  useEffect(() => {
-    setPostName(`#${randomId(5)}`);
-  }, [contextCanvasIdRef.current]);
-
   // watermark
   // useEffect(() => {
   //   console.log("isPageActive", store?.pages.length);
@@ -602,7 +599,7 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
-  
+
   return (
     <>
       <div

@@ -211,8 +211,39 @@ const Editor = () => {
     }
   }, [isAuthenticated]);
 
+  // From Slug data
+  let arrSlugAssetRecipients = [];
+  let arrSlugReferredFrom = [];
+
+  // Function to load the data on the canvas
+  const fnLoadDataOnCanvas = async () => {
+    const dataForSlug = await apiGetJSONDataForSlug(slugId);
+    consoleLogonlyDev("dataForSlug", dataForSlug?.data);
+
+    // Load the data on Canvas
+    store.loadJSON(dataForSlug?.data?.data);
+
+    // Load the recipients
+    arrSlugAssetRecipients = dataForSlug?.data?.assetsRecipientElementData;
+    arrSlugReferredFrom = dataForSlug?.data?.referredFrom;
+
+    // Update the meta tag in case there is any change in the image
+    const ogImageLink = dataForSlug?.data?.image;
+    let metaTag = document.querySelector('meta[property="og:image"]');
+    if (!metaTag) {
+      // If the meta tag doesn't exist, create it
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("property", "og:image");
+      document.getElementsByTagName("head")[0].appendChild(metaTag);
+    }
+    // Set or update the content of the meta tag
+    metaTag.setAttribute("content", ogImageLink);
+  };
+
   // function to filter the recipient data
   const recipientDataFilter = () => {
+    // From Slug data
+    preStoredRecipientDataRef.current = arrSlugAssetRecipients;
     parentRecipientDataRef.current = [
       ...preStoredRecipientDataRef.current, // recipient data geting from BE
       ...lensCollectNftRecipientDataRef.current, // recipient data of lens collect
@@ -259,7 +290,8 @@ const Editor = () => {
   // function to add the all recipient handles / address
   const recipientDataCombiner = () => {
     const { loggedInUserAddress } = useLocalStorage();
-
+    // From Slug data
+    referredFromRef.current = arrSlugReferredFrom || [];
     // Get unique recipients by creating a Set
     const recipientsSet = new Set([
       ...(referredFromRef.current.length > 0 &&
@@ -382,59 +414,38 @@ const Editor = () => {
     }
   };
 
-  // Function to load the data on the canvas
-  const fnLoadDataOnCanvas = async () => {
-    const dataForSlug = await apiGetJSONDataForSlug(slugId);
-    consoleLogonlyDev("dataForSlug", dataForSlug?.data);
-
-    // Load the data on Canvas
-    store.loadJSON(dataForSlug?.data?.data);
-
-    // Update the meta tag in case there is any change in the image
-    const ogImageLink = dataForSlug?.data?.image;
-    let metaTag = document.querySelector('meta[property="og:image"]');
-    if (!metaTag) {
-      // If the meta tag doesn't exist, create it
-      metaTag = document.createElement("meta");
-      metaTag.setAttribute("property", "og:image");
-      document.getElementsByTagName("head")[0].appendChild(metaTag);
-    }
-    // Set or update the content of the meta tag
-    metaTag.setAttribute("content", ogImageLink);
-  };
-
   const fnLoadWatermark = () => {
     if (!store) return;
     consoleLogonlyDev(store.toJSON());
-  
+
     let w = store.width;
     let h = store.height;
     const watermarkBase64 = "/watermark.png";
-  
+
     // Define the desired watermark size relative to the canvas
     const watermarkSizeFactor = 0.1; // 10% of the canvas dimension
-  
+
     // Load the watermark image dimensions (assuming you have these values)
     const originalWatermarkWidth = 100; // Original width of the watermark image
     const originalWatermarkHeight = 100; // Original height of the watermark image
-  
+
     // Calculate the aspect ratio of the original watermark
     const watermarkAspectRatio = originalWatermarkWidth / originalWatermarkHeight;
-  
+
     // Determine the watermark size based on the canvas width
     let watermarkWidth = w * watermarkSizeFactor;
     let watermarkHeight = watermarkWidth / watermarkAspectRatio;
-  
+
     // If the calculated height exceeds the canvas height limit, adjust the size
     if (watermarkHeight > h * watermarkSizeFactor) {
       watermarkHeight = h * watermarkSizeFactor;
       watermarkWidth = watermarkHeight * watermarkAspectRatio;
     }
-  
+
     // Calculate the watermark's position to be at the bottom-right corner
     let watermarkX = w - watermarkWidth - 10; // 10px padding from the right edge
     let watermarkY = h - watermarkHeight - 10; // 10px padding from the bottom edge
-  
+
     // Check if the watermark is already added
     store.pages.forEach((page) => {
       let watermarkAdded = false;
@@ -451,7 +462,7 @@ const Editor = () => {
           watermarkAdded = true;
         }
       });
-  
+
       // Add watermark if not present
       if (!watermarkAdded) {
         page.addElement({
@@ -472,7 +483,7 @@ const Editor = () => {
       }
     });
   };
-  
+
   // useEffect(() => {
   //   fnLoadWatermark();
   // }, []);
@@ -602,7 +613,7 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
-  
+
   return (
     <>
       <div

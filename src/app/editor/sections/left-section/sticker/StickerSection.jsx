@@ -13,6 +13,7 @@ import {
   getFeaturedAssets,
 } from "../../../../../services";
 import {
+  ConnectWalletMsgComponent,
   SearchComponent,
   StickerReacTour,
   Tabs as TabsCustom,
@@ -168,7 +169,7 @@ export const StickerPanel = () => {
       tabArray.push(tab);
     }
   });
-  
+
   // console.log("tabArray", tabArray);
 
   const [currentTab, setCurrentTab] = useState(tabArray?.[0]);
@@ -179,6 +180,9 @@ export const StickerPanel = () => {
       setCurrentTab(tabArray?.[0]);
     }
   }, [data]);
+  if (!isAuthenticated) {
+    return <ConnectWalletMsgComponent />;
+  }
 
   return (
     <>

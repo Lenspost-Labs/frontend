@@ -45,7 +45,11 @@ const MobileTopbar = () => {
     setIsProfileOpen,
     isProfileOpen,
     setMenu,
-    setOpenBottomBar,
+    openBottomBar,
+    curOpenedTabLevel1,
+    setCurOpenedTabLevel1,
+    curOpenedTabLevel2,
+    setCurOpenedTabLevel2,
   } = useContext(Context);
   const { login } = usePrivyAuth();
   const { isAuthenticated } = useAppAuth();
@@ -84,22 +88,26 @@ const MobileTopbar = () => {
   //   "https://i.imgflip.com/1bhk.jpg",
   // ];
 
-  const stickersMob = [
-    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-229.png",
-    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-237.png",
-    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-242.png",
-    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-248.png",
-    "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-252.png",
-  ];
+  // const stickersMob = [
+  //   "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-229.png",
+  //   "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-237.png",
+  //   "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-242.png",
+  //   "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-248.png",
+  //   "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-252.png",
+  // ];
 
   // To open Home on Panel Open
   useEffect(() => {
-    if (!openLeftBar) {
+    if (!openLeftBar && !openBottomBar) {
       setCurOpenedPanel("");
+    }
+    // To close Leftbar and open Bottombar - fnCloseLeftOpenEditorPanel
+    if (!openLeftBar && openBottomBar) {
+      return;
     } else {
       setCurOpenedPanel("mobPanelHome");
     }
-  }, [openLeftBar]);
+  }, [openLeftBar, openBottomBar]);
   return (
     <>
       <div className="flex items-center gap-2 overflow-x-scroll">
@@ -188,10 +196,11 @@ const MobileTopbar = () => {
                   <div className="flex justify-between items-center">
                     <div className="text-lg p-2 "> Memes </div>
                     <div
-                    className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
-                      onClick={() =>
-                        fnCloseLeftOpenEditorPanel("mobPanelStickers")
-                      }
+                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
+                      onClick={() => {
+                        fnCloseLeftOpenEditorPanel("mobPanelStickers");
+                        setCurOpenedTabLevel1("memes");
+                      }}
                     >
                       {" "}
                       <EditIconRightArrow />{" "}
@@ -212,10 +221,16 @@ const MobileTopbar = () => {
                         #SummerOfPhi{" "}
                       </span>
                     </div>
-                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                    <div
+                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
+                      onClick={() => {
+                        fnCloseLeftOpenEditorPanel("mobPanelStickers");
+                        setCurOpenedTabLevel1("stickers");
+                      }}
+                    >
                       {" "}
                       <EditIconRightArrow />{" "}
-                    </div> */}
+                    </div>
                   </div>
 
                   <div className="flex w-full overflow-x-auto">
@@ -228,7 +243,13 @@ const MobileTopbar = () => {
                   </div>
                   <div className="flex justify-between items-center mt-4">
                     <div className="text-lg p-2 "> Featured community </div>
-                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
+                    {/* <div
+                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
+                      onClick={() => {
+                        fnCloseLeftOpenEditorPanel("mobPanelStickers");
+                        setCurOpenedTabLevel1("stickers");
+                      }}
+                    >
                       {" "}
                       <EditIconRightArrow />{" "}
                     </div> */}
@@ -248,10 +269,15 @@ const MobileTopbar = () => {
                   <div className="flex flex-col">
                     <div className="flex justify-between items-center">
                       <div className="text-lg p-2 "> Featured backgrounds </div>
-                      {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
-                      {" "}
-                      <EditIconRightArrow />{" "}
-                    </div> */}
+                      {/* <div
+                        className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
+                        onClick={() =>
+                          fnCloseLeftOpenEditorPanel("mobPanelStickers")
+                        }
+                      >
+                        {" "}
+                        <EditIconRightArrow />{" "}
+                      </div> */}
                     </div>
                     <CompCarousel type="background" />
                   </div>

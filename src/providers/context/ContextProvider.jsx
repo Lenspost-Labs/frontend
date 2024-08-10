@@ -504,6 +504,8 @@ const ContextProvider = ({ children }) => {
   const [openBottomBar, setOpenBottomBar] = useState(false);
   const [removedWMarkCanvas, setRemovedWMarkCanvas] = useState();
   const chainId = ENVIRONMENT === "production" ? base?.id : baseSepolia?.id;
+  const [curOpenedTabLevel1, setCurOpenedTabLevel1] = useState("");
+  const [curOpenedTabLevel2, setCurOpenedTabLevel2] = useState("");
 
   return (
     <Context.Provider
@@ -692,6 +694,13 @@ const ContextProvider = ({ children }) => {
         setRemovedWMarkCanvas,
 
         chainId,
+
+        // For tracking sub tabs opened
+        // Like Memes inside mobPanelStickers
+        curOpenedTabLevel1,
+        setCurOpenedTabLevel1,
+        curOpenedTabLevel2,
+        setCurOpenedTabLevel2,
       }}
     >
       {children}

@@ -57,10 +57,21 @@ const ProfilePanel = () => {
     queryFn: apiGetPointsHistory,
   });
 
+  // const pointsHistoryList = pointHistoryData?.message;
+  // console.log("pointsHistoryList", pointsHistoryList);
+  // const recurringTasks = taskList?.map((task, index) => {
+  //   if (task?.taskId === 2 || 3 || 4) {
+  //     return task;
+  //   }
+  // });
+
+  // console.log("recurringTasks", recurringTasks);
+
   // Group the tasks by campaign :
   const fnGroupTaskByCampaign = async () => {
     setGroupedTasks(
-      await taskData?.message?.reduce((acc, task) => {
+      // Reversing to avoid FC Tasks going bottom
+      await taskData?.message?.reverse().reduce((acc, task) => {
         const campaignKey = task.campaign || "Poster";
         if (!acc[campaignKey]) {
           acc[campaignKey] = [];
@@ -137,19 +148,23 @@ const ProfilePanel = () => {
                                   customBody={
                                     <>
                                       {tasks.length > 0
-                                        ? tasks.map((task, index) =>
-                                            !task.isRecurring ? (
+                                        ? tasks.map(
+                                            (task, index) => (
+                                              // task.type === "MINT" ?
+                                              //  (
                                               <TaskCardV2
                                                 key={index}
                                                 // taskId={task.id}
                                                 taskId={index + 1} // Just to display the task number on FE, internally we use `task.id` Itself
+                                                taskType={task.type}
                                                 taskAmount={task.amount}
                                                 isReward={task.isReward}
                                                 isCompleted={task.completed}
                                                 taskName={task.name}
                                                 taskDesc={task.description}
                                               />
-                                            ) : null
+                                            )
+                                            // ) : null
                                           )
                                         : null}
                                     </>

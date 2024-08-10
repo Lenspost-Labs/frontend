@@ -104,6 +104,11 @@ const useReset = () => {
 
     // solana tabs
     setSolanaTab,
+    setIsMobile,
+    setCurOpenedPanel,
+    setOpenLeftBar,
+    setOpenBottomBar,
+    setRemovedWMarkCanvas,
   } = useContext(Context);
 
   const resetState = () => {
@@ -128,6 +133,11 @@ const useReset = () => {
     setZoraTab("ERC721");
     setLensTab("normalPost");
     setFarcasterTab("normalPost");
+    setIsMobile(false);
+    setCurOpenedPanel("");
+    setOpenLeftBar(false);
+    setOpenBottomBar(false);
+    setRemovedWMarkCanvas(null);
 
     // reset all the states for lens monetization
     setEnabled({
@@ -156,7 +166,7 @@ const useReset = () => {
 
       whoCanCollect: false,
     });
-    setPostName("");
+    setPostName("Post Name");
     setPostDescription("");
     setOpen(false);
     setStFormattedDate("");

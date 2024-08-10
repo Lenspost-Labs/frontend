@@ -16,7 +16,7 @@ const ContextProvider = ({ children }) => {
   const [text, setText] = useState("");
   const contextCanvasIdRef = useRef(null);
   const canvasBase64Ref = useRef([]);
-  const [postName, setPostName] = useState("");
+  const [postName, setPostName] = useState("Post Name");
   const [postDescription, setPostDescription] = useState("");
   const [open, setOpen] = useState(false);
 

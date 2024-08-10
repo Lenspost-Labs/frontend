@@ -430,7 +430,8 @@ const Editor = () => {
     const originalWatermarkHeight = 100; // Original height of the watermark image
 
     // Calculate the aspect ratio of the original watermark
-    const watermarkAspectRatio = originalWatermarkWidth / originalWatermarkHeight;
+    const watermarkAspectRatio =
+      originalWatermarkWidth / originalWatermarkHeight;
 
     // Determine the watermark size based on the canvas width
     let watermarkWidth = w * watermarkSizeFactor;
@@ -598,10 +599,6 @@ const Editor = () => {
       off();
     };
   }, []);
-
-  useEffect(() => {
-    setPostName(`#${randomId(5)}`);
-  }, [contextCanvasIdRef.current]);
 
   // watermark
   // useEffect(() => {

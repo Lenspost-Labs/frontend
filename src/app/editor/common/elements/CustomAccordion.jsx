@@ -38,9 +38,9 @@ export default function CustomAccordion({
 
   return (
     <>
-      <div className={`${className} appFont opacity-100`}>
-        <Accordion open={open === 1} icon={<Icon id={1} open={open} />}>
-          <AccordionHeader onClick={() => handleOpen(1)}>
+      <div className={`${className} appFont opacity-100 outline-none`}>
+        <Accordion className="outline-none" open={open === 1} icon={<Icon id={1} open={open} />}>
+          <AccordionHeader className="focus:outline-none" onClick={() => handleOpen(1)}>
             {customHeader ? customHeader : ""}
           </AccordionHeader>
           <AccordionBody className="opacity-100 backdrop:fill-none">

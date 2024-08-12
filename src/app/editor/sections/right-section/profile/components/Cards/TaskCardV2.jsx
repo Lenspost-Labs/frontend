@@ -9,6 +9,8 @@ import iconCheck from "../../assets/svgs/iconCheck.svg";
 import iconLock from "../../assets/svgs/iconLock.svg";
 const TaskCardV2 = ({
   taskId,
+  taskCount,
+  taskCampaign,
   taskType,
   taskName,
   taskDesc,
@@ -54,12 +56,25 @@ const TaskCardV2 = ({
               )}
             </div>
           </div>
-          <div className={`flex flex-col p-4 pl-0 w-full rounded-md`}>
-            <div className="text-md font-semibold">{taskName}</div>
-            <div className="w-full text-gray-700 mt-2 ">{taskDesc}</div>
+          <div className="flex w-full justify-between items-end pr-1">
+            <div className={`flex flex-col p-4 pl-0 w-full rounded-md`}>
+              <div className="text-md font-semibold">{taskName}</div>
+              <div className="w-full text-gray-700 mt-2 ">{taskDesc}</div>
+            </div>
+            {taskCount !== null && taskCampaign == "farcaster" && (
+              <div className="flex flex-none z-4 w-fit -mt-4 border border-blue-400  opacity-80 text-blue-400 rounded-full px-2 py-0 mb-2 shadow-md">
+                {taskCount}/{taskCampaign !== "farcaster" ? "∞" : 20}{" "}
+              </div>
+            )}
           </div>
         </div>
-        <div className={`flex gap-1 items-end ${taskType == "MINT"?   "bg-blue-400 text-white" : "bg-orange-300 text-black" } w-fit h-5 px-2 rounded-full opacity-80 -ml-16 mt-2 shadow-md`}>
+        <div
+          className={`flex gap-1 items-end ${
+            taskType == "MINT"
+              ? "bg-blue-400 text-white"
+              : "bg-orange-300 text-black"
+          } w-fit h-5 px-2 rounded-full opacity-80 -ml-16 mt-2 shadow-md`}
+        >
           <div className="flex align-middle items-center">
             <div className="">
               {isCompleted ? (
@@ -69,7 +84,9 @@ const TaskCardV2 = ({
               ) : (
                 <>
                   <div className="flex align-middle items-center gap-1 ">
-                    <div className="">{taskType == "MINT"? `+${taskAmount}` : `-${taskAmount}`}</div>
+                    <div className="">
+                      {taskType == "MINT" ? `+${taskAmount}` : `-${taskAmount}`}
+                    </div>
                     <img className="h-4" src={Coin} alt="" />
                   </div>
                 </>

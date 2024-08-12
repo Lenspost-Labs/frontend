@@ -71,7 +71,7 @@ const ProfilePanel = () => {
   const fnGroupTaskByCampaign = async () => {
     setGroupedTasks(
       // Reversing to avoid FC Tasks going bottom
-      await taskData?.message?.reverse().reduce((acc, task) => {
+      await taskData?.message?.reduce((acc, task) => {
         const campaignKey = task.campaign || "Poster";
         if (!acc[campaignKey]) {
           acc[campaignKey] = [];
@@ -154,7 +154,8 @@ const ProfilePanel = () => {
                                               //  (
                                               <TaskCardV2
                                                 key={index}
-                                                // taskId={task.id}
+                                                taskCount={task?.count}
+                                                taskCampaign={task?.campaign || null}
                                                 taskId={index + 1} // Just to display the task number on FE, internally we use `task.id` Itself
                                                 taskType={task.type}
                                                 taskAmount={task.amount}

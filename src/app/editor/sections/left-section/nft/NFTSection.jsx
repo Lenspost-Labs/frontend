@@ -499,9 +499,9 @@ const WalletNFT = () => {
   const { mutateAsync } = useMutation({
     mutationKey: "refreshNFT",
     mutationFn: refreshNFT,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userNFTs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["userNFTs"], { exact: true });
+    // },
   });
 
   useEffect(() => {

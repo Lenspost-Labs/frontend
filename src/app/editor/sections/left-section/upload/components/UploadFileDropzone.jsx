@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import TiDelete from "@meronex/icons/ti/TiDelete";
-import { uploadUserAssets } from "../../../../../../services/apis/BE-apis/backendApi";
+import {
+  claimReward,
+  uploadUserAssets,
+} from "../../../../../../services/apis/BE-apis/backendApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { errorMessage } from "../../../../../../utils/errorMessage";
+import useUser from "../../../../../../hooks/user/useUser";
 
 const UploadFileDropzone = () => {
   const [stFiles, setStFiles] = useState([]);
   const queryClient = useQueryClient();
+  const { points } = useUser();
 
   // get the base64 string of the file
   const getBase64 = (file) => {
@@ -28,6 +33,15 @@ const UploadFileDropzone = () => {
       "image/*": [],
     },
     onDrop: async (acceptedFiles) => {
+      if (points < 1) {
+        toast.error("You don't have enough points to upload an image");
+        return;
+      }
+      // If it's an SVG throw error
+      if (acceptedFiles[0].type === "image/svg+xml") {
+        toast.error("Please upload an image file other than SVG");
+        return;
+      }
       acceptedFiles.forEach(async (file) => {
         const base64String = await getBase64(file);
 
@@ -46,9 +60,9 @@ const UploadFileDropzone = () => {
   const { mutateAsync } = useMutation({
     mutationKey: "uploadUaserAssets",
     mutationFn: uploadUserAssets,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userAssets"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["userAssets"], { exact: true });
+    // },
   });
 
   // function for remove image from dropzone
@@ -77,39 +91,70 @@ const UploadFileDropzone = () => {
     </div>
   ));
 
+  const fnUploadFilesByBURN = (toastId) => {
+    claimReward({ taskId: 17 })
+      .then(() => {
+        mutateAsync(stFiles[0].base64String)
+          .then((res) => {
+            toast.update(toastId, {
+              render: res?.data,
+              type: "success",
+              isLoading: false,
+              autoClose: 3000,
+              closeButton: true,
+            });
+          })
+          .catch((err) => {
+            toast.update(toastId, {
+              render: errorMessage(err),
+              type: "error",
+              isLoading: false,
+              autoClose: 3000,
+              closeButton: true,
+            });
+          });
+        setStFiles([]);
+      })
+      .catch((err) => {
+        toast.update(toastId, {
+          render: errorMessage(err),
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+          closeButton: true,
+        });
+      });
+  };
+
   useEffect(() => {
     if (stFiles.length > 0) {
-      const id = toast.loading("Uploading file...");
+      const toastId = toast.loading("Uploading file...");
       mutateAsync(stFiles[0].base64String)
         .then((res) => {
           if (res?.s3link) {
-            toast.update(id, {
+            toast.update(toastId, {
               render: "File Uploaded Successfully",
               type: "success",
               isLoading: false,
               autoClose: 3000,
               closeButton: true,
             });
-            setStFiles([]);
+            // setStFiles([]);
           } else {
-            toast.update(id, {
-              render: "Error uploading file",
-              type: "error",
-              isLoading: false,
-              autoClose: 3000,
-              closeButton: true,
-            });
-            setStFiles([]);
+            // toast.update(toastId, {
+            //   render: "Error uploading file",
+            //   type: "error",
+            //   isLoading: false,
+            //   autoClose: 3000,
+            //   closeButton: true,
+            // });
+            // Claim by TaskId 17
+            fnUploadFilesByBURN();
           }
+          setStFiles([]);
         })
         .catch((err) => {
-          toast.update(id, {
-            render: errorMessage(err),
-            type: "error",
-            isLoading: false,
-            autoClose: 3000,
-            closeButton: true,
-          });
+          fnUploadFilesByBURN(toastId);
           setStFiles([]);
         });
     }
@@ -125,7 +170,7 @@ const UploadFileDropzone = () => {
       >
         <div className="outline-none">
           <input {...getInputProps()} />
-          <p>Drag 'n' drop, or Click to browse files</p>  
+          <p>Drag 'n' drop, or Click to browse files</p>
         </div>
       </section>
       <aside className="flex flex-row flex-wrap mt-4">{thumbs}</aside>

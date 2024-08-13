@@ -57,10 +57,10 @@ export const UploadPanel = () => {
   } = useMutation({
     mutationKey: "delete-user-asset",
     mutationFn: deleteUserAsset,
-    onSuccess: (data) => {
-      toast.success(data?.message);
-      queryClient.invalidateQueries(["userAssets"], { exact: true });
-    },
+    // onSuccess: (data) => {
+    //   toast.success(data?.message);
+    //   queryClient.invalidateQueries(["userAssets"], { exact: true });
+    // },
     onError: (error) => {
       toast.error(error);
     },

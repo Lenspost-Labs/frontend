@@ -82,10 +82,10 @@ export const DesignPanel = ({ isMobile }) => {
   } = useMutation({
     mutationKey: "delete-canvas",
     mutationFn: deleteCanvasById,
-    onSuccess: (data) => {
-      toast.success(data?.message);
-      queryClient.invalidateQueries(["my-designs"], { exact: true });
-    },
+    // onSuccess: (data) => {
+    //   toast.success(data?.message);
+    //   queryClient.invalidateQueries(["my-designs"], { exact: true });
+    // },
   });
 
   // mutationFn change canvas visibility (public/private)
@@ -111,7 +111,7 @@ export const DesignPanel = ({ isMobile }) => {
       } else {
         toast.success(data?.message);
       }
-      queryClient.invalidateQueries(["community-pool"], { exact: true });
+      // queryClient.invalidateQueries(["community-pool"], { exact: true });
     },
   });
 

@@ -60,9 +60,9 @@ const UploadFileDropzone = () => {
   const { mutateAsync } = useMutation({
     mutationKey: "uploadUaserAssets",
     mutationFn: uploadUserAssets,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userAssets"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["userAssets"], { exact: true });
+    // },
   });
 
   // function for remove image from dropzone

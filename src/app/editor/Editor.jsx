@@ -167,18 +167,18 @@ const Editor = () => {
   const { mutateAsync: createCanvasAsync } = useMutation({
     mutationKey: "createCanvas",
     mutationFn: createCanvas,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["my-designs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["my-designs"], { exact: true });
+    // },
   });
 
   // update canvas mutation
   const { mutateAsync: updateCanvasAsync } = useMutation({
     mutationKey: "createCanvas",
     mutationFn: updateCanvas,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["my-designs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["my-designs"], { exact: true });
+    // },
   });
   // 03June2023
 

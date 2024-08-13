@@ -1,15 +1,13 @@
 // Seperate component for Lazy loading (CustomImage) - 29Jun2023
 
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { Button, Card, Menu, MenuItem, Position } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
+import { Button, Card, Menu, MenuItem, Position, Popover} from "@blueprintjs/core";
 import { replaceImageURL } from "../../../../utils/replaceUrl";
 import { useEffect, useState } from "react";
 import { useStore } from "../../../../hooks/polotno";
 import { useContext } from "react";
 import { Context } from "../../../../providers/context/ContextProvider";
 import { addressCrop, assetsTrack } from "../../../../utils";
-import posthog from "posthog-js";
 
 // Custom Image card component start - 23Jun2023
 const CustomImageComponent = ({
@@ -203,7 +201,7 @@ const CustomImageComponent = ({
               e.stopPropagation();
             }}
           >
-            <Popover2
+            <Popover
               content={
                 <Menu>
                   <MenuItem icon="trash" text="Delete" onClick={onDelete} />
@@ -214,7 +212,7 @@ const CustomImageComponent = ({
               <div id="makePublic">
                 <Button icon="more" />
               </div>
-            </Popover2>
+            </Popover>
           </div>
         )}
       </Card>

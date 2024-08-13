@@ -3,9 +3,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { SectionTab } from "polotno/side-panel";
 import { MyDesignIcon } from "../../../../../assets/assets";
 
-import { Button, Card, Menu, MenuItem, Position } from "@blueprintjs/core";
+import { Button, Card } from "@blueprintjs/core";
 
-import { Popover2 } from "@blueprintjs/popover2";
 import { useAccount } from "wagmi";
 import {
   changeCanvasVisibility,
@@ -37,6 +36,7 @@ import { LoadingAnimatedComponent } from "../../../common";
 import { fnPageHasElements } from "../../../../../utils/fnPageHasElements";
 import { useAppAuth, useReset } from "../../../../../hooks/app";
 import DesignCard from "./components/cards/DesignCard";
+import assetNewDesign from "./assets/NewDesign.svg";
 
 export const DesignPanel = ({ isMobile }) => {
   const { isAuthenticated } = useAppAuth();
@@ -82,10 +82,10 @@ export const DesignPanel = ({ isMobile }) => {
   } = useMutation({
     mutationKey: "delete-canvas",
     mutationFn: deleteCanvasById,
-    // onSuccess: (data) => {
-    //   toast.success(data?.message);
-    //   queryClient.invalidateQueries(["my-designs"], { exact: true });
-    // },
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      queryClient.invalidateQueries(["my-designs"], { exact: true });
+    },
   });
 
   // mutationFn change canvas visibility (public/private)
@@ -165,17 +165,6 @@ export const DesignPanel = ({ isMobile }) => {
       {/* <h1 className="text-lg">My Files</h1> */}
       {!isMobile && (
         <>
-          <Button
-            className="m-2 p-1"
-            onClick={() => {
-              if (fnPageHasElements(store)) {
-                setModal({ ...modal, isOpen: true, isNewDesign: true });
-              }
-            }}
-          >
-            Create new design
-          </Button>
-
           {modal.isOpen && modal.isTokengate && (
             <CompModal
               modal={modal}
@@ -212,14 +201,34 @@ export const DesignPanel = ({ isMobile }) => {
             setQuery={setQuery}
             placeholder="Search designs by id"
           />
+          {/* <Button
+            className="m-2 p-1"
+            onClick={() => {
+              if (fnPageHasElements(store)) {
+                setModal({ ...modal, isOpen: true, isNewDesign: true });
+              }
+            }}
+          >
+            Create new design
+          </Button> */}
 
-          <MyDesignReacTour />
+          {/* <MyDesignReacTour /> */}
         </>
       )}
       {isError ? (
         <ErrorComponent error={error} />
       ) : data?.pages[0]?.data?.length > 0 ? (
         <div className="overflow-y-auto grid grid-cols-2" id="RecentDesigns">
+          <div
+          className="cursor-pointer m-1 hover:shadow-sm"
+            onClick={() => {
+              if (fnPageHasElements(store)) {
+                setModal({ ...modal, isOpen: true, isNewDesign: true });
+              }
+            }}
+          >
+            <img className="rounded-lg hover:shadow-lg" src={assetNewDesign} alt={"new design"} />
+          </div>
           {contextCanvasIdRef.current === null && fastPreview[0] && (
             <Card className="relative p-0 m-1" interactive>
               <img src={fastPreview[0]} alt="" />

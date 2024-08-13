@@ -80,6 +80,12 @@ const App = () => {
     SolanaWalletErrorContext
   );
   const { logout } = useLogout();
+  const store = useStore();
+
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+  const authParam = params.get("fc-auth");
+  const actionType = params.get("actionType");
 
   // clear the session if it is expired (24hrs)
   useEffect(() => {
@@ -287,12 +293,14 @@ const App = () => {
     }
   }, [window.innerWidth]);
 
+  useEffect(() => {
+    if (actionType === "composer") {
+      store
+    }
+  }, window?.innerHeight);
+
   // get the fc auth for composer action
   useEffect(() => {
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
-    const authParam = params.get("fc-auth");
-    const actionType = params.get("actionType");
     const userAddress = params.get("address");
     saveToLocalStorage(LOCAL_STORAGE.FcComposerAuth, authParam);
     saveToLocalStorage(LOCAL_STORAGE.actionType, actionType);

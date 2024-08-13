@@ -285,7 +285,7 @@ const App = () => {
     if (window.innerWidth > 768) {
       setIsMobile(false);
     }
-  }, [window.innerWidth, window.innerHeight]);
+  }, [window.innerWidth]);
 
   // get the fc auth for composer action
   useEffect(() => {

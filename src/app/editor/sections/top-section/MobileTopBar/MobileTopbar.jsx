@@ -196,13 +196,13 @@ const MobileTopbar = () => {
                   <div className="flex justify-between items-center">
                     <div className="text-lg p-2 "> Memes </div>
                     <div
-                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
+                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2 flex items-center text-nowrap text-xs"
                       onClick={() => {
                         fnCloseLeftOpenEditorPanel("mobPanelStickers");
                         setCurOpenedTabLevel1("memes");
                       }}
                     >
-                      {" "}
+                      See More
                       <EditIconRightArrow />{" "}
                     </div>
                   </div>
@@ -222,13 +222,13 @@ const MobileTopbar = () => {
                       </span>
                     </div>
                     <div
-                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
+                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2 flex items-center text-nowrap text-xs"
                       onClick={() => {
                         fnCloseLeftOpenEditorPanel("mobPanelStickers");
                         setCurOpenedTabLevel1("stickers");
                       }}
                     >
-                      {" "}
+                      See More
                       <EditIconRightArrow />{" "}
                     </div>
                   </div>

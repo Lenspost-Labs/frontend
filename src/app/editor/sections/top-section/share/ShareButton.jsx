@@ -11,6 +11,7 @@ import {
 import { Drawer } from "@blueprintjs/core";
 import { Context } from "../../../../../providers/context";
 import EditIconShare from "../../../../../assets/EditIconsMobile/EditIconShare";
+import { ERC1155Edition } from "../../right-section/share/zora-mint/components";
 
 const ShareButton = () => {
   const [transitionRtoL, setTransitionRtoL] = useState(false);
@@ -74,6 +75,7 @@ const ShareButton = () => {
                 {typeof menu === "number" && (
                   <ZoraMint selectedChainId={menu} />
                 )}
+                {menu === "ERC1155" && <ZoraMint />}
               </div>
             </div>
           </div>

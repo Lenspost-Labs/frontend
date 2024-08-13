@@ -153,6 +153,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     mutationKey: "storeZoraLink",
     mutationFn: mintToXchain,
   });
+
   const { mutateAsync: postFrameData } = useMutation({
     mutationKey: "postFrameData",
     mutationFn: postFrame,
@@ -977,7 +978,6 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   // mint on Zora
   useEffect(() => {
     if (createSplitData?.splitAddress) {
-      console.log("createSplitData", createSplitData);
       setTimeout(() => {
         writeContract({
           abi: zoraNftCreatorV1Config.abi,
@@ -1051,7 +1051,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   // error handling for create split
   useEffect(() => {
     if (isCreateSplitError) {
-      console.log("create split error", createSplitError);
+      console.error("create split error", createSplitError);
       toast.error(createSplitError.message.split("\n")[0]);
     }
   }, [isCreateSplitError]);

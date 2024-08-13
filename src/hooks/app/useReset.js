@@ -133,7 +133,6 @@ const useReset = () => {
     setZoraTab("ERC721");
     setLensTab("normalPost");
     setFarcasterTab("normalPost");
-    setIsMobile(false);
     setCurOpenedPanel("");
     setOpenLeftBar(false);
     setOpenBottomBar(false);

@@ -499,9 +499,9 @@ const WalletNFT = () => {
   const { mutateAsync } = useMutation({
     mutationKey: "refreshNFT",
     mutationFn: refreshNFT,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userNFTs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["userNFTs"], { exact: true });
+    // },
   });
 
   useEffect(() => {
@@ -567,6 +567,7 @@ const WalletNFT = () => {
         setQuery={setQuery}
         placeholder="Search NFTs by id"
         onClick={refreshNFTs}
+        btnIcon={"refresh"}
       />
       <Tabs
         className="overflow-y-auto"

@@ -64,7 +64,12 @@ const DesignCard = ({
   assetsRecipientElementData,
 }) => {
   const store = useStore();
-  const { referredFromRef, preStoredRecipientDataRef, isMobile, setOpenBottomBar } = useContext(Context);
+  const {
+    referredFromRef,
+    preStoredRecipientDataRef,
+    isMobile,
+    setOpenBottomBar,
+  } = useContext(Context);
 
   const [stPreviewIndex, setStPreviewIndex] = useState(0);
   const [stHovered, setStHovered] = useState(false);
@@ -299,60 +304,66 @@ export const LenspostTemplates = () => {
         {/*  Featured Panels :  */}
 
         {/* Tabs for Desktop [ Original one ] : Start */}
-        <div className="hidden sm:block">
-          {/*  Featured Panels : Templates */}
-          <SecNameHeading
-            animationData={animationData}
-            name={"Featured Backgrounds"}
-            hasSeeMore
-            seeMoreFn={() => store.openSidePanel("Backgrounds2")}
-          />
-          <CompCarousel type="background" author="kitty" campaign="kitty" />
+        {!isMobile && (
+          <div>
+            {/*  Featured Panels : Templates */}
+            <SecNameHeading
+              animationData={animationData}
+              name={"Featured Backgrounds"}
+              hasSeeMore
+              seeMoreFn={() => store.openSidePanel("Backgrounds2")}
+            />
+            <CompCarousel type="background" author="kitty" campaign="kitty" />
 
-          {/*  Featured Panels : Stickers */}
-          <SecNameHeading
-            animationData={animationData}
-            name={"Featured Stickers"}
-            hasSeeMore
-            seeMoreFn={() => store.openSidePanel("Elements")}
-          />
-          <CustomHorizontalScroller type="props" author="ham" campaign={null} />
+            {/*  Featured Panels : Stickers */}
+            <SecNameHeading
+              animationData={animationData}
+              name={"Featured Stickers"}
+              hasSeeMore
+              seeMoreFn={() => store.openSidePanel("Elements")}
+            />
+            <CustomHorizontalScroller
+              type="props"
+              author="phi"
+              campaign={null}
+            />
 
-          <div className="ml-2 mt-4 mb-1 "> Lenspost Templates </div>
-          {/* <div className=" overflow-y-scroll">  */}
-          {data?.pages[0]?.data?.length > 0 ? (
-            <>
-              <div className="columns-2 gap-1">
-                {data?.pages
-                  .flatMap((item) => item?.data)
-                  .map((item, index) => {
-                    return (
-                      <DesignCard
-                        item={item}
-                        id={item?.id}
-                        referredFrom={item?.referredFrom}
-                        isGated={item?.isGated}
-                        gatedWith={item?.gatedWith}
-                        json={item?.data}
-                        ownerAddress={item?.ownerAddress}
-                        preview={item?.image}
-                        key={index}
-                        modal={modal}
-                        setModal={setModal}
-                      />
-                    );
-                  })}
-              </div>
-              <LoadMoreComponent
-                hasNextPage={hasNextPage}
-                isFetchingNextPage={isFetchingNextPage}
-              />
-            </>
-          ) : (
-            <MessageComponent message="No Results" />
-          )}
-          {/* </div> */}
-        </div>
+            <div className="ml-2 mt-4 mb-1 "> Lenspost Templates </div>
+            {/* <div className=" overflow-y-scroll">  */}
+            {data?.pages[0]?.data?.length > 0 ? (
+              <>
+                <div className="columns-2 gap-1">
+                  {data?.pages
+                    .flatMap((item) => item?.data)
+                    .map((item, index) => {
+                      return (
+                        <DesignCard
+                          item={item}
+                          id={item?.id}
+                          referredFrom={item?.referredFrom}
+                          isGated={item?.isGated}
+                          gatedWith={item?.gatedWith}
+                          json={item?.data}
+                          ownerAddress={item?.ownerAddress}
+                          preview={item?.image}
+                          key={index}
+                          modal={modal}
+                          setModal={setModal}
+                        />
+                      );
+                    })}
+                </div>
+                <LoadMoreComponent
+                  hasNextPage={hasNextPage}
+                  isFetchingNextPage={isFetchingNextPage}
+                />
+              </>
+            ) : (
+              <MessageComponent message="No Results" />
+            )}
+            {/* </div> */}
+          </div>
+        )}
         {/* Tabs for Desktop [ Original one ] : End */}
 
         {/* -------------- */}
@@ -360,43 +371,41 @@ export const LenspostTemplates = () => {
         {/* Tabs for Mobile : Start */}
         {/* Reference Link: https://www.material-tailwind.com/docs/react/tabs */}
 
-        <div className="sm:hidden">
-          {isMobile && (
-            <div className="h-full overflow-y-scroll">
-              {data?.pages[0]?.data?.length > 0 && (
-                <>
-                  <div className="columns-2 gap-1">
-                    {data?.pages
-                      .flatMap((item) => item?.data)
-                      .map((item, index) => {
-                        return (
-                          <DesignCard
-                            item={item}
-                            id={item?.id}
-                            referredFrom={item?.referredFrom}
-                            isGated={item?.isGated}
-                            gatedWith={item?.gatedWith}
-                            json={item?.data}
-                            ownerAddress={item?.ownerAddress}
-                            preview={item?.image}
-                            key={index}
-                            modal={modal}
-                            setModal={setModal}
-                          />
-                        );
-                      })}
-                  </div>
-                  <LoadMoreComponent
-                    hasNextPage={hasNextPage}
-                    isFetchingNextPage={isFetchingNextPage}
-                  />
-                </>
-              )}
-            </div>
-          )}
-        </div>
-        {/* Tabs for Mobile : End */}
+        {isMobile && (
+          <div className="h-full overflow-y-scroll">
+            {data?.pages[0]?.data?.length > 0 && (
+              <>
+                <div className="columns-2 gap-1">
+                  {data?.pages
+                    .flatMap((item) => item?.data)
+                    .map((item, index) => {
+                      return (
+                        <DesignCard
+                          item={item}
+                          id={item?.id}
+                          referredFrom={item?.referredFrom}
+                          isGated={item?.isGated}
+                          gatedWith={item?.gatedWith}
+                          json={item?.data}
+                          ownerAddress={item?.ownerAddress}
+                          preview={item?.image}
+                          key={index}
+                          modal={modal}
+                          setModal={setModal}
+                        />
+                      );
+                    })}
+                </div>
+                <LoadMoreComponent
+                  hasNextPage={hasNextPage}
+                  isFetchingNextPage={isFetchingNextPage}
+                />
+              </>
+            )}
+          </div>
+        )}
       </div>
+      {/* Tabs for Mobile : End */}
     </>
   );
 };

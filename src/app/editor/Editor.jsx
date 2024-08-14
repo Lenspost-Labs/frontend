@@ -167,18 +167,18 @@ const Editor = () => {
   const { mutateAsync: createCanvasAsync } = useMutation({
     mutationKey: "createCanvas",
     mutationFn: createCanvas,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["my-designs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["my-designs"], { exact: true });
+    // },
   });
 
   // update canvas mutation
   const { mutateAsync: updateCanvasAsync } = useMutation({
     mutationKey: "createCanvas",
     mutationFn: updateCanvas,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["my-designs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["my-designs"], { exact: true });
+    // },
   });
   // 03June2023
 
@@ -211,8 +211,39 @@ const Editor = () => {
     }
   }, [isAuthenticated]);
 
+  // From Slug data
+  let arrSlugAssetRecipients = [];
+  let arrSlugReferredFrom = [];
+
+  // Function to load the data on the canvas
+  const fnLoadDataOnCanvas = async () => {
+    const dataForSlug = await apiGetJSONDataForSlug(slugId);
+    consoleLogonlyDev("dataForSlug", dataForSlug?.data);
+
+    // Load the data on Canvas
+    store.loadJSON(dataForSlug?.data?.data);
+
+    // Load the recipients
+    arrSlugAssetRecipients = dataForSlug?.data?.assetsRecipientElementData;
+    arrSlugReferredFrom = dataForSlug?.data?.referredFrom;
+
+    // Update the meta tag in case there is any change in the image
+    const ogImageLink = dataForSlug?.data?.image;
+    let metaTag = document.querySelector('meta[property="og:image"]');
+    if (!metaTag) {
+      // If the meta tag doesn't exist, create it
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("property", "og:image");
+      document.getElementsByTagName("head")[0].appendChild(metaTag);
+    }
+    // Set or update the content of the meta tag
+    metaTag.setAttribute("content", ogImageLink);
+  };
+
   // function to filter the recipient data
   const recipientDataFilter = () => {
+    // From Slug data
+    preStoredRecipientDataRef.current = arrSlugAssetRecipients;
     parentRecipientDataRef.current = [
       ...preStoredRecipientDataRef.current, // recipient data geting from BE
       ...lensCollectNftRecipientDataRef.current, // recipient data of lens collect
@@ -258,7 +289,8 @@ const Editor = () => {
   // function to add the all recipient handles / address
   const recipientDataCombiner = () => {
     const { loggedInUserAddress } = useLocalStorage();
-
+    // From Slug data
+    referredFromRef.current = arrSlugReferredFrom || [];
     // Get unique recipients by creating a Set
     const recipientsSet = new Set([
       ...(referredFromRef.current.length > 0 &&
@@ -381,27 +413,6 @@ const Editor = () => {
     if (ogImageTag) {
       ogImageTag.setAttribute("content", imageUrl);
     }
-  };
-
-  // Function to load the data on the canvas
-  const fnLoadDataOnCanvas = async () => {
-    const dataForSlug = await apiGetJSONDataForSlug(slugId);
-    consoleLogonlyDev("dataForSlug", dataForSlug?.data);
-
-    // Load the data on Canvas
-    store.loadJSON(dataForSlug?.data?.data);
-
-    // Update the meta tag in case there is any change in the image
-    const ogImageLink = dataForSlug?.data?.image;
-    let metaTag = document.querySelector('meta[property="og:image"]');
-    if (!metaTag) {
-      // If the meta tag doesn't exist, create it
-      metaTag = document.createElement("meta");
-      metaTag.setAttribute("property", "og:image");
-      document.getElementsByTagName("head")[0].appendChild(metaTag);
-    }
-    // Set or update the content of the meta tag
-    metaTag.setAttribute("content", ogImageLink);
   };
 
   const fnLoadWatermark = () => {
@@ -600,6 +611,24 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
+
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+  const actionType = params.get("actionType");
+  // store the initial width and height - only for composer action,
+  // to restore the canvas size on window?.innerheight change
+  const intialScale = store?.scale;
+  // Only on composer action, set scale (Zoom) to 1 as initial editor's size
+  useEffect(() => {
+    console.log("initial Scale", intialScale);
+    if (actionType === "composer") {
+      console.log("current zoom", store?.scale);
+      if (store?.scale !== intialScale) {
+        store?.setScale(1);
+        console.log("Current Zoom after catching Scale change", store?.scale);
+      }
+    }
+  }, [store?.scale]);
 
   return (
     <>

@@ -136,6 +136,9 @@ const useReset = () => {
     setZoraTab("ERC721");
     setLensTab("normalPost");
     setFarcasterTab("normalPost");
+    
+    // Just so that it does not render Desktop UI on Mobile
+    // setIsMobile(false);
     setCurOpenedPanel("");
     setOpenLeftBar(false);
     setOpenBottomBar(false);

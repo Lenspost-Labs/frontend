@@ -632,3 +632,10 @@ export const apiGetOgImageForSlug = async (data) => {
     data: result?.data,
   };
 };
+
+export const apiBuySubscription = async (data) => {
+  const result = await api.post(`${API}/mint/buy`, data);
+  return {
+    data: result?.data,
+  };
+};

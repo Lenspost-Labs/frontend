@@ -174,16 +174,41 @@ const ShareSection = () => {
               value={postName}
             /> */}
             <div className="space-x-2">
-              <Textarea
-                label="Description"
-                name="description"
-                onChange={(e) => handleInputChange(e)}
-                value={postDescription}
-                // placeholder="Write a description..."
-                // className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
-              />
-              {charLimitError && (
-                <div className="text-red-500 text-sm">{charLimitError}</div>
+              {!isMobile && (
+                <>
+                  <Textarea
+                    label="Description"
+                    name="description"
+                    onChange={(e) => handleInputChange(e)}
+                    value={postDescription}
+                    // placeholder="Write a description..."
+                    // className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+                  />
+                  {charLimitError && (
+                    <div className="text-red-500 text-sm">{charLimitError}</div>
+                  )}
+                </>
+              )}
+
+              {/* Using default textarea from HTML to avoid unnecessary focus only for mobile */}
+              {/* iPhone issue */}
+              {isMobile && (
+                <>
+                  <textarea
+                    cols={30}
+                    type="text"
+                    className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+                    label="Description"
+                    name="description"
+                    onChange={(e) => handleInputChange(e)}
+                    value={postDescription}
+                    placeholder="Write a description..."
+                    // className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+                  />
+                  {charLimitError && (
+                    <div className="text-red-500 text-sm">{charLimitError}</div>
+                  )}
+                </>
               )}
 
               <div className="flex flex-row">

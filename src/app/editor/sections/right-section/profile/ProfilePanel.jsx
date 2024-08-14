@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { TaskCardV2 } from "./components/Cards";
 import { useUser } from "../../../../../hooks/user";
 import {
+  apiGetLeaderboard,
   apiGetPointsHistory,
   getAllTasks,
   getInviteCode,
@@ -19,6 +20,7 @@ import UserCard from "./components/Cards/UserCard";
 
 import farcasterLogo from "../../../../../assets/logos/logoFarcaster.jpg";
 import PointHistoryCard from "./components/Cards/PointHistoryCard";
+import LeaderboardCard from "./components/Cards/LeaderboardCard";
 
 const ProfilePanel = () => {
   const { setMenu } = useContext(Context);
@@ -30,6 +32,7 @@ const ProfilePanel = () => {
   const tabsArr = [
     { label: "Tasks", value: "tasks" },
     { label: "Points history", value: "pointsHistory" },
+    { label: "Leaderboard", value: "leaderboard" },
   ];
 
   const {
@@ -57,10 +60,33 @@ const ProfilePanel = () => {
     queryFn: apiGetPointsHistory,
   });
 
+  const {
+    data: leaderboardData,
+    isLoading: leaderboardIsLoading,
+    isError: leaderboardIsError,
+    error: leaderboardError,
+  } = useQuery({
+    queryKey: ["getLeaderboard"],
+    queryFn: apiGetLeaderboard,
+  });
+
+  const leaderboardDataList = leaderboardData?.slice(0, 50);
+
+  // const pointsHistoryList = pointHistoryData?.message;
+  // console.log("pointsHistoryList", pointsHistoryList);
+  // const recurringTasks = taskList?.map((task, index) => {
+  //   if (task?.taskId === 2 || 3 || 4) {
+  //     return task;
+  //   }
+  // });
+
+  // console.log("recurringTasks", recurringTasks);
+
   // Group the tasks by campaign :
   const fnGroupTaskByCampaign = async () => {
     setGroupedTasks(
-      await taskData?.message?.reduce((acc, task) => {
+      // Reversing to avoid FC Tasks going bottom
+      await taskData?.message?.reverse().reduce((acc, task) => {
         const campaignKey = task.campaign || "Poster";
         if (!acc[campaignKey]) {
           acc[campaignKey] = [];
@@ -137,19 +163,26 @@ const ProfilePanel = () => {
                                   customBody={
                                     <>
                                       {tasks.length > 0
-                                        ? tasks.map((task, index) =>
-                                            !task.isRecurring ? (
+                                        ? tasks.map(
+                                            (task, index) => (
+                                              // task.type === "MINT" ?
+                                              //  (
                                               <TaskCardV2
                                                 key={index}
-                                                // taskId={task.id}
+                                                taskCount={task?.count}
+                                                taskCampaign={
+                                                  task?.campaign || null
+                                                }
                                                 taskId={index + 1} // Just to display the task number on FE, internally we use `task.id` Itself
+                                                taskType={task.type}
                                                 taskAmount={task.amount}
                                                 isReward={task.isReward}
                                                 isCompleted={task.completed}
                                                 taskName={task.name}
                                                 taskDesc={task.description}
                                               />
-                                            ) : null
+                                            )
+                                            // ) : null
                                           )
                                         : null}
                                     </>
@@ -165,12 +198,13 @@ const ProfilePanel = () => {
 
                 {selectedTab === "pointsHistory" && (
                   <>
-                    {pointHistoryData && pointHistoryData?.message?.length > 0
-                      ? pointHistoryData?.message
+                    {pointHistoryData && pointHistoryData?.length > 0
+                      ? pointHistoryData
                           ?.slice(1)
                           .reverse()
                           .map((point, index) => (
                             <PointHistoryCard
+                              key={index}
                               pointsId={index + 1}
                               pointsReason={point.reason}
                               pointsAmt={point.amount}
@@ -178,6 +212,25 @@ const ProfilePanel = () => {
                             />
                           ))
                       : null}
+                  </>
+                )}
+
+                {selectedTab === "leaderboard" && (
+                  <>
+                    {" "}
+                    {leaderboardDataList &&
+                      leaderboardDataList?.length > 0 &&
+                      leaderboardDataList 
+                        .map((lboard, index) => (
+                          <LeaderboardCard
+                            key={index}
+                            lbIndex={index + 1}
+                            lbUsername={lboard?.username}
+                            lbfarcsterId={lboard?.farcaster_id}
+                            lbPoints={lboard?.points}
+                            lbEVMAddress={lboard?.evm_address}
+                          />
+                        ))}
                   </>
                 )}
               </TabsBody>

@@ -71,7 +71,7 @@ const ProfilePanel = () => {
   const fnGroupTaskByCampaign = async () => {
     setGroupedTasks(
       // Reversing to avoid FC Tasks going bottom
-      await taskData?.message?.reduce((acc, task) => {
+      await taskData?.message?.reverse().reduce((acc, task) => {
         const campaignKey = task.campaign || "Poster";
         if (!acc[campaignKey]) {
           acc[campaignKey] = [];
@@ -155,7 +155,9 @@ const ProfilePanel = () => {
                                               <TaskCardV2
                                                 key={index}
                                                 taskCount={task?.count}
-                                                taskCampaign={task?.campaign || null}
+                                                taskCampaign={
+                                                  task?.campaign || null
+                                                }
                                                 taskId={index + 1} // Just to display the task number on FE, internally we use `task.id` Itself
                                                 taskType={task.type}
                                                 taskAmount={task.amount}
@@ -181,12 +183,13 @@ const ProfilePanel = () => {
 
                 {selectedTab === "pointsHistory" && (
                   <>
-                    {pointHistoryData && pointHistoryData?.message?.length > 0
-                      ? pointHistoryData?.message
+                    {pointHistoryData && pointHistoryData?.length > 0
+                      ? pointHistoryData
                           ?.slice(1)
                           .reverse()
                           .map((point, index) => (
                             <PointHistoryCard
+                              key={index}
                               pointsId={index + 1}
                               pointsReason={point.reason}
                               pointsAmt={point.amount}

@@ -149,13 +149,14 @@ img {
   text-align: center;
 }
 /* Styling the Popovers */
-.bp5-popover2 {
+.bp5-popover {
   border-radius: 8px;
-  z-index: 10000;
+  z-index: 1000000;
 }
 
-.bp5-popover2 .bp5-popover2-content {
+.bp5-popover .bp5-popover-content {
   border-radius: 8px;
+  z-index: 1000000;
 }
 .bp5-menu {
   border-radius: 8px;

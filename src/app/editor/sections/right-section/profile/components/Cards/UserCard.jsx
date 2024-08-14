@@ -31,7 +31,7 @@ const UserCard = ({ username }) => {
 
   // const { address } = useAccount();
 
-  const address = getFromLocalStorage("user.address");
+  const address = getFromLocalStorage("privy:connections[0].address");
   const [inviteCodesArr, setInviteCodesArr] = useState([]);
 
   const { data, isLoading, refetch } = useQuery({

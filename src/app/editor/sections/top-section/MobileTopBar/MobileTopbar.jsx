@@ -6,7 +6,6 @@ import { Context } from "../../../../../providers/context";
 import { Button, Drawer } from "@material-tailwind/react";
 import EditIconRight from "../../../../../assets/EditIconsMobile/EditIconRight";
 import Logo from "../logo/Logo";
-import MobileLoginBtn from "../auth/MobileLoginBtn";
 import EditIconRightArrow from "../../../../../assets/EditIconsMobile/EditIconRightArrow";
 import EditIconHome from "../../../../../assets/EditIconsMobile/EditIconHome";
 import EditIconMyFIles from "../../../../../assets/EditIconsMobile/EditIconMyFIles";
@@ -298,7 +297,7 @@ const MobileTopbar = () => {
             {curOpenedPanel === "mobPanelMyFiles" && (
               <>
                 <div className="mx-4 mt-2">
-                  <DesignPanel isMobile />
+                  <DesignPanel />
                 </div>
               </>
             )}

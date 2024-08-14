@@ -38,10 +38,16 @@ import { useAppAuth, useReset } from "../../../../../hooks/app";
 import DesignCard from "./components/cards/DesignCard";
 import assetNewDesign from "./assets/NewDesign.svg";
 
-export const DesignPanel = ({ isMobile }) => {
+export const DesignPanel = () => {
   const { isAuthenticated } = useAppAuth();
   const { resetState } = useReset();
-  const { fastPreview, contextCanvasIdRef, designModal } = useContext(Context);
+  const {
+    fastPreview,
+    contextCanvasIdRef,
+    designModal,
+    isMobile,
+    setOpenLeftBar,
+  } = useContext(Context);
   const [modalImageLink, setModalImageLink] = useState("");
   const store = useStore();
 
@@ -219,15 +225,24 @@ export const DesignPanel = ({ isMobile }) => {
         <ErrorComponent error={error} />
       ) : data?.pages[0]?.data?.length > 0 ? (
         <div className="overflow-y-auto grid grid-cols-2" id="RecentDesigns">
+          {/* Create new design - Image */}
           <div
-          className="cursor-pointer m-1 hover:shadow-sm"
+            className="cursor-pointer m-1 hover:shadow-sm"
             onClick={() => {
+              if (isMobile) {
+                setOpenLeftBar(false);
+                resetState();
+              }
               if (fnPageHasElements(store)) {
                 setModal({ ...modal, isOpen: true, isNewDesign: true });
               }
             }}
           >
-            <img className="rounded-lg hover:shadow-lg" src={assetNewDesign} alt={"new design"} />
+            <LazyLoadImage
+              className="rounded-lg hover:shadow-lg"
+              src={assetNewDesign}
+              alt={"new design"}
+            />
           </div>
           {contextCanvasIdRef.current === null && fastPreview[0] && (
             <Card className="relative p-0 m-1" interactive>

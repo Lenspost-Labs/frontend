@@ -611,6 +611,24 @@ const Editor = () => {
   //   }
   // }, [isPageActive.current]);
 
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+  const actionType = params.get("actionType");
+  // store the initial width and height - only for composer action,
+  // to restore the canvas size on window?.innerheight change
+  const intialScale = store?.scale;
+  // Only on composer action, set scale (Zoom) to 1 as initial editor's size
+  useEffect(() => {
+    console.log("initial Scale", intialScale);
+    if (actionType === "composer") {
+      console.log("current zoom", store?.scale);
+      if (store?.scale !== intialScale) {
+        store?.setScale(1);
+        console.log("Current Zoom after catching Scale change", store?.scale);
+      }
+    }
+  }, [store?.scale]);
+
   return (
     <>
       <div

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { TaskCardV2 } from "./components/Cards";
 import { useUser } from "../../../../../hooks/user";
 import {
+  apiGetLeaderboard,
   apiGetPointsHistory,
   getAllTasks,
   getInviteCode,
@@ -19,6 +20,7 @@ import UserCard from "./components/Cards/UserCard";
 
 import farcasterLogo from "../../../../../assets/logos/logoFarcaster.jpg";
 import PointHistoryCard from "./components/Cards/PointHistoryCard";
+import LeaderboardCard from "./components/Cards/LeaderboardCard";
 
 const ProfilePanel = () => {
   const { setMenu } = useContext(Context);
@@ -30,6 +32,7 @@ const ProfilePanel = () => {
   const tabsArr = [
     { label: "Tasks", value: "tasks" },
     { label: "Points history", value: "pointsHistory" },
+    { label: "Leaderboard", value: "leaderboard" },
   ];
 
   const {
@@ -56,6 +59,18 @@ const ProfilePanel = () => {
     queryKey: ["getPointsHistory"],
     queryFn: apiGetPointsHistory,
   });
+
+  const {
+    data: leaderboardData,
+    isLoading: leaderboardIsLoading,
+    isError: leaderboardIsError,
+    error: leaderboardError,
+  } = useQuery({
+    queryKey: ["getLeaderboard"],
+    queryFn: apiGetLeaderboard,
+  });
+
+  const leaderboardDataList = leaderboardData?.slice(0, 50);
 
   // const pointsHistoryList = pointHistoryData?.message;
   // console.log("pointsHistoryList", pointsHistoryList);
@@ -197,6 +212,25 @@ const ProfilePanel = () => {
                             />
                           ))
                       : null}
+                  </>
+                )}
+
+                {selectedTab === "leaderboard" && (
+                  <>
+                    {" "}
+                    {leaderboardDataList &&
+                      leaderboardDataList?.length > 0 &&
+                      leaderboardDataList 
+                        .map((lboard, index) => (
+                          <LeaderboardCard
+                            key={index}
+                            lbIndex={index + 1}
+                            lbUsername={lboard?.username}
+                            lbfarcsterId={lboard?.farcaster_id}
+                            lbPoints={lboard?.points}
+                            lbEVMAddress={lboard?.evm_address}
+                          />
+                        ))}
                   </>
                 )}
               </TabsBody>

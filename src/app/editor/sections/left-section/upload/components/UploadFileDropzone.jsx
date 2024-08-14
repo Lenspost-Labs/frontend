@@ -33,10 +33,10 @@ const UploadFileDropzone = () => {
       "image/*": [],
     },
     onDrop: async (acceptedFiles) => {
-      if (points < 1) {
-        toast.error("You don't have enough points to upload an image");
-        return;
-      }
+      // if (points < 1) {
+      //   toast.error("You don't have enough points to upload an image");
+      //   return;
+      // }
       // If it's an SVG throw error
       if (acceptedFiles[0].type === "image/svg+xml") {
         toast.error("Please upload an image file other than SVG");

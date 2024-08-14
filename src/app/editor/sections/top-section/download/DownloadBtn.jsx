@@ -6,8 +6,8 @@ import {
   HTMLSelect,
   Slider,
   ProgressBar,
+  Popover,
 } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
 import * as unit from "polotno/utils/unit";
 import { ExportIcon } from "../../../../../assets/assets";
 import { useStore } from "../../../../../hooks/polotno";
@@ -100,7 +100,7 @@ const DownloadBtn = () => {
   };
 
   return (
-    <Popover2
+    <Popover
       style={{ zIndex: 999999 }}
       content={
         <Menu className="p-4 border border-gray-300 shadow-2xl">
@@ -285,7 +285,7 @@ const DownloadBtn = () => {
           setQuality(1);
         }}
       />
-    </Popover2>
+    </Popover>
   );
 };
 

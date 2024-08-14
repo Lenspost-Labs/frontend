@@ -16,11 +16,17 @@ const useUser = () => {
     queryFn: getUserProfile,
     enabled: isAuthenticated ? true : false,
     refetchOnMount: false,
+    // cache it
+    cacheTime: 1000 * 60 * 60 * 24 * 7,
   });
 
   const { data: farcasterData, error: farcasterError } = useQuery({
     queryKey: ["farcasterDetails"],
     queryFn: () => getFarcasterDetails(address),
+    enabled: address ? true : false,
+    refetchOnMount: false,
+    // cache it 
+    cacheTime: 1000 * 60 * 60 * 24 * 7,
   });
 
   const fnGetUserLevel = async () => {

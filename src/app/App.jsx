@@ -293,13 +293,14 @@ const App = () => {
     }
   }, [window.innerWidth]);
 
-
   // get the fc auth for composer action
   useEffect(() => {
-    const userAddress = params.get("address");
+    if (actionType === "composer") {
+      const userAddress = params.get("address");
+      saveToLocalStorage(LOCAL_STORAGE.userAddress, userAddress);
+    }
     saveToLocalStorage(LOCAL_STORAGE.FcComposerAuth, authParam);
     saveToLocalStorage(LOCAL_STORAGE.actionType, actionType);
-    saveToLocalStorage(LOCAL_STORAGE.userAddress, userAddress);
   }, []);
 
   return (

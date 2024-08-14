@@ -295,12 +295,22 @@ const App = () => {
 
   // get the fc auth for composer action
   useEffect(() => {
-    if (actionType === "composer") {
-      const userAddress = params.get("address");
-      saveToLocalStorage(LOCAL_STORAGE.userAddress, userAddress);
-    }
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    const actionType = params.get("actionType");
+    const userAddress = params.get("address");
+    const authParam = params.get("fc-auth");
+    const fid = params.get("fid");
     saveToLocalStorage(LOCAL_STORAGE.FcComposerAuth, authParam);
+    saveToLocalStorage(LOCAL_STORAGE.userAddress, userAddress);
     saveToLocalStorage(LOCAL_STORAGE.actionType, actionType);
+    saveToLocalStorage(LOCAL_STORAGE.fid, fid);
+
+    console.log({ userAddress });
+
+    posthog.identify(fid, {
+      evm_address: userAddress,
+    });
   }, []);
 
   return (

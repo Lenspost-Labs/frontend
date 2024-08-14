@@ -247,7 +247,7 @@ const ContextProvider = ({ children }) => {
     royaltySplitRecipients: [
       {
         address: "",
-        share: null,
+        percentAllocation: null,
       },
     ],
 
@@ -495,7 +495,7 @@ const ContextProvider = ({ children }) => {
     dispatcherStatus: false,
   });
 
-  // console.log("ContextProvider", farcasterStates?.frameData);
+  // console.log("ContextProvider", zoraErc1155Enabled);
   // console.log("randomNum ", postName);
 
   const [isMobile, setIsMobile] = useState(false);

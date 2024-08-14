@@ -1,7 +1,13 @@
 import React, { useContext } from "react";
 import { SharePanelHeaders } from "../components";
 import { Context } from "../../../../../../providers/context";
-import { Tabs, TabsHeader, TabsBody, Tab, Typography } from "@material-tailwind/react";
+import {
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  Typography,
+} from "@material-tailwind/react";
 import { ERC1155Edition, ERC721Edition } from "./components";
 
 const ZoraMint = ({ selectedChainId }) => {
@@ -15,7 +21,7 @@ const ZoraMint = ({ selectedChainId }) => {
         panelContent={
           <>
             <Tabs className="overflow-y-auto my-2" value={zoraTab}>
-              <TabsHeader className="relative top-0 ">
+              {/* <TabsHeader className="relative top-0 ">
                 <Tab
                   value={"ERC721"}
                   className="appFont"
@@ -28,16 +34,17 @@ const ZoraMint = ({ selectedChainId }) => {
                   {" "}
                   ERC1155{" "}
                 </Tab>
-              </TabsHeader>
+              </TabsHeader> */}
 
               {/* add components */}
               {zoraTab === "ERC721" && (
-                <ERC721Edition isOpenAction={false} selectedChainId={selectedChainId} />
+                <ERC721Edition
+                  isOpenAction={false}
+                  selectedChainId={selectedChainId}
+                />
               )}
 
-              {zoraTab === "ERC1155" && (
-                <Typography className="text-center text-xl mt-10" variant="h5">Coming Soon!</Typography>
-              )}
+              {zoraTab === "ERC1155" && <ERC1155Edition />}
             </Tabs>
           </>
         }

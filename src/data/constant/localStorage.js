@@ -17,4 +17,5 @@ export const LOCAL_STORAGE = {
   privy: "privy:token",
   FcComposerAuth: "fc.composer.auth",
   actionType: "action.type",
+  fid: "fid",
 };

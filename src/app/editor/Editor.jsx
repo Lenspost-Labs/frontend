@@ -235,7 +235,6 @@ const Editor = () => {
         notFoundIndexes.push(i);
       }
     }
-    // console.log("notFoundIndexes", recipientDataRefArr)
 
     // Generate a new array by removing elements at notFoundIndexes
     const newDataRef = recipientDataRefArr.filter(
@@ -273,6 +272,8 @@ const Editor = () => {
     if (loggedInUserAddress !== APP_ETH_ADDRESS) {
       recipientsSet.add(loggedInUserAddress); // Add loggedInUserAddress if it's not equal to APP_ETH_ADDRESS
     }
+
+    console.log({ recipientsSet });
 
     // Convert the Set back to an array
     const parentRecipientList = Array.from(recipientsSet);

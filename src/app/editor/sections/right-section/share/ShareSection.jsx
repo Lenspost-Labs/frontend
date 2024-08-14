@@ -287,7 +287,7 @@ const ShareSection = () => {
               </Button>
 
               <Button className="mx-6" onClick={setState}>
-                Create 1155
+                Create 1155 edition
               </Button>
             </div>
           ))}

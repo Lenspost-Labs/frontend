@@ -27,11 +27,12 @@ import { APP_ETH_ADDRESS } from "../../../../../../../data";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import { useAppAuth } from "../../../../../../../hooks/app";
+import { useAppAuth, useLocalStorage } from "../../../../../../../hooks/app";
 import { chainLogo, errorMessage } from "../../../../../../../utils";
 import { mintToXchain } from "../../../../../../../services/apis/BE-apis";
 import ZoraDialog from "./ZoraDialog";
 import { base, baseSepolia } from "viem/chains";
+import { usePrivy } from "@privy-io/react-auth";
 
 const ERC1155Edition = () => {
   const {
@@ -51,6 +52,8 @@ const ERC1155Edition = () => {
   const chainId = useChainId();
   const publicClient = usePublicClient();
   const walletClient = useWalletClient();
+  const { actionType } = useLocalStorage();
+  const { login, authenticated } = usePrivy();
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
   const { isAuthenticated } = useAppAuth();
@@ -114,16 +117,7 @@ const ERC1155Edition = () => {
     mutationFn: mintToXchain,
   });
 
-  const storeZoraLink = () => {
-    let paramsData = {
-      canvasId: contextCanvasIdRef.current,
-      mintLink: contractAddress,
-      chain: chain?.name,
-      contractType: 1155,
-      chainId: chain?.id,
-      hash: contractAddress,
-    };
-
+  const storeZoraLink = (paramsData) => {
     storeZoraLinkMutation(paramsData)
       .then((res) => {
         console.log("StoreZoraLink", res?.slug);
@@ -173,7 +167,32 @@ const ERC1155Edition = () => {
 
       setContractAddress(contractAddress);
 
-      storeZoraLink();
+      let paramsData = {
+        canvasId: contextCanvasIdRef.current,
+        mintLink: contractAddress,
+        chain: chain?.name,
+        contractType: 1155,
+        chainId: chain?.id,
+        hash: contractAddress,
+      };
+      storeZoraLink(paramsData);
+
+      const embeds = `https://zora.co/collect/base:${contractAddress}/1`;
+
+      window.parent.postMessage(
+        {
+          type: "createCast",
+          data: {
+            cast: {
+              text: postDescription,
+              embeds: [embeds],
+            },
+          },
+        },
+        "*"
+      );
+
+      console.log("shared on FC", embeds);
     } catch (error) {
       console.error("error deploying contract \n", error);
       setIsDeploying(false);
@@ -772,7 +791,7 @@ const ERC1155Edition = () => {
   useEffect(() => {
     if (uploadData?.message) {
       const jsonData = {
-        name: postName,
+        name: zoraErc1155Enabled?.contractName,
         description: postDescription,
         image: uploadData?.message,
         animation_url: "",
@@ -950,7 +969,12 @@ const ERC1155Edition = () => {
       </div>
 
       <div className="mx-2 my-4">
-        {chainId !== base?.id ? (
+        {actionType === "composer" && !authenticated ? (
+          <Button fullWidth disabled={isLoadingSwitchNetwork} onClick={login}>
+            {" "}
+            Connect wallet{" "}
+          </Button>
+        ) : chainId !== base?.id ? (
           <Button
             fullWidth
             disabled={isLoadingSwitchNetwork}

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Context } from "../../../../../../../providers/context";
 import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
-import { Option, Select } from "@material-tailwind/react";
+import { Option, Select, Typography } from "@material-tailwind/react";
 import { DateTimePicker } from "@atlaskit/datetime-picker";
 import { Button } from "@material-tailwind/react";
 import BsPlus from "@meronex/icons/bs/BsPlus";
@@ -18,6 +18,7 @@ import {
 } from "wagmi";
 import { createCreatorClient } from "@zoralabs/protocol-sdk";
 import {
+  ENVIRONMENT,
   getENSDomain,
   uploadJSONtoIPFS,
   uploadUserAssetToIPFS,
@@ -30,7 +31,7 @@ import { useAppAuth } from "../../../../../../../hooks/app";
 import { chainLogo, errorMessage } from "../../../../../../../utils";
 import { mintToXchain } from "../../../../../../../services/apis/BE-apis";
 import ZoraDialog from "./ZoraDialog";
-import { base } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 
 const ERC1155Edition = () => {
   const {
@@ -43,8 +44,6 @@ const ERC1155Edition = () => {
     postDescription,
     parentRecipientListRef,
     canvasBase64Ref,
-    setFarcasterStates,
-    currentTab,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
   } = useContext(Context);
@@ -69,6 +68,8 @@ const ERC1155Edition = () => {
     .toUpperCase();
 
   const { isLoading: isLoadingSwitchNetwork, switchChain } = useSwitchChain();
+  const supportedChainId =
+    ENVIRONMENT === "production" ? base.id : baseSepolia.id;
 
   // upload to IPFS Mutation
   const {
@@ -113,9 +114,28 @@ const ERC1155Edition = () => {
     mutationFn: mintToXchain,
   });
 
+  const storeZoraLink = () => {
+    let paramsData = {
+      canvasId: contextCanvasIdRef.current,
+      mintLink: contractAddress,
+      chain: chain?.name,
+      contractType: 1155,
+      chainId: chain?.id,
+      hash: contractAddress,
+    };
+
+    storeZoraLinkMutation(paramsData)
+      .then((res) => {
+        console.log("StoreZoraLink", res?.slug);
+        setSlug(res?.slug);
+      })
+      .catch((error) => {
+        console.log("StoreZoraLinkErr", errorMessage(error));
+      });
+  };
+
   const create1155 = async () => {
     try {
-      console.log("Creating...");
       const { parameters, contractAddress } = await creatorClient.create1155({
         // the contract will be created at a deterministic address
         contract: {
@@ -126,6 +146,9 @@ const ERC1155Edition = () => {
         },
         token: {
           tokenMetadataURI: `ipfs://${uploadJSONData?.message}`,
+          createReferral: APP_ETH_ADDRESS,
+          payoutRecipient: createSplitData?.splitAddress,
+          royaltyBPS: "500",
           salesConfig: {
             // manually specifying the erc20 name and symbol
             erc20Name: zoraErc1155Enabled?.contractName,
@@ -136,29 +159,21 @@ const ERC1155Edition = () => {
         account: address,
       });
 
-      console.log({ parameters, contractAddress });
-
-      // simulate the transaction
-      console.log("simulating the tx...");
       const { request } = await publicClient.simulateContract(parameters);
-      console.log({ request });
 
       // execute the transaction
-      console.log("executing the tx...");
       setIsDeploying(true);
       const hash = await walletClient.data.writeContract(request);
-      console.log({ hash });
       setIsDeploying(false);
 
       // wait for the response
-      console.log("waiting for the response..");
       setIsContractPending(true);
       const hxTxRes = await publicClient.waitForTransactionReceipt({ hash });
-      console.log({ hxTxRes });
       setIsContractPending(false);
 
-      console.log({ hxTxRes, contractAddress });
       setContractAddress(contractAddress);
+
+      storeZoraLink();
     } catch (error) {
       console.error("error deploying contract \n", error);
       setIsDeploying(false);
@@ -398,7 +413,8 @@ const ERC1155Edition = () => {
       (item, index) => {
         return (
           zoraErc1155Enabled.royaltySplitRecipients?.findIndex(
-            (item2) => item2.address === item.address
+            (item2) =>
+              item2.address.toLowerCase() === item.address.toLowerCase()
           ) !== index
         );
       }
@@ -419,6 +435,8 @@ const ERC1155Edition = () => {
       },
       0
     );
+
+    console.log({ result });
 
     setTotalPercent(result);
 
@@ -662,28 +680,7 @@ const ERC1155Edition = () => {
     }
 
     // upload to IPFS
-    console.log("uploading image to IPFS");
     mutate(canvasBase64Ref.current[0]);
-  };
-
-  const storeZoraLink = () => {
-    let paramsData = {
-      canvasId: contextCanvasIdRef.current,
-      mintLink: contractAddress,
-      chain: chain?.name,
-      contractType: 1155,
-      chainId: chain?.id,
-      hash: contractAddress,
-    };
-
-    storeZoraLinkMutation(paramsData)
-      .then((res) => {
-        console.log("StoreZoraLink", res?.slug);
-        setSlug(res?.slug);
-      })
-      .catch((error) => {
-        console.log("StoreZoraLinkErr", errorMessage(error));
-      });
   };
 
   // funtion to add new input box for multi addresses
@@ -774,10 +771,6 @@ const ERC1155Edition = () => {
   // upload JSON data to IPFS
   useEffect(() => {
     if (uploadData?.message) {
-      console.log(
-        `image = ${uploadData?.message} \n`,
-        "uploading JSON to IPFS"
-      );
       const jsonData = {
         name: postName,
         description: postDescription,
@@ -793,10 +786,6 @@ const ERC1155Edition = () => {
   // create split contract
   useEffect(() => {
     if (uploadJSONData?.message) {
-      console.log(
-        `json data = ${uploadJSONData?.message} \n`,
-        "Creating split contract"
-      );
       createSplit(handleCreateSplitSettings());
     }
   }, [isUploadJSONSuccess]);
@@ -804,7 +793,6 @@ const ERC1155Edition = () => {
   // create 1155 contract
   useEffect(() => {
     if (createSplitData?.splitAddress) {
-      console.log(`split contract = ${createSplitData?.splitAddress} \n`);
       create1155();
     }
   }, [isCreateSplitSuccess]);
@@ -829,7 +817,7 @@ const ERC1155Edition = () => {
         isPending={isContractPending}
         data={contractAddress}
         isSuccess={contractAddress}
-        slug={`?contract=${contractAddress}&type=1155`}
+        slug={slug}
       />
 
       {/* Switch Number 1 Start */}
@@ -880,7 +868,7 @@ const ERC1155Edition = () => {
                     <InputBox
                       className="w-full"
                       label="Wallet Address"
-                      value={recipient.address}
+                      value={recipientsEns[index] || recipient.address}
                       onChange={(e) =>
                         restrictRecipientInput(e, index, recipient.address)
                       }
@@ -927,9 +915,14 @@ const ERC1155Edition = () => {
           )}
 
           {zoraErc1155StatesError.isRoyaltySplitError && (
-            <InputErrorMsg
-              message={zoraErc1155StatesError.royaltySplitErrorMessage}
-            />
+            <>
+              <InputErrorMsg
+                message={zoraErc1155StatesError.royaltySplitErrorMessage}
+              />
+              <Typography variant="h6" color="blue-gray">
+                {totalPercent} %
+              </Typography>
+            </>
           )}
 
           <div className="flex justify-between">
@@ -961,7 +954,7 @@ const ERC1155Edition = () => {
           <Button
             fullWidth
             disabled={isLoadingSwitchNetwork}
-            onClick={() => switchChain({ chainId: base.id })}
+            onClick={() => switchChain({ chainId: supportedChainId })}
             color="red"
           >
             {" "}
@@ -974,7 +967,7 @@ const ERC1155Edition = () => {
             onClick={handleSubmit}
           >
             {" "}
-            Mint{" "}
+            Create{" "}
           </Button>
         )}
       </div>

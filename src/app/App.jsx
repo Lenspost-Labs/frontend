@@ -293,11 +293,12 @@ const App = () => {
     }
   }, [window.innerWidth]);
 
-  useEffect(() => {
-    if (actionType === "composer") {
-      store
-    }
-  }, window?.innerHeight);
+  // WIP:
+  // useEffect(() => {
+  //   if (actionType === "composer") {
+  //     store
+  //   }
+  // }, window?.innerHeight);
 
   // get the fc auth for composer action
   useEffect(() => {

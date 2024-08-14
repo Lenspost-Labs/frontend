@@ -20,3 +20,9 @@ export const apiGetPointsHistory = async () => {
 
   return result?.data;
 };
+
+export const apiGetLeaderboard = async () => {
+  const result = await api.get(`${API}/public/leaderboard`);  
+
+  return result?.data;
+}

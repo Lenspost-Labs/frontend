@@ -33,10 +33,10 @@ const UploadFileDropzone = () => {
       "image/*": [],
     },
     onDrop: async (acceptedFiles) => {
-      if (points < 1) {
-        toast.error("You don't have enough points to upload an image");
-        return;
-      }
+      // if (points < 1) {
+      //   toast.error("You don't have enough points to upload an image");
+      //   return;
+      // }
       // If it's an SVG throw error
       if (acceptedFiles[0].type === "image/svg+xml") {
         toast.error("Please upload an image file other than SVG");
@@ -60,9 +60,9 @@ const UploadFileDropzone = () => {
   const { mutateAsync } = useMutation({
     mutationKey: "uploadUaserAssets",
     mutationFn: uploadUserAssets,
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries(["userAssets"], { exact: true });
-    // },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["userAssets"], { exact: true });
+    },
   });
 
   // function for remove image from dropzone
@@ -91,40 +91,41 @@ const UploadFileDropzone = () => {
     </div>
   ));
 
-  const fnUploadFilesByBURN = (toastId) => {
-    claimReward({ taskId: 17 })
-      .then(() => {
-        mutateAsync(stFiles[0].base64String)
-          .then((res) => {
-            toast.update(toastId, {
-              render: res?.data,
-              type: "success",
-              isLoading: false,
-              autoClose: 3000,
-              closeButton: true,
-            });
-          })
-          .catch((err) => {
-            toast.update(toastId, {
-              render: errorMessage(err),
-              type: "error",
-              isLoading: false,
-              autoClose: 3000,
-              closeButton: true,
-            });
-          });
-        setStFiles([]);
-      })
-      .catch((err) => {
-        toast.update(toastId, {
-          render: errorMessage(err),
-          type: "error",
-          isLoading: false,
-          autoClose: 3000,
-          closeButton: true,
-        });
-      });
-  };
+  // Not needed as it's handled by BE
+  // const fnUploadFilesByBURN = (toastId) => {
+  //   claimReward({ taskId: 17 })
+  //     .then(() => {
+  //       mutateAsync(stFiles[0].base64String)
+  //         .then((res) => {
+  //           toast.update(toastId, {
+  //             render: res?.data,
+  //             type: "success",
+  //             isLoading: false,
+  //             autoClose: 3000,
+  //             closeButton: true,
+  //           });
+  //         })
+  //         .catch((err) => {
+  //           toast.update(toastId, {
+  //             render: errorMessage(err),
+  //             type: "error",
+  //             isLoading: false,
+  //             autoClose: 3000,
+  //             closeButton: true,
+  //           });
+  //         });
+  //       setStFiles([]);
+  //     })
+  //     .catch((err) => {
+  //       toast.update(toastId, {
+  //         render: errorMessage(err),
+  //         type: "error",
+  //         isLoading: false,
+  //         autoClose: 3000,
+  //         closeButton: true,
+  //       });
+  //     });
+  // };
 
   useEffect(() => {
     if (stFiles.length > 0) {
@@ -139,22 +140,29 @@ const UploadFileDropzone = () => {
               autoClose: 3000,
               closeButton: true,
             });
-            // setStFiles([]);
+            setStFiles([]);
           } else {
-            // toast.update(toastId, {
-            //   render: "Error uploading file",
-            //   type: "error",
-            //   isLoading: false,
-            //   autoClose: 3000,
-            //   closeButton: true,
-            // });
+            toast.update(toastId, {
+              render: "Error uploading file",
+              type: "error",
+              isLoading: false,
+              autoClose: 3000,
+              closeButton: true,
+            });
             // Claim by TaskId 17
-            fnUploadFilesByBURN();
+            // fnUploadFilesByBURN();
           }
           setStFiles([]);
         })
         .catch((err) => {
-          fnUploadFilesByBURN(toastId);
+          // fnUploadFilesByBURN(toastId);
+          toast.update(toastId, {
+            render: errorMessage(err),
+            type: "error",
+            isLoading: false,
+            autoClose: 3000,
+            closeButton: true,
+          })
           setStFiles([]);
         });
     }

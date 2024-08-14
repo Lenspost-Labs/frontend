@@ -567,6 +567,7 @@ const WalletNFT = () => {
         setQuery={setQuery}
         placeholder="Search NFTs by id"
         onClick={refreshNFTs}
+        btnIcon={"refresh"}
       />
       <Tabs
         className="overflow-y-auto"

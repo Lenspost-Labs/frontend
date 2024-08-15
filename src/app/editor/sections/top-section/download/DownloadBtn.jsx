@@ -18,7 +18,7 @@ import { claimReward, POLOTNO_API_KEY } from "../../../../../services";
 import { posterTokenSymbol } from "../../../../../data";
 import { toast } from "react-toastify";
 import useUser from "../../../../../hooks/user/useUser";
-
+import coinImg from "../../../../../assets/svgs/Coin.svg";
 const DownloadBtn = () => {
   const store = useStore();
   const [saving, setSaving] = useState(false);
@@ -270,7 +270,7 @@ const DownloadBtn = () => {
             Download {type.toUpperCase()}
             <img
               className="h-4 -mt-1 ml-2"
-              src="/public/svgs/coin.svg"
+              src={coinImg}
               alt=""
             />
           </Button>

@@ -29,7 +29,7 @@ import EditIconCreate from "../../../../../assets/EditIconsMobile/EditIconCreate
 import { useQuery } from "@tanstack/react-query";
 import { apiGetAllMemes } from "../../../../../services";
 import useMobilePanelFunctions from "../../../common/mobileHooks/useMobilePanelFunctions";
-
+import coinImg from "../../../../../assets/svgs/Coin.svg";
 const MobileTopbar = () => {
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
@@ -163,7 +163,7 @@ const MobileTopbar = () => {
                       <div className="text-2xl">{points} </div>
                       <img
                         className="h-5 mb-1"
-                        src="/public/svgs/coin.svg"
+                        src={coinImg}
                         alt=""
                       />
                     </div>

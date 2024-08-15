@@ -28,9 +28,6 @@ const UserCard = ({ username }) => {
   const { points, profileImage, userLevel, farcasterHandle } = useUser();
   const [loadingInvite, setLoadingInvite] = useState(false);
   const { actionType } = useLocalStorage();
-
-  // const { address } = useAccount();
-
   const address = getFromLocalStorage("user.address");
   const [inviteCodesArr, setInviteCodesArr] = useState([]);
 

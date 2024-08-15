@@ -17,6 +17,7 @@ import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 import { EVMWallets } from "../../top-section/auth/wallets";
 import { claimReward } from "../../../../../services";
 import WatermarkRemover from "./components/WatermarkRemover";
+import { baseSepolia } from "viem/chains";
 
 const ShareSection = () => {
   const chains = useChains();
@@ -32,6 +33,7 @@ const ShareSection = () => {
     setStFormattedTime,
     stCalendarClicked,
     setStCalendarClicked,
+    setZoraTab,
 
     isShareOpen,
     setIsShareOpen,
@@ -133,6 +135,11 @@ const ShareSection = () => {
         setPostDescription(value);
       }
     }
+  };
+
+  const setState = () => {
+    setMenu("ERC1155");
+    setZoraTab("ERC1155");
   };
 
   return (
@@ -296,9 +303,18 @@ const ShareSection = () => {
               login={login}
             />
           ) : (
-            <Button className="mx-6" onClick={() => setMenu("farcasterShare")}>
-              Share on Farcaster
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button
+                className="mx-6"
+                onClick={() => setMenu("farcasterShare")}
+              >
+                Share on Farcaster
+              </Button>
+
+              <Button className="mx-6" onClick={setState}>
+                Create 1155 edition
+              </Button>
+            </div>
           ))}
 
         {!isMobile && (

@@ -540,6 +540,14 @@ export const uploadUserAssetToIPFS = async (image) => {
   return result?.data;
 };
 
+export const uploadJSONtoIPFS = async (json) => {
+  const result = await api.post(`${API}/util/upload-json-ipfs`, {
+    json,
+  });
+
+  return result?.data;
+};
+
 // get user assets endpoint
 export const getUserAssets = async (page) => {
   const result = await api.get(`${API}/user/upload`, {
@@ -620,6 +628,13 @@ export const apiGetJSONDataForSlug = async (data) => {
 };
 export const apiGetOgImageForSlug = async (data) => {
   const result = await api.get(`${API}/util/get-slug-details?slug=${data}`);
+  return {
+    data: result?.data,
+  };
+};
+
+export const apiBuySubscription = async (data) => {
+  const result = await api.post(`${API}/mint/buy`, data);
   return {
     data: result?.data,
   };

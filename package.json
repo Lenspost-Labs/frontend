@@ -33,6 +33,7 @@
     "@tiplink/wallet-adapter": "^2.1.13",
     "@tiplink/wallet-adapter-react-ui": "^0.1.11",
     "@xmtp/xmtp-js": "^11.2.3",
+    "@zoralabs/protocol-sdk": "^0.9.1",
     "@zoralabs/zora-721-contracts": "^1.15.4",
     "axios": "^1.4.0",
     "bs58": "^5.0.0",

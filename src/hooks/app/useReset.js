@@ -98,6 +98,9 @@ const useReset = () => {
     // for zora mint error
     setZoraErc721StatesError,
 
+    setZoraErc1155Enabled,
+    setZoraErc1155StatesError,
+
     // farcaster states
     farcasterStates,
     setFarcasterStates,
@@ -133,7 +136,9 @@ const useReset = () => {
     setZoraTab("ERC721");
     setLensTab("normalPost");
     setFarcasterTab("normalPost");
-    setIsMobile(false);
+    
+    // Just so that it does not render Desktop UI on Mobile
+    // setIsMobile(false);
     setCurOpenedPanel("");
     setOpenLeftBar(false);
     setOpenBottomBar(false);
@@ -362,6 +367,94 @@ const useReset = () => {
 
       isAllowlistError: false,
       allowlistErrorMessage: "",
+
+      isPresaleScheduleError: false,
+      presaleScheduleErrorMessage: "",
+
+      isPublicsaleScheduleError: false,
+      publicsaleScheduleErrorMessage: "",
+    });
+
+    // reset for zora 1155
+    setZoraErc1155Enabled({
+      isContractDetails: false,
+      contractName: "",
+      contractSymbol: "",
+
+      isChargeForMint: false,
+      chargeForMintPrice: "",
+      chargeForMintCurrency: "",
+
+      isLimitedEdition: false,
+      limitedEditionNumber: "",
+
+      isMintLimitPerAddress: false,
+      mintLimitPerAddress: "",
+
+      isScheduleMint: false,
+      scheduleMintTimeStamp: {
+        date: "",
+        time: "",
+      },
+
+      isRoyaltySplits: true,
+      royaltySplitRecipients: [
+        {
+          address: "",
+          percentAllocation: null,
+        },
+      ],
+
+      isRoyaltyPercent: false,
+      royaltyPercent: "",
+
+      isMaxSupply: false,
+      maxSupply: "",
+
+      isPresaleSchedule: false,
+      preSaleStartTimeStamp: {
+        date: "",
+        time: "",
+      },
+      preSaleEndTimeStamp: {
+        date: "",
+        time: "",
+      },
+
+      isPublicSaleSchedule: false,
+      publicSaleStartTimeStamp: {
+        date: "",
+        time: "",
+      },
+
+      publicSaleEndTimeStamp: {
+        date: "",
+        time: "",
+      },
+    });
+
+    // reset for zora 1155 error
+    setZoraErc1155StatesError({
+      isChargeForMintError: false,
+      chargeForMintErrorMessage: "",
+
+      isLimitedEditionError: false,
+      limitedEditionErrorMessage: "",
+
+      isMintLimitPerAddressError: false,
+      mintLimitPerAddressMessage: "",
+
+      isScheduleMintError: false,
+      scheduleMintErrorMessage: "",
+
+      isRoyaltySplitError: false,
+      royaltySplitErrorMessage: "",
+
+      isRoyaltyPercentError: false,
+      royaltyPercentErrorMessage: "",
+
+      isMaxSupplyError: false,
+      maxSupplyErrorMessage: "",
 
       isPresaleScheduleError: false,
       presaleScheduleErrorMessage: "",

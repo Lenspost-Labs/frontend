@@ -266,7 +266,6 @@ const Editor = () => {
         notFoundIndexes.push(i);
       }
     }
-    // console.log("notFoundIndexes", recipientDataRefArr)
 
     // Generate a new array by removing elements at notFoundIndexes
     const newDataRef = recipientDataRefArr.filter(
@@ -305,6 +304,8 @@ const Editor = () => {
     if (loggedInUserAddress !== APP_ETH_ADDRESS) {
       recipientsSet.add(loggedInUserAddress); // Add loggedInUserAddress if it's not equal to APP_ETH_ADDRESS
     }
+
+    console.log({ recipientsSet });
 
     // Convert the Set back to an array
     const parentRecipientList = Array.from(recipientsSet);
@@ -610,6 +611,24 @@ const Editor = () => {
   //     isWatermark.current = false;
   //   }
   // }, [isPageActive.current]);
+
+  const url = new URL(window.location.href);
+  const params = new URLSearchParams(url.search);
+  const actionType = params.get("actionType");
+  // store the initial width and height - only for composer action,
+  // to restore the canvas size on window?.innerheight change
+  const intialScale = store?.scale;
+  // Only on composer action, set scale (Zoom) to 1 as initial editor's size
+  useEffect(() => {
+    console.log("initial Scale", intialScale);
+    if (actionType === "composer") {
+      console.log("current zoom", store?.scale);
+      if (store?.scale !== intialScale) {
+        store?.setScale(1);
+        console.log("Current Zoom after catching Scale change", store?.scale);
+      }
+    }
+  }, [store?.scale]);
 
   return (
     <>

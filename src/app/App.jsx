@@ -284,28 +284,33 @@ const App = () => {
 
   // Logic to Set isMobile variable
   useEffect(() => {
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 880) {
       setIsMobile(true);
       setOpenLeftBar(true);
     }
-    if (window.innerWidth > 768) {
+    if (window.innerWidth > 880) {
       setIsMobile(false);
     }
   }, [window.innerWidth]);
 
-  // WIP:
-  // useEffect(() => {
-  //   if (actionType === "composer") {
-  //     store
-  //   }
-  // }, window?.innerHeight);
-
   // get the fc auth for composer action
   useEffect(() => {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    const actionType = params.get("actionType");
     const userAddress = params.get("address");
+    const authParam = params.get("fc-auth");
+    const fid = params.get("fid");
     saveToLocalStorage(LOCAL_STORAGE.FcComposerAuth, authParam);
-    saveToLocalStorage(LOCAL_STORAGE.actionType, actionType);
     saveToLocalStorage(LOCAL_STORAGE.userAddress, userAddress);
+    saveToLocalStorage(LOCAL_STORAGE.actionType, actionType);
+    saveToLocalStorage(LOCAL_STORAGE.fid, fid);
+
+    console.log({ userAddress });
+
+    posthog.identify(fid, {
+      evm_address: userAddress,
+    });
   }, []);
 
   return (

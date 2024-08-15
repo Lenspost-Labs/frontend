@@ -1,7 +1,14 @@
 // Seperate component for Lazy loading (CustomImage) - 29Jun2023
 
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { Button, Card, Menu, MenuItem, Position, Popover} from "@blueprintjs/core";
+import {
+  Button,
+  Card,
+  Menu,
+  MenuItem,
+  Position,
+  Popover,
+} from "@blueprintjs/core";
 import { replaceImageURL } from "../../../../utils/replaceUrl";
 import { useEffect, useState } from "react";
 import { useStore } from "../../../../hooks/polotno";
@@ -195,25 +202,48 @@ const CustomImageComponent = ({
         )}
 
         {hasOptionBtn && (
-          <div
-            style={{ position: "absolute", top: "5px", right: "5px" }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <Popover
-              content={
-                <Menu>
-                  <MenuItem icon="trash" text="Delete" onClick={onDelete} />
-                </Menu>
-              }
-              position={Position.BOTTOM}
-            >
-              <div id="makePublic">
-                <Button icon="more" />
+          <>
+            {isMobile && (
+              <div
+                style={{ position: "absolute", top: "5px", right: "5px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Button
+                  style={{ zIndex: 1000000 }}
+                  icon="trash"
+                  onClick={onDelete}
+                />
               </div>
-            </Popover>
-          </div>
+            )}
+            {!isMobile && (
+              <div
+                style={{ position: "absolute", top: "5px", right: "5px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Popover
+                  content={
+                    <Menu style={{ zIndex: 1000000 }}>
+                      <MenuItem
+                        style={{ zIndex: 1000000 }}
+                        icon="trash"
+                        text="Delete"
+                        onClick={onDelete}
+                      />
+                    </Menu>
+                  }
+                  position={Position.BOTTOM}
+                >
+                  <div id="makePublic">
+                    <Button icon="more" />
+                  </div>
+                </Popover>
+              </div>
+            )}
+          </>
         )}
       </Card>
     </>

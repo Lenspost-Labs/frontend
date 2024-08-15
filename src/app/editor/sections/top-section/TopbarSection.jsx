@@ -10,6 +10,7 @@ import { useContext } from "react";
 import LoginModal from "./auth/LoginModal";
 import { Context } from "../../../../providers/context";
 import usePrivyAuth from "../../../../hooks/privy-auth/usePrivyAuth";
+import SubscriptionModal from "../../common/modals/SubscriptionModal";
 
 const TopbarSection = () => {
   const { openedLoginModal } = useContext(Context);
@@ -52,9 +53,10 @@ const TopbarSection = () => {
               <div>
                 <DownloadBtn />
               </div>
-              <div className="" id="first-step">
+              <div className="flex gap-2" id="first-step">
                 {/* <ProfileMenu /> */}
                 <PointsBtn />
+                {/* <SubscriptionModal /> */}
               </div>
             </div>
           ) : null}

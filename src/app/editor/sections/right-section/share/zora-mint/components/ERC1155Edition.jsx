@@ -970,7 +970,7 @@ const ERC1155Edition = () => {
 
       <div className="mx-2 my-4">
         {actionType === "composer" && !authenticated ? (
-          <Button fullWidth disabled={isLoadingSwitchNetwork} onClick={login}>
+          <Button fullWidth onClick={login}>
             {" "}
             Connect wallet{" "}
           </Button>

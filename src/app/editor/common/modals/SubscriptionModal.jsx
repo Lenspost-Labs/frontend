@@ -21,7 +21,7 @@ import { useUser } from "../../../../hooks/user";
 import { config } from "../../../../providers/EVM/EVMWalletProvider";
 import { apiBuySubscription } from "../../../../services";
 import Networks from "./Networks";
-import coinImg from "../../../../assets/svgs/coin.svg";
+import coinImg from "../../../../assets/svgs/Coin.svg";
 const SubscriptionModal = () => {
   const { chain, address } = useAccount();
   const { points } = useUser();

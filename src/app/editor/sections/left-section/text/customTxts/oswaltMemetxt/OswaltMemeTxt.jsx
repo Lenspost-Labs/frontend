@@ -1,7 +1,9 @@
 import { uniqueId } from "@blueprintjs/core/lib/esm/common/utils";
 
 export const customOswaltMemeTxt = {
-  id: uniqueId(),
+  // id:
+  //   Math.random().toString(36).substring(2, 15) +
+  //   Math.random().toString(36).substring(2, 15),
   type: "text",
   width: 200,
   height: 93,
@@ -28,7 +30,7 @@ export const customOswaltMemeTxt = {
   fontStyle: "normal",
   fontWeight: "normal",
   textDecoration: "",
-  fill: "rgba(255,255,255,1)",
+  fill: "rgba(220,220,220,1)",
   align: "center",
   verticalAlign: "top",
   strokeWidth: 4,

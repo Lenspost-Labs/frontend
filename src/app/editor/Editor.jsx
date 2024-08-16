@@ -126,6 +126,9 @@ const Editor = () => {
     setIsMobile,
     removedWMarkCanvas,
     setRemovedWMarkCanvas,
+    setCurOpenedPanel,
+    setOpenBottomBar,
+    isOpenBottomBar
   } = useContext(Context);
 
   const componentMounted = useRef(false);
@@ -625,6 +628,18 @@ const Editor = () => {
   //   }
   // }, [initialHeight]);
 
+
+  // useEffect(() => {
+  //   console.log(`openedSidepanel in Editor.jsx`, store?.openedSidePanel);
+
+  //   if (store?.openedSidePanel === "effects" && !isOpenBottomBar) {
+  //     console.log(`openedSidepanel in IF`, store?.openedSidePanel);
+  //     setCurOpenedPanel("mobPanelEffects");
+  //     setOpenBottomBar(true);
+  //   }
+  // }, [store?.openedSidePanel, isOpenBottomBar]);
+
+  
   return (
     <>
       <div

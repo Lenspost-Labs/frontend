@@ -41,9 +41,6 @@ const MobileBottombar = () => {
     openBottomBar,
     setOpenBottomBar,
     curOpenedTabLevel1,
-    setCurOpenedTabLevel1,
-    curOpenedTabLevel2,
-    setCurOpenedTabLevel2,
   } = useContext(Context);
   const store = useStore();
 
@@ -96,6 +93,15 @@ const MobileBottombar = () => {
       desc: <LenspostNFT />,
     },
   ];
+
+  // useEffect(() => {
+  //   console.log(store?.openedSidePanel);
+
+  //   if (store?.openedSidePanel === "effects") {
+  //     setCurOpenedPanel("mobPanelEffects");
+  //     setOpenBottomBar(true);
+  //   }
+  // }, [store?.openedSidePanel, store]);
 
   return (
     <>
@@ -242,6 +248,8 @@ const MobileBottombar = () => {
                   </Tabs>
                 </>
               )}
+
+              {curOpenedPanel === "mobPanelEffects" && <>Effects</>}
             </>
           </div>
         </div>

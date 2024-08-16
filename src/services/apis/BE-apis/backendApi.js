@@ -631,3 +631,12 @@ export const apiBuySubscription = async (data) => {
     data: result?.data,
   };
 };
+
+export const apiGetPolotnoTexts = async () => {
+  const result = await api.get(
+    `https://api.polotno.com/api/get-text-templates?KEY=OpcLd8G0QzCfvasc0WkU`
+  );
+  return {
+    data: result?.data,
+  };
+};

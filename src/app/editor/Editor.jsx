@@ -140,7 +140,7 @@ const Editor = () => {
   const queryParams = new URLSearchParams(location.search); //to Check A URL search string, beginning with a ?slugId
   const actionType = queryParams.get("actionType");
 
-    const handleDrop = (ev) => {
+  const handleDrop = (ev) => {
     // Do not load the upload dropzone content directly to canvas
     // Avoids Duplication issue
     if (store.openedSidePanel == "Upload") {
@@ -612,18 +612,18 @@ const Editor = () => {
   //   }
   // }, [isPageActive.current]);
 
-  const [initialHeight] = useState(window?.innerHeight);
+  // const [initialHeight] = useState(window?.innerHeight);
 
-  useEffect(() => {
-    if (actionType === "composer") {
-      const handleResize = () => {
-        document.body.style.height = `${initialHeight}px`;
-      };
+  // useEffect(() => {
+  //   if (actionType === "composer") {
+  //     const handleResize = () => {
+  //       document.body.style.height = `${initialHeight}px`;
+  //     };
 
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, [initialHeight]);
+  //     window.addEventListener("resize", handleResize);
+  //     return () => window.removeEventListener("resize", handleResize);
+  //   }
+  // }, [initialHeight]);
 
   return (
     <>

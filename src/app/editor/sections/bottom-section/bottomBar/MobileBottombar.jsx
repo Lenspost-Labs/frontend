@@ -32,6 +32,7 @@ import MobileShareSection from "../../right-section/share/MobileShareUI/MobileSh
 import ShareButton from "../../top-section/share/ShareButton";
 import BsX from "@meronex/icons/bs/BsX";
 import useMobilePanelFunctions from "../../../common/mobileHooks/useMobilePanelFunctions";
+import { CustomTextPanel } from "../../left-section/text/TextSection";
 
 const MobileBottombar = () => {
   const {
@@ -199,9 +200,12 @@ const MobileBottombar = () => {
                 </>
               )}
               {curOpenedPanel === "mobPanelText" && (
-                <div className="" onClick={() => setOpenBottomBar(false)}>
-                  {TextSection.Panel({ store })}
-                </div>
+                // <div className="" onClick={() => setOpenBottomBar(false)}>
+                //   {TextSection.Panel({ store })}
+                // </div>
+                <>
+                  <CustomTextPanel />
+                </>
               )}
 
               {curOpenedPanel === "mobPanelStickers" && (

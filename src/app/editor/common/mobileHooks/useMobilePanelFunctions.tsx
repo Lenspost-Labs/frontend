@@ -1,12 +1,15 @@
 import { useContext } from "react";
 import { Context } from "../../../../providers/context";
+import { useStore } from "../../../../hooks/polotno";
 
 const useMobilePanelFunctions = () => {
+  const store = useStore();
   const {
     curOpenedPanel,
     setCurOpenedPanel,
     setOpenBottomBar,
     setOpenLeftBar,
+    isMobile,
   } = useContext(Context);
 
   // Only for Bottom bar to open a particular panel
@@ -19,8 +22,9 @@ const useMobilePanelFunctions = () => {
       setOpenBottomBar(false);
       setCurOpenedPanel(null);
     }
-  };
 
+    isMobile && store?.openedSidePanel == ""
+  };
   // Function to close the LeftBar and open the same section
   const fnCloseLeftOpenEditorPanel = (panelName: string) => {
     setCurOpenedPanel(panelName);

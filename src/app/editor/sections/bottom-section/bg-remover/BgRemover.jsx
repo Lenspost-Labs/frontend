@@ -9,7 +9,7 @@ import { useAppAuth } from "../../../../../hooks/app";
 import { Context } from "../../../../../providers/context";
 import SuReplicate from "@meronex/icons/su/SuReplicate";
 import { Typography } from "@material-tailwind/react";
-
+import coinImg from "../../../../../assets/svgs/Coin.svg";
 const BgRemover = ({ inSpeedDial }) => {
   const store = useStore();
   const { isAuthenticated } = useAppAuth();
@@ -127,7 +127,7 @@ const BgRemover = ({ inSpeedDial }) => {
           className="mt-2 mb-2 ml-3 py-1 px-4"
         >
           {`Remove background`}
-          <img className="h-4 -mt-1 ml-2" src="/public/svgs/coin.svg" alt="" />
+          <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
         </Button>
       )}
 

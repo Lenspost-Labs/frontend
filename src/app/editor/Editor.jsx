@@ -126,6 +126,9 @@ const Editor = () => {
     setIsMobile,
     removedWMarkCanvas,
     setRemovedWMarkCanvas,
+    setCurOpenedPanel,
+    setOpenBottomBar,
+    isOpenBottomBar
   } = useContext(Context);
 
   const componentMounted = useRef(false);
@@ -138,6 +141,7 @@ const Editor = () => {
   const navigate = useNavigate();
   const location = useLocation(); //To get the URL location
   const queryParams = new URLSearchParams(location.search); //to Check A URL search string, beginning with a ?slugId
+  const actionType = queryParams.get("actionType");
 
   const handleDrop = (ev) => {
     // Do not load the upload dropzone content directly to canvas
@@ -612,24 +616,31 @@ const Editor = () => {
   //   }
   // }, [isPageActive.current]);
 
-  const url = new URL(window.location.href);
-  const params = new URLSearchParams(url.search);
-  const actionType = params.get("actionType");
-  // store the initial width and height - only for composer action,
-  // to restore the canvas size on window?.innerheight change
-  const intialScale = store?.scale;
-  // Only on composer action, set scale (Zoom) to 1 as initial editor's size
-  useEffect(() => {
-    console.log("initial Scale", intialScale);
-    if (actionType === "composer") {
-      console.log("current zoom", store?.scale);
-      if (store?.scale !== intialScale) {
-        store?.setScale(1);
-        console.log("Current Zoom after catching Scale change", store?.scale);
-      }
-    }
-  }, [store?.scale]);
+  // const [initialHeight] = useState(window?.innerHeight);
 
+  // useEffect(() => {
+  //   if (actionType === "composer") {
+  //     const handleResize = () => {
+  //       document.body.style.height = `${initialHeight}px`;
+  //     };
+
+  //     window.addEventListener("resize", handleResize);
+  //     return () => window.removeEventListener("resize", handleResize);
+  //   }
+  // }, [initialHeight]);
+
+
+  // useEffect(() => {
+  //   console.log(`openedSidepanel in Editor.jsx`, store?.openedSidePanel);
+
+  //   if (store?.openedSidePanel === "effects" && !isOpenBottomBar) {
+  //     console.log(`openedSidepanel in IF`, store?.openedSidePanel);
+  //     setCurOpenedPanel("mobPanelEffects");
+  //     setOpenBottomBar(true);
+  //   }
+  // }, [store?.openedSidePanel, isOpenBottomBar]);
+
+  
   return (
     <>
       <div

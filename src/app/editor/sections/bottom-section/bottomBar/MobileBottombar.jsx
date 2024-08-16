@@ -32,6 +32,7 @@ import MobileShareSection from "../../right-section/share/MobileShareUI/MobileSh
 import ShareButton from "../../top-section/share/ShareButton";
 import BsX from "@meronex/icons/bs/BsX";
 import useMobilePanelFunctions from "../../../common/mobileHooks/useMobilePanelFunctions";
+import { CustomTextPanel } from "../../left-section/text/TextSection";
 
 const MobileBottombar = () => {
   const {
@@ -40,9 +41,6 @@ const MobileBottombar = () => {
     openBottomBar,
     setOpenBottomBar,
     curOpenedTabLevel1,
-    setCurOpenedTabLevel1,
-    curOpenedTabLevel2,
-    setCurOpenedTabLevel2,
   } = useContext(Context);
   const store = useStore();
 
@@ -95,6 +93,15 @@ const MobileBottombar = () => {
       desc: <LenspostNFT />,
     },
   ];
+
+  // useEffect(() => {
+  //   console.log(store?.openedSidePanel);
+
+  //   if (store?.openedSidePanel === "effects") {
+  //     setCurOpenedPanel("mobPanelEffects");
+  //     setOpenBottomBar(true);
+  //   }
+  // }, [store?.openedSidePanel, store]);
 
   return (
     <>
@@ -199,9 +206,12 @@ const MobileBottombar = () => {
                 </>
               )}
               {curOpenedPanel === "mobPanelText" && (
-                <div className="" onClick={() => setOpenBottomBar(false)}>
-                  {TextSection.Panel({ store })}
-                </div>
+                // <div className="" onClick={() => setOpenBottomBar(false)}>
+                //   {TextSection.Panel({ store })}
+                // </div>
+                <>
+                  <CustomTextPanel />
+                </>
               )}
 
               {curOpenedPanel === "mobPanelStickers" && (
@@ -238,6 +248,8 @@ const MobileBottombar = () => {
                   </Tabs>
                 </>
               )}
+
+              {curOpenedPanel === "mobPanelEffects" && <>Effects</>}
             </>
           </div>
         </div>

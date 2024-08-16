@@ -1,30 +1,27 @@
-import { useContext, useState } from "react";
-import { useUser } from "../../../../hooks/user";
-import { apiBuySubscription } from "../../../../services";
-import {
-  useAccount,
-  useChains,
-  useSendTransaction,
-  useSwitchChain,
-  useWaitForTransactionReceipt,
-} from "wagmi";
-import { http, parseEther } from "viem";
-import { APP_ETH_ADDRESS } from "../../../../data";
-import { config } from "../../../../providers/EVM/EVMWalletProvider";
 import {
   Button,
   Dialog,
   DialogBody,
   DialogHeader,
   IconButton,
-  Select,
-  Option,
   Spinner,
   Typography,
 } from "@material-tailwind/react";
 import BiCopy from "@meronex/icons/bi/BiCopy";
+import BsBoxArrowUpRight from "@meronex/icons/bs/BsBoxArrowUpRight";
+import { useEffect, useState } from "react";
+import { http, parseEther } from "viem";
+import {
+  useAccount,
+  useSendTransaction,
+  useWaitForTransactionReceipt,
+} from "wagmi";
+import { APP_ETH_ADDRESS } from "../../../../data";
+import { useUser } from "../../../../hooks/user";
+import { config } from "../../../../providers/EVM/EVMWalletProvider";
+import { apiBuySubscription } from "../../../../services";
 import Networks from "./Networks";
-
+import coinImg from "../../../../assets/svgs/Coin.svg";
 const SubscriptionModal = () => {
   const { chain, address } = useAccount();
   const { points } = useUser();
@@ -36,6 +33,7 @@ const SubscriptionModal = () => {
   } = useSendTransaction({ config });
 
   const [openedSubscriptionModal, setOpenedSubscriptionModal] = useState(false);
+  const [isChainSupported, setIsChainSupported] = useState(true);
   const handleSubscriptionModal = () => {
     setOpenedSubscriptionModal(!openedSubscriptionModal);
   };
@@ -68,12 +66,34 @@ const SubscriptionModal = () => {
     },
   ];
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
+  const fnCheckUnsupportedChain = () => {
+    supportedChains?.map((supChain) => {
+      chain?.id !== supChain?.id
+        ? setIsChainSupported(false)
+        : setIsChainSupported(true);
+    });
+  };
+
+  const {
+    data: txData,
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+  } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  const fnCallBuyApi = async () => {
+    console.log(`Txdata `);
+    console.log(txData);
+    const buyRes = await apiBuySubscription({
+      signature: txData?.transactionHash,
+      chainId: chain?.id,
+      evm_address: address,
     });
 
-  const fnBuyPoster = () => {
+    console.log(buyRes);
+  };
+  const fnBuyPoster = async () => {
     console.log(`in switch chain chain ${chain}`);
 
     const signature = sendTransaction({
@@ -86,25 +106,31 @@ const SubscriptionModal = () => {
           : "0.003"
       ),
     });
-    if (!signature) return;
-    const res = apiBuySubscription({
-      signature: hash,
-      chainId: chain,
-      evm_address: address,
-    });
-
-    console.log(res);
+    console.log(`in switch chain signature ${signature}`);
   };
+
+  useEffect(() => {
+    if (isConfirmed && hash !== undefined) {
+      fnCallBuyApi();
+    }
+  }, [isConfirmed, hash]);
+
+  useEffect(() => {
+    fnCheckUnsupportedChain();
+  }, [chain?.id]);
 
   return (
     <>
       {" "}
       <div
         onClick={handleSubscriptionModal}
-        className="cursor-pointer flex items-center gap-1 text-lg font-bold bg-[#edecec] px-2 my-1 rounded-md hover:bg-[#f5f5f5]"
+        className="cursor-pointer flex items-center gap-2 text-lg border  font-bold p-1 my-1 rounded-md hover:bg-[#f5f5f5]"
       >
-        {points}
-        <img className="h-4 -mt-1" src="/public/svgs/coin.svg" alt="" />
+        <div className="border rounded-md text-md">
+          {points}
+          <img className="h-4 -mt-1" src={coinImg} alt="" />
+        </div>
+        <div className="text-sm">Buy xPosters</div>
       </div>
       <Dialog
         className="p-4"
@@ -185,9 +211,14 @@ const SubscriptionModal = () => {
             </div>
           )}
           {hash && (
-            <div className="m-4 flex gap-4 items-center">
-              Tx Hash: {hash.slice(0, 10)}...{" "}
-              <BiCopy onClick={navigator?.clipboard?.writeText(hash)} />
+            <div className="m-4 mb-0 flex gap-4 items-center cursor-pointer">
+              Transaction: {hash.slice(0, 16)}...{" "}
+              <BiCopy onClick={() => navigator?.clipboard?.writeText(hash)} />
+              <BsBoxArrowUpRight
+                onClick={() =>
+                  window?.open(`https://base-sepolia.blockscout.com/tx/${hash}`)
+                }
+              />
             </div>
           )}
 
@@ -195,44 +226,31 @@ const SubscriptionModal = () => {
             <div className="m-4">Waiting for Transaction confirmation...</div>
           )}
           {isConfirmed && (
-            <div className="m-4">You've successfully bought $POSTER</div>
+            <div className="m-4 font-medium text-green-500">
+              We've received your transaction, You'll get xPosters soon
+            </div>
           )}
           {error && (
             <div className="m-4 text-red-500 text-xs">
               Transaction failed: {error.message}
             </div>
           )}
-          {chain !== 84532 && (
+          {chain?.id !== 84532 && (
             <div className="m-4 text-red-500">
               Please switch to Base Sepolia to buy $POSTER
             </div>
           )}
           <div className="flex flex-col gap-2 m-4">
-            {/* <Select label="Select Chain">
-              {supportedChains && supportedChains.length > 0 ? (
-                supportedChains.map((chain) => (
-                  <Option
-                    onClick={(e) => {
-                      setchain(Number(chain?.id));
-                    }}
-                    key={chain?.id}
-                    value={chain?.id?.toString()}
-                  >
-                    {chain?.name || "Unnamed Chain"}
-                  </Option>
-                ))
-              ) : (
-                <Option disabled>No chains available</Option>
-              )}
-            </Select> */}
-            <h2 className="text-lg mx-2"> Switch Networks </h2>
-            <Networks chains={supportedChains} />
+            <Networks
+              chains={supportedChains}
+              isUnsupportedChain={isChainSupported}
+            />
             <Button
               disabled={isPending}
               // loading={isPending}
               onClick={fnBuyPoster}
               color="gray"
-              className="w-full lg:max-w-[15rem] text-center"
+              className="w-full text-center"
             >
               Buy $POSTER
             </Button>

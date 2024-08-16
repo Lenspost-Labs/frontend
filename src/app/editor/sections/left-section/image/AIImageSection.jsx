@@ -46,7 +46,7 @@ import {
 import useUser from "../../../../../hooks/user/useUser";
 import { toast } from "react-toastify";
 import { posterTokenSymbol } from "../../../../../data";
-
+import coinImg from "../../../../../assets/svgs/Coin.svg";
 // Tab1 - Search Tab
 
 const RANDOM_QUERIES = [
@@ -162,7 +162,7 @@ export const CompSearch = () => {
             Generate
             <img
               className="h-4 -mt-1 ml-2"
-              src="/public/svgs/coin.svg"
+              src={coinImg}
               alt=""
             />
           </MatButton>
@@ -459,7 +459,7 @@ const CompInstructImage = () => {
           onClick={fnCallInstructImgAPI}
         >
           Generate
-          <img className="h-4 -mt-1 ml-2" src="/public/svgs/coin.svg" alt="" />
+          <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
         </MatButton>
 
         {!responseImage && !clicked && (

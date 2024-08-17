@@ -22,8 +22,9 @@ import { config } from "../../../../providers/EVM/EVMWalletProvider";
 import { apiBuySubscription } from "../../../../services";
 import Networks from "./Networks";
 import coinImg from "../../../../assets/svgs/Coin.svg";
+import { base, baseSepolia, optimism, zora } from "viem/chains";
 const SubscriptionModal = () => {
-  const { chain, address } = useAccount();
+  const { address, chainId, chain } = useAccount();
   const { points } = useUser();
   const {
     data: hash,
@@ -40,35 +41,15 @@ const SubscriptionModal = () => {
   const [selectedSubscription, setSelectedSubscription] = useState("30");
 
   config.transports = {
-    [chain?.id]: http(),
+    [chainId]: http(),
   };
 
-  const supportedChains = [
-    {
-      name: "Base Sepolia",
-      id: 84532,
-    },
-    {
-      name: "Zora Sepolia",
-      id: 999999999,
-    },
-    {
-      name: "Optimism",
-      id: 10,
-    },
-    {
-      name: "Base - Mainnet",
-      id: 8453,
-    },
-    {
-      name: "Zora",
-      id: 7777777,
-    },
-  ];
-
+  const supportedChains = [baseSepolia, optimism, base, zora];
+  console.log(supportedChains);
+  
   const fnCheckUnsupportedChain = () => {
     supportedChains?.map((supChain) => {
-      chain?.id !== supChain?.id
+      chainId !== supChain?.id
         ? setIsChainSupported(false)
         : setIsChainSupported(true);
     });
@@ -87,7 +68,7 @@ const SubscriptionModal = () => {
     console.log(txData);
     const buyRes = await apiBuySubscription({
       signature: txData?.transactionHash,
-      chainId: chain?.id,
+      chainId: chainId,
       evm_address: address,
     });
 
@@ -117,7 +98,7 @@ const SubscriptionModal = () => {
 
   useEffect(() => {
     fnCheckUnsupportedChain();
-  }, [chain?.id]);
+  }, [chainId]);
 
   return (
     <>

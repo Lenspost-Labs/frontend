@@ -21,13 +21,17 @@ import UserCard from "./components/Cards/UserCard";
 import farcasterLogo from "../../../../../assets/logos/logoFarcaster.jpg";
 import PointHistoryCard from "./components/Cards/PointHistoryCard";
 import LeaderboardCard from "./components/Cards/LeaderboardCard";
+import { LOCAL_STORAGE } from "../../../../../data";
 
 const ProfilePanel = () => {
   const { setMenu } = useContext(Context);
-  const { username } = useUser();
+  const { username, userId } = useUser();
 
   const [selectedTab, setSelectedTab] = useState("tasks");
   const [groupedTasks, setGroupedTasks] = useState({});
+
+  // const address = LOCAL_STORAGE?.userAddress;
+  const address = LOCAL_STORAGE?.userAddress;
 
   const tabsArr = [
     { label: "Tasks", value: "tasks" },
@@ -71,16 +75,17 @@ const ProfilePanel = () => {
   });
 
   const leaderboardDataList = leaderboardData?.slice(0, 50);
+  const currentUserId = userId; // Replace with the actual current user ID
+  let currentUserEntry = null;
+  const otherEntries = [];
 
-  // const pointsHistoryList = pointHistoryData?.message;
-  // console.log("pointsHistoryList", pointsHistoryList);
-  // const recurringTasks = taskList?.map((task, index) => {
-  //   if (task?.taskId === 2 || 3 || 4) {
-  //     return task;
-  //   }
-  // });
-
-  // console.log("recurringTasks", recurringTasks);
+  leaderboardDataList?.forEach((entry) => {
+    if (entry.id === currentUserId) {
+      currentUserEntry = entry;
+    } else {
+      otherEntries.push(entry);
+    }
+  });
 
   // Group the tasks by campaign :
   const fnGroupTaskByCampaign = async () => {
@@ -201,14 +206,13 @@ const ProfilePanel = () => {
                     {pointHistoryData && pointHistoryData?.length > 0
                       ? pointHistoryData
                           ?.slice(1)
-                          .reverse()
                           .map((point, index) => (
                             <PointHistoryCard
                               key={index}
                               pointsId={index + 1}
                               pointsReason={point.reason}
                               pointsAmt={point.amount}
-                              pointsDate={point.createdAt}
+                              pointsDate={point.date}
                             />
                           ))
                       : null}
@@ -217,20 +221,35 @@ const ProfilePanel = () => {
 
                 {selectedTab === "leaderboard" && (
                   <>
-                    {" "}
-                    {leaderboardDataList &&
-                      leaderboardDataList?.length > 0 &&
-                      leaderboardDataList 
-                        .map((lboard, index) => (
-                          <LeaderboardCard
-                            key={index}
-                            lbIndex={index + 1}
-                            lbUsername={lboard?.username}
-                            lbfarcsterId={lboard?.farcaster_id}
-                            lbPoints={lboard?.points}
-                            lbEVMAddress={lboard?.evm_address}
-                          />
-                        ))}
+                    {currentUserEntry && (
+                      <LeaderboardCard
+                        key="current-user"
+                        lbIndex={
+                          leaderboardDataList.findIndex(
+                            (lboard) => lboard.farcaster_id === currentUserId
+                          ) + 1
+                        }
+                        lbUsername={currentUserEntry.username}
+                        lbfarcsterId={currentUserEntry.farcaster_id}
+                        lbPoints={currentUserEntry.points}
+                        lbEVMAddress={currentUserEntry.evm_address}
+                      />
+                    )}
+
+                    {otherEntries.map((lboard, index) => (
+                      <LeaderboardCard
+                        key={index}
+                        lbIndex={
+                          leaderboardDataList.findIndex(
+                            (e) => e.farcaster_id === lboard.farcaster_id
+                          ) + 1
+                        }
+                        lbUsername={lboard.username}
+                        lbfarcsterId={lboard.farcaster_id}
+                        lbPoints={lboard.points}
+                        lbEVMAddress={lboard.evm_address}
+                      />
+                    ))}
                   </>
                 )}
               </TabsBody>

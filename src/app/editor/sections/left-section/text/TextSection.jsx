@@ -10,6 +10,7 @@ import axios from "axios";
 import { Context } from "../../../../../providers/context";
 import { customOswaltMemeTxt } from "./customTxts/oswaltMemetxt/OswaltMemeTxt";
 import oswaltMemeTxtImg from "./customTxts/oswaltMemetxt/oswaltMemeTxtImg.png";
+import { uniqueId } from "@blueprintjs/core/lib/esm/common/utils";
 
 export const CustomTextPanel = React.memo(() => {
   const store = useStore();
@@ -31,6 +32,9 @@ export const CustomTextPanel = React.memo(() => {
       let newChildren = [];
 
       if (customJson) {
+        // To avoid duplicate IDs
+        // customJson.id = Math.random().toString(36).substring(7);
+        customJson.id = uniqueId('lp');
         newChildren = [customJson];
       } else if (source) {
         const response = await axios.get(source);
@@ -66,7 +70,6 @@ export const CustomTextPanel = React.memo(() => {
       if (!updatedJSON.pages[0].children) {
         updatedJSON.pages[0].children = [];
       }
-
 
       updatedJSON.pages[0].children = [
         ...updatedJSON.pages[0].children,

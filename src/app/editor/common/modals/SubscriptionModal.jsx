@@ -19,7 +19,7 @@ import {
 import { APP_ETH_ADDRESS } from "../../../../data";
 import { useUser } from "../../../../hooks/user";
 import { config } from "../../../../providers/EVM/EVMWalletProvider";
-import { apiBuySubscription } from "../../../../services";
+import { apiBuySubscription, ENVIRONMENT } from "../../../../services";
 import Networks from "./Networks";
 import coinImg from "../../../../assets/svgs/Coin.svg";
 import { base, baseSepolia, optimism, zora } from "viem/chains";
@@ -44,9 +44,12 @@ const SubscriptionModal = () => {
     [chainId]: http(),
   };
 
-  const supportedChains = [baseSepolia, optimism, base, zora];
+  const supportedChains =
+    ENVIRONMENT === "production"
+      ? [optimism, base, zora]
+      : [base, baseSepolia, optimism, zora];
   console.log(supportedChains);
-  
+
   const fnCheckUnsupportedChain = () => {
     supportedChains?.map((supChain) => {
       chainId !== supChain?.id

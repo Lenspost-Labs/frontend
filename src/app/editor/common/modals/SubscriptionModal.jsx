@@ -219,11 +219,11 @@ const SubscriptionModal = () => {
               Transaction failed: {error.message}
             </div>
           )}
-          {chain?.id !== 84532 && (
+          {/* {chain?.id !== 84532 && (
             <div className="m-4 text-red-500">
               Please switch to Base Sepolia to buy $POSTER
             </div>
-          )}
+          )} */}
           <div className="flex flex-col gap-2 m-4">
             <Networks
               chains={supportedChains}

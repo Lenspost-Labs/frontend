@@ -1040,33 +1040,37 @@ const FarcasterNormalPost = () => {
         isDeployingZoraContract={isDeployingZoraContract}
         slug={slug}
       />
-      <div className="mb-4 m-4">
-        <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Channel </h2>
-          <Switch
-            checked={farcasterStates.isChannel}
-            onChange={() =>
-              setFarcasterStates({
-                ...farcasterStates,
-                isChannel: !farcasterStates.isChannel,
-              })
-            }
-            className={`${
-              farcasterStates.isChannel ? "bg-[#e1f16b]" : "bg-gray-200"
-            } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-          >
-            <span
+
+      {actionType !== "composer" && (
+        <div className="mb-4 m-4">
+          <div className="flex justify-between">
+            <h2 className="text-lg mb-2"> Channel </h2>
+            <Switch
+              checked={farcasterStates.isChannel}
+              onChange={() =>
+                setFarcasterStates({
+                  ...farcasterStates,
+                  isChannel: !farcasterStates.isChannel,
+                })
+              }
               className={`${
-                farcasterStates.isChannel ? "translate-x-6" : "translate-x-1"
-              } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-            />{" "}
-          </Switch>
+                farcasterStates.isChannel ? "bg-[#e1f16b]" : "bg-gray-200"
+              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  farcasterStates.isChannel ? "translate-x-6" : "translate-x-1"
+                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+              />{" "}
+            </Switch>
+          </div>
+          <div className="w-4/5 opacity-75">
+            {" "}
+            Share your post in the Farcaster channel.{" "}
+          </div>
         </div>
-        <div className="w-4/5 opacity-75">
-          {" "}
-          Share your post in the Farcaster channel.{" "}
-        </div>
-      </div>
+      )}
+
       <div className={`m-4 ${!farcasterStates.isChannel && "hidden"}`}>
         <FarcasterChannel
           channelState={farcasterStates.channel}

@@ -56,7 +56,7 @@ const TopbarSection = () => {
               <div className="flex gap-2" id="first-step">
                 {/* <ProfileMenu /> */}
                 <PointsBtn />
-                {/* <SubscriptionModal /> */}
+                <SubscriptionModal />
               </div>
             </div>
           ) : null}

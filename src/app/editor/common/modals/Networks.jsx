@@ -16,9 +16,10 @@ import AiOutlineCloseCircle from "@meronex/icons/ai/AiOutlineCloseCircle";
 import FaRegDotCircle from "@meronex/icons/fa/FaRegDotCircle";
 import { useAccount, useSwitchChain } from "wagmi";
 import { chainLogo } from "../../../../utils";
+import { zora } from "viem/chains";
 
 const Networks = ({ className, chains, isUnsupportedChain }) => {
-  const { chain } = useAccount();
+  const { chain, chainId } = useAccount();
   const { isError, error, isLoading, isSuccess, switchChain, variables } =
     useSwitchChain();
   const [open, setOpen] = useState(false);
@@ -66,9 +67,10 @@ const Networks = ({ className, chains, isUnsupportedChain }) => {
         <DialogBody>
           {chains?.map((network, index) => (
             <>
-              <List className="border rounded-lg my-2 p-0">
+              <List key={index} className="border rounded-lg my-2 p-0">
                 <ListItem
                   onClick={() => {
+                    console.log(`chain ${chain?.id} network ${network?.id}`);
                     network?.id !== chain?.id &&
                       switchChain({
                         chainId: network?.id,

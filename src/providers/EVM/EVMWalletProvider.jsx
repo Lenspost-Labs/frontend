@@ -43,7 +43,7 @@ export const config = createConfig({
   chains:
     ENVIRONMENT === "production"
       ? [base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og]
-      : [base, baseSepolia, arbitrum, polygonMumbai, degen, ham, og],
+      : [base, baseSepolia,zora, optimism, arbitrum, polygonMumbai, degen, ham, og],
   transports: {
     [base.id]: http(),
     [mainnet.id]: http(),

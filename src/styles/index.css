@@ -280,6 +280,10 @@ img {
 .go1222219977 {
   border-radius: 8px !important;
   padding: 4px !important;
+  outline: none !important;
+}
+.go1222219977:foucs {
+  outline: none !important;
 }
 
 .bp5-navbar {

@@ -206,6 +206,7 @@ const ProfilePanel = () => {
                     {pointHistoryData && pointHistoryData?.length > 0
                       ? pointHistoryData
                           ?.slice(1)
+                          .sort((a, b) => new Date(b.date) - new Date(a.date))
                           .map((point, index) => (
                             <PointHistoryCard
                               key={index}

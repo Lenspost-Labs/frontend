@@ -25,7 +25,7 @@ export default defineConfig({
     hmr: false, // Disable HMR to avoid inline script injection
     headers: {
       "Content-Security-Policy":
-        "default-src 'self'; connect-src 'self' http://localhost:* https://*.dial.to/ https://proxy.dial.to/; img-src 'self' https://*.dial.to/ https://proxy.dial.to/; script-src 'self'; style-src 'self' 'unsafe-inline';",
+        "default-src 'self'; connect-src 'self' http://localhost:* https://*.poster.fun/ https://app.poster.fun/; img-src 'self' https://*.poster.fun/ https://app.poster.fun/; script-src 'self'; style-src 'self' 'unsafe-inline';",
     },
   },
 });

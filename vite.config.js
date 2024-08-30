@@ -1,8 +1,6 @@
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import csp from "vite-plugin-csp";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,12 +9,6 @@ export default defineConfig({
     sentryVitePlugin({
       org: "lenspost-labs",
       project: "lenspost-main-app",
-    }),
-    nodePolyfills({
-      globals: {
-        Buffer: true,
-      },
-      protocolImports: true,
     }),
   ],
 

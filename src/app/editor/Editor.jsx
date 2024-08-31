@@ -63,6 +63,7 @@ import { TopbarSection } from "./sections/top-section";
 
 import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
 import MobileBottombar from "./sections/bottom-section/bottomBar/MobileBottombar";
+import AIStartupModal from "./common/modals/AIStartupModal";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -144,7 +145,7 @@ const Editor = () => {
   const actionType = queryParams.get("actionType");
   const inviteCode = queryParams.get("inviteCode");
 
-  console.log("inviteCode", inviteCode);
+  // console.log("inviteCode", inviteCode);
 
   const handleDrop = (ev) => {
     // Do not load the upload dropzone content directly to canvas
@@ -642,7 +643,6 @@ const Editor = () => {
   //   }
   // }, [store?.openedSidePanel, isOpenBottomBar]);
 
-
   // invite code mutuation
   const { mutateAsync: apiRedeemCode } = useMutation({
     mutationKey: "inviteCode",
@@ -719,6 +719,7 @@ const Editor = () => {
                   <div className="flex flex-row ">
                     {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
                     <SpeedDialX />
+                    <AIStartupModal />
 
                     <div
                       className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"

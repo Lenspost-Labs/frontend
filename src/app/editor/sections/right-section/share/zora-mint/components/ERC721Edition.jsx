@@ -919,7 +919,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       canvasId: contextCanvasIdRef.current,
       mintLink: receipt?.logs[0]?.address,
       chain: chain?.name,
-      contractType: 721,
+      contractType: "ZORA721",
       chainId: chain?.id,
       hash: receipt?.logs[0]?.address,
     };

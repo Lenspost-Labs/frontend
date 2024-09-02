@@ -171,7 +171,7 @@ const ERC1155Edition = () => {
         canvasId: contextCanvasIdRef.current,
         mintLink: contractAddress,
         chain: chain?.name,
-        contractType: 1155,
+        contractType: "ZORA1155",
         chainId: chain?.id,
         hash: contractAddress,
       };

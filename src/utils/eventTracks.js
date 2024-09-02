@@ -23,7 +23,7 @@ export const assetsTrack = (
 ) => {
   let assetsData = {
     asset_id: Number(item?.id),
-    platform: actionType || (isMobile && "Mobile") || "Web",
+    access_platform: actionType || (isMobile && "mobile") || "web",
   };
 
   if (item?.type === "props" || item?.type === "background") {

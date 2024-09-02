@@ -46,6 +46,7 @@ const ERC1155Edition = () => {
     parentRecipientListRef,
     canvasBase64Ref,
     actionType,
+    posthog,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
   } = useContext(Context);
@@ -191,6 +192,14 @@ const ERC1155Edition = () => {
         },
         "*"
       );
+
+      posthog.capture("Canvas Posted To Farcaster", {
+        canvas_id: contextCanvasIdRef.current,
+        access_platform: "composer",
+        mintable: "yes",
+        nftType: "ERC1155",
+        chainId: chain?.id,
+      });
 
       console.log("shared on FC", embeds);
     } catch (error) {

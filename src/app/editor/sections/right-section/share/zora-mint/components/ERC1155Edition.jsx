@@ -45,6 +45,7 @@ const ERC1155Edition = () => {
     postDescription,
     parentRecipientListRef,
     canvasBase64Ref,
+    actionType,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
   } = useContext(Context);
@@ -52,7 +53,6 @@ const ERC1155Edition = () => {
   const chainId = useChainId();
   const publicClient = usePublicClient();
   const walletClient = useWalletClient();
-  const { actionType } = useLocalStorage();
   const { login, authenticated } = usePrivy();
   const { address } = useAccount();
   const { writeContract } = useWriteContract();

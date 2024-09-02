@@ -66,7 +66,7 @@ import { usePrivy } from "@privy-io/react-auth";
 const FarcasterNormalPost = () => {
   const { address } = useAccount();
   const { chain } = useAccount();
-  const { userLOA, actionType, userAddress } = useLocalStorage();
+  const { userLOA, userAddress } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
   const { login: privyLogin, authenticated } = usePrivy();
@@ -112,7 +112,7 @@ const FarcasterNormalPost = () => {
     lensAuthState, // don't remove this
     chainId,
     setPostName,
-
+    actionType,
     // For Mobile only
     isMobile,
   } = useContext(Context);

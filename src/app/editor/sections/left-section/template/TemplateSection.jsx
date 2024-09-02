@@ -45,7 +45,7 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-import { useAppAuth } from "../../../../../hooks/app";
+import { useAppAuth, useLocalStorage } from "../../../../../hooks/app";
 import posthog from "posthog-js";
 
 // Design card component start
@@ -68,9 +68,9 @@ const DesignCard = ({
     referredFromRef,
     preStoredRecipientDataRef,
     isMobile,
+    actionType,
     setOpenBottomBar,
   } = useContext(Context);
-
   const [stPreviewIndex, setStPreviewIndex] = useState(0);
   const [stHovered, setStHovered] = useState(false);
 
@@ -115,7 +115,7 @@ const DesignCard = ({
     }
 
     // track community template assets selected
-    assetsTrack(item, "community", null);
+    assetsTrack(item, "community", null, actionType, isMobile);
   };
 
   // Function to change the preview image on hover

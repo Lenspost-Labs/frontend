@@ -14,9 +14,16 @@ const getChainName = (chainId) => {
   }
 };
 
-export const assetsTrack = (item, assetType, collectionName) => {
+export const assetsTrack = (
+  item,
+  assetType,
+  collectionName,
+  actionType,
+  isMobile
+) => {
   let assetsData = {
     asset_id: Number(item?.id),
+    platform: actionType || (isMobile && "Mobile") || "Web",
   };
 
   if (item?.type === "props" || item?.type === "background") {

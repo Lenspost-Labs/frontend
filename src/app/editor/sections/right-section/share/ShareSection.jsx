@@ -39,13 +39,13 @@ const ShareSection = () => {
     setIsShareOpen,
 
     contextCanvasIdRef,
-
+    actionType,
     isMobile,
   } = useContext(Context);
   const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false);
   const [charLimitError, setCharLimitError] = useState("");
   const { authenticated, login: privyLogin } = usePrivy();
-  const { actionType, evmAuth } = useLocalStorage();
+  const { evmAuth } = useLocalStorage();
   const { login } = usePrivyAuth();
 
   const chainsArray = [

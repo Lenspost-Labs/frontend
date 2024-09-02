@@ -1938,8 +1938,7 @@ const FarcasterNormalPost = () => {
           !farcasterStates?.frameData?.isCustomCurrMint &&
           !farcasterStates?.frameData?.isCreatorSponsored &&
           chain?.id != chainId &&
-          !isMobile &&
-          actionType === "composer" ? (
+          !isMobile ? (
           <div className="mx-2 outline-none">
             <Button
               className="w-full outline-none flex justify-center items-center gap-2"

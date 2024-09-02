@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LogoutBtn from "../LogoutBtn";
 import { useAccount } from "wagmi";
 import { useUser } from "../../../../../../../hooks/user";
@@ -23,11 +23,12 @@ import farcasterLogo from "../../../../../../../assets/logos/logoFarcaster.jpg";
 import { Spinner } from "@material-tailwind/react";
 import { useLocalStorage } from "../../../../../../../hooks/app";
 import { posterTokenSymbol } from "../../../../../../../data";
+import { Context } from "../../../../../../../providers/context";
 
 const UserCard = ({ username }) => {
   const { points, profileImage, userLevel, farcasterHandle } = useUser();
+  const { actionType } = useContext(Context);
   const [loadingInvite, setLoadingInvite] = useState(false);
-  const { actionType } = useLocalStorage();
   const address = getFromLocalStorage("user.address");
   const [inviteCodesArr, setInviteCodesArr] = useState([]);
 
@@ -219,7 +220,10 @@ const UserCard = ({ username }) => {
                     <div
                       className="flex align-middle "
                       onClick={() =>
-                        handleCopy(`Invite link`, `https://app.poster.fun/?inviteCode=${inviteCodesArr[0]}`)
+                        handleCopy(
+                          `Invite link`,
+                          `https://app.poster.fun/?inviteCode=${inviteCodesArr[0]}`
+                        )
                       }
                     >
                       <div className="">{inviteCodesArr[0]}</div>

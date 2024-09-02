@@ -113,6 +113,7 @@ const FarcasterNormalPost = () => {
     chainId,
     setPostName,
     actionType,
+    posthog,
     // For Mobile only
     isMobile,
   } = useContext(Context);
@@ -518,6 +519,20 @@ const FarcasterNormalPost = () => {
         },
         "*"
       );
+
+      if (farcasterStates?.frameData?.isFrame) {
+        posthog.capture("Canvas shared as Frame", {
+          canvas_id: contextCanvasIdRef.current,
+          frameId,
+          access_platform: "composer",
+        });
+      } else {
+        posthog.capture("Canvas Posted To Farcaster", {
+          canvas_id: contextCanvasIdRef.current,
+          access_platform: "composer",
+        });
+      }
+
       setIsShareLoading(false);
       console.log("shared");
       return;

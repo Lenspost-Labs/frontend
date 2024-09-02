@@ -72,7 +72,7 @@ const DownloadBtn = () => {
       fileType: type,
       quality,
       fps,
-      platform: actionType || (isMobile && "Mobile") || "Web",
+      access_platform: actionType || (isMobile && "mobile") || "web",
     });
   };
 

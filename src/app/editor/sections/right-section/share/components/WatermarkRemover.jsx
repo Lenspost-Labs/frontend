@@ -7,6 +7,7 @@ import { consoleLogonlyDev } from "../../../../../../utils";
 import { claimReward } from "../../../../../../services";
 import { Context } from "../../../../../../providers/context";
 import { posterTokenSymbol } from "../../../../../../data";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const WatermarkRemover = () => {
   const store = useStore();
@@ -14,6 +15,27 @@ const WatermarkRemover = () => {
   const { contextCanvasIdRef, setRemovedWMarkCanvas } = useContext(Context);
 
   consoleLogonlyDev("Store before watermark removed", store?.toJSON());
+
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: mutClaimReward } = useMutation({
+    mutationFn: async ({ taskId, canvasId }) => {
+      try {
+        const result = await claimReward({
+          taskId: taskId,
+          canvasId: canvasId,
+        });
+
+        // Refetch the user profile after successful claim
+        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+
+        return result;
+      } catch (error) {
+        console.error("Error claiming reward:", error);
+        throw error;
+      }
+    },
+  });
 
   const fnRemoveWatermark = () => {
     toast?.loading("Removing watermark");
@@ -47,7 +69,7 @@ const WatermarkRemover = () => {
       });
     });
 
-    claimReward({
+    mutClaimReward({
       taskId: 1,
       canvasId: contextCanvasIdRef?.current,
     });

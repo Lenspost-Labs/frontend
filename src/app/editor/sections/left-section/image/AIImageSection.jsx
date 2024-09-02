@@ -47,6 +47,8 @@ import useUser from "../../../../../hooks/user/useUser";
 import { toast } from "react-toastify";
 import { posterTokenSymbol } from "../../../../../data";
 import coinImg from "../../../../../assets/svgs/Coin.svg";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocalStorage } from "../../../../../hooks/app";
 // Tab1 - Search Tab
 
 const RANDOM_QUERIES = [
@@ -75,6 +77,7 @@ export const CompSearch = () => {
   } = useContext(Context);
   const store = useStore();
   const { points } = useUser();
+  const { userId } = useLocalStorage();
 
   // load data
   const [data, setData] = useState(null);
@@ -84,6 +87,24 @@ export const CompSearch = () => {
 
   const [query, setQuery] = useState();
   // RANDOM_QUERIES[(RANDOM_QUERIES.length * Math.random()) | 0]
+
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: mutClaimReward } = useMutation({
+    mutationFn: async ({ taskId }) => {
+      try {
+        const result = await claimReward({ taskId: taskId });
+
+        // Refetch the user profile after successful claim
+        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+
+        return result;
+      } catch (error) {
+        console.error("Error claiming reward:", error);
+        throw error;
+      }
+    },
+  });
 
   const fnGenerateImages = async () => {
     if (!query) {
@@ -109,7 +130,7 @@ export const CompSearch = () => {
           setStStatusCode(200);
           setData(response.data);
 
-          claimReward({
+          await mutClaimReward({
             taskId: 5,
           });
         } else if (data.status === 429) {
@@ -160,11 +181,7 @@ export const CompSearch = () => {
           />
           <MatButton className="mb-4" onClick={fnGenerateImages}>
             Generate
-            <img
-              className="h-4 -mt-1 ml-2"
-              src={coinImg}
-              alt=""
-            />
+            <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
           </MatButton>
           {/* 
 			<button className="bg-[#e1f16b] w-full px-4 p-1  mb-4 rounded-md hover:bg-[#e0f26cce]" onClick={fnGenerateImages}>Generate</button>
@@ -308,6 +325,24 @@ const CompInstructImage = () => {
   // Testing all the APIs from getimg.ai
   // Function : json to base64
 
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: mutClaimReward } = useMutation({
+    mutationFn: async ({ taskId }) => {
+      try {
+        const result = await claimReward({ taskId: taskId });
+
+        // Refetch the user profile after successful claim
+        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+
+        return result;
+      } catch (error) {
+        console.error("Error claiming reward:", error);
+        throw error;
+      }
+    },
+  });
+
   const fnJsonToBase64 = (json) => {
     return btoa(JSON.stringify(json));
   };
@@ -366,7 +401,7 @@ const CompInstructImage = () => {
         //   setStDisplayMessage(response.data.error.type);
         // }
 
-        claimReward({
+        mutClaimReward({
           taskId: 5,
         });
         setClicked(false);

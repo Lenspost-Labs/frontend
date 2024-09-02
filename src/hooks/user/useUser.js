@@ -12,7 +12,7 @@ const useUser = () => {
   const address = getFromLocalStorage("user.address");
   const { isAuthenticated } = useAppAuth();
   const { data, error, isError, isLoading } = useQuery({
-    queryKey: ["user", { userId }],
+    queryKey: ["userProfile"],
     queryFn: getUserProfile,
     enabled: isAuthenticated ? true : false,
     refetchOnMount: false,

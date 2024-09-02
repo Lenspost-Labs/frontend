@@ -22,7 +22,7 @@ import { useSolanaWallet } from "../../hooks/solana";
 import { APP_ETH_ADDRESS, LOCAL_STORAGE } from "../../data";
 import { Button } from "@material-tailwind/react";
 import { useAppAuth, useLocalStorage } from "../../hooks/app";
-import { getFarUserDetails } from "../../services/apis/BE-apis";
+import { getFarUserDetails, redeemCode } from "../../services/apis/BE-apis";
 import { useLocation, useNavigate } from "react-router-dom";
 import { watermarkBase64 } from "../../assets/base64/watermark";
 import { PagesTimeline } from "polotno/pages-timeline";
@@ -63,6 +63,7 @@ import { TopbarSection } from "./sections/top-section";
 
 import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
 import MobileBottombar from "./sections/bottom-section/bottomBar/MobileBottombar";
+import AIStartupModal from "./common/modals/AIStartupModal";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -128,7 +129,7 @@ const Editor = () => {
     setRemovedWMarkCanvas,
     setCurOpenedPanel,
     setOpenBottomBar,
-    isOpenBottomBar
+    isOpenBottomBar,
   } = useContext(Context);
 
   const componentMounted = useRef(false);
@@ -142,6 +143,9 @@ const Editor = () => {
   const location = useLocation(); //To get the URL location
   const queryParams = new URLSearchParams(location.search); //to Check A URL search string, beginning with a ?slugId
   const actionType = queryParams.get("actionType");
+  const inviteCode = queryParams.get("inviteCode");
+
+  // console.log("inviteCode", inviteCode);
 
   const handleDrop = (ev) => {
     // Do not load the upload dropzone content directly to canvas
@@ -629,7 +633,6 @@ const Editor = () => {
   //   }
   // }, [initialHeight]);
 
-
   // useEffect(() => {
   //   console.log(`openedSidepanel in Editor.jsx`, store?.openedSidePanel);
 
@@ -640,7 +643,21 @@ const Editor = () => {
   //   }
   // }, [store?.openedSidePanel, isOpenBottomBar]);
 
-  
+  // invite code mutuation
+  const { mutateAsync: apiRedeemCode } = useMutation({
+    mutationKey: "inviteCode",
+    mutationFn: redeemCode,
+  });
+
+  useEffect(() => {
+    if (inviteCode) {
+      apiRedeemCode({
+        code: inviteCode,
+        address: address || solanaAddress,
+      });
+    }
+  }, [inviteCode, address, solanaAddress]);
+
   return (
     <>
       <div
@@ -702,6 +719,7 @@ const Editor = () => {
                   <div className="flex flex-row ">
                     {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
                     <SpeedDialX />
+                    <AIStartupModal />
 
                     <div
                       className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"

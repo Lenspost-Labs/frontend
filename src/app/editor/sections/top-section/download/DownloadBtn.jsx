@@ -19,6 +19,7 @@ import { posterTokenSymbol } from "../../../../../data";
 import { toast } from "react-toastify";
 import useUser from "../../../../../hooks/user/useUser";
 import coinImg from "../../../../../assets/svgs/Coin.svg";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 const DownloadBtn = () => {
   const store = useStore();
   const [saving, setSaving] = useState(false);
@@ -29,6 +30,24 @@ const DownloadBtn = () => {
   const [progress, setProgress] = useState(0);
   const [progressStatus, setProgressStatus] = useState("");
   const { points } = useUser();
+
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: mutClaimReward } = useMutation({
+    mutationFn: async ({ taskId }) => {
+      try {
+        const result = await claimReward({ taskId: taskId });
+
+        // Refetch the user profile after successful claim
+        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+
+        return result;
+      } catch (error) {
+        console.error("Error claiming reward:", error);
+        throw error;
+      }
+    },
+  });
 
   const getName = () => {
     const texts = [];
@@ -90,7 +109,7 @@ const DownloadBtn = () => {
 
   const fnHandleClaim = async () => {
     // Claim the task for the user
-    const res = await claimReward({
+    const res = await mutClaimReward({
       taskId: 16,
     });
 
@@ -268,11 +287,7 @@ const DownloadBtn = () => {
             }}
           >
             Download {type.toUpperCase()}
-            <img
-              className="h-4 -mt-1 ml-2"
-              src={coinImg}
-              alt=""
-            />
+            <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
           </Button>
         </Menu>
       }

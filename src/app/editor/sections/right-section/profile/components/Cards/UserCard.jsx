@@ -219,7 +219,7 @@ const UserCard = ({ username }) => {
                     <div
                       className="flex align-middle "
                       onClick={() =>
-                        handleCopy(`Invite Code`, inviteCodesArr[0])
+                        handleCopy(`Invite link`, `https://app.poster.fun/?inviteCode=${inviteCodesArr[0]}`)
                       }
                     >
                       <div className="">{inviteCodesArr[0]}</div>

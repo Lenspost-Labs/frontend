@@ -48,7 +48,7 @@ const SubscriptionModal = () => {
     ENVIRONMENT === "production"
       ? [optimism, base, zora]
       : [base, baseSepolia, optimism, zora];
-  console.log(supportedChains);
+  // console.log(supportedChains);
 
   const fnCheckUnsupportedChain = () => {
     supportedChains?.map((supChain) => {
@@ -68,17 +68,17 @@ const SubscriptionModal = () => {
 
   const fnCallBuyApi = async () => {
     console.log(`Txdata `);
-    console.log(txData);
+    // console.log(txData);
     const buyRes = await apiBuySubscription({
       signature: txData?.transactionHash,
       chainId: chainId,
       evm_address: address,
     });
 
-    console.log(buyRes);
+    // console.log(buyRes);
   };
   const fnBuyPoster = async () => {
-    console.log(`in switch chain chain ${chain}`);
+    // console.log(`in switch chain chain ${chain}`);
 
     const signature = sendTransaction({
       to: APP_ETH_ADDRESS,
@@ -90,7 +90,7 @@ const SubscriptionModal = () => {
           : "0.003"
       ),
     });
-    console.log(`in switch chain signature ${signature}`);
+    // console.log(`in switch chain signature ${signature}`);
   };
 
   useEffect(() => {

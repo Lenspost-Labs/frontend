@@ -495,10 +495,8 @@ const ContextProvider = ({ children }) => {
     dispatcherStatus: false,
   });
 
-  // console.log("ContextProvider", zoraErc1155Enabled);
-  // console.log("randomNum ", postName);
-
   const [isMobile, setIsMobile] = useState(false);
+  const [actionType, setActionType] = useState("");
   const [curOpenedPanel, setCurOpenedPanel] = useState("");
   const [openLeftBar, setOpenLeftBar] = useState(false);
   const [openBottomBar, setOpenBottomBar] = useState(false);
@@ -506,6 +504,9 @@ const ContextProvider = ({ children }) => {
   const chainId = ENVIRONMENT === "production" ? base?.id : baseSepolia?.id;
   const [curOpenedTabLevel1, setCurOpenedTabLevel1] = useState("");
   const [curOpenedTabLevel2, setCurOpenedTabLevel2] = useState("");
+
+  console.log("ContextProvider", actionType);
+  // console.log("randomNum ", postName);
 
   return (
     <Context.Provider
@@ -682,6 +683,11 @@ const ContextProvider = ({ children }) => {
         // Mobile UI
         isMobile,
         setIsMobile,
+
+        // action type
+        actionType,
+        setActionType,
+
         // for mobile Tabs :
         curOpenedPanel,
         setCurOpenedPanel,

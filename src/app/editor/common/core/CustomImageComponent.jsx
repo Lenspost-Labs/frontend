@@ -15,6 +15,7 @@ import { useStore } from "../../../../hooks/polotno";
 import { useContext } from "react";
 import { Context } from "../../../../providers/context/ContextProvider";
 import { addressCrop, assetsTrack } from "../../../../utils";
+import { useLocalStorage } from "../../../../hooks/app";
 
 // Custom Image card component start - 23Jun2023
 const CustomImageComponent = ({
@@ -42,6 +43,7 @@ const CustomImageComponent = ({
     nftRecipientDataRef,
 
     isMobile,
+    actionType,
     setOpenBottomBar,
     setCurOpenedPanel,
   } = useContext(Context);
@@ -130,7 +132,7 @@ const CustomImageComponent = ({
     }
 
     // track assets selected
-    assetsTrack(item, assetType, collectionName);
+    assetsTrack(item, assetType, collectionName, actionType, isMobile);
   };
 
   useEffect(() => {

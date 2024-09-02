@@ -50,7 +50,7 @@ const App = () => {
     handleOpen,
     session,
     setSession,
-
+    setActionType,
     setIsMobile,
     setOpenLeftBar,
   } = useContext(Context);
@@ -85,7 +85,6 @@ const App = () => {
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
   const authParam = params.get("fc-auth");
-  const actionType = params.get("actionType");
 
   // clear the session if it is expired (24hrs)
   useEffect(() => {
@@ -303,8 +302,8 @@ const App = () => {
     const fid = params.get("fid");
     saveToLocalStorage(LOCAL_STORAGE.FcComposerAuth, authParam);
     saveToLocalStorage(LOCAL_STORAGE.userAddress, userAddress);
-    saveToLocalStorage(LOCAL_STORAGE.actionType, actionType);
     saveToLocalStorage(LOCAL_STORAGE.fid, fid);
+    setActionType(actionType);
 
     console.log({ userAddress });
 

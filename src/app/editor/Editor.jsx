@@ -142,7 +142,6 @@ const Editor = () => {
   const navigate = useNavigate();
   const location = useLocation(); //To get the URL location
   const queryParams = new URLSearchParams(location.search); //to Check A URL search string, beginning with a ?slugId
-  const actionType = queryParams.get("actionType");
   const inviteCode = queryParams.get("inviteCode");
 
   // console.log("inviteCode", inviteCode);
@@ -312,8 +311,6 @@ const Editor = () => {
     if (loggedInUserAddress !== APP_ETH_ADDRESS) {
       recipientsSet.add(loggedInUserAddress); // Add loggedInUserAddress if it's not equal to APP_ETH_ADDRESS
     }
-
-    console.log({ recipientsSet });
 
     // Convert the Set back to an array
     const parentRecipientList = Array.from(recipientsSet);

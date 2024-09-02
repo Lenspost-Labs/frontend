@@ -20,13 +20,15 @@ import { toast } from "react-toastify";
 import useUser from "../../../../../hooks/user/useUser";
 import coinImg from "../../../../../assets/svgs/Coin.svg";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocalStorage } from "../../../../../hooks/app";
+
 const DownloadBtn = () => {
   const store = useStore();
   const [saving, setSaving] = useState(false);
   const [quality, setQuality] = useState(1);
   const [type, setType] = useState("png");
   const [fps, setFPS] = useState(10);
-  const { contextCanvasIdRef } = useContext(Context);
+  const { contextCanvasIdRef, isMobile, actionType } = useContext(Context);
   const [progress, setProgress] = useState(0);
   const [progressStatus, setProgressStatus] = useState("");
   const { points } = useUser();
@@ -70,6 +72,7 @@ const DownloadBtn = () => {
       fileType: type,
       quality,
       fps,
+      platform: actionType || (isMobile && "Mobile") || "Web",
     });
   };
 

@@ -1,5 +1,4 @@
 import { useContext, useState, useEffect } from "react";
-import { observer } from "mobx-react-lite";
 import { SectionTab } from "polotno/side-panel";
 import {
   getAllTemplates,
@@ -17,36 +16,24 @@ import {
   LoadMoreComponent,
   CompCarousel,
 } from "../../../common";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
-import { Spinner, Icon } from "@blueprintjs/core";
+import { Icon } from "@blueprintjs/core";
 import { useStore } from "../../../../../hooks/polotno";
 import {
   assetsTrack,
   fnLoadJsonOnPage,
   fnLoadMore,
-  randomThreeDigitNumber,
   replaceImageURL,
 } from "../../../../../utils";
 import { LoadingAnimatedComponent } from "../../../common";
 import SuChevronRightDouble from "@meronex/icons/su/SuChevronRightDouble";
 import { Context } from "../../../../../providers/context/ContextProvider";
 
-// import CustomHorizontalScroller from "../../../common/";
 import MdcImageMultipleOutline from "@meronex/icons/mdc/MdcImageMultipleOutline";
-import Lottie from "lottie-react";
 import animationData from "../../../../../assets/lottie/featured/featured1.json";
 import { SecNameHeading } from "../../../common/elements/SecNameHeading";
-
-import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
-  Tab,
-  TabPanel,
-} from "@material-tailwind/react";
 import { useAppAuth } from "../../../../../hooks/app";
-import posthog from "posthog-js";
 
 // Design card component start
 const DesignCard = ({

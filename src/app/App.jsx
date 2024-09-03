@@ -281,17 +281,6 @@ const App = () => {
     });
   }, []);
 
-  // Logic to Set isMobile variable
-  useEffect(() => {
-    if (window.innerWidth < 880) {
-      setIsMobile(true);
-      setOpenLeftBar(true);
-    }
-    if (window.innerWidth > 880) {
-      setIsMobile(false);
-    }
-  }, [window.innerWidth]);
-
   // get the fc auth for composer action
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -311,6 +300,17 @@ const App = () => {
       evm_address: userAddress,
     });
   }, []);
+
+  // Logic to Set isMobile variable
+  useEffect(() => {
+    if (window.innerWidth < 880) {
+      setIsMobile(true);
+      setOpenLeftBar(true);
+    }
+    if (window.innerWidth > 880) {
+      setIsMobile(false);
+    }
+  }, [window.innerWidth]);
 
   return (
     <>

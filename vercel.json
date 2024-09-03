@@ -1,13 +1,8 @@
 {
-    "headers": [
+  "rewrites": [
       {
-        "source": "/(.*)",
-        "headers": [
-          {
-            "key": "Content-Security-Policy",
-            "value": "connect-src https://*.poster.fun/ https://app.poster.fun/; img-src https://*.poster.fun/ https://app.poster.fun/;"
-          }
-        ]
+          "source": "/(.*)",
+          "destination": "/index.html"
       }
-    ]
-  }
+  ]
+}

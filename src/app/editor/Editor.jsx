@@ -704,7 +704,8 @@ const Editor = () => {
               {!isMobile && <PagesTimeline store={store} />}
               {isMobile && (
                 <div className="flex flex-col">
-                  <SpeedDialX />
+                  {/* <SpeedDialX /> */}
+                  <BgRemover />
                   <MobileBottombar />
                 </div>
               )}

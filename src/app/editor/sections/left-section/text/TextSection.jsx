@@ -11,6 +11,8 @@ import { Context } from "../../../../../providers/context";
 import { customOswaltMemeTxt } from "./customTxts/oswaltMemetxt/OswaltMemeTxt";
 import oswaltMemeTxtImg from "./customTxts/oswaltMemetxt/oswaltMemeTxtImg.png";
 import { uniqueId } from "@blueprintjs/core/lib/esm/common/utils";
+import { customImpactFont } from "./customTxts/ImpactFont/ImpactFont";
+import impactFontPreview from "./customTxts/ImpactFont/ImpactFontPreview.png";
 
 export const CustomTextPanel = React.memo(() => {
   const store = useStore();
@@ -97,6 +99,12 @@ export const CustomTextPanel = React.memo(() => {
           className="border border-gray-200 rounded-lg p-2 m-2 cursor-pointer"
         >
           <LazyLoadImage src={oswaltMemeTxtImg} />
+        </div>
+        <div
+          onClick={() => fnLoadText(null, customImpactFont)}
+          className="border border-gray-200 rounded-lg p-2 m-2 cursor-pointer"
+        >
+          <LazyLoadImage src={impactFontPreview} />
         </div>
         {textsData?.data?.items?.map((text, index) => (
           <div

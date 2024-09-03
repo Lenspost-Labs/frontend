@@ -33,6 +33,7 @@ import ShareButton from "../../top-section/share/ShareButton";
 import BsX from "@meronex/icons/bs/BsX";
 import useMobilePanelFunctions from "../../../common/mobileHooks/useMobilePanelFunctions";
 import { CustomTextPanel } from "../../left-section/text/TextSection";
+import BgRemover from "../bg-remover/BgRemover";
 
 const MobileBottombar = () => {
   const {

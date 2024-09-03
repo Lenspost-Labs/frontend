@@ -273,8 +273,8 @@ const FarcasterNormalPost = () => {
   const sortRecipientsByAddress = (recipients) => {
     return recipients.sort((a, b) =>
       a.address
-        .toLowerCase()
-        .localeCompare(b.address.toLowerCase(), undefined, {
+        ?.toLowerCase()
+        ?.localeCompare(b.address.toLowerCase(), undefined, {
           sensitivity: "base",
         })
     );
@@ -287,7 +287,7 @@ const FarcasterNormalPost = () => {
 
     // Aggregate percent allocations by address
     recipients.forEach((recipient) => {
-      const address = recipient.address.toLowerCase();
+      const address = recipient.address?.toLowerCase();
       if (addressMap.has(address)) {
         addressMap.set(
           address,

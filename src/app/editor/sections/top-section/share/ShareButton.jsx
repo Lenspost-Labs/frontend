@@ -12,9 +12,11 @@ import { Drawer } from "@blueprintjs/core";
 import { Context } from "../../../../../providers/context";
 import EditIconShare from "../../../../../assets/EditIconsMobile/EditIconShare";
 import { ERC1155Edition } from "../../right-section/share/zora-mint/components";
+import { useAppUrl } from "../../../../../hooks/app";
 
 const ShareButton = () => {
   const [transitionRtoL, setTransitionRtoL] = useState(false);
+  const { urlQueryActionType } = useAppUrl();
 
   const { menu, setMenu, isShareOpen, setIsShareOpen, isMobile } =
     useContext(Context);
@@ -47,6 +49,9 @@ const ShareButton = () => {
           onClick={() => {
             setIsShareOpen(true);
             setMenu("share");
+            if (urlQueryActionType === "composer") {
+              setMenu("farcasterShare");
+            }
           }}
           className="flex items-center"
         >

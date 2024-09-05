@@ -31,6 +31,7 @@ import {
   Option,
   Select,
   Spinner,
+  Textarea,
 } from "@material-tailwind/react";
 import { EVMWallets } from "../../../../top-section/auth/wallets";
 import FarcasterAuth from "./FarcasterAuth";
@@ -62,6 +63,7 @@ import { XCircleIcon } from "@heroicons/react/24/outline";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 import { usePrivy } from "@privy-io/react-auth";
+import WatermarkRemover from "../../components/WatermarkRemover";
 
 const FarcasterNormalPost = () => {
   const { address } = useAccount();
@@ -112,6 +114,7 @@ const FarcasterNormalPost = () => {
     lensAuthState, // don't remove this
     chainId,
     setPostName,
+    setPostDescription,
     actionType,
     posthog,
     // For Mobile only
@@ -322,6 +325,9 @@ const FarcasterNormalPost = () => {
 
       if (name === "title") {
         setPostName(value);
+      }
+      if (name === "description") {
+        setPostDescription(value);
       }
 
       // Check if the name is "allowedMints" and perform validation
@@ -1085,15 +1091,51 @@ const FarcasterNormalPost = () => {
           </div>
         </div>
       )}
+      {actionType === "composer" && (
+        <div className="mb-4 m-4">
+          <div className="flex justify-between">
+            <h2 className="text-lg mb-2"> Share as cast </h2>
+            <Switch
+              checked={!farcasterStates?.frameData?.isFrame}
+              onChange={() =>
+                setFarcasterStates({
+                  ...farcasterStates,
+                  frameData: {
+                    ...farcasterStates.frameData,
+                    isFrame: !farcasterStates?.frameData?.isFrame,
+                  },
+                })
+              }
+              className={`${
+                !farcasterStates?.frameData.isFrame
+                  ? "bg-[#e1f16b]"
+                  : "bg-gray-200"
+              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  !farcasterStates?.frameData.isFrame
+                    ? "translate-x-6"
+                    : "translate-x-1"
+                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+              />{" "}
+            </Switch>
+          </div>
+          <div className="w-4/5 opacity-75">
+            {" "}
+            Share as a cast on Farcaster.{" "}
+          </div>
+        </div>
+      )}
 
-      <div className={`m-4 ${!farcasterStates.isChannel && "hidden"}`}>
+      {/* <div className={`m-4 ${!farcasterStates.isFrame && "hidden"}`}>
         <FarcasterChannel
           channelState={farcasterStates.channel}
           setChannelState={(channel) =>
             setFarcasterStates({ ...farcasterStates, channel })
           }
         />
-      </div>
+      </div> */}
 
       <div className="mb-4 m-4">
         <div className="flex justify-between">
@@ -1896,19 +1938,27 @@ const FarcasterNormalPost = () => {
             <>
               <div className="mb-4">
                 <div className="flex justify-between">
-                  <h2 className="text-lg"> Title </h2>
+                  <h2 className="text-lg"> Title & Description</h2>
                 </div>
                 {/* <div className="w-4/5 opacity-75">
                   {" "}
                   Enter title fot the NFT.{" "}
                 </div> */}
               </div>
-              <InputBox
-                label={"Title"}
-                name="title"
-                onChange={(e) => handleChange(e)}
-                value={postName}
-              />
+              <div className="flex flex-col gap-2">
+                <InputBox
+                  label={"Title"}
+                  name="title"
+                  onChange={(e) => handleChange(e)}
+                  value={postName}
+                />
+                <Textarea
+                  label={"Description"}
+                  name="description"
+                  onChange={(e) => handleChange(e)}
+                  value={postDescription}
+                />
+              </div>
             </>
           )}
 
@@ -1977,11 +2027,18 @@ const FarcasterNormalPost = () => {
               onClick={handleSubmit}
               // color="yellow"
             >
-              Share
+              {/* Share */}
+              Let's GO
             </Button>
           </div>
         )}
       </div>
+
+      {actionType === "composer" && (
+        <div className="mt-4">
+          <WatermarkRemover />
+        </div>
+      )}
     </>
   );
 };

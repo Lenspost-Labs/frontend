@@ -27,10 +27,11 @@ export default defineConfig({
     hmr: false, // Disable HMR to avoid inline script injection
     headers: {
       "Content-Security-Policy":
-        "default-src 'self'; connect-src 'self' http://localhost:* https://*.poster.fun/ https://app.poster.fun/; img-src 'self' https://*.poster.fun/ https://app.poster.fun/ https://*.amazonaws.com https://imgflip.com; script-src 'self'; style-src 'self' 'unsafe-inline';",
+        "default-src 'self'; connect-src 'self' https://api.dscvr.one https://api1.stg.dscvr.one https://*.helius-rpc.com https://api.polotno.com https://auth.privy.io https://o4506978044739584.ingest.us.sentry.io; img-src 'self' blob: data: https://ipfs.dscvr.one https://media.dscvr.one https://media1.stg.dscvr.one https://fal.media; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline' https://eu.posthog.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; style-src-elem 'self' https://unpkg.com; font-src 'self' https://fonts.gstatic.com;",
     },
   },
 });
+
 
 // Working code as of 6Sep24 - If needed to revert
 // import { sentryVitePlugin } from "@sentry/vite-plugin";

@@ -25,21 +25,21 @@ const SearchComponent = ({
           value={query}
           funtion={funtion}
         />
-        {onClick && !isMobile && (
+        {onClick && (
           <Button
             icon={btnIcon || "search"}
             className="outline-none"
             onClick={onClick}
           ></Button>
         )}
-        {isMobile && (
+        {/* {isMobile && on && (
           <div
             onClick={onClick}
             className="p-3 cursor-pointer rounded-lg border hover:bg-gray-100"
           >
             <BsSearch />
           </div>
-        )}
+        )} */}
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>

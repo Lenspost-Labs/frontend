@@ -29,6 +29,7 @@ const Tabs = ({
   const requestTimeout = useRef();
   const { isDisconnected, address } = useAccount();
 
+  console.log({ delayedQuery });
   const {
     data,
     isLoading,
@@ -43,7 +44,7 @@ const Tabs = ({
     queryFn: ({ pageParam = 1 }) =>
       author === "lensjump"
         ? getAssetsFn(type, pageParam)
-        : getAssetsFn(type, author, campaignName, pageParam),
+        : getAssetsFn(type, author || delayedQuery, campaignName, pageParam),
     enabled: isAuthenticated ? true : false,
   });
 

@@ -1,10 +1,8 @@
-import { Switch } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Context } from "../../../../../../../providers/context";
 import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
-import { Option, Select, Typography } from "@material-tailwind/react";
-import { DateTimePicker } from "@atlaskit/datetime-picker";
+import { Typography } from "@material-tailwind/react";
 import { Button } from "@material-tailwind/react";
 import BsPlus from "@meronex/icons/bs/BsPlus";
 import { useCreateSplit } from "../../../../../../../hooks/0xsplit";
@@ -27,16 +25,23 @@ import { APP_ETH_ADDRESS } from "../../../../../../../data";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import { useAppAuth, useLocalStorage } from "../../../../../../../hooks/app";
-import { chainLogo, errorMessage } from "../../../../../../../utils";
-import { mintToXchain } from "../../../../../../../services/apis/BE-apis";
+import { useAppAuth, useStoreZoraLink } from "../../../../../../../hooks/app";
+import { chainLogo } from "../../../../../../../utils";
 import ZoraDialog from "./ZoraDialog";
 import { base, baseSepolia } from "viem/chains";
 import { usePrivy } from "@privy-io/react-auth";
+import {
+  handleChange,
+  handleRecipientChange,
+  isRecipientAddDuplicate,
+  restrictRecipientInput,
+  restrictRemoveRecipientInputBox,
+  isPercentage100,
+  addArrlistInputBox,
+} from "../utils";
 
 const ERC1155Edition = () => {
   const {
-    postName,
     zoraErc1155Enabled,
     setZoraErc1155Enabled,
     zoraErc1155StatesError,
@@ -55,16 +60,17 @@ const ERC1155Edition = () => {
   const publicClient = usePublicClient();
   const walletClient = useWalletClient();
   const { login, authenticated } = usePrivy();
+  const { storeZoraLink } = useStoreZoraLink();
   const { address } = useAccount();
-  const { writeContract } = useWriteContract();
+  const [slug, setSlug] = useState("");
   const { isAuthenticated } = useAppAuth();
+
   const [recipientsEns, setRecipientsEns] = useState([]);
   const [totalPercent, setTotalPercent] = useState(0);
   const [contractAddress, setContractAddress] = useState("");
   const [isDeploying, setIsDeploying] = useState(false);
   const [isContractPending, setIsContractPending] = useState(false);
   const [deploymentError, setDeploymentError] = useState(false);
-  const [slug, setSlug] = useState("");
 
   const creatorClient = createCreatorClient({ chainId, publicClient });
   const contractSymbol = zoraErc1155Enabled?.contractName
@@ -111,23 +117,6 @@ const ERC1155Edition = () => {
     isLoading: isCreateSplitLoading,
     isSuccess: isCreateSplitSuccess,
   } = useCreateSplit();
-
-  // store zora link in DB Mutation
-  const { mutateAsync: storeZoraLinkMutation } = useMutation({
-    mutationKey: "storeZoraLink",
-    mutationFn: mintToXchain,
-  });
-
-  const storeZoraLink = (paramsData) => {
-    storeZoraLinkMutation(paramsData)
-      .then((res) => {
-        console.log("StoreZoraLink", res?.slug);
-        setSlug(res?.slug);
-      })
-      .catch((error) => {
-        console.log("StoreZoraLinkErr", errorMessage(error));
-      });
-  };
 
   const create1155 = async () => {
     try {
@@ -176,7 +165,13 @@ const ERC1155Edition = () => {
         chainId: chain?.id,
         hash: contractAddress,
       };
-      storeZoraLink(paramsData);
+
+      try {
+        const slug = await storeZoraLink(paramsData); // Use the custom hook
+        setSlug(slug);
+      } catch (error) {
+        console.log("Slug error", error);
+      }
 
       const embeds = `https://zora.co/collect/base:${contractAddress}/1`;
 
@@ -208,273 +203,6 @@ const ERC1155Edition = () => {
       setIsContractPending(false);
     }
   };
-
-  // handle for input fields
-  const handleChange = (e, index, key) => {
-    const { name, value } = e.target;
-
-    // check if collection name and symbol are provided
-    if (name === "contractName") {
-      if (!value) {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isContractNameError: true,
-          contractNameErrorMessage: "Collection Name is required",
-        });
-      } else {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isContractNameError: false,
-          contractNameErrorMessage: "",
-        });
-      }
-    }
-
-    // check if price is provided
-    // if (name === "chargeForMintPrice") {
-    //   if (!value) {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isChargeForMintError: true,
-    //       chargeForMintErrorMessage: "Price is required",
-    //     });
-    //   } else if (value < 0.001) {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isChargeForMintError: true,
-    //       chargeForMintErrorMessage: "Price must be greater than 0.001",
-    //     });
-    //   } else {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isChargeForMintError: false,
-    //       chargeForMintErrorMessage: "",
-    //     });
-    //   }
-    // }
-
-    // check if mint limit is provided
-    // if (name === "mintLimitPerAddress") {
-    //   if (!value) {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isMintLimitPerAddressError: true,
-    //       limitedEditionErrorMessage: "Mint limit is required",
-    //     });
-    //   } else if (value < 1) {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isMintLimitPerAddressError: true,
-    //       limitedEditionErrorMessage: "Mint limit must be greater than 0",
-    //     });
-    //   } else {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isMintLimitPerAddressError: false,
-    //       limitedEditionErrorMessage: "",
-    //     });
-    //   }
-    // }
-
-    // check if royalty percent is provided
-    if (name === "royaltyPercent") {
-      if (!value) {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isRoyaltyPercentError: true,
-          royaltyPercentErrorMessage: "Royalty percent is required",
-        });
-      } else if (value < 1 || value > 100) {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isRoyaltyPercentError: true,
-          royaltyPercentErrorMessage: "Royalty must be between 1% to 100%",
-        });
-      } else {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isRoyaltyPercentError: false,
-          royaltyPercentErrorMessage: "",
-        });
-      }
-    }
-
-    // check if max supply is provided
-    // if (name === "maxSupply") {
-    //   if (!value) {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isMaxSupplyError: true,
-    //       maxSupplyErrorMessage: "Max supply is required",
-    //     });
-    //   } else if (value < 1) {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isMaxSupplyError: true,
-    //       maxSupplyErrorMessage: "Max supply must be greater than 0",
-    //     });
-    //   } else {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isMaxSupplyError: false,
-    //       maxSupplyErrorMessage: "",
-    //     });
-    //   }
-    // }
-
-    // check if allowlist is provided
-    // if (name === "allowlistAddresses") {
-    //   if (!value) {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isAllowlistError: true,
-    //       allowlistErrorMessage: "Allowlist address is required",
-    //     });
-    //   } else {
-    //     setZoraErc1155StatesError({
-    //       ...zoraErc1155StatesError,
-    //       isAllowlistError: false,
-    //       allowlistErrorMessage: "",
-    //     });
-    //   }
-    // }
-
-    // add data
-    if (name === "allowlistAddresses") {
-      setZoraErc1155Enabled((prevEnabled) => ({
-        ...prevEnabled,
-        [name]: prevEnabled[name].map((item, i) =>
-          i === index ? value : item
-        ),
-      }));
-    } else {
-      setZoraErc1155Enabled((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
-  };
-
-  // restrict the input box if the recipient is in the parent list
-  const restrictRecipientInput = (e, index, recipient) => {
-    const isRecipient = parentRecipientListRef.current.includes(recipient);
-    const isUserAddress = recipient === address;
-    if (index === 0 || isRecipient) {
-      if (isUserAddress) {
-        handleRecipientChange(index, "address", e.target.value);
-      }
-    } else {
-      handleRecipientChange(index, "address", e.target.value);
-    }
-  };
-
-  // restrict the delete button if recipient is in the parent list
-  const restrictRemoveRecipientInputBox = (index, recipient) => {
-    const isRecipient = parentRecipientListRef.current.includes(recipient);
-    if (index === 0 || isRecipient) {
-      return true;
-    }
-  };
-
-  // funtion adding data for split revenues recipients
-  const handleRecipientChange = (index, key, value) => {
-    // check index 0 price should min 10
-    if (key === "percentAllocation" && index === 0) {
-      if (value < 10 || value > 100 || isNaN(value)) {
-        setZoraErc1155StatesError({
-          ...r,
-          isRoyaltySplitError: true,
-          royaltySplitErrorMessage:
-            "Platform fee should be between 10% to 100%",
-        });
-      } else {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isRoyaltySplitError: false,
-          royaltySplitErrorMessage: "",
-        });
-      }
-    } else if (key === "percentAllocation" && index !== 0) {
-      // any index price should be greater min 1 and max 100
-      if (value < 1 || value > 100 || isNaN(value)) {
-        setZoraErc1155StatesError({
-          zoraErc1155StatesError,
-          isRoyaltySplitError: true,
-          royaltySplitErrorMessage: "Split should be between 1% to 100%",
-        });
-      } else {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isRoyaltySplitError: false,
-          royaltySplitErrorMessage: "",
-        });
-      }
-    }
-    // check if recipient address is not provided
-    if (key === "address") {
-      if (!value) {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isRoyaltySplitError: true,
-          royaltySplitErrorMessage: "Recipient address is required",
-        });
-      } else {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isRoyaltySplitError: false,
-          royaltySplitErrorMessage: "",
-        });
-      }
-    }
-
-    const updatedRecipients = [...zoraErc1155Enabled.royaltySplitRecipients];
-    updatedRecipients[index][key] = value;
-    setZoraErc1155Enabled((prevEnabled) => ({
-      ...prevEnabled,
-      royaltySplitRecipients: updatedRecipients,
-    }));
-  };
-
-  // check if recipient address is same
-  const isRecipientAddDuplicate = () => {
-    const result = zoraErc1155Enabled.royaltySplitRecipients?.filter(
-      (item, index) => {
-        return (
-          zoraErc1155Enabled.royaltySplitRecipients?.findIndex(
-            (item2) =>
-              item2.address.toLowerCase() === item.address.toLowerCase()
-          ) !== index
-        );
-      }
-    );
-
-    if (result?.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  // check if recipient percentage is more than 100
-  const isPercentage100 = () => {
-    const result = zoraErc1155Enabled.royaltySplitRecipients.reduce(
-      (acc, item) => {
-        return acc + item.percentAllocation;
-      },
-      0
-    );
-
-    console.log({ result });
-
-    setTotalPercent(result);
-
-    if (result === 100) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   // split contract settings
   const handleCreateSplitSettings = () => {
     const args = {
@@ -485,119 +213,6 @@ const ERC1155Edition = () => {
     };
     return args;
   };
-
-  // mint settings
-  // const handleMintSettings = () => {
-  //   const createReferral = APP_ETH_ADDRESS;
-  //   const defaultAdmin = address;
-
-  //   let contractName = "My Lenspost Collection";
-  //   let symbol = "MLC";
-  //   let description = "This is my Lenspost Collection";
-  //   let allowList = [];
-  //   let editionSize = "0xfffffffffff"; // default open edition
-  //   let royaltyBps = "0"; // 1% = 100 bps
-  //   let animationUri = "0x0";
-  //   let imageUri = "0x0";
-  //   let fundsRecipient = address;
-  //   // max value for maxSalePurchasePerAddress, results in no mint limit
-  //   let maxSalePurchasePerAddress = "4294967295";
-  //   let publicSalePrice = "0";
-  //   let presaleStart = "0";
-  //   let presaleEnd = "0";
-  //   let publicSaleStart = "0";
-  //   // max value for end date, results in no end date for mint
-  //   let publicSaleEnd = "18446744073709551615";
-
-  //   if (zoraErc1155Enabled.contractName !== "") {
-  //     contractName = zoraErc1155Enabled.contractName;
-  //   }
-
-  //   if (zoraErc1155Enabled.contractSymbol !== "") {
-  //     symbol = zoraErc1155Enabled.contractSymbol;
-  //   }
-
-  //   if (postDescription !== "") {
-  //     description = postDescription;
-  //   }
-
-  //   if (uploadData?.message) {
-  //     imageUri = `ipfs://${uploadData?.message}`;
-  //   }
-
-  //   if (createSplitData?.splitAddress) {
-  //     fundsRecipient = createSplitData?.splitAddress;
-  //   }
-
-  //   if (zoraErc1155Enabled.isChargeForMint) {
-  //     publicSalePrice = (
-  //       Number(zoraErc1155Enabled.chargeForMintPrice) * 1e18
-  //     ).toString();
-  //   }
-
-  //   if (zoraErc1155Enabled.isMintLimitPerAddress) {
-  //     maxSalePurchasePerAddress = zoraErc1155Enabled.mintLimitPerAddress;
-  //   }
-
-  //   if (zoraErc1155Enabled.isRoyaltyPercent) {
-  //     royaltyBps = (Number(zoraErc1155Enabled.royaltyPercent) * 100).toString();
-  //   }
-
-  //   if (zoraErc1155Enabled.isMaxSupply) {
-  //     editionSize = zoraErc1155Enabled.maxSupply;
-  //   }
-
-  //   if (zoraErc1155Enabled.isAllowlist) {
-  //     allowList = zoraErc1155Enabled.allowlistAddresses;
-  //   }
-
-  //   if (zoraErc1155Enabled.isPreSaleSchedule) {
-  //     presaleStart = formatDateTimeUnix(
-  //       zoraErc1155Enabled.preSaleStartTimeStamp.date,
-  //       zoraErc1155Enabled.preSaleStartTimeStamp.time
-  //     );
-  //     presaleEnd = formatDateTimeUnix(
-  //       zoraErc1155Enabled.preSaleEndTimeStamp.date,
-  //       zoraErc1155Enabled.preSaleEndTimeStamp.time
-  //     );
-  //   }
-
-  //   if (zoraErc1155Enabled.isPublicSaleSchedule) {
-  //     publicSaleStart = formatDateTimeUnix(
-  //       zoraErc1155Enabled.publicSaleStartTimeStamp.date,
-  //       zoraErc1155Enabled.publicSaleStartTimeStamp.time
-  //     );
-  //     publicSaleEnd = formatDateTimeUnix(
-  //       zoraErc1155Enabled.publicSaleEndTimeStamp.date,
-  //       zoraErc1155Enabled.publicSaleEndTimeStamp.time
-  //     );
-  //   }
-
-  //   const arr = [
-  //     contractName,
-  //     symbol,
-  //     editionSize,
-  //     royaltyBps,
-  //     fundsRecipient,
-  //     defaultAdmin,
-  //     {
-  //       publicSalePrice,
-  //       maxSalePurchasePerAddress,
-  //       publicSaleStart,
-  //       publicSaleEnd,
-  //       presaleStart,
-  //       presaleEnd,
-  //       presaleMerkleRoot:
-  //         "0x0000000000000000000000000000000000000000000000000000000000000000",
-  //     },
-  //     description,
-  //     animationUri,
-  //     imageUri,
-  //     createReferral,
-  //   ];
-
-  //   return { args: arr };
-  // };
 
   // mint on Zora
   const handleSubmit = () => {
@@ -654,45 +269,15 @@ const ERC1155Edition = () => {
       }
     }
 
-    // check if max supply is provided
-    // if (zoraErc1155Enabled.isMaxSupply) {
-    //   if (zoraErc1155StatesError.isMaxSupplyError) return;
-    // }
-
-    // check if allowlist is provided
-    // if (zoraErc1155Enabled.isAllowlist) {
-    //   if (zoraErc1155StatesError.isAllowlistError) return;
-    // }
-
-    // check if pre sale schedule is provided
-    // if (zoraErc1155Enabled.isPreSaleSchedule) {
-    //   if (zoraErc1155StatesError.isPreSaleScheduleError) return;
-    // }
-
-    // check if public sale schedule is provided
-    // if (zoraErc1155Enabled.isPublicSaleSchedule) {
-    //   if (zoraErc1155StatesError.isPublicSaleScheduleError) return;
-    // }
-
-    // check if split revenue is provided
-    // if (zoraErc1155Enabled.isRoyaltySplits) {
-    //   if (zoraErc1155StatesError.isRoyaltySplitError) return;
-    // }
-
-    // check if mint limit is provided
-    // if (zoraErc1155Enabled.isMintLimitPerAddress) {
-    //   if (zoraErc1155StatesError.isMintLimitPerAddressError) return;
-    // }
-
     // check if recipient address is same
-    if (isRecipientAddDuplicate()) {
+    if (isRecipientAddDuplicate(zoraErc1155Enabled)) {
       setZoraErc1155StatesError({
         ...zoraErc1155StatesError,
         isRoyaltySplitError: true,
         royaltySplitErrorMessage: "Recipient address is duplicate",
       });
       return;
-    } else if (!isPercentage100()) {
+    } else if (!isPercentage100(zoraErc1155Enabled, setTotalPercent)) {
       setZoraErc1155StatesError({
         ...zoraErc1155StatesError,
         isRoyaltySplitError: true,
@@ -709,25 +294,6 @@ const ERC1155Edition = () => {
 
     // upload to IPFS
     mutate(canvasBase64Ref.current[0]);
-  };
-
-  // funtion to add new input box for multi addresses
-  const addArrlistInputBox = (key) => {
-    if (key === "royaltySplitRecipients") {
-      setZoraErc1155Enabled({
-        ...zoraErc1155Enabled,
-        [key]: [
-          ...zoraErc1155Enabled[key],
-          { address: "", percentAllocation: "" },
-        ],
-      });
-      return;
-    }
-
-    setZoraErc1155Enabled({
-      ...zoraErc1155Enabled,
-      [key]: [...zoraErc1155Enabled[key], ""],
-    });
   };
 
   // split even percentage
@@ -860,13 +426,17 @@ const ERC1155Edition = () => {
           <InputBox
             label="Collection Name"
             name="contractName"
-            onChange={(e) => handleChange(e)}
-            onFocus={(e) => handleChange(e)}
+            onChange={(e) =>
+              handleChange(e, setZoraErc1155Enabled, setZoraErc1155StatesError)
+            }
+            onFocus={(e) =>
+              handleChange(e, setZoraErc1155Enabled, setZoraErc1155StatesError)
+            }
             value={zoraErc1155Enabled.contractName}
           />
           {zoraErc1155StatesError.isContractNameError && (
             <InputErrorMsg
-              message={zoraErc1155StatesError.contractNameErrorMessage}
+              message={zoraErc1155StatesError.isContractNameErrorMessage}
             />
           )}
         </div>
@@ -898,7 +468,17 @@ const ERC1155Edition = () => {
                       label="Wallet Address"
                       value={recipientsEns[index] || recipient.address}
                       onChange={(e) =>
-                        restrictRecipientInput(e, index, recipient.address)
+                        restrictRecipientInput(
+                          index,
+                          e.target?.value,
+                          recipient?.address,
+                          "address",
+                          zoraErc1155Enabled,
+                          setZoraErc1155Enabled,
+                          zoraErc1155Enabled,
+                          setZoraErc1155StatesError,
+                          parentRecipientListRef
+                        )
                       }
                     />
                     {/* </div> */}
@@ -909,18 +489,23 @@ const ERC1155Edition = () => {
                         max={100}
                         step={0.01}
                         label="%"
-                        value={recipient.percentAllocation}
+                        value={recipient.percentAllocation?.toString()}
                         onChange={(e) => {
                           handleRecipientChange(
                             index,
                             "percentAllocation",
-                            Number(parseFloat(e.target.value).toFixed(2))
+                            Number(parseFloat(e.target.value).toFixed(2)),
+                            zoraErc1155Enabled,
+                            setZoraErc1155Enabled,
+                            zoraErc1155StatesError,
+                            setZoraErc1155StatesError
                           );
                         }}
                       />
                       {!restrictRemoveRecipientInputBox(
                         index,
-                        recipient.address
+                        recipient.address,
+                        parentRecipientListRef
                       ) && (
                         <XCircleIcon
                           className="h-6 w-6 cursor-pointer"
@@ -945,7 +530,7 @@ const ERC1155Edition = () => {
           {zoraErc1155StatesError.isRoyaltySplitError && (
             <>
               <InputErrorMsg
-                message={zoraErc1155StatesError.royaltySplitErrorMessage}
+                message={zoraErc1155StatesError.isRoyaltySplitErrorMessage}
               />
               <Typography variant="h6" color="blue-gray">
                 {totalPercent} %
@@ -959,7 +544,12 @@ const ERC1155Edition = () => {
               size="sm"
               variant="filled"
               className="flex items-center gap-3 mt-2 ml-0 outline-none bg-[#e1f16b] text-black"
-              onClick={() => addArrlistInputBox("royaltySplitRecipients")}
+              onClick={() =>
+                addArrlistInputBox(
+                  "royaltySplitRecipients",
+                  setZoraErc1155Enabled
+                )
+              }
             >
               <BsPlus />
               Add Recipient

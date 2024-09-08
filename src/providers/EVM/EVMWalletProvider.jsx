@@ -43,7 +43,17 @@ export const config = createConfig({
   chains:
     ENVIRONMENT === "production"
       ? [base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og]
-      : [base, baseSepolia,zora, optimism, arbitrum, polygonMumbai, degen, ham, og],
+      : [
+          base,
+          baseSepolia,
+          zora,
+          optimism,
+          arbitrum,
+          polygonMumbai,
+          degen,
+          ham,
+          og,
+        ],
   transports: {
     [base.id]: http(),
     [mainnet.id]: http(),
@@ -59,7 +69,19 @@ export const config = createConfig({
   },
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      staleTime: 1000 * 60 * 10,
+      gcTime: 1000 * 60 * 30,
+      refetchOnMount: false,
+      retry: 1,
+    },
+  },
+});
 
 const EVMWalletProvider = ({ children }) => {
   return (

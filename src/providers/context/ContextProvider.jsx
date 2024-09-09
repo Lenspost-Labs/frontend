@@ -504,6 +504,7 @@ const ContextProvider = ({ children }) => {
   const chainId = ENVIRONMENT === "production" ? base?.id : baseSepolia?.id;
   const [curOpenedTabLevel1, setCurOpenedTabLevel1] = useState("");
   const [curOpenedTabLevel2, setCurOpenedTabLevel2] = useState("");
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
 
   console.log("ContextProvider", actionType);
   // console.log("randomNum ", postName);
@@ -707,6 +708,10 @@ const ContextProvider = ({ children }) => {
         setCurOpenedTabLevel1,
         curOpenedTabLevel2,
         setCurOpenedTabLevel2,
+
+        // For Onboarding modal : 
+        isOnboardingOpen,
+        setIsOnboardingOpen,
       }}
     >
       {children}

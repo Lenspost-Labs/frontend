@@ -1,17 +1,16 @@
-import React, { useState } from "react";
-import { CompSearch } from "../../sections/left-section/image/AIImageSection";
-import { AIIcon } from "../../../../assets/assets";
 import {
   Button,
-  Dialog,
-  DialogBody,
-  DialogHeader,
+  Dialog
 } from "@material-tailwind/react";
-import Gift from "../../../../assets/svgs/GiftOnboarding.svg";
-import BsChevronRight from "@meronex/icons/bs/BsChevronRight";
 import BsChevronLeft from "@meronex/icons/bs/BsChevronLeft";
+import BsChevronRight from "@meronex/icons/bs/BsChevronRight";
 import VscVerified from "@meronex/icons/vsc/VscVerified";
+import React, { useState } from "react";
+import { AIIcon } from "../../../../assets/assets";
+import Gift from "../../../../assets/svgs/GiftOnboarding.svg";
 import useUser from "../../../../hooks/user/useUser";
+import { CompSearch } from "../../sections/left-section/image/AIImageSection";
+import CustomImageComponent from "../core/CustomImageComponent";
 
 const AIStartupModal = () => {
   const [open, setOpen] = useState(false);
@@ -19,6 +18,11 @@ const AIStartupModal = () => {
   const { points } = useUser();
 
   const handleOpen = () => setOpen(!open);
+
+  const leftFeaturedImages = [
+    "https://fal.media/files/penguin/QQB-9cBeLiodf3YtlV4R9.jpeg",
+    "https://fal.media/files/tiger/xcnSyvUNDyELbujRMVjrL.jpeg",
+  ];
 
   const steps = [
     {
@@ -74,9 +78,15 @@ const AIStartupModal = () => {
     {
       title: "Poster AI Magic",
       content: (
-        <div className="flex flex-row justify-between items-center max-h-full min-h-full">
+        <div className="flex flex-row justify-between gap-2 max-h-full min-h-full">
           <>
-            <div className="w-1/4"> Left Section </div>
+            <div className="w-1/4">
+              {leftFeaturedImages?.map((img, index) => (
+                <CustomImageComponent key={index} preview={img} alt="image" />
+              ))}
+
+              Headstart here
+            </div>
             <div className="w-3/4">
               <CompSearch />
             </div>

@@ -46,6 +46,8 @@ const CustomImageComponent = ({
     actionType,
     setOpenBottomBar,
     setCurOpenedPanel,
+
+    setIsOnboardingOpen
   } = useContext(Context);
 
   // convert to base64
@@ -133,6 +135,9 @@ const CustomImageComponent = ({
 
     // track assets selected
     assetsTrack(item, assetType, collectionName, actionType, isMobile);
+
+    // Only to close onboarding modal on Image Drop
+    setIsOnboardingOpen(false);
   };
 
   useEffect(() => {

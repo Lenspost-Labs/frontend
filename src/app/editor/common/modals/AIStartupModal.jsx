@@ -1,23 +1,21 @@
-import {
-  Button,
-  Dialog
-} from "@material-tailwind/react";
+import { Button, Dialog } from "@material-tailwind/react";
 import BsChevronLeft from "@meronex/icons/bs/BsChevronLeft";
 import BsChevronRight from "@meronex/icons/bs/BsChevronRight";
 import VscVerified from "@meronex/icons/vsc/VscVerified";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { AIIcon } from "../../../../assets/assets";
 import Gift from "../../../../assets/svgs/GiftOnboarding.svg";
 import useUser from "../../../../hooks/user/useUser";
 import { CompSearch } from "../../sections/left-section/image/AIImageSection";
 import CustomImageComponent from "../core/CustomImageComponent";
+import { Context } from "../../../../providers/context";
 
 const AIStartupModal = () => {
-  const [open, setOpen] = useState(false);
+  const {isOnboardingOpen, setIsOnboardingOpen } = useContext(Context);
   const [currentStep, setCurrentStep] = useState(0);
   const { points } = useUser();
 
-  const handleOpen = () => setOpen(!open);
+  const handleOpen = () => setIsOnboardingOpen(!isOnboardingOpen);
 
   const leftFeaturedImages = [
     "https://fal.media/files/penguin/QQB-9cBeLiodf3YtlV4R9.jpeg",
@@ -84,7 +82,6 @@ const AIStartupModal = () => {
               {leftFeaturedImages?.map((img, index) => (
                 <CustomImageComponent key={index} preview={img} alt="image" />
               ))}
-
               Headstart here
             </div>
             <div className="w-3/4">
@@ -106,7 +103,7 @@ const AIStartupModal = () => {
           <AIIcon />
           <span className="ml-2">AI</span>
         </Button>
-        <Dialog open={open} handler={handleOpen}>
+        <Dialog open={isOnboardingOpen} handler={handleOpen}>
           {/* <DialogHeader>Poster AI Magic</DialogHeader> */}
           {/* <DialogBody> */}
 

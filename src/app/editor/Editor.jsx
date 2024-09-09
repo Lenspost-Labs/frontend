@@ -130,6 +130,8 @@ const Editor = () => {
     setCurOpenedPanel,
     setOpenBottomBar,
     isOpenBottomBar,
+
+    setIsOnboardingOpen,
   } = useContext(Context);
 
   const componentMounted = useRef(false);
@@ -541,6 +543,12 @@ const Editor = () => {
       componentMounted.current = true;
     }
   }, [slugId, isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsOnboardingOpen(true)
+    }
+  }, [isAuthenticated]);
 
   // -------- Testing Share Canvas End ----------
 

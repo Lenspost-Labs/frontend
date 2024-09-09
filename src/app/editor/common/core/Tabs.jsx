@@ -24,10 +24,9 @@ const Tabs = ({
   changeCanvasDimension,
 }) => {
   const { isAuthenticated } = useAppAuth();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(author);
   const [delayedQuery, setDelayedQuery] = useState(query);
   const requestTimeout = useRef();
-  const { isDisconnected, address } = useAccount();
 
   console.log({ delayedQuery });
   const {
@@ -38,20 +37,23 @@ const Tabs = ({
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
+    refetch,
   } = useInfiniteQuery({
-    queryKey: [type, author, campaignName],
-    getNextPageParam: (prevData) => prevData.nextPage,
+    queryKey: [type, author, campaignName, delayedQuery],
+    getNextPageParam: (prevData) => prevData?.nextPage,
     queryFn: ({ pageParam = 1 }) =>
-      author === "lensjump"
-        ? getAssetsFn(type, pageParam)
-        : getAssetsFn(type, author || delayedQuery, campaignName, pageParam),
+      delayedQuery
+        ? getAssetsFn(type, delayedQuery, "", pageParam)
+        : author || campaignName
+        ? getAssetsFn(type, author, campaignName, pageParam)
+        : getAssetsFn(type, pageParam),
     enabled: isAuthenticated ? true : false,
   });
 
   useEffect(() => {
     requestTimeout.current = setTimeout(() => {
       setDelayedQuery(query);
-    }, 500);
+    }, 5000);
     return () => {
       clearTimeout(requestTimeout.current);
     };
@@ -77,6 +79,7 @@ const Tabs = ({
       <SearchComponent
         query={query}
         setQuery={setQuery}
+        onClick={refetch}
         placeholder={`Search ${
           changeCanvasDimension ? "Backgrounds" : "Stickers"
         }`}

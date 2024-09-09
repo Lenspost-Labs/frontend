@@ -294,11 +294,11 @@ export const LenspostTemplates = () => {
           }}
         />
       )}
-      <SearchComponent
+      {/* <SearchComponent
         query={query}
         setQuery={setQuery}
         placeholder={"Search templates"}
-      />
+      /> */}
 
       <div className="h-full overflow-y-scroll">
         {/*  Featured Panels :  */}

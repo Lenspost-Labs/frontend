@@ -141,11 +141,11 @@ export const RenderCategories = ({
 
   return (
     <>
-      <SearchComponent
+      {/* <SearchComponent
         query={query}
         setQuery={setQuery}
         placeholder="Search collections"
-      />
+      /> */}
       {isError ? (
         <ErrorComponent error={error} />
       ) : data?.pages[0]?.data.length > 0 ? (

@@ -62,6 +62,7 @@ const RANDOM_QUERIES2 = [
   // "A bustling marketplace in a medieval fantasy setting",
   "Merchants selling exotic goods and performers entertaining the crowd.",
   "An underwater paradise with coral reefs teeming with colorful fish",
+  "Ethereum network movie poster with vitalik dandelion"
 ];
 
 // This array is to display short words as prompts on the frontend - 22Jul2023

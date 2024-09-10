@@ -506,7 +506,7 @@ const ContextProvider = ({ children }) => {
   const [curOpenedTabLevel2, setCurOpenedTabLevel2] = useState("");
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
 
-  console.log("ContextProvider", actionType);
+  // console.log("ContextProvider", actionType);
   // console.log("randomNum ", postName);
 
   return (

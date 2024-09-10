@@ -294,8 +294,6 @@ const App = () => {
     saveToLocalStorage(LOCAL_STORAGE.fid, fid);
     setActionType(actionType);
 
-    console.log({ userAddress });
-
     posthog.identify(fid, {
       evm_address: userAddress,
     });

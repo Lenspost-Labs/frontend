@@ -13,7 +13,7 @@ const useLocalStorage = () => {
     }
   };
 
-  const authToken = getFromLocalStorage(LOCAL_STORAGE.authToken);
+  const authToken = getFromLocalStorage(LOCAL_STORAGE.userAuthToken);
   const evmAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const solanaAuth = getFromLocalStorage(LOCAL_STORAGE.solanaAuth);
   const isFarcasterAuth = getFromLocalStorage(LOCAL_STORAGE.farcasterAuth);

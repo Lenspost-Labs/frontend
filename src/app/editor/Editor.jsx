@@ -63,7 +63,7 @@ import { TopbarSection } from "./sections/top-section";
 
 import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
 import MobileBottombar from "./sections/bottom-section/bottomBar/MobileBottombar";
-import AIStartupModal from "./common/modals/AIStartupModal";
+import OnboardingModal from "./common/modals/OnboardingModal";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -145,7 +145,7 @@ const Editor = () => {
   const location = useLocation(); //To get the URL location
   const queryParams = new URLSearchParams(location.search); //to Check A URL search string, beginning with a ?slugId
   const inviteCode = queryParams.get("inviteCode");
-
+  const actionType = queryParams.get("actionType");
   // console.log("inviteCode", inviteCode);
 
   const handleDrop = (ev) => {
@@ -546,7 +546,7 @@ const Editor = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      setIsOnboardingOpen(true)
+      setIsOnboardingOpen(true);
     }
   }, [isAuthenticated]);
 
@@ -713,7 +713,12 @@ const Editor = () => {
               {isMobile && (
                 <div className="flex flex-col">
                   {/* <SpeedDialX /> */}
-                  <BgRemover />
+                  <div className="flex justify-between">
+                    <BgRemover />
+                    {actionType !== "composer" &&
+                    <OnboardingModal />
+                    }
+                  </div>
                   <MobileBottombar />
                 </div>
               )}
@@ -725,7 +730,7 @@ const Editor = () => {
                   <div className="flex flex-row ">
                     {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
                     <SpeedDialX />
-                    <AIStartupModal />
+                    <OnboardingModal />
 
                     <div
                       className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"

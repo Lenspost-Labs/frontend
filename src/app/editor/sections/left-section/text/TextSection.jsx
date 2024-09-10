@@ -13,6 +13,8 @@ import oswaltMemeTxtImg from "./customTxts/oswaltMemetxt/oswaltMemeTxtImg.png";
 import { uniqueId } from "@blueprintjs/core/lib/esm/common/utils";
 import { customImpactFont } from "./customTxts/ImpactFont/ImpactFont";
 import impactFontPreview from "./customTxts/ImpactFont/ImpactFontPreview.png";
+import impactFontPreviewWhite from "./customTxts/ImpactFont/impactFontPreviewWhite.png";
+import { customImpactFontWhite } from "./customTxts/ImpactFont/ImpactFontWhite";
 
 export const CustomTextPanel = React.memo(() => {
   const store = useStore();
@@ -37,6 +39,9 @@ export const CustomTextPanel = React.memo(() => {
         // To avoid duplicate IDs
         // customJson.id = Math.random().toString(36).substring(7);
         customJson.id = uniqueId('lp');
+        // To place it in the center
+        customJson.x = store?.width / 2 -16;
+        customJson.y = store?.height / 2 -16;
         newChildren = [customJson];
       } else if (source) {
         const response = await axios.get(source);
@@ -105,6 +110,12 @@ export const CustomTextPanel = React.memo(() => {
           className="border border-gray-200 rounded-lg p-2 m-2 cursor-pointer"
         >
           <LazyLoadImage src={impactFontPreview} />
+        </div>
+        <div
+          onClick={() => fnLoadText(null, customImpactFontWhite)}
+          className="border border-gray-200 rounded-lg p-2 m-2 cursor-pointer"
+        >
+          <LazyLoadImage src={impactFontPreviewWhite} />
         </div>
         {textsData?.data?.items?.map((text, index) => (
           <div

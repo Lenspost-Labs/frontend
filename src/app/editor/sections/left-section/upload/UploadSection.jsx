@@ -57,7 +57,7 @@ export const UploadPanel = () => {
   } = useMutation({
     mutationKey: "delete-user-asset",
     mutationFn: deleteUserAsset,
-    // This is working fine, we can keep it - 13Aug24 
+    // This is working fine, we can keep it - 13Aug24
     onSuccess: (data) => {
       toast.success(data?.message);
       queryClient.invalidateQueries(["userAssets"], { exact: true });
@@ -105,7 +105,6 @@ export const UploadPanel = () => {
       </div>
 
       <hr className="my-2" />
-      {/* <SearchComponent onClick={false} query={""} setQuery={""} placeholder="Search designs by id" /> */}
 
       {isError ? (
         <ErrorComponent error={error} />

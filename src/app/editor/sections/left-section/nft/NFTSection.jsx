@@ -141,11 +141,6 @@ export const RenderCategories = ({
 
   return (
     <>
-      <SearchComponent
-        query={query}
-        setQuery={setQuery}
-        placeholder="Search collections"
-      />
       {isError ? (
         <ErrorComponent error={error} />
       ) : data?.pages[0]?.data.length > 0 ? (
@@ -240,11 +235,6 @@ const RenderImages = ({ contractAddressRef, setActiveCat, activeCat }) => {
     />
   ) : (
     <>
-      <SearchComponent
-        query={query}
-        setQuery={setQuery}
-        placeholder="Search NFTs by id"
-      />
       <div className="h-88">
         <div className="flex flex-row align-middle w-full bg-[#fff] sticky top-0 z-10">
           <Button
@@ -323,7 +313,6 @@ const RenderSearchedNFTs = ({
 
   return (
     <>
-      {/* <SearchComponent query={query} setQuery={setQuery} /> */}
       <div className="h-88">
         <div className="flex flex-row align-middle w-full bg-[#fff] sticky top-0 z-10">
           <Button
@@ -410,7 +399,6 @@ const RenderSearchedWalletNFT = ({ goBack, delayedQuery }) => {
 
   return (
     <>
-      {/* <SearchComponent query={query} setQuery={setQuery} /> */}
       <div className="h-88">
         <div className="flex flex-row align-middle w-full bg-[#fff] sticky top-0 z-10">
           <Button

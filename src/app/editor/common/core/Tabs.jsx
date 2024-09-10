@@ -27,7 +27,6 @@ const Tabs = ({
   const [query, setQuery] = useState("");
   const [delayedQuery, setDelayedQuery] = useState(query);
   const requestTimeout = useRef();
-  const { isDisconnected, address } = useAccount();
 
   const {
     data,
@@ -38,19 +37,21 @@ const Tabs = ({
     hasNextPage,
     fetchNextPage,
   } = useInfiniteQuery({
-    queryKey: [type, author, campaignName],
-    getNextPageParam: (prevData) => prevData.nextPage,
+    queryKey: [type, author, campaignName, delayedQuery],
+    getNextPageParam: (prevData) => prevData?.nextPage,
     queryFn: ({ pageParam = 1 }) =>
-      author === "lensjump"
-        ? getAssetsFn(type, pageParam)
-        : getAssetsFn(type, author, campaignName, pageParam),
+      delayedQuery
+        ? getAssetsFn(type, delayedQuery, "", pageParam)
+        : author || campaignName
+        ? getAssetsFn(type, author, campaignName, pageParam)
+        : getAssetsFn(type, pageParam),
     enabled: isAuthenticated ? true : false,
   });
 
   useEffect(() => {
     requestTimeout.current = setTimeout(() => {
       setDelayedQuery(query);
-    }, 500);
+    }, 1000);
     return () => {
       clearTimeout(requestTimeout.current);
     };

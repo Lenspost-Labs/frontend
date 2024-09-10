@@ -20,13 +20,19 @@ import {
 import { fnLoadMore, isLensHandle } from "../../../../utils";
 
 // `changeCanvasDimension` is True/False from the Passing Component
-const FeaturedTabs = ({ defaultQuery, getAssetsFn, queryKey, changeCanvasDimension, isLensCollect}) => {
+const FeaturedTabs = ({
+  defaultQuery,
+  getAssetsFn,
+  queryKey,
+  changeCanvasDimension,
+  isLensCollect,
+}) => {
   const [query, setQuery] = useState("");
   const [delayedQuery, setDelayedQuery] = useState(query);
   const requestTimeout = useRef();
   const { isDisconnected, address } = useAccount();
 
-  const [ noOfCols, setNoOfCols ] = useState(2);
+  const [noOfCols, setNoOfCols] = useState(2);
 
   const {
     data,
@@ -42,16 +48,12 @@ const FeaturedTabs = ({ defaultQuery, getAssetsFn, queryKey, changeCanvasDimensi
     queryFn: ({ pageParam = 1 }) =>
       getAssetsFn(delayedQuery || defaultQuery, pageParam),
   });
-
-  // console.log("Data in FeaturedTabs.jsx")
-  // console.log(data);
-
   // To change the no of columns in the grid based on the queryKey
   // 1 - Featured BGs, 2 - Featured Stickers/Props
   useEffect(() => {
-    if(queryKey === "stickers") {
+    if (queryKey === "stickers") {
       setNoOfCols(2);
-    } else {  
+    } else {
       setNoOfCols(1);
     }
   }, [queryKey]);
@@ -59,7 +61,7 @@ const FeaturedTabs = ({ defaultQuery, getAssetsFn, queryKey, changeCanvasDimensi
   useEffect(() => {
     requestTimeout.current = setTimeout(() => {
       setDelayedQuery(query);
-    }, 500);
+    }, 1000);
     return () => {
       clearTimeout(requestTimeout.current);
     };
@@ -75,9 +77,7 @@ const FeaturedTabs = ({ defaultQuery, getAssetsFn, queryKey, changeCanvasDimensi
   }
 
   if (isLoading) {
-    return (
-        <LoadingAnimatedComponent />
-    );
+    return <LoadingAnimatedComponent />;
   }
   return isError ? (
     <ErrorComponent message={error} />
@@ -88,34 +88,8 @@ const FeaturedTabs = ({ defaultQuery, getAssetsFn, queryKey, changeCanvasDimensi
         setQuery={setQuery}
         placeholder="Search backgrounds"
       />
- 
-      {/* {isLensjump && (
-        // data?.data?.assets?.length > 0 && 
-        // data?.pages[0]?.data.assets.length > 0 && 
-        <div className="h-full overflow-y-auto">
-        <div className="grid grid-cols-2 overflow-y-auto">
-       
-        { data?.pages 
-        .flatMap((item) => item?.data?.assets)
-        // data?.pages[0]?.data?.assets
-        .map((item, index) => {
-          console.log("item in Tabs.jsx")
-          console.log(item);
-          return (
-            <CustomImageComponent
-              key={index}
-              preview={item?.image}
-              dimensions={item?.dimensions != null && item.dimensions}
-              changeCanvasDimension={changeCanvasDimension}
-            />
-          );
-        })
-      }
-      </div>
-      </div>
-      )} */}
 
-    {data?.pages[0]?.data?.assets.length > 0 ? ( 
+      {data?.pages[0]?.data?.assets.length > 0 ? (
         <div className="h-full overflow-y-auto">
           <div className={`grid grid-cols-${noOfCols} overflow-y-auto`}>
             {data?.pages
@@ -129,7 +103,7 @@ const FeaturedTabs = ({ defaultQuery, getAssetsFn, queryKey, changeCanvasDimensi
                     dimensions={item?.dimensions != null && item.dimensions}
                     changeCanvasDimension={changeCanvasDimension}
                   />
-                ); 
+                );
               })}
           </div>
           <LoadMoreComponent
@@ -137,11 +111,9 @@ const FeaturedTabs = ({ defaultQuery, getAssetsFn, queryKey, changeCanvasDimensi
             isFetchingNextPage={isFetchingNextPage}
           />
         </div>
-        
       ) : (
         <MessageComponent message="No results found" />
       )}
-      
     </>
   );
 };

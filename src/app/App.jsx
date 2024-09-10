@@ -1,74 +1,51 @@
 import { useContext, useEffect, useState } from "react";
-import { useAccount, useDisconnect, useSignMessage } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import {
   refreshNFT,
   solanaAuth,
   evmAuth,
 } from "../services/apis/BE-apis/backendApi";
-import {
-  getFromLocalStorage,
-  saveToLocalStorage,
-  removeFromLocalStorage,
-} from "../utils/localStorage";
+import { getFromLocalStorage, saveToLocalStorage } from "../utils/localStorage";
 import { ToastContainer, toast } from "react-toastify";
 import { Context } from "../providers/context/ContextProvider";
 import { useNavigate } from "react-router-dom";
-import { useTour } from "@reactour/tour";
 
 import Editor from "./editor/Editor";
 import {
-  BraveShieldWarn,
   CheckInternetConnection,
   LoadingComponent,
-  OnboardingSteps,
-  OnboardingStepsWithShare,
   UpdateAvailable,
 } from "./editor/common";
-import { clearAllLocalStorageData, errorMessage } from "../utils";
+import { errorMessage } from "../utils";
 import { useSolanaWallet } from "../hooks/solana";
 import { useMutation } from "@tanstack/react-query";
-import { ERROR, EVM_MESSAGE, LOCAL_STORAGE, SOLANA_MESSAGE } from "../data";
+import { ERROR, LOCAL_STORAGE, SOLANA_MESSAGE } from "../data";
 import bs58 from "bs58";
-import { ExplorerDialog } from "./editor/sections/right-section/share/components";
-import { ENVIRONMENT } from "../services";
 import { SolanaWalletErrorContext } from "../providers/solana/SolanaWalletProvider";
-import { useLogout } from "../hooks/app";
-import { useStore } from "../hooks/polotno";
+import { useLocalStorage, useLogout } from "../hooks/app";
 import * as Sentry from "@sentry/react";
+import { usePrivy } from "@privy-io/react-auth";
 
 const App = () => {
-  const { setSteps, setIsOpen, setCurrentStep } = useTour();
-  const [initialRender, setInitialRender] = useState(true);
   const {
     isLoading,
     setIsLoading,
     text,
     setText,
     posthog,
-    dialogOpen,
-    explorerLink,
-    handleOpen,
     session,
     setSession,
     setActionType,
     setIsMobile,
     setOpenLeftBar,
   } = useContext(Context);
-  const [sign, setSign] = useState("");
-  const { address, isConnected, isDisconnected } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { address } = useAccount();
   const [isUpdateAvailable, setIsUpdateAvailable] = useState(false);
-  const getEvmAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const getSolanaAuth = getFromLocalStorage(LOCAL_STORAGE.solanaAuth);
-  const getUserAuthToken = getFromLocalStorage(LOCAL_STORAGE.userAuthToken);
-  const getUserAddress = getFromLocalStorage(LOCAL_STORAGE.userAddress);
-  const getUsertAuthTmestamp = getFromLocalStorage(LOCAL_STORAGE.userAuthTime);
   const getifUserEligible = getFromLocalStorage(LOCAL_STORAGE.ifUserEligible);
-  const isBraveShieldWarn = getFromLocalStorage(LOCAL_STORAGE.braveShieldWarn);
   const getHasUserSeenTheApp = getFromLocalStorage(
     LOCAL_STORAGE.hasUserSeenTheApp
   );
-  const navigate = useNavigate();
   const {
     solanaConnected,
     solanaSignMessage,
@@ -80,37 +57,35 @@ const App = () => {
     SolanaWalletErrorContext
   );
   const { logout } = useLogout();
-  const store = useStore();
-
+  const { authenticated } = usePrivy();
+  const { userAuthTime: jwtTimestamp, authToken } = useLocalStorage();
+  console.log({ authenticated });
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
-  const authParam = params.get("fc-auth");
 
   // clear the session if it is expired (24hrs)
   useEffect(() => {
+    const actionType = params.get("actionType");
+
+    if (actionType === "composer" || !authToken) return;
+
     const clearLocalStorage = () => {
-      if (getUserAuthToken === undefined) return;
-
       console.log("checking session");
-      const jwtExpiration = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-      const jwtTimestamp = getFromLocalStorage(LOCAL_STORAGE.userAuthTime);
-
-      const currentTimestamp = new Date().getTime();
+      const jwtExpiration = 24 * 60 * 60 * 1000 - 5 * 60 * 1000; // 24 hours minus 5 minutes in milliseconds
+      const currentTimestamp = Date.now(); // Use Date.now() for better performance
 
       if (jwtTimestamp && currentTimestamp - jwtTimestamp > jwtExpiration) {
         logout();
         setSession("");
         console.log("session expired");
         toast.error("Session expired");
-
-        // TODO: clear all local storage data + states
       }
     };
 
-    const interval = setInterval(clearLocalStorage, 15 * 1000); // check every 15 seconds
+    const interval = setInterval(clearLocalStorage, 30 * 1000); // check every 60 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [authToken, jwtTimestamp, params]); // Added dependencies for better effect management
 
   // generate signature for solana
   const generateSignatureSolana = async () => {
@@ -211,15 +186,6 @@ const App = () => {
     }
   };
 
-  // useEffect(() => {
-  //   // if false redirect to ifUserEligible page but only in production
-  //   if (ENVIRONMENT === "production") {
-  //     if (!isUserEligible()) {
-  //       navigate("/ifUserEligible");
-  //     }
-  //   }
-  // }, []);
-
   useEffect(() => {
     if (solanaWalletError.isError) {
       saveToLocalStorage(LOCAL_STORAGE.hasUserSeenTheApp, true);
@@ -248,13 +214,6 @@ const App = () => {
       solanaAuthHandler();
     }
   }, [solanaSignature]);
-
-  // useEffect(() => {
-  // // Run the effect when isConnected and address change
-  //   if (isConnected && address) {
-  //     generateSignature();
-  //   }
-  // }, [isConnected, address, initialRender]);
 
   useEffect(() => {
     // Run the effect when solanaConnected and solanaAddress change
@@ -293,8 +252,6 @@ const App = () => {
     saveToLocalStorage(LOCAL_STORAGE.userAddress, userAddress);
     saveToLocalStorage(LOCAL_STORAGE.fid, fid);
     setActionType(actionType);
-
-    console.log({ userAddress });
 
     posthog.identify(fid, {
       evm_address: userAddress,

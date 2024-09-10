@@ -14,7 +14,6 @@ export * from "./fnPageHasElements";
 export * from "./random3Digits";
 export * from "./getAvatar";
 export * from "./addressCrop";
-export * from "./clearLocalStorage";
 export * from "./jsConfettiFn";
 export * from "./stringify";
 export * from "./chainLogo";

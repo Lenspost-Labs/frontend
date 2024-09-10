@@ -4,6 +4,7 @@ import { Tabs, Tab, TabsHeader, Textarea } from "@material-tailwind/react";
 import { FarcasterNormalPost, FarcasterSmartPost } from "./components";
 import { Context } from "../../../../../../providers/context";
 import { useAppUrl } from "../../../../../../hooks/app";
+import { ERC1155Edition } from "../zora-mint/components";
 
 const FarcasterShareWrapper = () => {
   const { farcasterTab, setFarcasterTab, isMobile } = useContext(Context);
@@ -18,7 +19,7 @@ const FarcasterShareWrapper = () => {
             {/* Tabs for Smart Post / Normal */}
             <Tabs className="overflow-scroll my-2" value={farcasterTab}>
               {/* Don't show Tabs header for Composer */}
-              {!actionType === "composer" && (
+              {/* {!actionType === "composer" && ( */}
                 <>
                   <TabsHeader className="relative top-0 ">
                     <Tab
@@ -39,14 +40,25 @@ const FarcasterShareWrapper = () => {
                         Smart Post{" "}
                       </Tab>
                     )}
+                    {isMobile && (
+                      <Tab
+                        value={"erc1155"}
+                        className="appFont"
+                        onClick={() => setFarcasterTab("erc1155")}
+                      >
+                        {" "}
+                        ERC 1155{" "}
+                      </Tab>
+                    )}
                   </TabsHeader>
                 </>
-              )}
+              {/* )} */}
 
               {/* add components */}
               {farcasterTab === "normalPost" && <FarcasterNormalPost />}
 
               {farcasterTab === "smartPost" && <FarcasterSmartPost />}
+              {farcasterTab === "erc1155" && <ERC1155Edition />}
             </Tabs>
           </>
         }

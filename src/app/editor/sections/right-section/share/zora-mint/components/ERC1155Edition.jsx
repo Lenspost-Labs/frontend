@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Context } from "../../../../../../../providers/context";
 import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
-import { Option, Select, Typography } from "@material-tailwind/react";
+import { Option, Select, Textarea, Typography } from "@material-tailwind/react";
 import { DateTimePicker } from "@atlaskit/datetime-picker";
 import { Button } from "@material-tailwind/react";
 import BsPlus from "@meronex/icons/bs/BsPlus";
@@ -49,6 +49,9 @@ const ERC1155Edition = () => {
     posthog,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
+    isMobile,
+    setPostDescription,
+    setPostName
   } = useContext(Context);
   const { chain } = useAccount();
   const chainId = useChainId();
@@ -212,6 +215,40 @@ const ERC1155Edition = () => {
   // handle for input fields
   const handleChange = (e, index, key) => {
     const { name, value } = e.target;
+
+    // if name and description is provided
+    if (name === "description") {
+      if (!value) {
+        setZoraErc1155StatesError({
+          ...zoraErc1155StatesError,
+          isDescriptionError: true,
+          descriptionErrorMessage: "Please provide a description",
+        });
+      }
+      setZoraErc1155StatesError({
+        ...zoraErc1155StatesError,
+        isDescriptionError: false,
+        descriptionErrorMessage: "",
+      });
+
+      setPostDescription(value);
+    }
+
+    if (name === "title") {
+      if (!value) {
+        setZoraErc1155StatesError({
+          ...zoraErc1155StatesError,
+          isNameError: true,
+          nameErrorMessage: "Please provide a title",
+        });
+      }
+      setZoraErc1155StatesError({
+        ...zoraErc1155StatesError,
+        isNameError: false,
+        nameErrorMessage: "",
+      });
+      setPostName(value);
+    }
 
     // check if collection name and symbol are provided
     if (name === "contractName") {
@@ -874,7 +911,7 @@ const ERC1155Edition = () => {
 
       <div className="mb-4 m-4">
         <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Split Pecipients </h2>
+          <h2 className="text-lg mb-2"> Split Recipients </h2>
         </div>
         <div className="w-4/5 opacity-75">
           {" "}
@@ -977,6 +1014,34 @@ const ERC1155Edition = () => {
         </div>
       </div>
 
+      {/* Or here we can just add description for Mobile */}
+      {isMobile && (
+        <>
+          <div className="m-4">
+            <div className="flex justify-between">
+              <h2 className="text-lg"> Title & Description</h2>
+            </div>
+            {/* <div className="w-4/5 opacity-75">
+                  {" "}
+                  Enter title fot the NFT.{" "}
+                </div> */}
+          </div>
+          <div className="flex flex-col gap-2  m-4">
+            <InputBox
+              label={"Title"}
+              name="title"
+              onChange={(e) => handleChange(e)}
+              value={postName}
+            />
+            <Textarea
+              label={"Description"}
+              name="description"
+              onChange={(e) => handleChange(e)}
+              value={postDescription}
+            />
+          </div>
+        </>
+      )}
       <div className="mx-2 my-4">
         {actionType === "composer" && !authenticated ? (
           <Button fullWidth onClick={login}>

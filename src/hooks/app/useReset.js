@@ -171,7 +171,7 @@ const useReset = () => {
 
       whoCanCollect: false,
     });
-    setPostName("Post Name");
+    setPostName("Awesome Poster");
     setPostDescription("");
     setOpen(false);
     setStFormattedDate("");

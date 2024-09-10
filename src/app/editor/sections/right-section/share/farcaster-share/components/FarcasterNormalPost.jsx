@@ -1934,33 +1934,35 @@ const FarcasterNormalPost = () => {
             </div>
           )}
 
-          {actionType === "composer" && (
-            <>
-              <div className="mb-4">
-                <div className="flex justify-between">
-                  <h2 className="text-lg"> Title & Description</h2>
-                </div>
-                {/* <div className="w-4/5 opacity-75">
+          {/* Or here we can just add description for Mobile */}
+          {actionType === "composer" ||
+            (isMobile && (
+              <>
+                <div className="mb-4">
+                  <div className="flex justify-between">
+                    <h2 className="text-lg"> Title & Description</h2>
+                  </div>
+                  {/* <div className="w-4/5 opacity-75">
                   {" "}
                   Enter title fot the NFT.{" "}
                 </div> */}
-              </div>
-              <div className="flex flex-col gap-2">
-                <InputBox
-                  label={"Title"}
-                  name="title"
-                  onChange={(e) => handleChange(e)}
-                  value={postName}
-                />
-                <Textarea
-                  label={"Description"}
-                  name="description"
-                  onChange={(e) => handleChange(e)}
-                  value={postDescription}
-                />
-              </div>
-            </>
-          )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <InputBox
+                    label={"Title"}
+                    name="title"
+                    onChange={(e) => handleChange(e)}
+                    value={postName}
+                  />
+                  <Textarea
+                    label={"Description"}
+                    name="description"
+                    onChange={(e) => handleChange(e)}
+                    value={postDescription}
+                  />
+                </div>
+              </>
+            ))}
 
           <div
             className={`${
@@ -2034,7 +2036,7 @@ const FarcasterNormalPost = () => {
         )}
       </div>
 
-      {actionType === "composer" && (
+      {isMobile && (
         <div className="mt-4">
           <WatermarkRemover />
         </div>

@@ -49,7 +49,7 @@ const ShareButton = () => {
           onClick={() => {
             setIsShareOpen(true);
             setMenu("share");
-            if (urlQueryActionType === "composer") {
+            if (isMobile) {
               setMenu("farcasterShare");
             }
           }}

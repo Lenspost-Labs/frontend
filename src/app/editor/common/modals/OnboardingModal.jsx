@@ -2,17 +2,21 @@ import { Button, Dialog } from "@material-tailwind/react";
 import BsChevronLeft from "@meronex/icons/bs/BsChevronLeft";
 import BsChevronRight from "@meronex/icons/bs/BsChevronRight";
 import VscVerified from "@meronex/icons/vsc/VscVerified";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AIIcon } from "../../../../assets/assets";
 import Gift from "../../../../assets/svgs/GiftOnboarding.svg";
+import { LOCAL_STORAGE } from "../../../../data";
 import useUser from "../../../../hooks/user/useUser";
+import { Context } from "../../../../providers/context";
+import { getFromLocalStorage } from "../../../../utils";
 import { CompSearch } from "../../sections/left-section/image/AIImageSection";
 import CustomImageComponent from "../core/CustomImageComponent";
-import { Context } from "../../../../providers/context";
 
-const AIStartupModal = () => {
-  const {isOnboardingOpen, setIsOnboardingOpen } = useContext(Context);
+const OnboardingModal = () => {
+  const { isOnboardingOpen, setIsOnboardingOpen, isMobile } =
+    useContext(Context);
   const [currentStep, setCurrentStep] = useState(0);
+  const [isAuthenticatedBefore, setAuthenticatedBefore] = useState(false);
   const { points } = useUser();
 
   const handleOpen = () => setIsOnboardingOpen(!isOnboardingOpen);
@@ -20,6 +24,7 @@ const AIStartupModal = () => {
   const leftFeaturedImages = [
     "https://fal.media/files/penguin/QQB-9cBeLiodf3YtlV4R9.jpeg",
     "https://fal.media/files/tiger/xcnSyvUNDyELbujRMVjrL.jpeg",
+    "https://fal.media/files/monkey/p74fgPJWeRyVoy7n3rD3i.jpeg",
   ];
 
   const steps = [
@@ -92,16 +97,46 @@ const AIStartupModal = () => {
       ),
     },
   ];
+  const [displayedSteps, setDisplayedSteps] = useState(steps);
+
+  const fnCheckIfAuthenticatedBefore = () => {
+    const oneMinute = 60 * 1000; // 60 seconds in milliseconds
+    const jwtTimestamp = getFromLocalStorage(LOCAL_STORAGE.userAuthTime);
+    const currentTimestamp = new Date().getTime();
+
+    console.log(currentTimestamp);
+    console.log(jwtTimestamp);
+    if (jwtTimestamp && currentTimestamp - jwtTimestamp > oneMinute) {
+      setAuthenticatedBefore(true);
+
+      // Reset the current step to the third step
+      setCurrentStep(2);
+
+      // Set displayedSteps to show only the third step
+      setDisplayedSteps([steps[2]]);
+    } else {
+      setAuthenticatedBefore(false);
+
+      // Reset the current step to the first step
+      setCurrentStep(0);
+      // Set displayedSteps to show all steps
+      setDisplayedSteps(steps);
+    }
+  };
+
+  useEffect(() => {
+    fnCheckIfAuthenticatedBefore();
+  }, []);
 
   return (
     <>
-      <div className="mr-12">
+      <div className="mr-4">
         <Button
           onClick={handleOpen}
-          className="p-4 py-2 text-black bg-[#e1f16b] rounded-md"
+          className="p-4 py-2 text-black bg-[#e1f16b] rounded-lg"
         >
           <AIIcon />
-          <span className="ml-2">AI</span>
+          {!isMobile && <span className="ml-2">AI</span>}
         </Button>
         <Dialog open={isOnboardingOpen} handler={handleOpen}>
           {/* <DialogHeader>Poster AI Magic</DialogHeader> */}
@@ -114,13 +149,14 @@ const AIStartupModal = () => {
                 <span className="ml-1 text-gray-500">{points}</span>
               </div>
             </div>
+
             <h2 className="text-2xl font-bold mb-4 text-center">
               {steps[currentStep].title}
             </h2>
             <div className="text-center mb-6">{steps[currentStep].content}</div>
             <div className="flex justify-between items-center cursor-pointer">
               <div className="space-x-1">
-                {steps.map((_, index) => (
+                {displayedSteps.map((_, index) => (
                   <span
                     key={index}
                     onClick={() => setCurrentStep(index)}
@@ -130,7 +166,7 @@ const AIStartupModal = () => {
                   />
                 ))}
               </div>
-              {currentStep < steps.length && (
+              {currentStep < displayedSteps.length && (
                 <>
                   <div className="flex gap-2">
                     {currentStep > 0 && (
@@ -142,7 +178,7 @@ const AIStartupModal = () => {
                       </button>
                     )}
 
-                    {currentStep < steps.length - 1 && (
+                    {currentStep < displayedSteps.length - 1 && (
                       <button
                         onClick={() => setCurrentStep(currentStep + 1)}
                         className="bg-[#E15F77] text-white rounded-full p-2"
@@ -163,4 +199,4 @@ const AIStartupModal = () => {
   );
 };
 
-export default AIStartupModal;
+export default OnboardingModal;

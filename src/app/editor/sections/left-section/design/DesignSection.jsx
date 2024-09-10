@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { SectionTab } from "polotno/side-panel";
 import { MyDesignIcon } from "../../../../../assets/assets";
 
-import { Button, Card } from "@blueprintjs/core";
+import { Card } from "@blueprintjs/core";
 
-import { useAccount } from "wagmi";
 import {
   changeCanvasVisibility,
   deleteCanvasById,
@@ -20,8 +19,6 @@ import {
   ErrorComponent,
   LoadMoreComponent,
   MessageComponent,
-  MyDesignReacTour,
-  SearchComponent,
   ShareWithTagsModal,
 } from "../../../common";
 import {
@@ -200,23 +197,6 @@ export const DesignPanel = () => {
               onClickFunction={() => fnDeleteCanvas()}
             />
           )}
-
-          <SearchComponent
-            onClick={false}
-            query={query}
-            setQuery={setQuery}
-            placeholder="Search designs by id"
-          />
-          {/* <Button
-            className="m-2 p-1"
-            onClick={() => {
-              if (fnPageHasElements(store)) {
-                setModal({ ...modal, isOpen: true, isNewDesign: true });
-              }
-            }}
-          >
-            Create new design
-          </Button> */}
 
           {/* <MyDesignReacTour /> */}
         </>

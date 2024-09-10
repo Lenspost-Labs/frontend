@@ -305,13 +305,6 @@ export const DesignPanel = () => {
         />
       )}
 
-      <SearchComponent
-        onClick={false}
-        query={query}
-        setQuery={setQuery}
-        placeholder="Search designs by id"
-      />
-
       <MyDesignReacTour />
       {/* This is the Modal that Appears on the screen for Confirmation - 25Jun2023 */}
 

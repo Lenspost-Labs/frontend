@@ -1,5 +1,4 @@
 import { useContext, useState, useEffect } from "react";
-import { observer } from "mobx-react-lite";
 import { SectionTab } from "polotno/side-panel";
 import {
   getAllTemplates,
@@ -12,20 +11,18 @@ import {
   CompModal,
   ErrorComponent,
   MessageComponent,
-  SearchComponent,
   CustomHorizontalScroller,
   LoadMoreComponent,
   CompCarousel,
 } from "../../../common";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
-import { Spinner, Icon } from "@blueprintjs/core";
+import { Icon } from "@blueprintjs/core";
 import { useStore } from "../../../../../hooks/polotno";
 import {
   assetsTrack,
   fnLoadJsonOnPage,
   fnLoadMore,
-  randomThreeDigitNumber,
   replaceImageURL,
 } from "../../../../../utils";
 import { LoadingAnimatedComponent } from "../../../common";
@@ -34,19 +31,9 @@ import { Context } from "../../../../../providers/context/ContextProvider";
 
 // import CustomHorizontalScroller from "../../../common/";
 import MdcImageMultipleOutline from "@meronex/icons/mdc/MdcImageMultipleOutline";
-import Lottie from "lottie-react";
 import animationData from "../../../../../assets/lottie/featured/featured1.json";
 import { SecNameHeading } from "../../../common/elements/SecNameHeading";
-
-import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
-  Tab,
-  TabPanel,
-} from "@material-tailwind/react";
-import { useAppAuth, useLocalStorage } from "../../../../../hooks/app";
-import posthog from "posthog-js";
+import { useAppAuth } from "../../../../../hooks/app";
 
 // Design card component start
 const DesignCard = ({
@@ -60,7 +47,6 @@ const DesignCard = ({
   referredFrom,
   modal,
   setModal,
-  ownerAddress,
   assetsRecipientElementData,
 }) => {
   const store = useStore();
@@ -294,11 +280,6 @@ export const LenspostTemplates = () => {
           }}
         />
       )}
-      <SearchComponent
-        query={query}
-        setQuery={setQuery}
-        placeholder={"Search templates"}
-      />
 
       <div className="h-full overflow-y-scroll">
         {/*  Featured Panels :  */}
@@ -489,16 +470,11 @@ const UserTemplates = () => {
           }}
         />
       )}
-      <SearchComponent
-        query={query}
-        setQuery={setQuery}
-        placeholder={"Search templates"}
-      />
       {/* New Design card start - 23Jun2023 */}
       {/* For reference : design - array name, design.id - Key, design.preview - Url  */}
       {/*   Pass these onto Line 25 */}
       {data?.pages[0]?.data?.length > 0 ? (
-        <div className="h-full overflow-y-auto">
+        <div className="h-full overflow-y-auto mt-3">
           <div className="columns-2 gap-1">
             {data?.pages
               .flatMap((item) => item?.data)

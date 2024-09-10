@@ -145,7 +145,7 @@ const Editor = () => {
   const location = useLocation(); //To get the URL location
   const queryParams = new URLSearchParams(location.search); //to Check A URL search string, beginning with a ?slugId
   const inviteCode = queryParams.get("inviteCode");
-
+  const actionType = queryParams.get("actionType");
   // console.log("inviteCode", inviteCode);
 
   const handleDrop = (ev) => {
@@ -715,7 +715,9 @@ const Editor = () => {
                   {/* <SpeedDialX /> */}
                   <div className="flex justify-between">
                     <BgRemover />
+                    {actionType !== "composer" &&
                     <OnboardingModal />
+                    }
                   </div>
                   <MobileBottombar />
                 </div>

@@ -258,7 +258,7 @@ const MobileTopbar = () => {
                     {/* Featured Stickers */}
                     <CustomHorizontalScroller
                       type="props"
-                      author="ham"
+                      author="moxie"
                       campaign={null}
                     />
                   </div>

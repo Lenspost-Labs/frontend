@@ -160,7 +160,8 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
           >
             <Typography variant="h6" color="blue-gray">
               Click here to switch to{" "}
-              {ENVIRONMENT === "production" ? "Base" : "BaseSepolia"} chain
+              {ENVIRONMENT === "production" ? "Base" : "BaseSepolia"} chain for
+              Topup
             </Typography>
           </ListItem>
         </List>

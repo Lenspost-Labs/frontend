@@ -130,7 +130,7 @@ const FarcasterNormalPost = () => {
     isRefetching: isWalletRefetching,
   } = useQuery({
     queryKey: ["getOrCreateWallet"],
-    queryFn: () => getOrCreateWallet(chain?.id || chainId),
+    queryFn: () => getOrCreateWallet(chainId),
     refetchOnWindowFocus: false,
   });
 

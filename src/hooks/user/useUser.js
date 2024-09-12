@@ -20,6 +20,7 @@ const useUser = () => {
     cacheTime: 1000 * 60 * 60 * 24 * 7,
   });
 
+
   const { data: farcasterData, error: farcasterError } = useQuery({
     queryKey: ["farcasterDetails"],
     queryFn: () => getFarcasterDetails(address),
@@ -30,12 +31,12 @@ const useUser = () => {
   });
 
   const fnGetUserLevel = async () => {
-    if (data?.message?.points < 500) {
+    if (data?.points < 500) {
       setUserLevel("Normie");
     }
-    if (data?.message?.points >= 500) {
+    if (data?.points >= 500) {
       setUserLevel("Pleb");
-    } else if (data?.message?.points >= 1000) {
+    } else if (data?.points >= 1000) {
       setUserLevel("Chad");
     }
   };
@@ -46,11 +47,11 @@ const useUser = () => {
 
   return {
     address,
-    username: data?.message?.username,
-    email: data?.message?.mail,
-    lensHandle: data?.message?.lens_handle,
+    username: data?.username,
+    email: data?.mail,
+    lensHandle: data?.lens_handle,
     farcasterHandle: farcasterData?.Social?.[0]?.profileHandle,
-    points: data?.message?.points,
+    points: data?.points,
     profileImage: farcasterData?.Social?.[0]?.profileImage,
     error,
     isError,

@@ -81,17 +81,17 @@ const WatermarkRemover = () => {
   };
 
   return (
-    <div className="p-4 pt-0" onClick={() => fnRemoveWatermark()}>
-      <div className="bg-[#6B7FF1] rounded-l-full rounded-r-md cursor-pointer hover:shadow-md hover:bg-[#6b7ff1f8]">
+    <div className="p-2 pt-0" onClick={() => fnRemoveWatermark()}>
+      <div className="bg-[#6B7FF1] rounded-lg cursor-pointer hover:shadow-md hover:bg-[#6b7ff1d8]">
         <div className="flex justify-between items-center gap-2 p-2">
           <div className="text-white">
             <BsDroplet size="24" />
           </div>
-          <div className="text-md text-white">
-            Remove watermark with your {posterTokenSymbol} Tokens
+          <div className="text-lg text-white">
+            Remove watermark 
           </div>
-          <div className="text-sm bg-[#FFFFFF40] text-white p-1 px-2 rounded-l-full rounded-r-md">
-            <span className="mr-2">5</span>
+          <div className="text-sm bg-[#FFFFFF40] text-white p-1 px-2 rounded-full ">
+            <span className="mr-2">-5</span>
             <span>{posterTokenSymbol}</span>
           </div>
         </div>

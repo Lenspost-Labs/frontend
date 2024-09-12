@@ -19,7 +19,7 @@ import {
 } from "../../../common";
 import { EVMWallets } from "../auth/wallets";
 import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
-import { useAppAuth } from "../../../../../hooks/app";
+import { useAppAuth, useAppUrl } from "../../../../../hooks/app";
 import { EVMLogo } from "../../../../../assets";
 import PointsBtn from "../PointsBtn/PointsBtn";
 import ImagesWithArrows from "../../../common/core/CustomsTabsWArrows/ImagesWithArrows";
@@ -31,9 +31,7 @@ import { apiGetAllMemes } from "../../../../../services";
 import useMobilePanelFunctions from "../../../common/mobileHooks/useMobilePanelFunctions";
 import coinImg from "../../../../../assets/svgs/Coin.svg";
 const MobileTopbar = () => {
-  const url = new URL(window.location.href);
-  const params = new URLSearchParams(url.search);
-  const actionType = params.get("actionType");
+  const { urlQueryActionType } = useAppUrl();
 
   const store = useStore();
   const {
@@ -117,7 +115,7 @@ const MobileTopbar = () => {
           <EditIconLeft />
         </div>
         <Toolbar store={store} />
-        {actionType !== "composer" && (
+        {urlQueryActionType !== "composer" && (
           <div className="bg-white rounded-lg p-3">
             <DownloadBtn />
           </div>
@@ -161,11 +159,7 @@ const MobileTopbar = () => {
                       className="cursor-pointer flex gap-1 items-center bg-[#edecec] px-2 rounded-md my-2"
                     >
                       <div className="text-2xl">{points} </div>
-                      <img
-                        className="h-5 mb-1"
-                        src={coinImg}
-                        alt=""
-                      />
+                      <img className="h-5 mb-1" src={coinImg} alt="" />
                     </div>
                   </div>
                 </>
@@ -264,7 +258,7 @@ const MobileTopbar = () => {
                   </div>
                 </div>
 
-                {actionType != "composer" && (
+                {urlQueryActionType != "composer" && (
                   <div className="flex flex-col">
                     <div className="flex justify-between items-center">
                       <div className="text-lg p-2 "> Featured backgrounds </div>

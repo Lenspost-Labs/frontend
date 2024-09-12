@@ -8,17 +8,22 @@ import BsX from "@meronex/icons/bs/BsX";
 import { Context } from "../../../../../../providers/context";
 
 const SharePanelHeaders = ({ panelHeader, menuName, panelContent }) => {
-  const { isShareOpen, setIsShareOpen, setMenu } = useContext(Context);
+  const { isShareOpen, setIsShareOpen, setMenu, isMobile } =
+    useContext(Context);
 
   return (
     <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-2xl rounded-lg rounded-r-none ">
       <div className="">
         {/* <Dialog.Title className="w-full flex items-center gap-2 text-white text-xl leading-6 p-6 fixed bg-gray-900 z-10"> */}
         <div className="w-full flex justify-between items-center gap-2 text-white text-xl leading-6 p-4 bg-gray-900 rounded-lg rounded-r-none">
-          <BsArrowLeft
-            onClick={() => setMenu("share")}
-            className="cursor-pointer"
-          />
+          {!isMobile && (
+            <>
+              <BsArrowLeft
+                onClick={() => setMenu("share")}
+                className="cursor-pointer"
+              />
+            </>
+          )}
           {panelHeader}
           {/* </Dialog.Title> */}
           <div
@@ -29,7 +34,7 @@ const SharePanelHeaders = ({ panelHeader, menuName, panelContent }) => {
           </div>
         </div>
       </div>
-      
+
       {panelContent}
     </div>
   );

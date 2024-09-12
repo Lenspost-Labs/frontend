@@ -1128,14 +1128,20 @@ const FarcasterNormalPost = () => {
         </div>
       )}
 
-      {/* <div className={`m-4 ${!farcasterStates.isFrame && "hidden"}`}>
+      <div className={`mx-4 ${!farcasterStates?.isChannel && "hidden"}`}>
         <FarcasterChannel
-          channelState={farcasterStates.channel}
-          setChannelState={(channel) =>
-            setFarcasterStates({ ...farcasterStates, channel })
+          channelState={farcasterStates.channelValue}
+          setChannelState={(channelValue) =>
+            setFarcasterStates({
+              ...farcasterStates,
+              channelValue: {
+                ...farcasterStates.channelValue,
+                channelValue,
+              },
+            })
           }
         />
-      </div> */}
+      </div>
 
       <div className="mb-4 m-4">
         <div className="flex justify-between">
@@ -1995,7 +2001,16 @@ const FarcasterNormalPost = () => {
           <WithdrawFunds refetchWallet={refetchWallet} />
         )}
       </div>
-
+      {isMobile && (
+        <div className="mx-4">
+          <Textarea
+            label={"Description"}
+            name="description"
+            onChange={(e) => handleChange(e)}
+            value={postDescription}
+          />
+        </div>
+      )}
       <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
         {!getEVMAuth && actionType !== "composer" ? (
           <EVMWallets title={"Login with EVM"} className="mx-2" login={login} />

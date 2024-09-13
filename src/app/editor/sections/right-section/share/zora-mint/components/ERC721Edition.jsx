@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Switch } from "@headlessui/react";
 import {
   InputBox,
@@ -26,7 +26,11 @@ import {
   useWaitForTransactionReceipt,
   useConfig,
 } from "wagmi";
-import { useAppAuth, useLocalStorage } from "../../../../../../../hooks/app";
+import {
+  useAppAuth,
+  useLocalStorage,
+  useStoreZoraLink,
+} from "../../../../../../../hooks/app";
 import {
   APP_ETH_ADDRESS,
   ERROR,
@@ -68,6 +72,16 @@ import { config } from "../../../../../../../providers/EVM/EVMWalletProvider";
 import { http } from "viem";
 import { degen, polygon } from "viem/chains";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
+import {
+  addArrlistInputBox,
+  handleRecipientChange,
+  isRecipientAddDuplicate,
+  removeArrlistInputBox,
+  restrictRecipientInput,
+  restrictRemoveRecipientInputBox,
+  splitEvenPercentage,
+  totalSplitPercentage,
+} from "../utils";
 
 const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const { address } = useAccount();
@@ -77,9 +91,9 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const chainId = useChainId();
   const { chain } = useAccount();
   const { chains } = useConfig();
+  const { storeZoraLink } = useStoreZoraLink();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const [recipientsEns, setRecipientsEns] = useState([]);
-  const [totalPercent, setTotalPercent] = useState(0);
   const [isStoringFrameData, setIsStoringFrameData] = useState(false);
   // share states
   const [isShareLoading, setIsShareLoading] = useState(false);
@@ -128,6 +142,11 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     lensAuthState, // don't remove this
   } = useContext(Context);
 
+  // Memoize the contract symbol to avoid recalculating on every render
+  const contractSymbol = useMemo(() => {
+    return zoraErc721Enabled?.contractName?.split(" ")[0]?.toUpperCase() || "";
+  }, [zoraErc721Enabled]);
+
   // upload to IPFS Mutation
   const {
     mutate,
@@ -146,12 +165,6 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const { mutateAsync: shareOnSocialsMutation } = useMutation({
     mutationKey: "shareOnSocials",
     mutationFn: shareOnSocials,
-  });
-
-  // store zora link in DB Mutation
-  const { mutateAsync: storeZoraLinkMutation } = useMutation({
-    mutationKey: "storeZoraLink",
-    mutationFn: mintToXchain,
   });
 
   const { mutateAsync: postFrameData } = useMutation({
@@ -321,121 +334,6 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     }
   };
 
-  // funtion to add new input box for multi addresses
-  const addArrlistInputBox = (key) => {
-    if (key === "royaltySplitRecipients") {
-      setZoraErc721Enabled({
-        ...zoraErc721Enabled,
-        [key]: [
-          ...zoraErc721Enabled[key],
-          { address: "", percentAllocation: "" },
-        ],
-      });
-      return;
-    }
-
-    setZoraErc721Enabled({
-      ...zoraErc721Enabled,
-      [key]: [...zoraErc721Enabled[key], ""],
-    });
-  };
-
-  // funtion to remove input box for multi addresses
-  const removeArrlistInputBox = (index, key, isErrKey, errKeyMsg) => {
-    setZoraErc721Enabled({
-      ...zoraErc721Enabled,
-      [key]: zoraErc721Enabled[key].filter((_, i) => i !== index),
-    });
-
-    if (isErrKey) {
-      setZoraErc721StatesError({
-        ...zoraErc721StatesError,
-        [isErrKey]: false,
-        [errKeyMsg]: "",
-      });
-    }
-  };
-
-  // funtion adding data for split revenues recipients
-  const handleRecipientChange = (index, key, value) => {
-    // check index 0 price should min 10
-    if (key === "percentAllocation" && index === 0) {
-      if (value < 10 || value > 100 || isNaN(value)) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
-          isRoyaltySplitError: true,
-          royaltySplitErrorMessage:
-            "Platform fee should be between 10% to 100%",
-        });
-      } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
-          isRoyaltySplitError: false,
-          royaltySplitErrorMessage: "",
-        });
-      }
-    } else if (key === "percentAllocation" && index !== 0) {
-      // any index price should be greater min 1 and max 100
-      if (value < 1 || value > 100 || isNaN(value)) {
-        setZoraErc721StatesError({
-          zoraErc721StatesError,
-          isRoyaltySplitError: true,
-          royaltySplitErrorMessage: "Split should be between 1% to 100%",
-        });
-      } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
-          isRoyaltySplitError: false,
-          royaltySplitErrorMessage: "",
-        });
-      }
-    }
-    // check if recipient address is not provided
-    if (key === "address") {
-      if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
-          isRoyaltySplitError: true,
-          royaltySplitErrorMessage: "Recipient address is required",
-        });
-      } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
-          isRoyaltySplitError: false,
-          royaltySplitErrorMessage: "",
-        });
-      }
-    }
-
-    const updatedRecipients = [...zoraErc721Enabled.royaltySplitRecipients];
-    updatedRecipients[index][key] = value;
-    setZoraErc721Enabled((prevEnabled) => ({
-      ...prevEnabled,
-      royaltySplitRecipients: updatedRecipients,
-    }));
-  };
-
-  // restrict the input box if the recipient is in the parent list
-  const restrictRecipientInput = (e, index, recipient) => {
-    const isRecipient = parentRecipientListRef.current.includes(recipient);
-    const isUserAddress = recipient === address;
-    if (index === 0 || isRecipient) {
-      if (isUserAddress) {
-        handleRecipientChange(index, "address", e.target.value);
-      }
-    } else {
-      handleRecipientChange(index, "address", e.target.value);
-    }
-  };
-
-  // restrict the delete button if recipient is in the parent list
-  const restrictRemoveRecipientInputBox = (index, recipient) => {
-    const isRecipient = parentRecipientListRef.current.includes(recipient);
-    if (index === 0 || isRecipient) {
-      return true;
-    }
-  };
-
   // handle for input fields
   const handleChange = (e, index, key) => {
     const { name, value } = e.target;
@@ -594,71 +492,6 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
         [name]: value,
       }));
     }
-  };
-
-  // check if recipient address is same
-  const isRecipientAddDuplicate = () => {
-    const result = zoraErc721Enabled.royaltySplitRecipients.filter(
-      (item, index) => {
-        return (
-          zoraErc721Enabled.royaltySplitRecipients.findIndex(
-            (item2) => item2.address === item.address
-          ) !== index
-        );
-      }
-    );
-
-    if (result.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  // check if recipient percentage is more than 100
-  const isPercentage100 = () => {
-    const result = zoraErc721Enabled.royaltySplitRecipients.reduce(
-      (acc, item) => {
-        return acc + item.percentAllocation;
-      },
-      0
-    );
-
-    setTotalPercent(result);
-
-    if (result === 100) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  // split even percentage
-  const splitEvenPercentage = () => {
-    const result = zoraErc721Enabled.royaltySplitRecipients.map((item) => {
-      return {
-        address: item.address,
-        percentAllocation: Math.floor(
-          (100 / zoraErc721Enabled.royaltySplitRecipients.length).toFixed(2)
-        ),
-      };
-    });
-
-    setZoraErc721Enabled((prevEnabled) => ({
-      ...prevEnabled,
-      royaltySplitRecipients: result,
-    }));
-  };
-
-  // split contract settings
-  const handleCreateSplitSettings = () => {
-    const args = {
-      recipients: zoraErc721Enabled.royaltySplitRecipients,
-      distributorFeePercent: 0.0,
-      controller: APP_ETH_ADDRESS,
-      // controller is the owner of the split contract that will make it mutable contract
-    };
-    return args;
   };
 
   // mint settings
@@ -887,15 +720,16 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       if (zoraErc721StatesError.isMintLimitPerAddressError) return;
     }
 
+    const totalPercentage = totalSplitPercentage(zoraErc721Enabled);
     // check if recipient address is same
-    if (isRecipientAddDuplicate()) {
+    if (isRecipientAddDuplicate(zoraErc721Enabled)) {
       setZoraErc721StatesError({
         ...zoraErc721StatesError,
         isRoyaltySplitError: true,
         royaltySplitErrorMessage: "Recipient address is duplicate",
       });
       return;
-    } else if (!isPercentage100()) {
+    } else if (totalPercentage !== 100) {
       setZoraErc721StatesError({
         ...zoraErc721StatesError,
         isRoyaltySplitError: true,
@@ -912,27 +746,6 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
     // upload to IPFS
     mutate(canvasBase64Ref.current[0]);
-  };
-
-  const storeZoraLink = () => {
-    let paramsData = {
-      canvasId: contextCanvasIdRef.current,
-      mintLink: receipt?.logs[0]?.address,
-      chain: chain?.name,
-      contractType: "ZORA721",
-      chainId: chain?.id,
-      hash: receipt?.logs[0]?.address,
-    };
-
-    storeZoraLinkMutation(paramsData)
-      .then((res) => {
-        console.log("StoreZoraLink", res?.slug);
-        setSlug(res?.slug);
-      })
-      .catch((error) => {
-        console.log("StoreZoraLinkErr", errorMessage(error));
-        setIsShareLoading(false);
-      });
   };
 
   // add recipient to the split list
@@ -971,7 +784,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   // create split contract
   useEffect(() => {
     if (uploadData?.message) {
-      createSplit(handleCreateSplitSettings());
+      createSplit(handleCreateSplitSettings(zoraErc721Enabled));
     }
   }, [isUploadSuccess]);
 
@@ -1231,7 +1044,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
       <div className="mb-4 m-4">
         <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Split Pecipients </h2>
+          <h2 className="text-lg mb-2"> Split Recipients </h2>
         </div>
         <div className="w-4/5 opacity-75">
           {" "}
@@ -1252,10 +1065,30 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
                     label="Wallet Address"
                     value={recipientsEns[index] || recipient.address}
                     onFocus={(e) =>
-                      restrictRecipientInput(e, index, recipient.address)
+                      restrictRecipientInput(
+                        index,
+                        e.target?.value,
+                        recipient.address,
+                        "address",
+                        zoraErc721Enabled,
+                        setZoraErc721Enabled,
+                        zoraErc721StatesError,
+                        setZoraErc721StatesError,
+                        parentRecipientListRef
+                      )
                     }
                     onChange={(e) =>
-                      restrictRecipientInput(e, index, recipient.address)
+                      restrictRecipientInput(
+                        index,
+                        e.target?.value,
+                        recipient.address,
+                        "address",
+                        zoraErc721Enabled,
+                        setZoraErc721Enabled,
+                        zoraErc721StatesError,
+                        setZoraErc721StatesError,
+                        parentRecipientListRef
+                      )
                     }
                   />
                 </div>
@@ -1265,24 +1098,36 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
                     max={100}
                     step={1}
                     label="%"
-                    value={recipient.percentAllocation}
+                    value={recipient.percentAllocation?.toString()}
                     onFocus={(e) => {
                       handleRecipientChange(
                         index,
                         "percentAllocation",
-                        Number(parseFloat(e.target.value).toFixed(4))
+                        Number(parseFloat(e.target.value).toFixed(2)),
+                        zoraErc721Enabled,
+                        setZoraErc721Enabled,
+                        zoraErc721StatesError,
+                        setZoraErc721StatesError
                       );
                     }}
                     onChange={(e) => {
                       handleRecipientChange(
                         index,
                         "percentAllocation",
-                        Number(parseFloat(e.target.value).toFixed(4))
+                        Number(parseFloat(e.target.value).toFixed(2)),
+                        zoraErc721Enabled,
+                        setZoraErc721Enabled,
+                        zoraErc721StatesError,
+                        setZoraErc721StatesError
                       );
                     }}
                   />
                 </div>
-                {!restrictRemoveRecipientInputBox(index, recipient.address) && (
+                {!restrictRemoveRecipientInputBox(
+                  index,
+                  recipient.address,
+                  parentRecipientListRef
+                ) && (
                   <span>
                     <XCircleIcon
                       className="h-6 w-6 cursor-pointer"
@@ -1292,7 +1137,9 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
                           index,
                           "royaltySplitRecipients",
                           "isRoyaltySplitError",
-                          "royaltySplitErrorMessage"
+                          "royaltySplitErrorMessage",
+                          zoraErc721Enabled,
+                          setZoraErc721Enabled
                         )
                       }
                     />
@@ -1309,7 +1156,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
                   message={zoraErc721StatesError.royaltySplitErrorMessage}
                 />
                 <Typography variant="h6" color="blue-gray">
-                  {totalPercent} %
+                  {totalSplitPercentage(zoraErc721Enabled)} %
                 </Typography>
               </>
             )}
@@ -1321,7 +1168,12 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
               size="sm"
               variant="filled"
               className="flex items-center gap-3 mt-2 ml-0 outline-none bg-[#e1f16b] text-black"
-              onClick={() => addArrlistInputBox("royaltySplitRecipients")}
+              onClick={() =>
+                addArrlistInputBox(
+                  "royaltySplitRecipients",
+                  setZoraErc721Enabled
+                )
+              }
             >
               <BsPlus />
               Add Recipient
@@ -1331,7 +1183,9 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
               size="sm"
               variant="filled"
               className="flex items-center gap-3 mt-2 ml-0 outline-none bg-[#e1f16b] text-black"
-              onClick={splitEvenPercentage}
+              onClick={() =>
+                splitEvenPercentage(zoraErc721Enabled, setZoraErc721Enabled)
+              }
             >
               Split Even
             </Button>

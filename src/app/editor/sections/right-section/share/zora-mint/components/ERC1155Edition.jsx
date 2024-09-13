@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useContext } from "react";
 import { Context } from "../../../../../../../providers/context";
 import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
@@ -10,7 +10,6 @@ import {
   useAccount,
   useChainId,
   usePublicClient,
-  useWriteContract,
   useWalletClient,
   useSwitchChain,
 } from "wagmi";
@@ -36,8 +35,11 @@ import {
   isRecipientAddDuplicate,
   restrictRecipientInput,
   restrictRemoveRecipientInputBox,
-  isPercentage100,
+  totalSplitPercentage,
   addArrlistInputBox,
+  handleCreateSplitSettings,
+  splitEvenPercentage,
+  removeArrlistInputBox,
 } from "../utils";
 
 const ERC1155Edition = () => {
@@ -66,16 +68,21 @@ const ERC1155Edition = () => {
   const { isAuthenticated } = useAppAuth();
 
   const [recipientsEns, setRecipientsEns] = useState([]);
-  const [totalPercent, setTotalPercent] = useState(0);
   const [contractAddress, setContractAddress] = useState("");
   const [isDeploying, setIsDeploying] = useState(false);
   const [isContractPending, setIsContractPending] = useState(false);
   const [deploymentError, setDeploymentError] = useState(false);
 
-  const creatorClient = createCreatorClient({ chainId, publicClient });
-  const contractSymbol = zoraErc1155Enabled?.contractName
-    ?.split(" ")[0]
-    .toUpperCase();
+  // Memoize the creator client to avoid re-creation on every render
+  const creatorClient = useMemo(
+    () => createCreatorClient({ chainId, publicClient }),
+    [chainId, publicClient]
+  );
+
+  // Memoize the contract symbol to avoid recalculating on every render
+  const contractSymbol = useMemo(() => {
+    return zoraErc1155Enabled?.contractName?.split(" ")[0]?.toUpperCase() || "";
+  }, [zoraErc1155Enabled]);
 
   const { isLoading: isLoadingSwitchNetwork, switchChain } = useSwitchChain();
   const supportedChainId =
@@ -198,78 +205,34 @@ const ERC1155Edition = () => {
 
       console.log("shared on FC", embeds);
     } catch (error) {
-      console.error("error deploying contract \n", error);
+      console.error("Error deploying contract:", error);
+      toast.error("Error deploying contract. Please try again.");
       setIsDeploying(false);
       setIsContractPending(false);
     }
   };
-  // split contract settings
-  const handleCreateSplitSettings = () => {
-    const args = {
-      recipients: zoraErc1155Enabled.royaltySplitRecipients,
-      distributorFeePercent: 0.0,
-      controller: APP_ETH_ADDRESS,
-      // controller is the owner of the split contract that will make it mutable contract
-    };
-    return args;
-  };
 
   // mint on Zora
   const handleSubmit = () => {
-    // check if canvasId is provided
-    if (contextCanvasIdRef.current === null) {
-      toast.error("Please select a design");
-      return;
-    }
+    const errors = {
+      design: contextCanvasIdRef.current === null,
+      description: !postDescription,
+      contractName: !zoraErc1155Enabled.contractName,
+      chargeForMintPrice:
+        zoraErc1155Enabled.isChargeForMint &&
+        !zoraErc1155Enabled.chargeForMintPrice,
+      royaltyPercent:
+        zoraErc1155Enabled.isRoyaltyPercent &&
+        !zoraErc1155Enabled.royaltyPercent,
+    };
 
-    // check if description is provided
-    if (!postDescription) {
-      toast.error("Please provide a description");
-      return;
-    }
-
-    // check if collection name is provided
-    if (!zoraErc1155Enabled.contractName) {
-      setZoraErc1155StatesError({
-        ...zoraErc1155StatesError,
-        isContractNameError: true,
-        contractNameErrorMessage: "Collection Name is required",
-      });
-      return;
-    }
-
-    // check if price is provided
-    if (zoraErc1155Enabled.isChargeForMint) {
-      if (!zoraErc1155Enabled.chargeForMintPrice) {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isChargeForMintError: true,
-          chargeForMintErrorMessage: "Price is required",
-        });
-        return;
-      } else if (zoraErc1155StatesError.isChargeForMintError) return;
-    }
-
-    // check if mint limit is provided
-    if (zoraErc1155Enabled.isMintLimitPerAddress) {
-      if (zoraErc1155StatesError.isMintLimitPerAddressError) return;
-    }
-
-    // check if royalty percent is provided
-    if (zoraErc1155Enabled.isRoyaltyPercent) {
-      if (zoraErc1155StatesError.isRoyaltyPercentError) {
-        return;
-      } else if (!zoraErc1155Enabled.royaltyPercent) {
-        setZoraErc1155StatesError({
-          ...zoraErc1155StatesError,
-          isRoyaltyPercentError: true,
-          royaltyPercentErrorMessage: "Royalty percent is required",
-        });
+    for (const [key, value] of Object.entries(errors)) {
+      if (value) {
+        toast.error(`Please provide a valid ${key}`);
         return;
       }
     }
 
-    // check if recipient address is same
     if (isRecipientAddDuplicate(zoraErc1155Enabled)) {
       setZoraErc1155StatesError({
         ...zoraErc1155StatesError,
@@ -277,56 +240,23 @@ const ERC1155Edition = () => {
         royaltySplitErrorMessage: "Recipient address is duplicate",
       });
       return;
-    } else if (!isPercentage100(zoraErc1155Enabled, setTotalPercent)) {
+    }
+
+    const totalPercentage = totalSplitPercentage(zoraErc1155Enabled);
+    if (totalPercentage !== 100) {
       setZoraErc1155StatesError({
         ...zoraErc1155StatesError,
         isRoyaltySplitError: true,
-        royaltySplitErrorMessage: "Recipient percentage should be 100%",
+        royaltySplitErrorMessage: `Total recipient percentage should be 100%, but it's ${totalPercentage}%`,
       });
       return;
-    } else {
-      setZoraErc1155StatesError({
-        ...zoraErc1155StatesError,
-        isRoyaltySplitError: false,
-        royaltySplitErrorMessage: "",
-      });
     }
 
-    // upload to IPFS
+    console.log(
+      "Uploading to IPFS with canvas data:",
+      canvasBase64Ref.current[0]
+    );
     mutate(canvasBase64Ref.current[0]);
-  };
-
-  // split even percentage
-  const splitEvenPercentage = () => {
-    const result = zoraErc1155Enabled.royaltySplitRecipients?.map((item) => {
-      return {
-        address: item.address,
-        percentAllocation: Math.floor(
-          (100 / zoraErc1155Enabled.royaltySplitRecipients.length).toFixed(2)
-        ),
-      };
-    });
-
-    setZoraErc1155Enabled((prevEnabled) => ({
-      ...prevEnabled,
-      royaltySplitRecipients: result,
-    }));
-  };
-
-  // funtion to remove input box for multi addresses
-  const removeArrlistInputBox = (index, key, isErrKey, errKeyMsg) => {
-    setZoraErc1155Enabled({
-      ...zoraErc1155Enabled,
-      [key]: zoraErc1155Enabled[key].filter((_, i) => i !== index),
-    });
-
-    if (isErrKey) {
-      setZoraErc1155StatesError({
-        ...zoraErc1155StatesError,
-        [isErrKey]: false,
-        [errKeyMsg]: "",
-      });
-    }
   };
 
   // add recipient to the split list
@@ -348,17 +278,18 @@ const ERC1155Edition = () => {
         ],
       }));
 
-      const recipients = updatedRecipients.map((item) => {
-        return item.address;
-      });
+      const addresses = [
+        APP_ETH_ADDRESS,
+        ...updatedRecipients.map((item) => item.address),
+      ];
 
-      const addresses = [APP_ETH_ADDRESS, ...recipients];
-
-      // getting ENS domain
-      (async () => {
-        const domains = await getENSDomain(addresses);
-        setRecipientsEns(domains);
-      })();
+      // Fetch ENS domains only if addresses are available
+      if (addresses.length) {
+        (async () => {
+          const domains = await getENSDomain(addresses);
+          setRecipientsEns(domains);
+        })();
+      }
     }
   }, [isAuthenticated]);
 
@@ -380,7 +311,7 @@ const ERC1155Edition = () => {
   // create split contract
   useEffect(() => {
     if (uploadJSONData?.message) {
-      createSplit(handleCreateSplitSettings());
+      createSplit(handleCreateSplitSettings(zoraErc1155Enabled));
     }
   }, [isUploadJSONSuccess]);
 
@@ -444,7 +375,7 @@ const ERC1155Edition = () => {
 
       <div className="mb-4 m-4">
         <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Split Pecipients </h2>
+          <h2 className="text-lg mb-2"> Split Recipients </h2>
         </div>
         <div className="w-4/5 opacity-75">
           {" "}
@@ -475,7 +406,7 @@ const ERC1155Edition = () => {
                           "address",
                           zoraErc1155Enabled,
                           setZoraErc1155Enabled,
-                          zoraErc1155Enabled,
+                          zoraErc1155StatesError,
                           setZoraErc1155StatesError,
                           parentRecipientListRef
                         )
@@ -490,6 +421,17 @@ const ERC1155Edition = () => {
                         step={0.01}
                         label="%"
                         value={recipient.percentAllocation?.toString()}
+                        onFocus={(e) => {
+                          handleRecipientChange(
+                            index,
+                            "percentAllocation",
+                            Number(parseFloat(e.target.value).toFixed(2)),
+                            zoraErc1155Enabled,
+                            setZoraErc1155Enabled,
+                            zoraErc1155StatesError,
+                            setZoraErc1155StatesError
+                          );
+                        }}
                         onChange={(e) => {
                           handleRecipientChange(
                             index,
@@ -515,7 +457,9 @@ const ERC1155Edition = () => {
                               index,
                               "royaltySplitRecipients",
                               "isRoyaltySplitError",
-                              "royaltySplitErrorMessage"
+                              "royaltySplitErrorMessage",
+                              zoraErc1155Enabled,
+                              setZoraErc1155Enabled
                             )
                           }
                         />
@@ -533,7 +477,7 @@ const ERC1155Edition = () => {
                 message={zoraErc1155StatesError.isRoyaltySplitErrorMessage}
               />
               <Typography variant="h6" color="blue-gray">
-                {totalPercent} %
+                {totalSplitPercentage(zoraErc1155Enabled)} %
               </Typography>
             </>
           )}
@@ -559,7 +503,9 @@ const ERC1155Edition = () => {
               size="sm"
               variant="filled"
               className="flex items-center gap-3 mt-2 ml-0 outline-none bg-[#e1f16b] text-black"
-              onClick={splitEvenPercentage}
+              onClick={() =>
+                splitEvenPercentage(zoraErc1155Enabled, setZoraErc1155Enabled)
+              }
             >
               Split Even
             </Button>
@@ -573,7 +519,7 @@ const ERC1155Edition = () => {
             {" "}
             Connect wallet{" "}
           </Button>
-        ) : chainId !== base?.id ? (
+        ) : chainId !== chainId ? (
           <Button
             fullWidth
             disabled={isLoadingSwitchNetwork}

@@ -505,7 +505,7 @@ const ContextProvider = ({ children }) => {
   const [curOpenedTabLevel1, setCurOpenedTabLevel1] = useState("");
   const [curOpenedTabLevel2, setCurOpenedTabLevel2] = useState("");
 
-  // console.log("ContextProvider", zoraErc1155StatesError);
+  console.log("ContextProvider", zoraErc721StatesError);
   // console.log("randomNum ", postName);
 
   return (

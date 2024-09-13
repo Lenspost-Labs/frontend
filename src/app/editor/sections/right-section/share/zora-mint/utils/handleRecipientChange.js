@@ -24,10 +24,17 @@ export const handleRecipientChange = (
 
   // Helper function to set error state
   const setError = (errorKey, errorMessage) => {
+    const messageKey =
+      errorKey.replace("is", "").charAt(0).toLowerCase() +
+      errorKey.replace("is", "").slice(1) +
+      "Message";
+
+    console.log({ messageKey });
+
     setErrorState((prev) => ({
       ...prev,
       [errorKey]: !!errorMessage,
-      [`${errorKey}Message`]: errorMessage,
+      [messageKey]: errorMessage,
     }));
   };
 

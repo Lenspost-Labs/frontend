@@ -8,12 +8,10 @@
  * @param {Object} state - The state object containing royaltySplitRecipients.
  * @param {Function} setTotalPercent - The function to update the totalPercent state.
  */
-export const isPercentage100 = (state, setTotalPercent) => {
+export const totalSplitPercentage = (state) => {
   const totalPercentage = state.royaltySplitRecipients.reduce(
     (acc, item) => acc + item.percentAllocation,
     0
   );
-  console.log({ totalPercentage });
-  setTotalPercent(totalPercentage);
-  return totalPercentage === 100;
+  return totalPercentage;
 };

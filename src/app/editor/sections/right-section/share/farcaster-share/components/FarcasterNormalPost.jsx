@@ -594,7 +594,7 @@ const FarcasterNormalPost = () => {
     }
 
     // check if description is provided
-    if (!postDescription) {
+    if (farcasterStates.frameData?.isFrame && !postDescription) {
       toast.error("Please provide a description");
       return;
     }

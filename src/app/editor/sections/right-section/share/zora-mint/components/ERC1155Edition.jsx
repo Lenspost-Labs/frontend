@@ -51,7 +51,7 @@ const ERC1155Edition = () => {
     lensAuthState, // don't remove this
     isMobile,
     setPostDescription,
-    setPostName
+    setPostName,
   } = useContext(Context);
   const { chain } = useAccount();
   const chainId = useChainId();
@@ -1048,7 +1048,7 @@ const ERC1155Edition = () => {
             {" "}
             Connect wallet{" "}
           </Button>
-        ) : chainId !== base?.id ? (
+        ) : chainId !== chainId ? (
           <Button
             fullWidth
             disabled={isLoadingSwitchNetwork}

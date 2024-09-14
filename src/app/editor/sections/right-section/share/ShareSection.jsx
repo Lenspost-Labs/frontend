@@ -325,6 +325,20 @@ const ShareSection = () => {
               <div className="flex ">
                 <>
                   <div className="flex items-center space-x-12 py-5">
+                    <div onClick={() => setMenu("farcasterShare")}>
+                      {" "}
+                      <img
+                        className="w-10 cursor-pointer rounded-md"
+                        src={logoFarcaster}
+                        alt="Farcaster"
+                      />{" "}
+                    </div>
+                  </div>
+                  <div
+                    className={`flex items-center py-5 space-x-12 ${
+                      !isMobile ? "ml-8" : " "
+                    }`}
+                  >
                     <div onClick={() => setMenu("lensmonetization")}>
                       {" "}
                       <img
@@ -335,21 +349,6 @@ const ShareSection = () => {
                     </div>
                   </div>
                 </>
-
-                <div
-                  className={`flex items-center py-5 space-x-12 ${
-                    !isMobile ? "ml-8" : " "
-                  }`}
-                >
-                  <div onClick={() => setMenu("farcasterShare")}>
-                    {" "}
-                    <img
-                      className="w-10 cursor-pointer rounded-md"
-                      src={logoFarcaster}
-                      alt="Farcaster"
-                    />{" "}
-                  </div>
-                </div>
               </div>
             </div>
             <hr />

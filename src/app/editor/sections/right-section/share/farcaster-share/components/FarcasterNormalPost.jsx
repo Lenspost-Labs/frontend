@@ -475,7 +475,7 @@ const FarcasterNormalPost = () => {
       canvasParams = {
         ...canvasParams,
         zoraMintLink: "",
-        channelId: farcasterStates.channel?.id,
+        channelId: farcasterStates.channelValue?.channelValue?.id,
       };
     }
 
@@ -1130,7 +1130,7 @@ const FarcasterNormalPost = () => {
 
       <div className={`mx-4 ${!farcasterStates?.isChannel && "hidden"}`}>
         <FarcasterChannel
-          channelState={farcasterStates.channelValue}
+          channelState={farcasterStates.channelValue?.channelValue}
           setChannelState={(channelValue) =>
             setFarcasterStates({
               ...farcasterStates,

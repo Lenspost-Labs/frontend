@@ -28,7 +28,7 @@ const FarcasterShareWrapper = () => {
                       onClick={() => setFarcasterTab("normalPost")}
                     >
                       {" "}
-                      Normal{" "}
+                      Quick Share {" "}
                     </Tab>
                     {!isMobile && (
                       <Tab
@@ -47,7 +47,7 @@ const FarcasterShareWrapper = () => {
                         onClick={() => setFarcasterTab("erc1155")}
                       >
                         {" "}
-                        ERC 1155{" "}
+                        Open Edition{" "}
                       </Tab>
                     )}
                   </TabsHeader>

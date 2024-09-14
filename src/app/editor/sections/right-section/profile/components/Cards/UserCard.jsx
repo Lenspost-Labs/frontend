@@ -29,7 +29,8 @@ const UserCard = ({ username }) => {
   const { points, profileImage, userLevel, farcasterHandle } = useUser();
   const { actionType } = useContext(Context);
   const [loadingInvite, setLoadingInvite] = useState(false);
-  const address = getFromLocalStorage("user.address");
+  // const address = getFromLocalStorage("user.address");
+  const { userAddress: address } = useLocalStorage();
   const [inviteCodesArr, setInviteCodesArr] = useState([]);
 
   const { data, isLoading, refetch } = useQuery({

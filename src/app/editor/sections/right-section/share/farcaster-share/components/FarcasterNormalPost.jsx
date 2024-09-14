@@ -475,7 +475,7 @@ const FarcasterNormalPost = () => {
       canvasParams = {
         ...canvasParams,
         zoraMintLink: "",
-        channelId: farcasterStates.channel?.id,
+        channelId: farcasterStates.channelValue?.channelValue?.id,
       };
     }
 
@@ -594,7 +594,7 @@ const FarcasterNormalPost = () => {
     }
 
     // check if description is provided
-    if (!postDescription) {
+    if (farcasterStates.frameData?.isFrame && !postDescription) {
       toast.error("Please provide a description");
       return;
     }
@@ -1130,7 +1130,7 @@ const FarcasterNormalPost = () => {
 
       <div className={`mx-4 ${!farcasterStates?.isChannel && "hidden"}`}>
         <FarcasterChannel
-          channelState={farcasterStates.channelValue}
+          channelState={farcasterStates.channelValue?.channelValue}
           setChannelState={(channelValue) =>
             setFarcasterStates({
               ...farcasterStates,

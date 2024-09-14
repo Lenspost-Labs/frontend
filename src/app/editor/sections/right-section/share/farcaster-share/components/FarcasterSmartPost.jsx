@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import ERC721Edition from "../../zora-mint/components/ERC721Edition";
 import { ENVIRONMENT } from "../../../../../../../services";
+import { Context } from "../../../../../../../providers/context";
 
 const FarcasterSmartPost = () => {
-  const chaindId = ENVIRONMENT === "production" ? 8453 : 5;
+  const { chaindId } = useContext(Context);
   return (
     <ERC721Edition
       isOpenAction={false}

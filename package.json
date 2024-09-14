@@ -4,10 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "NODE_OPTIONS='--max-old-space-size=8192' vite build",
-    "preview": "vite preview",
-    "prepare": "husky install"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@0xsplits/splits-sdk": "^3.0.8",
@@ -44,6 +43,7 @@
     "graphql": "^16.6.0",
     "graphql-request": "^6.0.0",
     "lottie-react": "^2.4.0",
+    "next": "^14.2.11",
     "omit-deep": "^0.3.0",
     "polotno": "^2.9.2",
     "posthog-js": "^1.81.0",

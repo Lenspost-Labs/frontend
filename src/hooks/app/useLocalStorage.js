@@ -17,7 +17,6 @@ const useLocalStorage = () => {
   const evmAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const solanaAuth = getFromLocalStorage(LOCAL_STORAGE.solanaAuth);
   const isFarcasterAuth = getFromLocalStorage(LOCAL_STORAGE.farcasterAuth);
-  const loggedInUserAddress = getFromLocalStorage(LOCAL_STORAGE.userAddress);
   const userAuthTime = getFromLocalStorage(LOCAL_STORAGE.userAuthTime);
   const lensAuth = getFromLocalStorage(LOCAL_STORAGE.lensAuth);
   const ifUserEligible = getFromLocalStorage(LOCAL_STORAGE.ifUserEligible);
@@ -39,7 +38,6 @@ const useLocalStorage = () => {
     evmAuth,
     solanaAuth,
     isFarcasterAuth,
-    loggedInUserAddress,
     userAuthTime,
     lensAuth,
     ifUserEligible,

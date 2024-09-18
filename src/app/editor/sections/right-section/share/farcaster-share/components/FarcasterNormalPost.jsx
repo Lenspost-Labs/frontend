@@ -336,11 +336,7 @@ const FarcasterNormalPost = () => {
         if (!value || value <= 0) {
           newState.frameData.allowedMintsIsError = true;
           newState.frameData.allowedMintsError =
-            "Please enter a valid number of mints";
-        } else if (actionType === "composer" && value > 10) {
-          newState.frameData.allowedMintsIsError = true;
-          newState.frameData.allowedMintsError =
-            "Only 10 free mints are allowed";
+            "Please enter a valid number of allowed mints";
         } else {
           newState.frameData.allowedMintsIsError = false;
           newState.frameData.allowedMintsError = "";
@@ -590,7 +586,7 @@ const FarcasterNormalPost = () => {
 
     // check if name is provided
     if (!postName) {
-      toast.error("Please provide a name");
+      toast.error("Please provide a title");
       return;
     }
 
@@ -611,7 +607,7 @@ const FarcasterNormalPost = () => {
       (farcasterStates.frameData?.allowedMintsIsError ||
         !farcasterStates.frameData?.allowedMints)
     ) {
-      toast.error("Please enter valid allowed mints");
+      toast.error("Please enter a valid number of allowed mints");
       return;
     }
 
@@ -619,7 +615,6 @@ const FarcasterNormalPost = () => {
     if (
       farcasterStates.frameData?.isFrame &&
       farcasterStates.frameData?.isCreatorSponsored &&
-      actionType !== "composer" &&
       farcasterStates.frameData?.allowedMints > walletData?.sponsored &&
       !farcasterStates.frameData?.isSufficientBalance
     ) {
@@ -1024,7 +1019,6 @@ const FarcasterNormalPost = () => {
           ...farcasterStates.frameData,
           isCreatorSponsored: true,
           isCustomCurrMint: false,
-          allowedMints: 10,
         },
       });
     }
@@ -1848,130 +1842,122 @@ const FarcasterNormalPost = () => {
               </div>
             </div>
           )}
-
-          {actionType !== "composer" && (
-            <div
-              className={`${
-                !farcasterStates.frameData?.isCreatorSponsored && "hidden"
-              } mt-2`}
-            >
-              <div className="my-2">
-                {actionType !== "composer" ? (
-                  <p className="text-sm">
-                    {" "}
-                    {walletData?.sponsored > 0
-                      ? `${
-                          walletData?.sponsored
-                        } mints are free. Topup with Base ETH if you want
+          {/* {actionType !== "composer" && ( */}
+          <div
+            className={`${
+              !farcasterStates.frameData?.isCreatorSponsored && "hidden"
+            } mt-2`}
+          >
+            <div className="my-2">
+              <p className="text-sm">
+                {" "}
+                {walletData?.sponsored > 0
+                  ? `${
+                      walletData?.sponsored
+                    } mints are free. Topup with Base ETH if you want
               to drop more than ${walletData?.sponsored} mints ${" "}`
-                      : "You don't have any free mint. please Topup with Base ETH to mint"}{" "}
+                  : "Please Topup with Base ETH to sponsor the gas."}{" "}
+              </p>
+
+              {actionType !== "composer" ? (
+                <>
+                  <p className="text-end mt-4">
+                    <span>Topup account:</span>
+                    {isWalletLoading || isWalletRefetching ? (
+                      <span className="text-blue-500">
+                        {" "}
+                        Loading address...{" "}
+                      </span>
+                    ) : (
+                      <span
+                        className="text-blue-500 cursor-pointer"
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            walletData?.publicAddress
+                          );
+                          toast.success("Copied topup account address");
+                        }}
+                      >
+                        {" "}
+                        {addressCrop(walletData?.publicAddress)}
+                      </span>
+                    )}
                   </p>
-                ) : (
-                  "Only 10 mints are free"
-                )}
 
-                {actionType !== "composer" ? (
-                  <>
-                    <p className="text-end mt-4">
-                      <span>Topup account:</span>
-                      {isWalletLoading || isWalletRefetching ? (
-                        <span className="text-blue-500">
-                          {" "}
-                          Loading address...{" "}
-                        </span>
-                      ) : (
-                        <span
-                          className="text-blue-500 cursor-pointer"
-                          onClick={() => {
-                            navigator.clipboard.writeText(
-                              walletData?.publicAddress
-                            );
-                            toast.success("Copied topup account address");
-                          }}
-                        >
-                          {" "}
-                          {addressCrop(walletData?.publicAddress)}
-                        </span>
-                      )}
-                    </p>
+                  <p className="text-end">
+                    <span>Topup balance:</span>
+                    {isWalletLoading || isWalletRefetching ? (
+                      <span className="text-blue-500">
+                        {" "}
+                        Loading balance...{" "}
+                      </span>
+                    ) : (
+                      <span> {walletData?.balance} Base ETH</span>
+                    )}
+                  </p>
+                </>
+              ) : null}
 
-                    <p className="text-end">
-                      <span>Topup balance:</span>
-                      {isWalletLoading || isWalletRefetching ? (
-                        <span className="text-blue-500">
-                          {" "}
-                          Loading balance...{" "}
-                        </span>
-                      ) : (
-                        <span> {walletData?.balance} Base ETH</span>
-                      )}
-                    </p>
-                  </>
-                ) : null}
-
-                <div className="flex flex-col w-full py-2">
-                  <NumberInputBox
-                    min={1}
-                    step={1}
-                    label="Allowed Mints"
-                    name="allowedMints"
-                    onChange={(e) => handleChange(e, "allowedMints")}
-                    onFocus={(e) => handleChange(e, "allowedMints")}
-                    value={farcasterStates.frameData.allowedMints}
-                  />
-                </div>
-
-                {farcasterStates.frameData?.allowedMintsIsError && (
-                  <InputErrorMsg
-                    message={farcasterStates.frameData?.allowedMintsError}
-                  />
-                )}
-
-                {actionType !== "composer" &&
-                  farcasterStates.frameData?.isCreatorSponsored &&
-                  farcasterStates.frameData?.allowedMints >
-                    walletData?.sponsored && (
-                    <Topup
-                      topUpAccount={walletData?.publicAddress}
-                      balance={walletData?.balance}
-                      refetchWallet={refetchWallet}
-                      sponsored={walletData?.sponsored}
-                    />
-                  )}
+              <div className="flex flex-col w-full py-2">
+                <NumberInputBox
+                  min={1}
+                  step={1}
+                  label="Allowed Mints"
+                  name="allowedMints"
+                  onChange={(e) => handleChange(e, "allowedMints")}
+                  onFocus={(e) => handleChange(e, "allowedMints")}
+                  value={farcasterStates.frameData.allowedMints}
+                />
               </div>
-            </div>
-          )}
 
+              {farcasterStates.frameData?.allowedMintsIsError && (
+                <InputErrorMsg
+                  message={farcasterStates.frameData?.allowedMintsError}
+                />
+              )}
+
+              {actionType == "composer" &&
+                farcasterStates.frameData?.isCreatorSponsored &&
+                farcasterStates.frameData?.allowedMints >
+                  walletData?.sponsored && (
+                  <Topup
+                    topUpAccount={walletData?.publicAddress}
+                    balance={walletData?.balance}
+                    refetchWallet={refetchWallet}
+                    sponsored={walletData?.sponsored}
+                  />
+                )}
+            </div>
+          </div>
+          {/* )} */}
           {/* Or here we can just add description for Mobile */}
-          {actionType === "composer" ||
-            (isMobile && (
-              <>
-                <div className="mb-4">
-                  <div className="flex justify-between">
-                    <h2 className="text-lg"> Title & Description</h2>
-                  </div>
-                  {/* <div className="w-4/5 opacity-75">
+          {(actionType === "composer" || isMobile) && (
+            <>
+              <div className="mb-4">
+                <div className="flex justify-between">
+                  <h2 className="text-lg"> Title & Description</h2>
+                </div>
+                {/* <div className="w-4/5 opacity-75">
                   {" "}
                   Enter title fot the NFT.{" "}
                 </div> */}
-                </div>
-                <div className="flex flex-col gap-2">
-                  <InputBox
-                    label={"Title"}
-                    name="title"
-                    onChange={(e) => handleChange(e)}
-                    value={postName}
-                  />
-                  <Textarea
-                    label={"Description"}
-                    name="description"
-                    onChange={(e) => handleChange(e)}
-                    value={postDescription}
-                  />
-                </div>
-              </>
-            ))}
-
+              </div>
+              <div className="flex flex-col gap-2">
+                <InputBox
+                  label={"Title"}
+                  name="title"
+                  onChange={(e) => handleChange(e)}
+                  value={postName}
+                />
+                <Textarea
+                  label={"Description"}
+                  name="description"
+                  onChange={(e) => handleChange(e)}
+                  value={postDescription}
+                />
+              </div>
+            </>
+          )}
           <div
             className={`${
               (farcasterStates.frameData?.isCreatorSponsored ||

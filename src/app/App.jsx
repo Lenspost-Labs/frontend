@@ -57,9 +57,7 @@ const App = () => {
     SolanaWalletErrorContext
   );
   const { logout } = useLogout();
-  const { authenticated } = usePrivy();
   const { userAuthTime: jwtTimestamp, authToken } = useLocalStorage();
-  console.log({ authenticated });
   const url = new URL(window.location.href);
   const params = new URLSearchParams(url.search);
 

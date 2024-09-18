@@ -16,11 +16,13 @@ import { http, parseEther } from "viem";
 import { toast } from "react-toastify";
 import { config } from "../../../../../../../providers/EVM/EVMWalletProvider";
 import { ENVIRONMENT } from "../../../../../../../services";
+import { usePrivy } from "@privy-io/react-auth";
 
 const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
   const { farcasterStates, setFarcasterStates, chainId } = useContext(Context);
   const [extraPayForMints, setExtraPayForMints] = useState(null);
   const { chain } = useAccount();
+  const { authenticated, login } = usePrivy();
   const {
     data: switchData,
     isLoading: switchLoading,
@@ -35,7 +37,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
     error: feeError,
     isLoading: isFeeLoading,
   } = useEstimateFeesPerGas({
-    chainId: chain?.id,
+    chainId: chainId,
     formatUnits: "ether",
   });
 
@@ -46,6 +48,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
   const isCustomCurrMint = farcasterStates?.frameData?.isCustomCurrMint;
   const TxFeeForDeployment = 0.00009;
   const txFeeForMint = isCustomCurrMint ? 0.00003 : 0.00005;
+  const isCreatorSponsored = farcasterStates.frameData.isCreatorSponsored;
 
   //   bcoz first 10 is free so we are subtracting 10 from total mints
   const numberOfExtraMints = allowedMints - sponsored;
@@ -146,28 +149,32 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
     }
   }, [isError, isTxError]);
 
-  if (farcasterStates.frameData.isCreatorSponsored && chain?.id !== chainId) {
-    return (
-      <Card className="my-2">
-        <List>
-          <ListItem
-            className="flex justify-between items-center gap-2"
-            onClick={() =>
-              switchChain({
-                chainId: chainId,
-              })
-            }
-          >
-            <Typography variant="h6" color="blue-gray">
-              Click here to switch to{" "}
-              {ENVIRONMENT === "production" ? "Base" : "BaseSepolia"} chain for
-              Topup
-            </Typography>
-          </ListItem>
-        </List>
-      </Card>
-    );
-  }
+  // if (farcasterStates.frameData.isCreatorSponsored && chain?.id !== chainId) {
+  //   return (
+  //     <Card className="my-2">
+  //       <List>
+  //         <ListItem
+  //           className="flex justify-between items-center gap-2"
+  //           onClick={() => {
+  //             !authenticated
+  //               ? login()
+  //               : switchChain({
+  //                   chainId: chainId,
+  //                 });
+  //           }}
+  //         >
+  //           <Typography variant="h6" color="blue-gray">
+  //             {!authenticated
+  //               ? "Please connect your wallet for topup"
+  //               : `Click here to switch to
+  //             ${ENVIRONMENT === "production" ? "Base" : "BaseSepolia"} chain for
+  //             Topup`}
+  //           </Typography>
+  //         </ListItem>
+  //       </List>
+  //     </Card>
+  //   );
+  // }
 
   if (
     farcasterStates.frameData.isCustomCurrMint &&
@@ -225,8 +232,32 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
         <ListItem className="flex-col items-end gap-2">
           {isSufficientBalance ? (
             <Typography variant="h6" color="green">
-              Sufficient balance to pay for mints
+              Sufficient balance to sponsor the gas
             </Typography>
+          ) : !authenticated ? (
+            <>
+              <Typography variant="h6" color="blue-gray">
+                Please connect your wallet to topup
+              </Typography>
+              <Button onClick={login}>Connect</Button>
+            </>
+          ) : isCreatorSponsored && chain?.id !== chainId ? (
+            <>
+              <Typography variant="h6" color="blue-gray">
+                Switch chain to{" "}
+                {ENVIRONMENT === "production" ? "Base" : "BaseSepolia"} for
+                Topup
+              </Typography>
+              <Button
+                onClick={() =>
+                  switchChain({
+                    chainId: chainId,
+                  })
+                }
+              >
+                Switch chain
+              </Button>
+            </>
           ) : (
             <>
               <Typography variant="h6" color="red">
@@ -265,6 +296,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
                     onClick={() =>
                       sendTransaction({
                         to: topUpAccount,
+                        chainId: chainId,
                         value: extraPayForMints
                           ? parseEther(extraPayForMints)
                           : parseEther(payForMints),

@@ -8,12 +8,14 @@ import { toast } from "react-toastify";
 import { saveToLocalStorage } from "../../utils";
 import { LOCAL_STORAGE } from "../../data";
 import * as Sentry from "@sentry/react";
+import useAppUrl from "../app/useAppUrl";
 
 const usePrivyAuth = () => {
   const { posthog, setText, setIsLoading, setSession, setOpenedLoginModal } =
     useContext(Context);
   const { logout } = usePrivy();
   const { disconnect } = useDisconnect();
+  const { urlQueryActionType } = useAppUrl();
 
   const { mutateAsync: evmAuthAsync } = useMutation({
     mutationKey: "evmAuth",
@@ -26,7 +28,13 @@ const usePrivyAuth = () => {
         walletAddress: user?.wallet?.address,
       })
         .then((res) => {
-          toast.success("Login successful");
+          toast.success(
+            `${
+              urlQueryActionType === "composer"
+                ? "Wallet connected"
+                : "Login successful"
+            }`
+          );
           saveToLocalStorage(LOCAL_STORAGE.evmAuth, true);
           saveToLocalStorage(LOCAL_STORAGE.userAuthToken, res.jwt);
           saveToLocalStorage(LOCAL_STORAGE.userAuthTime, new Date().getTime());

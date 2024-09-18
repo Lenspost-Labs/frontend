@@ -66,9 +66,10 @@ import { usePrivy } from "@privy-io/react-auth";
 import WatermarkRemover from "../../components/WatermarkRemover";
 
 const FarcasterNormalPost = () => {
-  const { address } = useAccount();
+  // const { address } = useAccount();
+
   const { chain } = useAccount();
-  const { userLOA, userAddress } = useLocalStorage();
+  const { userLOA, userAddress: address } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
   const { login: privyLogin, authenticated } = usePrivy();
@@ -1029,6 +1030,7 @@ const FarcasterNormalPost = () => {
     }
   }, []);
 
+  // Don't remove it
   console.log({ topUp_balance: walletData?.balance });
 
   return (
@@ -2001,7 +2003,7 @@ const FarcasterNormalPost = () => {
           <WithdrawFunds refetchWallet={refetchWallet} />
         )}
       </div>
-      {isMobile && (
+      {/* {isMobile && (
         <div className="mx-4">
           <Textarea
             label={"Description"}
@@ -2010,7 +2012,7 @@ const FarcasterNormalPost = () => {
             value={postDescription}
           />
         </div>
-      )}
+      )} */}
       <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
         {!getEVMAuth && actionType !== "composer" ? (
           <EVMWallets title={"Login with EVM"} className="mx-2" login={login} />

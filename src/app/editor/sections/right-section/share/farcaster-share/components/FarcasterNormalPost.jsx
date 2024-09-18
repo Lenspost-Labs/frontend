@@ -66,10 +66,9 @@ import { usePrivy } from "@privy-io/react-auth";
 import WatermarkRemover from "../../components/WatermarkRemover";
 
 const FarcasterNormalPost = () => {
-  // const { address } = useAccount();
-
+  const { address } = useAccount();
   const { chain } = useAccount();
-  const { userLOA, userAddress: address } = useLocalStorage();
+  const { userLOA, userAddress } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
   const { login: privyLogin, authenticated } = usePrivy();
@@ -1916,8 +1915,7 @@ const FarcasterNormalPost = () => {
                 />
               )}
 
-              {actionType == "composer" &&
-                farcasterStates.frameData?.isCreatorSponsored &&
+              {farcasterStates.frameData?.isCreatorSponsored &&
                 farcasterStates.frameData?.allowedMints >
                   walletData?.sponsored && (
                   <Topup

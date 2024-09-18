@@ -715,9 +715,9 @@ const Editor = () => {
                   {/* <SpeedDialX /> */}
                   <div className="flex justify-between">
                     <BgRemover />
-                    {actionType !== "composer" &&
+                    {/* {actionType !== "composer" &&
                     <OnboardingModal />
-                    }
+                    } */}
                   </div>
                   <MobileBottombar />
                 </div>

@@ -22,3 +22,11 @@ export const uploadAsset = async (image) => {
 
   return result.data;
 };
+
+export const getImageByCanvasId = async (canvasId) => {
+  const result = await api.get(
+    `${API}/user/canvas/get-image?canvasId=${canvasId}`
+  );
+
+  return result.data;
+};

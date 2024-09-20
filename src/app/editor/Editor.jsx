@@ -297,7 +297,7 @@ const Editor = () => {
 
   // function to add the all recipient handles / address
   const recipientDataCombiner = () => {
-    const { loggedInUserAddress } = useLocalStorage();
+    const { userAddress } = useLocalStorage();
     // From Slug data
     referredFromRef.current = arrSlugReferredFrom || [];
     // Get unique recipients by creating a Set
@@ -309,9 +309,9 @@ const Editor = () => {
       ...recipientDataFilter().recipients, // Add handles of all the dataRefs recipients
     ]);
 
-    // Remove loggedInUserAddress if it's equal to APP_ETH_ADDRESS
-    if (loggedInUserAddress !== APP_ETH_ADDRESS) {
-      recipientsSet.add(loggedInUserAddress); // Add loggedInUserAddress if it's not equal to APP_ETH_ADDRESS
+    // Remove userAddress if it's equal to APP_ETH_ADDRESS
+    if (userAddress !== APP_ETH_ADDRESS) {
+      recipientsSet.add(userAddress); // Add userAddress if it's not equal to APP_ETH_ADDRESS
     }
 
     // Convert the Set back to an array

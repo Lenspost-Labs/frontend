@@ -41,10 +41,10 @@ import { ZoraDialog } from "../../zora-mint/components";
 import logoFarcaster from "../../../../../../../assets/logos/logoFarcaster.jpg";
 import {
   deployZoraContract,
+  getImageByCanvasId,
   getOrCreateWallet,
   mintToXchain,
   postFrame,
-  uploadAsset,
 } from "../../../../../../../services/apis/BE-apis";
 import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
 import Topup from "./Topup";
@@ -137,6 +137,12 @@ const FarcasterNormalPost = () => {
     refetchOnWindowFocus: false,
   });
 
+  const { data: getImageByCanvasIdData } = useQuery({
+    queryKey: ["getImageByCanvasId"],
+    queryFn: () => getImageByCanvasId(contextCanvasIdRef?.current),
+    refetchOnWindowFocus: false,
+  });
+
   const { mutateAsync: deployZoraContractMutation } = useMutation({
     mutationKey: "deployZoraContract",
     mutationFn: deployZoraContract,
@@ -156,11 +162,6 @@ const FarcasterNormalPost = () => {
   const { mutateAsync: storeZoraLinkMutation } = useMutation({
     mutationKey: "storeZoraLink",
     mutationFn: mintToXchain,
-  });
-
-  const { mutateAsync: uploadAssetMutate } = useMutation({
-    mutationKey: "uploadAssets",
-    mutationFn: uploadAsset,
   });
 
   // upload to IPFS Mutation
@@ -499,12 +500,7 @@ const FarcasterNormalPost = () => {
     setIsShareLoading(true);
 
     if (isMobile && actionType === "composer") {
-      const imageUrl = await uploadAssetMutate(
-        canvasBase64Ref.current?.[0]
-      ).then((res) => {
-        return res?.s3link;
-      });
-
+      const imageUrl = getImageByCanvasIdData[0];
       const embeds = farcasterStates?.frameData?.isFrame
         ? FRAME_URL + "/frame/" + frameId
         : imageUrl;

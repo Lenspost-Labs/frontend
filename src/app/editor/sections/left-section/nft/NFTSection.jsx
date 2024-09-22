@@ -52,7 +52,7 @@ import { EVMWallets, SolanaWallets } from "../../top-section/auth/wallets";
 import { usePrivy } from "@privy-io/react-auth";
 import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 
-const NFTPanel = () => {
+export const NFTPanel = () => {
   const [tab, setTab] = useState("wallet");
   const { login } = usePrivyAuth();
   const { isConnected } = useAccount();

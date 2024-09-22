@@ -42,12 +42,17 @@ export function SpeedDialX() {
   };
 
   return (
-    <div className="relative h-8 mb-6 mr-2">
-      <div className="md: absolute bottom-0 right-0">
+
+    <div className="">
+      <div className="">
+// =======
+//     <div className="relative h-8 mb-6 mr-2">
+//       <div className="md: absolute bottom-0 right-0">
+// >>>>>>> feat/one-ui
         <SpeedDial>
           <SpeedDialHandler>
-            <IconButton size="sm" className="rounded-full bg-white">
-              <SuChevronUp className="h-5 w-5 transition-transform group-hover:rotate-90" />
+            <IconButton size="lg" className="rounded-full bg-white">
+              <SuChevronUp className="h-10 w-10 transition-transform group-hover:rotate-90" />
             </IconButton>
           </SpeedDialHandler>
 

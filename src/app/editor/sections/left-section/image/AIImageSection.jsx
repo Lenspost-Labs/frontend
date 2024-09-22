@@ -525,7 +525,7 @@ const CompInstructImage = () => {
   );
 };
 
-const AIImagePanel = () => {
+export const AIImagePanel = () => {
   const [currentTab, setCurrentTab] = useState("prompt");
 
   const tabsArray = ["prompt", "instruct"];

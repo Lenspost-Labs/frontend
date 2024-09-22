@@ -2,7 +2,7 @@ import {
   Popover,
   PopoverContent,
   PopoverHandler,
-  Tooltip
+  Tooltip,
 } from "@material-tailwind/react";
 import { getGoogleFontsListAPI } from "polotno/config";
 import { TextSection } from "polotno/side-panel";
@@ -18,7 +18,7 @@ import {
   EditorIconShape,
   EditorIconTemplates,
   EditorIconTextCursor,
-  EditorIconUpload
+  EditorIconUpload,
 } from "../editorIcons/EditorIcons";
 import { DesignPanel } from "../sections/left-section/design/DesignSection";
 import { AIImagePanel } from "../sections/left-section/image/AIImageSection";
@@ -28,9 +28,12 @@ import { ResizePanel } from "../sections/left-section/resize/ResizeSection";
 import { ShapePanel } from "../sections/left-section/shape/ShapeSection";
 import { TemplatePanel } from "../sections/left-section/template/TemplateSection";
 import useOpenedPanel from "./hooks/useOpenedPanel";
+import { useContext } from "react";
+import { Context } from "../../../providers/context";
 
 const BottomBar = () => {
   const store = useStore();
+  const { isMobile } = useContext(Context);
   const { openedPanel, setOpenedPanel } = useOpenedPanel();
   // returns an URL to api.polotno.com
 
@@ -51,41 +54,45 @@ const BottomBar = () => {
           }}
         >
           <div className="border border-[#D6D6D6] h-[72px] rounded-3xl bg-[#ffffff]">
-            <div className="flex items-center align-middle gap-2 justify-between p-[8px]">
-              <Tooltip content="Undo">
-                <div
-                  onClick={() => store.history.undo()}
-                  className="hover:bg-[#F6F6F6] cursor-pointer border border-[#D6D6D6] selection:bg-[#DBCFFF] h-[56px] w-[56px] rounded-2xl flex items-center align-middle justify-center text-center "
-                >
-                  <EditorIconLeftRotate
-                    width={40}
-                    height={40}
-                    // strokeColor={
-                    //   openedPanel === "Memes" ? "#8D67FF" : "#323232"
-                    // }
-                    // fill={openedPanel === "Memes" ? "#8D67FF" : "#fff"}
-                    strokeWidth={2}
-                  />
-                </div>
-              </Tooltip>
+            {!isMobile && (
+              <>
+                <div className="flex items-center align-middle gap-2 justify-between p-[8px]">
+                  <Tooltip content="Undo">
+                    <div
+                      onClick={() => store.history.undo()}
+                      className="hover:bg-[#F6F6F6] cursor-pointer border border-[#D6D6D6] selection:bg-[#DBCFFF] h-[56px] w-[56px] rounded-2xl flex items-center align-middle justify-center text-center "
+                    >
+                      <EditorIconLeftRotate
+                        width={40}
+                        height={40}
+                        // strokeColor={
+                        //   openedPanel === "Memes" ? "#8D67FF" : "#323232"
+                        // }
+                        // fill={openedPanel === "Memes" ? "#8D67FF" : "#fff"}
+                        strokeWidth={2}
+                      />
+                    </div>
+                  </Tooltip>
 
-              <Tooltip content="Redo">
-                <div
-                  onClick={() => store.history.redo()}
-                  className="hover:bg-[#F6F6F6] cursor-pointer border border-[#D6D6D6] selection:bg-[#DBCFFF] h-[56px] w-[56px] rounded-2xl flex items-center align-middle justify-center text-center "
-                >
-                  <EditorIconRightRotate
-                    width={40}
-                    height={40}
-                    // strokeColor={
-                    //   openedPanel === "Memes" ? "#8D67FF" : "#323232"
-                    // }
-                    // fill={openedPanel === "Memes" ? "#8D67FF" : "#fff"}
-                    strokeWidth={2}
-                  />
+                  <Tooltip content="Redo">
+                    <div
+                      onClick={() => store.history.redo()}
+                      className="hover:bg-[#F6F6F6] cursor-pointer border border-[#D6D6D6] selection:bg-[#DBCFFF] h-[56px] w-[56px] rounded-2xl flex items-center align-middle justify-center text-center "
+                    >
+                      <EditorIconRightRotate
+                        width={40}
+                        height={40}
+                        // strokeColor={
+                        //   openedPanel === "Memes" ? "#8D67FF" : "#323232"
+                        // }
+                        // fill={openedPanel === "Memes" ? "#8D67FF" : "#fff"}
+                        strokeWidth={2}
+                      />
+                    </div>
+                  </Tooltip>
                 </div>
-              </Tooltip>
-            </div>
+              </>
+            )}
           </div>
           <div className="border border-[#D6D6D6] h-[72px] rounded-3xl flex items-center align-middle gap-2 justify-between p-[8px]  bg-[#ffffff]">
             <PopoverHandler onClick={() => setOpenedPanel("Memes")}>
@@ -216,7 +223,7 @@ const BottomBar = () => {
 
           {/* The content that is displayed on the popover : 
           reactive based on the opened panel custom hook - useOpenedPanel */}
-          <PopoverContent className="z-50 h-[64vh] p-4 rounded-2xl">
+          <PopoverContent className="z-50  sm:w-[96vw] md:w-[32vw] h-[64vh] p-4 rounded-2xl">
             {openedPanel === "Memes" && <MemePanel />}
             {openedPanel === "Upload" && <DesignPanel />}
             {openedPanel === "NFTs" && <NFTPanel />}

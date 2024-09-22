@@ -1,11 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  addressCrop,
-  clearAllLocalStorageData,
-  getAvatar,
-  getFromLocalStorage,
-} from "../../../../../utils";
-import { useAccount, useDisconnect } from "wagmi";
+import { addressCrop, getAvatar } from "../../../../../utils";
+import { useAccount } from "wagmi";
 import { toast } from "react-toastify";
 import { Context } from "../../../../../providers/context/ContextProvider";
 import {
@@ -18,16 +13,20 @@ import {
   Avatar,
 } from "@material-tailwind/react";
 
-import { ClipboardIcon, PowerIcon } from "@heroicons/react/24/outline";
 import { useSolanaWallet } from "../../../../../hooks/solana";
 import { useLogout } from "../../../../../hooks/app";
-import { useAccountModal } from "@rainbow-me/rainbowkit";
+import { isMobile as useIsMobile } from "../../../../../hooks/app/useIsMobile";
 
 const ProfileMenu = () => {
   const { solanaAddress } = useSolanaWallet();
+  const [isMobile, setIsMobile] = useState(false);
   const { address } = useAccount();
   const { posthog } = useContext(Context);
   const { logout } = useLogout();
+
+  useEffect(() => {
+    setIsMobile(useIsMobile());
+  }, []);
 
   const handleEVMAddressCopy = () => {
     navigator.clipboard.writeText(address);
@@ -61,6 +60,15 @@ const ProfileMenu = () => {
       shouldRender: solanaAddress ? true : false,
     },
     {
+      label: "Discord",
+      icon: null,
+      image: "/topbar-icons/iconDiscord.svg",
+      onClick: () => {
+        window.open("https://discord.gg/yHMXQE2DNb", "_blank");
+      },
+      shouldRender: isMobile ? true : false,
+    },
+    {
       label: "Logout",
       icon: PowerIcon,
       onClick: fnLogout,
@@ -74,14 +82,14 @@ const ProfileMenu = () => {
         <Avatar
           variant="circular"
           alt="profile picture"
-          className="cursor-pointer outline outline-black"
+          className="cursor-pointer w-10 h-10 outline outline-black"
           src={getAvatar(address || solanaAddress)}
         />
       </MenuHandler>
       <MenuList className="p-1 mt-2">
         {profileMenuItems
           .filter((item) => item.shouldRender === true)
-          .map(({ label, icon, onClick }, key) => {
+          .map(({ label, icon, image, onClick }, key) => {
             const isLastItem = label === "Logout";
             return (
               <div className="outline-none" key={label}>
@@ -95,10 +103,12 @@ const ProfileMenu = () => {
                       : ""
                   }`}
                 >
-                  {React.createElement(icon, {
-                    className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                    strokeWidth: 2,
-                  })}
+                  {icon &&
+                    React.createElement(icon, {
+                      className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
+                      strokeWidth: 2,
+                    })}
+                  {image && <img src={image} alt="" className="w-5" />}
 
                   <Typography
                     as="span"

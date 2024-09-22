@@ -3,40 +3,6 @@ import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from "polotno";
 import { Toolbar } from "polotno/toolbar/toolbar";
 import { ZoomButtons } from "polotno/toolbar/zoom-buttons";
 import {
-  SidePanel,
-  TextSection,
-  BackgroundSection,
-  LayersSection,
-} from "polotno/side-panel";
-import { Workspace } from "polotno/canvas/workspace";
-import { useAccount } from "wagmi";
-import {
-  ENVIRONMENT,
-  apiGetJSONDataForSlug,
-  apiGetOgImageForSlug,
-  checkDispatcher,
-  createCanvas,
-  getProfileData,
-  updateCanvas,
-} from "../../services";
-import { Context } from "../../providers/context/ContextProvider";
-import { unstable_setAnimationsEnabled } from "polotno/config";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  errorMessage,
-  loadFile,
-  base64Stripper,
-  wait,
-  getFromLocalStorage,
-  saveToLocalStorage,
-  consoleLogonlyDev,
-  waterMark,
-} from "../../utils";
-import { useTour } from "@reactour/tour";
-import FcIdea from "@meronex/icons/fc/FcIdea";
-import { useStore } from "../../hooks/polotno";
-import { TopbarSection } from "./sections/top-section";
-import {
   AIImageSection,
   BannerSection,
   DesignSection,
@@ -56,10 +22,52 @@ import { useSolanaWallet } from "../../hooks/solana";
 import { APP_ETH_ADDRESS, LOCAL_STORAGE } from "../../data";
 import { Button } from "@material-tailwind/react";
 import { useAppAuth, useLocalStorage } from "../../hooks/app";
-import { getFarUserDetails } from "../../services/apis/BE-apis";
+import { getFarUserDetails, redeemCode } from "../../services/apis/BE-apis";
 import { useLocation, useNavigate } from "react-router-dom";
 import { watermarkBase64 } from "../../assets/base64/watermark";
+
 import BottomBar from "./new-bottombar/BottomBar";
+// =======
+// import { PagesTimeline } from "polotno/pages-timeline";
+// import { toast } from "react-toastify";
+// import { addGlobalFont, unstable_setAnimationsEnabled } from "polotno/config";
+// import {
+//   BackgroundSection,
+//   LayersSection,
+//   TextSection,
+//   SidePanel,
+// } from "polotno/side-panel";
+// import { useStore } from "../../hooks/polotno";
+// import { useAccount } from "wagmi";
+// import { useTour } from "@reactour/tour";
+// import { Context } from "../../providers/context";
+// import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+// import {
+//   checkDispatcher,
+//   createCanvas,
+//   updateCanvas,
+//   apiGetOgImageForSlug,
+//   apiGetJSONDataForSlug,
+// } from "../../services";
+// import { Workspace } from "polotno/canvas/workspace";
+// import {
+//   errorMessage,
+//   loadFile,
+//   base64Stripper,
+//   wait,
+//   getFromLocalStorage,
+//   saveToLocalStorage,
+//   consoleLogonlyDev,
+//   waterMark,
+//   randomId,
+// } from "../../utils";
+// import FcIdea from "@meronex/icons/fc/FcIdea";
+// import { TopbarSection } from "./sections/top-section";
+
+// import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
+// import MobileBottombar from "./sections/bottom-section/bottomBar/MobileBottombar";
+// import OnboardingModal from "./common/modals/OnboardingModal";
+// >>>>>>> feat/one-ui
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -116,8 +124,21 @@ const Editor = () => {
     canvasBase64Ref,
     farcasterStates,
     setFarcasterStates,
+    setPostName,
+
+    // Mobile UI
+    isMobile,
+    setIsMobile,
+    removedWMarkCanvas,
+    setRemovedWMarkCanvas,
+    setCurOpenedPanel,
+    setOpenBottomBar,
+    isOpenBottomBar,
+
+    setIsOnboardingOpen,
   } = useContext(Context);
 
+  const componentMounted = useRef(false);
   // initialize watermark
   // useEffect(() => {
   //   waterMark(store);
@@ -127,6 +148,9 @@ const Editor = () => {
   const navigate = useNavigate();
   const location = useLocation(); //To get the URL location
   const queryParams = new URLSearchParams(location.search); //to Check A URL search string, beginning with a ?slugId
+  const inviteCode = queryParams.get("inviteCode");
+  const actionType = queryParams.get("actionType");
+  // console.log("inviteCode", inviteCode);
 
   const handleDrop = (ev) => {
     // Do not load the upload dropzone content directly to canvas
@@ -156,55 +180,83 @@ const Editor = () => {
   const { mutateAsync: createCanvasAsync } = useMutation({
     mutationKey: "createCanvas",
     mutationFn: createCanvas,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["my-designs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["my-designs"], { exact: true });
+    // },
   });
 
   // update canvas mutation
   const { mutateAsync: updateCanvasAsync } = useMutation({
     mutationKey: "createCanvas",
     mutationFn: updateCanvas,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["my-designs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["my-designs"], { exact: true });
+    // },
   });
   // 03June2023
 
-  // check for Farcaster auth
-  const { data } = useQuery({
-    queryKey: ["farUserDetails"],
-    queryFn: getFarUserDetails,
-    onSuccess: (res) => {
-      saveToLocalStorage(LOCAL_STORAGE.farcasterAuth, res?.message);
-      setFarcasterStates({
-        ...farcasterStates,
-        isFarcasterAuth: res?.message,
-      });
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
-    enabled: isAuthenticated ? true : false,
-    retry: 1,
-  });
+  useEffect(() => {
+    const checks = async () => {
+      try {
+        const [farUserDetails, dispatcherStatus] = await Promise.all([
+          getFarUserDetails(),
+          checkDispatcher(),
+        ]);
 
-  //  check for Lens dispatcher
-  const { data: lensDispatcher } = useQuery({
-    queryKey: ["lensDispatcher"],
-    queryFn: checkDispatcher,
-    onSuccess: (res) => {
-      saveToLocalStorage(LOCAL_STORAGE.dispatcher, res?.message);
-    },
-    onError: (err) => {
-      console.log("err", err);
-    },
-    enabled: isAuthenticated ? true : false,
-    retry: 1,
-  });
+        saveToLocalStorage(
+          LOCAL_STORAGE.farcasterAuth,
+          farUserDetails?.message
+        );
+
+        saveToLocalStorage(
+          LOCAL_STORAGE.dispatcher,
+          dispatcherStatus?.status === "success"
+            ? dispatcherStatus?.message
+            : false
+        );
+      } catch (error) {
+        console.error("Error performing checks:", error);
+      }
+    };
+
+    if (isAuthenticated) {
+      checks();
+    }
+  }, [isAuthenticated]);
+
+  // From Slug data
+  let arrSlugAssetRecipients = [];
+  let arrSlugReferredFrom = [];
+
+  // Function to load the data on the canvas
+  const fnLoadDataOnCanvas = async () => {
+    const dataForSlug = await apiGetJSONDataForSlug(slugId);
+    consoleLogonlyDev("dataForSlug", dataForSlug?.data);
+
+    // Load the data on Canvas
+    store.loadJSON(dataForSlug?.data?.data);
+
+    // Load the recipients
+    arrSlugAssetRecipients = dataForSlug?.data?.assetsRecipientElementData;
+    arrSlugReferredFrom = dataForSlug?.data?.referredFrom;
+
+    // Update the meta tag in case there is any change in the image
+    const ogImageLink = dataForSlug?.data?.image;
+    let metaTag = document.querySelector('meta[property="og:image"]');
+    if (!metaTag) {
+      // If the meta tag doesn't exist, create it
+      metaTag = document.createElement("meta");
+      metaTag.setAttribute("property", "og:image");
+      document.getElementsByTagName("head")[0].appendChild(metaTag);
+    }
+    // Set or update the content of the meta tag
+    metaTag.setAttribute("content", ogImageLink);
+  };
 
   // function to filter the recipient data
   const recipientDataFilter = () => {
+    // From Slug data
+    preStoredRecipientDataRef.current = arrSlugAssetRecipients;
     parentRecipientDataRef.current = [
       ...preStoredRecipientDataRef.current, // recipient data geting from BE
       ...lensCollectNftRecipientDataRef.current, // recipient data of lens collect
@@ -227,7 +279,6 @@ const Editor = () => {
         notFoundIndexes.push(i);
       }
     }
-    // console.log("notFoundIndexes", recipientDataRefArr)
 
     // Generate a new array by removing elements at notFoundIndexes
     const newDataRef = recipientDataRefArr.filter(
@@ -250,8 +301,9 @@ const Editor = () => {
 
   // function to add the all recipient handles / address
   const recipientDataCombiner = () => {
-    const { loggedInUserAddress } = useLocalStorage();
-
+    const { userAddress } = useLocalStorage();
+    // From Slug data
+    referredFromRef.current = arrSlugReferredFrom || [];
     // Get unique recipients by creating a Set
     const recipientsSet = new Set([
       ...(referredFromRef.current.length > 0 &&
@@ -261,9 +313,9 @@ const Editor = () => {
       ...recipientDataFilter().recipients, // Add handles of all the dataRefs recipients
     ]);
 
-    // Remove loggedInUserAddress if it's equal to APP_ETH_ADDRESS
-    if (loggedInUserAddress !== APP_ETH_ADDRESS) {
-      recipientsSet.add(loggedInUserAddress); // Add loggedInUserAddress if it's not equal to APP_ETH_ADDRESS
+    // Remove userAddress if it's equal to APP_ETH_ADDRESS
+    if (userAddress !== APP_ETH_ADDRESS) {
+      recipientsSet.add(userAddress); // Add userAddress if it's not equal to APP_ETH_ADDRESS
     }
 
     // Convert the Set back to an array
@@ -358,7 +410,7 @@ const Editor = () => {
     }, 3000);
 
     // Load the Watermark
-    fnLoadWatermark();
+    // fnLoadWatermark()
   };
 
   // ------ Testing Share Canvas Start --------
@@ -374,99 +426,133 @@ const Editor = () => {
     }
   };
 
-  // Function to load the data on the canvas
-  const fnLoadDataOnCanvas = async () => {
-    const dataForSlug = await apiGetJSONDataForSlug(slugId);
-    consoleLogonlyDev("dataForSlug", dataForSlug?.data);
-
-    // Load the data on Canvas
-    store.loadJSON(dataForSlug?.data?.data);
-
-    // Update the meta tag in case there is any change in the image
-    const ogImageLink = dataForSlug?.data?.image;
-    let metaTag = document.querySelector('meta[property="og:image"]');
-    if (!metaTag) {
-      // If the meta tag doesn't exist, create it
-      metaTag = document.createElement("meta");
-      metaTag.setAttribute("property", "og:image");
-      document.getElementsByTagName("head")[0].appendChild(metaTag);
-    }
-    // Set or update the content of the meta tag
-    metaTag.setAttribute("content", ogImageLink);
-  };
-
   const fnLoadWatermark = () => {
     if (!store) return;
     consoleLogonlyDev(store.toJSON());
 
     let w = store.width;
     let h = store.height;
-    const watermarkbase64 = "/watermark.png";
+    const watermarkBase64 = "/watermark.png";
 
-    // Check if watermark is already added
-    store.pages.forEach((page, index) => {
+    // Define the desired watermark size relative to the canvas
+    const watermarkSizeFactor = 0.1; // 10% of the canvas dimension
+
+    // Load the watermark image dimensions (assuming you have these values)
+    const originalWatermarkWidth = 100; // Original width of the watermark image
+    const originalWatermarkHeight = 100; // Original height of the watermark image
+
+    // Calculate the aspect ratio of the original watermark
+    const watermarkAspectRatio =
+      originalWatermarkWidth / originalWatermarkHeight;
+
+    // Determine the watermark size based on the canvas width
+    let watermarkWidth = w * watermarkSizeFactor;
+    let watermarkHeight = watermarkWidth / watermarkAspectRatio;
+
+    // If the calculated height exceeds the canvas height limit, adjust the size
+    if (watermarkHeight > h * watermarkSizeFactor) {
+      watermarkHeight = h * watermarkSizeFactor;
+      watermarkWidth = watermarkHeight * watermarkAspectRatio;
+    }
+
+    // Calculate the watermark's position to be at the bottom-right corner
+    let watermarkX = w - watermarkWidth - 10; // 10px padding from the right edge
+    let watermarkY = h - watermarkHeight - 10; // 10px padding from the bottom edge
+
+    // Check if the watermark is already added
+    store.pages.forEach((page) => {
       let watermarkAdded = false;
       page.children.forEach((pageItem) => {
         if (pageItem.name === "watermark") {
           console.log("Watermark already added to the page");
-          // pageItem.x = w - w / 8; // Adjusted x position to bottom-right
-          // pageItem.y = h - h / 8; // Adjusted y position to bottom-right
+          // Update the watermark position and size
+          pageItem.set({
+            x: watermarkX,
+            y: watermarkY,
+            width: watermarkWidth,
+            height: watermarkHeight,
+          });
           watermarkAdded = true;
         }
       });
 
-      // Add watermark
+      // Add watermark if not present
       if (!watermarkAdded) {
         page.addElement({
-          x: w - w / 8, // Adjusted x position to bottom-right
-          y: h - h / 8, // Adjusted y position to bottom-right
+          x: watermarkX,
+          y: watermarkY,
           type: "image",
           name: "watermark",
-          src: watermarkbase64,
+          src: watermarkBase64,
           selectable: false,
           alwaysOnTop: true,
           showInExport: true,
-          height: h / 8,
-          width: w / 8,
+          height: watermarkHeight,
+          width: watermarkWidth,
         });
         console.log(
-          `Watermark added to ${page} page, at x: ${w}, y: ${h - 16}`
+          `Watermark added to page at x: ${watermarkX}, y: ${watermarkY}`
         );
       }
     });
   };
 
+  // useEffect(() => {
+  //   fnLoadWatermark();
+  // }, []);
+
   useEffect(() => {
-    fnLoadWatermark();
-  }, [store]);
+    if (Number(removedWMarkCanvas) === Number(contextCanvasIdRef?.current)) {
+      return;
+    } else {
+      fnLoadWatermark();
+    }
+  }, [
+    store?.width,
+    store?.height,
+    // store?.pages?.length,
+    // store?.pages[0]?.children?.length,
+  ]);
 
   // Effect to check with the slugId and fetch the image changes
+  // useEffect(() => {
+  // 	const fetchImage = async () => {
+  // 		if (!slugId) return
+  // 		try {
+  // 			const imageUrl = await apiGetOgImageForSlug(slugId)
+  // 			if (imageUrl) {
+  // 				consoleLogonlyDev('Image url from slug', imageUrl)
+
+  // 				// Update OG meta tags dynamically
+  // 				fnUpdateOgMetaTags(imageUrl)
+  // 			} else {
+  // 				consoleLogonlyDev('Failed to fetch image', imageUrl)
+  // 			}
+  // 		} catch (error) {
+  // 			consoleLogonlyDev('Error fetching image:', error)
+  // 		}
+  // 	}
+
+  // 	fetchImage()
+  // }, [])
+
+  // This has essential checks for the slugId and isAuthenticated and loads the data on the canvas
   useEffect(() => {
-    const fetchImage = async () => {
-      if (!slugId) return;
-      try {
-        const imageUrl = await apiGetOgImageForSlug(slugId);
-        if (imageUrl) {
-          consoleLogonlyDev("Image url from slug", imageUrl);
-
-          // Update OG meta tags dynamically
-          fnUpdateOgMetaTags(imageUrl);
-        } else {
-          consoleLogonlyDev("Failed to fetch image", imageUrl);
-        }
-      } catch (error) {
-        consoleLogonlyDev("Error fetching image:", error);
-      }
-    };
-
-    fetchImage();
-  }, []);
-
-  useEffect(() => {
-    if (slugId) {
+    // if (!componentMounted.current) {
+    if (slugId && isAuthenticated) {
       fnLoadDataOnCanvas();
+    } else if (!isAuthenticated && slugId && !componentMounted.current) {
+      toast.error("Please login to remix the template");
+      // }
+      componentMounted.current = true;
     }
-  }, [location, navigate, slugId]);
+  }, [slugId, isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsOnboardingOpen(true);
+    }
+  }, [isAuthenticated]);
 
   // -------- Testing Share Canvas End ----------
 
@@ -543,6 +629,44 @@ const Editor = () => {
   //   }
   // }, [isPageActive.current]);
 
+  // const [initialHeight] = useState(window?.innerHeight);
+
+  // useEffect(() => {
+  //   if (actionType === "composer") {
+  //     const handleResize = () => {
+  //       document.body.style.height = `${initialHeight}px`;
+  //     };
+
+  //     window.addEventListener("resize", handleResize);
+  //     return () => window.removeEventListener("resize", handleResize);
+  //   }
+  // }, [initialHeight]);
+
+  // useEffect(() => {
+  //   console.log(`openedSidepanel in Editor.jsx`, store?.openedSidePanel);
+
+  //   if (store?.openedSidePanel === "effects" && !isOpenBottomBar) {
+  //     console.log(`openedSidepanel in IF`, store?.openedSidePanel);
+  //     setCurOpenedPanel("mobPanelEffects");
+  //     setOpenBottomBar(true);
+  //   }
+  // }, [store?.openedSidePanel, isOpenBottomBar]);
+
+  // invite code mutuation
+  const { mutateAsync: apiRedeemCode } = useMutation({
+    mutationKey: "inviteCode",
+    mutationFn: redeemCode,
+  });
+
+  useEffect(() => {
+    if (inviteCode) {
+      apiRedeemCode({
+        code: inviteCode,
+        address: address || solanaAddress,
+      });
+    }
+  }, [inviteCode, address, solanaAddress]);
+
   return (
     <>
       <div
@@ -555,19 +679,34 @@ const Editor = () => {
         }}
         onDrop={handleDrop}
       >
-        <div style={{ height: "calc(100% - 75px)" }}>
-          <div className="">
-            <TopbarSection />
-          </div>
+        <div
+          style={{
+            height: isMobile ? "calc(100% - 8px)" : "calc(100% - 75px)",
+          }}
+        >
+          {!isMobile && (
+            <div className="">
+              <TopbarSection />
+            </div>
+          )}
           <PolotnoContainer className="min-h-400 md:min-h-full">
+
             <div id="second-step" className="mx-2">
               {/* <SidePanelWrap>
+// =======
+//             <div
+//               id="second-step"
+//               className={`${isMobile ? "hidden" : ""} md:block mx-0 md:mx-2`}
+//             >
+//               <SidePanelWrap>
+// >>>>>>> feat/one-ui
                 <SidePanel store={store} sections={sections} />
               </SidePanelWrap> */}
             </div>
             <WorkspaceWrap>
-              <div className="mb-2 mr-2">
-                <Toolbar store={store} />
+              <div className="mb-2 md:ml-0 mx-2 my-2">
+                {!isMobile && <Toolbar store={store} />}
+                {isMobile && <MobileTopbar />}
               </div>
               <Workspace
                 store={store}
@@ -576,6 +715,7 @@ const Editor = () => {
                 }}
                 backgroundColor="#e8e8ec"
               />
+
 
               <BottomBar />
 
@@ -608,6 +748,52 @@ const Editor = () => {
                   </div>
                 </div>
               </div> */}
+
+//               {/* Bottom section */}
+//               {!isMobile && <ZoomButtons store={store} />}
+//               {!isMobile && <PagesTimeline store={store} />}
+//               {isMobile && (
+//                 <div className="flex flex-col">
+//                   {/* <SpeedDialX /> */}
+//                   <div className="flex justify-between">
+//                     <BgRemover />
+//                     {/* {actionType !== "composer" &&
+//                     <OnboardingModal />
+//                     } */}
+//                   </div>
+//                   <MobileBottombar />
+//                 </div>
+//               )}
+
+//               {!isMobile && (
+//                 <div className="flex flex-row justify-between items-center rounded-lg ">
+//                   <BgRemover />
+//                   {/* Quick Tour on the main page */}
+//                   <div className="flex flex-row ">
+//                     {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
+//                     <SpeedDialX />
+//                     <OnboardingModal />
+
+//                     <div
+//                       className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
+//                       onClick={async () => {
+//                         setCurrentStep(0);
+//                         if (isConnected) {
+//                           setIsOpen(true);
+//                           setSteps(OnboardingStepsWithShare);
+//                         } else {
+//                           setIsOpen(true);
+//                           setSteps(OnboardingSteps);
+//                         }
+//                       }}
+//                     >
+//                       <FcIdea className="m-2" size="16" />
+//                       {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
+//                     </div>
+//                   </div>
+//                 </div>
+//               )}
+
             </WorkspaceWrap>
           </PolotnoContainer>
         </div>

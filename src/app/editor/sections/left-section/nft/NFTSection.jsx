@@ -49,9 +49,12 @@ import {
 } from "@material-tailwind/react";
 import { LOCAL_STORAGE } from "../../../../../data";
 import { EVMWallets, SolanaWallets } from "../../top-section/auth/wallets";
+import { usePrivy } from "@privy-io/react-auth";
+import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 
 export const NFTPanel = () => {
   const [tab, setTab] = useState("wallet");
+  const { login } = usePrivyAuth();
   const { isConnected } = useAccount();
   return (
     <div className="h-full flex flex-col">
@@ -103,7 +106,11 @@ const NFTSection = {
 export default NFTSection;
 
 // catogoery component (child component of LenspostNFT component)
-const RenderCategories = ({ contractAddressRef, setActiveCat, searchId }) => {
+export const RenderCategories = ({
+  contractAddressRef,
+  setActiveCat,
+  searchId,
+}) => {
   const { isAuthenticated } = useAppAuth();
   const { address, isDisconnected } = useAccount();
   const [query, setQuery] = useState("");
@@ -134,11 +141,6 @@ const RenderCategories = ({ contractAddressRef, setActiveCat, searchId }) => {
 
   return (
     <>
-      <SearchComponent
-        query={query}
-        setQuery={setQuery}
-        placeholder="Search collections"
-      />
       {isError ? (
         <ErrorComponent error={error} />
       ) : data?.pages[0]?.data.length > 0 ? (
@@ -233,11 +235,6 @@ const RenderImages = ({ contractAddressRef, setActiveCat, activeCat }) => {
     />
   ) : (
     <>
-      <SearchComponent
-        query={query}
-        setQuery={setQuery}
-        placeholder="Search NFTs by id"
-      />
       <div className="h-88">
         <div className="flex flex-row align-middle w-full bg-[#fff] sticky top-0 z-10">
           <Button
@@ -316,7 +313,6 @@ const RenderSearchedNFTs = ({
 
   return (
     <>
-      {/* <SearchComponent query={query} setQuery={setQuery} /> */}
       <div className="h-88">
         <div className="flex flex-row align-middle w-full bg-[#fff] sticky top-0 z-10">
           <Button
@@ -360,7 +356,7 @@ const RenderSearchedNFTs = ({
   );
 };
 
-const LenspostNFT = () => {
+export const LenspostNFT = () => {
   const { isAuthenticated } = useAppAuth();
   const [activeCat, setActiveCat] = useState("");
   const { address, isDisconnected, isConnected } = useAccount();
@@ -403,7 +399,6 @@ const RenderSearchedWalletNFT = ({ goBack, delayedQuery }) => {
 
   return (
     <>
-      {/* <SearchComponent query={query} setQuery={setQuery} /> */}
       <div className="h-88">
         <div className="flex flex-row align-middle w-full bg-[#fff] sticky top-0 z-10">
           <Button
@@ -492,9 +487,9 @@ const WalletNFT = () => {
   const { mutateAsync } = useMutation({
     mutationKey: "refreshNFT",
     mutationFn: refreshNFT,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["userNFTs"], { exact: true });
-    },
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(["userNFTs"], { exact: true });
+    // },
   });
 
   useEffect(() => {
@@ -560,6 +555,7 @@ const WalletNFT = () => {
         setQuery={setQuery}
         placeholder="Search NFTs by id"
         onClick={refreshNFTs}
+        btnIcon={"refresh"}
       />
       <Tabs
         className="overflow-y-auto"
@@ -644,7 +640,7 @@ const WalletNFT = () => {
                       Or connect the EVM Wallet to see your NFTs
                     </Typography>
                     <div className=" flex justify-center">
-                      <EVMWallets title="EVM" />
+                      <EVMWallets title="EVM" login={login} />
                     </div>
                   </>
                 ) : null}

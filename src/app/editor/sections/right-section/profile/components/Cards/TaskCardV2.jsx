@@ -9,6 +9,9 @@ import iconCheck from "../../assets/svgs/iconCheck.svg";
 import iconLock from "../../assets/svgs/iconLock.svg";
 const TaskCardV2 = ({
   taskId,
+  taskCount,
+  taskCampaign,
+  taskType,
   taskName,
   taskDesc,
   taskAmount,
@@ -23,7 +26,7 @@ const TaskCardV2 = ({
       setStColor("bg-green-50");
     }
     if (!isCompleted) {
-      setStColor("bg-gray-200");
+      setStColor("bg-gray-100");
     }
     if (isReward) {
       setStColor("bg-yellow-100");
@@ -36,12 +39,14 @@ const TaskCardV2 = ({
 
   return (
     <>
-      <div className="flex gap-2 ">
-        <div className="flex gap-2 items-center m-2 mt-0 w-full ">
+      <div className="flex gap-2">
+        <div
+          className={`flex gap-2 items-center mb-2 mt-0 w-full rounded-lg ${stColor}`}
+        >
           <div
-            className={`flex align-middle justify-center items-center text-center rounded-full ${stColor}`}
+            className={`flex align-middle justify-center items-center text-center rounded-md`}
           >
-            <div className="flex align-middle justify-center items-center w-16 h-16">
+            <div className="flex align-middle justify-center items-center p-4">
               {isReward ? (
                 <img className="rounded-full" src={iconReward} alt="profile" />
               ) : isCompleted ? (
@@ -51,24 +56,37 @@ const TaskCardV2 = ({
               )}
             </div>
           </div>
-          <div
-            className={`flex flex-col px-2 py-4 w-full rounded-md ${stColor}`}
-          >
-            <div className="text-md font-semibold">{taskName}</div>
-            <div className="w-fulltext-gray-700 mt-2 ">{taskDesc}</div>
+          <div className="flex w-full justify-between items-end pr-1">
+            <div className={`flex flex-col p-4 pl-0 w-full rounded-md`}>
+              <div className="text-md font-semibold">{taskName}</div>
+              <div className="w-full text-gray-700 mt-2 ">{taskDesc}</div>
+            </div>
+            {taskCount !== null && taskCampaign == "farcaster" && (
+              <div className="flex flex-none z-4 w-fit -mt-4 border border-blue-400  opacity-80 text-blue-400 rounded-full px-2 py-0 mb-2 shadow-md">
+                {taskCount}/{taskCampaign !== "farcaster" ? "∞" : 20}{" "}
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex gap-1 bg-blue-400 text-white w-fit h-5 px-2 rounded-full opacity-80 -ml-16 mt-4 shadow-md">
+        <div
+          className={`flex gap-1 items-end ${
+            taskType == "MINT"
+              ? "bg-blue-400 text-white"
+              : "bg-orange-300 text-black"
+          } w-fit h-5 px-2 rounded-full opacity-80 -ml-16 mt-2 shadow-md`}
+        >
           <div className="flex align-middle items-center">
             <div className="">
               {isCompleted ? (
-                <img className="h-4" src={iconCheck} alt="" />
+                <img className="h-4 text-white" src={iconCheck} alt="" />
               ) : isReward ? (
                 <img className="h-4" src={iconLock} alt="" />
               ) : (
                 <>
                   <div className="flex align-middle items-center gap-1 ">
-                    <div className="">{taskAmount}</div>
+                    <div className="">
+                      {taskType == "MINT" ? `+${taskAmount}` : `-${taskAmount}`}
+                    </div>
                     <img className="h-4" src={Coin} alt="" />
                   </div>
                 </>

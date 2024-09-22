@@ -2,9 +2,9 @@ import { useContext, useState, useEffect } from "react";
 import {
   useAccount,
   useChainId,
-  useNetwork,
   useSignMessage,
-  useSwitchNetwork,
+  useSwitchChain,
+  useConfig,
 } from "wagmi";
 import TiDelete from "@meronex/icons/ti/TiDelete";
 import BsArrowLeft from "@meronex/icons/bs/BsArrowLeft";
@@ -72,6 +72,7 @@ import {
 import { EVMWallets } from "../../../../top-section/auth/wallets";
 import { SharePanelHeaders } from "../../components";
 import BsPlus from "@meronex/icons/bs/BsPlus";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const LensShare = () => {
   const [recipientsLensHandle, setRecipientsLensHandle] = useState([]);
@@ -84,14 +85,16 @@ const LensShare = () => {
   const [totalPercentage, setTotalPercentage] = useState(0);
   const { isAuthenticated } = useAppAuth();
   const chainId = useChainId();
-  const { chains, chain } = useNetwork();
+  const { chain } = useAccount();
+  const { chains } = useConfig();
   const {
     error: errorSwitchNetwork,
     isError: isErrorSwitchNetwork,
-    isLoading: isLoadingSwitchNetwork,
+    isPending: isLoadingSwitchNetwork,
     isSuccess: isSuccessSwitchNetwork,
-    switchNetwork,
-  } = useSwitchNetwork();
+    switchChain,
+  } = useSwitchChain();
+  const { login } = usePrivyAuth();
 
   const {
     setIsLoading,
@@ -122,7 +125,8 @@ const LensShare = () => {
   const [currentTab, setCurrentTab] = useState("smartPost");
 
   const isUnsupportedChain = () => {
-    if (chain?.unsupported || chain?.id != chains[0]?.id) return true;
+    if (chain?.id != chains[0]?.id) return true;
+    return false;
   };
 
   const { mutateAsync: shareOnLens } = useMutation({
@@ -1001,13 +1005,13 @@ const LensShare = () => {
         </div>
 
         {!getEVMAuth ? (
-          <EVMWallets title="Login with EVM" className="mx-2" />
+          <EVMWallets title="Login with EVM" login={login} className="mx-2" />
         ) : isUnsupportedChain() ? (
           <div className="mx-2 outline-none">
             <Button
               className="w-full outline-none flex justify-center items-center gap-2"
               disabled={isLoadingSwitchNetwork}
-              onClick={() => switchNetwork(chains[0]?.id)}
+              onClick={() => switchChain({ chainId: chains[0]?.id })}
               color="red"
             >
               {isLoadingSwitchNetwork ? "Switching" : "Switch"} to{" "}

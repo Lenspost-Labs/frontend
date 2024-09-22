@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { SectionTab } from "polotno/side-panel";
 import { MyDesignIcon } from "../../../../../assets/assets";
 
-import { Button, Card, Menu, MenuItem, Position } from "@blueprintjs/core";
+import { Card } from "@blueprintjs/core";
 
-import { Popover2 } from "@blueprintjs/popover2";
-import { useAccount } from "wagmi";
 import {
   changeCanvasVisibility,
   deleteCanvasById,
@@ -21,8 +19,6 @@ import {
   ErrorComponent,
   LoadMoreComponent,
   MessageComponent,
-  MyDesignReacTour,
-  SearchComponent,
   ShareWithTagsModal,
 } from "../../../common";
 import {
@@ -37,11 +33,18 @@ import { LoadingAnimatedComponent } from "../../../common";
 import { fnPageHasElements } from "../../../../../utils/fnPageHasElements";
 import { useAppAuth, useReset } from "../../../../../hooks/app";
 import DesignCard from "./components/cards/DesignCard";
+import assetNewDesign from "./assets/NewDesign.svg";
 
 export const DesignPanel = () => {
   const { isAuthenticated } = useAppAuth();
   const { resetState } = useReset();
-  const { fastPreview, contextCanvasIdRef, designModal } = useContext(Context);
+  const {
+    fastPreview,
+    contextCanvasIdRef,
+    designModal,
+    isMobile,
+    setOpenLeftBar,
+  } = useContext(Context);
   const [modalImageLink, setModalImageLink] = useState("");
   const store = useStore();
 
@@ -111,7 +114,7 @@ export const DesignPanel = () => {
       } else {
         toast.success(data?.message);
       }
-      queryClient.invalidateQueries(["community-pool"], { exact: true });
+      // queryClient.invalidateQueries(["community-pool"], { exact: true });
     },
   });
 
@@ -163,61 +166,64 @@ export const DesignPanel = () => {
   return (
     <div className="h-full flex flex-col">
       {/* <h1 className="text-lg">My Files</h1> */}
-
-      <Button
-        className="m-2 p-1"
-        onClick={() => {
-          if (fnPageHasElements(store)) {
-            setModal({ ...modal, isOpen: true, isNewDesign: true });
-          }
-        }}
-      >
-        Create new design
-      </Button>
-
-      {modal.isOpen && modal.isTokengate && (
-        <CompModal
-          modal={modal}
-          setModal={setModal}
-          tokengatingIp="contract address / Lenster post link"
-          icon={"lock"}
-          ModalTitle={"Tokengate this template"}
-          ModalMessage={`
+      {!isMobile && (
+        <>
+          {modal.isOpen && modal.isTokengate && (
+            <CompModal
+              modal={modal}
+              setModal={setModal}
+              tokengatingIp="contract address / Lenster post link"
+              icon={"lock"}
+              ModalTitle={"Tokengate this template"}
+              ModalMessage={`
           Please enter the Contract Address or the Lenster Post Link to tokengate this template.
           `}
-          customBtn={"Confirm"}
-          onClickFunction={() =>
-            tokengateCanvas({
-              id: modal.canvasId,
-              gatewith: modal.stTokengateIpValue,
-            })
-          }
-        />
+              customBtn={"Confirm"}
+              onClickFunction={() =>
+                tokengateCanvas({
+                  id: modal.canvasId,
+                  gatewith: modal.stTokengateIpValue,
+                })
+              }
+            />
+          )}
+
+          {modal.isOpen && modal.isNewDesign && (
+            <CompModal
+              modal={modal}
+              setModal={setModal}
+              ModalTitle={"Are you sure to create a new design?"}
+              ModalMessage={"This will remove all the content from your canvas"}
+              onClickFunction={() => fnDeleteCanvas()}
+            />
+          )}
+
+          {/* <MyDesignReacTour /> */}
+        </>
       )}
-
-      {modal.isOpen && modal.isNewDesign && (
-        <CompModal
-          modal={modal}
-          setModal={setModal}
-          ModalTitle={"Are you sure to create a new design?"}
-          ModalMessage={"This will remove all the content from your canvas"}
-          onClickFunction={() => fnDeleteCanvas()}
-        />
-      )}
-
-      <SearchComponent
-        onClick={false}
-        query={query}
-        setQuery={setQuery}
-        placeholder="Search designs by id"
-      />
-
-      <MyDesignReacTour />
-
       {isError ? (
         <ErrorComponent error={error} />
       ) : data?.pages[0]?.data?.length > 0 ? (
         <div className="overflow-y-auto grid grid-cols-2" id="RecentDesigns">
+          {/* Create new design - Image */}
+          <div
+            className="cursor-pointer m-1 hover:shadow-sm"
+            onClick={() => {
+              if (isMobile) {
+                setOpenLeftBar(false);
+                resetState();
+              }
+              if (fnPageHasElements(store)) {
+                setModal({ ...modal, isOpen: true, isNewDesign: true });
+              }
+            }}
+          >
+            <LazyLoadImage
+              className="rounded-lg hover:shadow-lg"
+              src={assetNewDesign}
+              alt={"new design"}
+            />
+          </div>
           {contextCanvasIdRef.current === null && fastPreview[0] && (
             <Card className="relative p-0 m-1" interactive>
               <img src={fastPreview[0]} alt="" />
@@ -248,8 +254,9 @@ export const DesignPanel = () => {
                       setModal({
                         ...modal,
                         canvasId: item?.id,
-                      })
-                      setModalImageLink(item?.imageLink)}}
+                      });
+                      setModalImageLink(item?.imageLink);
+                    }}
                     openTokengateModal={() =>
                       setModal({
                         ...modal,
@@ -258,6 +265,7 @@ export const DesignPanel = () => {
                         canvasId: item?.id,
                       })
                     }
+                    hasWatermark={item?.watermark}
                   />
                 </>
               );
@@ -276,7 +284,12 @@ export const DesignPanel = () => {
       )}
 
       {/* New Design card end - 23Jun2023 */}
-      {designModal && <ShareWithTagsModal canvasId={modal.canvasId} displayImg={modalImageLink}  />}
+      {designModal && (
+        <ShareWithTagsModal
+          canvasId={modal.canvasId}
+          displayImg={modalImageLink}
+        />
+      )}
     </div>
   );
 };

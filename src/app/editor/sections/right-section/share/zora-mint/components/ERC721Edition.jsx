@@ -21,18 +21,19 @@ import { toast } from "react-toastify";
 import {
   useAccount,
   useChainId,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-  useSwitchNetwork,
-  useWaitForTransaction,
+  useWriteContract,
+  useSwitchChain,
+  useWaitForTransactionReceipt,
+  useConfig,
 } from "wagmi";
 import { useAppAuth, useLocalStorage } from "../../../../../../../hooks/app";
 import {
   APP_ETH_ADDRESS,
   ERROR,
+  FRAME_URL,
   LOCAL_STORAGE,
   MINT_URL,
+  ham,
 } from "../../../../../../../data";
 import {
   ENVIRONMENT,
@@ -51,7 +52,6 @@ import ZoraDialog from "./ZoraDialog";
 import { useCreateSplit } from "../../../../../../../hooks/0xsplit";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { EVMWallets } from "../../../../top-section/auth/wallets";
-import { useChainModal } from "@rainbow-me/rainbowkit";
 import {
   FarcasterAuth,
   FarcasterChannel,
@@ -60,25 +60,37 @@ import { LensAuth, LensDispatcher } from "../../lens-share/components";
 import {
   getFarUserDetails,
   mintToXchain,
+  postFrame,
 } from "../../../../../../../services/apis/BE-apis";
 import { zoraURLErc721 } from "../utils/zoraURL";
+import { ZoraLogo } from "../../../../../../../assets";
+import { config } from "../../../../../../../providers/EVM/EVMWalletProvider";
+import { http } from "viem";
+import { degen, polygon } from "viem/chains";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const { address } = useAccount();
+  const { login } = usePrivyAuth();
   const { isAuthenticated } = useAppAuth();
   const { isFarcasterAuth, lensAuth, dispatcher } = useLocalStorage();
   const chainId = useChainId();
-  const { chains, chain } = useNetwork();
+  const { chain } = useAccount();
+  const { chains } = useConfig();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
-  const { openChainModal } = useChainModal();
   const [recipientsEns, setRecipientsEns] = useState([]);
   const [totalPercent, setTotalPercent] = useState(0);
-
+  const [isStoringFrameData, setIsStoringFrameData] = useState(false);
   // share states
   const [isShareLoading, setIsShareLoading] = useState(false);
   const [isShareSuccess, setIsShareSuccess] = useState(false);
   const [isShareError, setIsShareError] = useState(false);
   const [shareError, setShareError] = useState("");
+  const [isDeployingZoraContractSuccess, setIsDeployingZoraContractSuccess] =
+    useState(false);
+  const [respContractAddress, setRespContractAddress] = useState(null);
+  const [frameId, setFrameId] = useState(null);
+  const [isPostingFrameSuccess, setIsPostingFrameSuccess] = useState(false);
 
   // farcaster data states
   const [farTxHash, setFarTxHash] = useState("");
@@ -98,10 +110,11 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     isError: isErrorSwitchNetwork,
     isLoading: isLoadingSwitchNetwork,
     isSuccess: isSuccessSwitchNetwork,
-    switchNetwork,
-  } = useSwitchNetwork();
+    switchChain,
+  } = useSwitchChain();
 
   const {
+    postName,
     zoraErc721Enabled,
     setZoraErc721Enabled,
     zoraErc721StatesError,
@@ -123,6 +136,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     error: uploadError,
     isSuccess: isUploadSuccess,
     isLoading: isUploading,
+    isPending: isUploadPending,
   } = useMutation({
     mutationKey: "uploadToIPFS",
     mutationFn: uploadUserAssetToIPFS,
@@ -139,6 +153,57 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     mutationKey: "storeZoraLink",
     mutationFn: mintToXchain,
   });
+
+  const { mutateAsync: postFrameData } = useMutation({
+    mutationKey: "postFrameData",
+    mutationFn: postFrame,
+  });
+
+  const postFrameDataFn = async () => {
+    setIsStoringFrameData(true);
+
+    const params = {
+      canvasId: contextCanvasIdRef.current,
+      owner: address,
+      isTopUp: farcasterStates.frameData?.isTopup,
+      allowedMints: Number(farcasterStates.frameData?.allowedMints) || 10,
+      metadata: {
+        name: postName,
+        description: postDescription,
+      },
+      isLike: farcasterStates.frameData?.isLike,
+      isRecast: farcasterStates.frameData?.isRecast,
+      isFollow: farcasterStates.frameData?.isFollow,
+      redirectLink: farcasterStates.frameData?.externalLink,
+      contractAddress: respContractAddress,
+      chainId: farcasterStates?.frameData?.isCustomCurrMint
+        ? farcasterStates?.frameData?.selectedNetwork?.id
+        : farcasterStates?.frameData?.isCreatorSponsored
+        ? base?.id
+        : chainId,
+      creatorSponsored: farcasterStates.frameData?.isCreatorSponsored,
+      gatedChannels: farcasterStates.frameData?.channelValue?.id,
+      gatedCollections: farcasterStates.frameData?.collectionAddress,
+    };
+
+    postFrameData(params)
+      .then((res) => {
+        if (res?.status === "success") {
+          setIsStoringFrameData(false);
+          setFrameId(res?.frameId);
+          setIsPostingFrameSuccess(true);
+        } else if (res?.error) {
+          setIsStoringFrameData(false);
+          setIsPostingFrameError(true);
+          toast.error(res?.error);
+        }
+      })
+      .catch((err) => {
+        setIsStoringFrameData(false);
+        setIsPostingFrameError(true);
+        toast.error(errorMessage(err));
+      });
+  };
 
   // create lens open action
   const handleShare = (canvasParams, platform) => {
@@ -180,7 +245,9 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const isUnsupportedChain = () => {
     // chains[0] is the polygon network
     if (
-      chainId === chains[0]?.id ||
+      chainId === degen?.id ||
+      chainId === polygon?.id ||
+      chainId === ham?.id ||
       chain?.unsupported ||
       chain?.id != selectedChainId
     )
@@ -190,19 +257,20 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   // networks data for samart posts
   const networksDataSmartPosts = () => {
     const networks = ENVIRONMENT === "production" ? [8453, 7777777] : [5]; // supported chains for Lens samart posts
+    const unsupportedChain = chains.slice(0, -3);
 
     // filter the chains for smart posts
     const filteredChains = isOpenAction
       ? chains.filter((chain) => {
           return networks?.includes(chain?.id);
         })
-      : chains.slice(1, -1);
+      : chains.slice(0, -3);
 
     const isUnsupportedChain = () => {
       if (
         chain?.unsupported ||
-        (isOpenAction && !networks?.includes(chain?.id)) ||
-        chainId === chains[0]?.id
+        (isOpenAction && !networks?.includes(chain?.id))
+        // chains.map((chain, index) => unsupportedChain.includes(chain))
       ) {
         return true;
       }
@@ -706,26 +774,23 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     return { args: arr };
   };
 
-  // create edition configs
+  config.transports = {
+    [chain?.id]: http(),
+  };
+
   const {
-    config,
+    writeContract,
+    data,
     error: prepareError,
+    isPending: isLoading,
     isError: isPrepareError,
-  } = usePrepareContractWrite({
-    abi: zoraNftCreatorV1Config.abi,
-    address:
-      chain?.id == 8453
-        ? "0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c"
-        : zoraNftCreatorV1Config.address[chainId],
-    functionName: "createEditionWithReferral",
-    args: handleMintSettings().args,
-  });
-  const { write, data, error, isLoading, isError } = useContractWrite(config);
+  } = useWriteContract(config);
+
   const {
     data: receipt,
     isLoading: isPending,
     isSuccess,
-  } = useWaitForTransaction({ hash: data?.hash });
+  } = useWaitForTransactionReceipt({ hash: data });
 
   // mint on Zora
   const handleSubmit = () => {
@@ -854,7 +919,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       canvasId: contextCanvasIdRef.current,
       mintLink: receipt?.logs[0]?.address,
       chain: chain?.name,
-      contractType: 721,
+      contractType: "ZORA721",
       chainId: chain?.id,
       hash: receipt?.logs[0]?.address,
     };
@@ -913,12 +978,19 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   // mint on Zora
   useEffect(() => {
     if (createSplitData?.splitAddress) {
-      console.log("createSplitData", createSplitData);
       setTimeout(() => {
-        write?.();
+        writeContract({
+          abi: zoraNftCreatorV1Config.abi,
+          address:
+            chain?.id == 8453
+              ? "0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c"
+              : zoraNftCreatorV1Config.address[chainId],
+          functionName: "createEditionWithReferral",
+          args: handleMintSettings().args,
+        });
       }, 1000);
     }
-  }, [isCreateSplitSuccess, write]);
+  }, [isCreateSplitSuccess]);
 
   // create open adition on LENS
   useEffect(() => {
@@ -934,21 +1006,30 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
   // share on farcater
   useEffect(() => {
-    if (isFarcaster && slug) {
+    if (isPostingFrameSuccess) {
       const canvasParams = {
-        zoraMintLink: MINT_URL + "/mint/" + slug,
+        zoraMintLink: "",
         channelId: farcasterStates.channel?.id || "",
+        frameLink: FRAME_URL + "/frame/" + frameId,
+        isTransactional: true,
       };
 
       handleShare(canvasParams, "farcaster");
     }
-  }, [slug]);
+  }, [isPostingFrameSuccess]);
+
+  useEffect(() => {
+    if (isDeployingZoraContractSuccess) {
+      postFrameDataFn();
+    }
+  }, [isDeployingZoraContractSuccess]);
 
   // store the zora link in DB
   useEffect(() => {
     if (isSuccess && receipt?.logs[0]?.address) {
       if (isFarcaster) {
-        setIsShareLoading(true);
+        setIsDeployingZoraContractSuccess(true);
+        setRespContractAddress(receipt?.logs[0]?.address);
       }
       storeZoraLink();
     }
@@ -956,21 +1037,21 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
   // error handling for mint
   useEffect(() => {
-    if (isError) {
-      console.log("mint error", error);
-      toast.error(error.message.split("\n")[0]);
+    if (isPrepareError) {
+      console.log("mint error", prepareError);
+      toast.error(prepareError.message.split("\n")[0]);
     }
 
     if (isPrepareError) {
       console.log("prepare error", prepareError);
       // toast.error(prepareError.message);
     }
-  }, [isError, isPrepareError]);
+  }, [prepareError, isPrepareError]);
 
   // error handling for create split
   useEffect(() => {
     if (isCreateSplitError) {
-      console.log("create split error", createSplitError);
+      console.error("create split error", createSplitError);
       toast.error(createSplitError.message.split("\n")[0]);
     }
   }, [isCreateSplitError]);
@@ -1005,10 +1086,10 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       <ZoraDialog
         title="ERC721 Edition"
         icon={chainLogo(selectedChainId)}
-        isError={isUploadError || isCreateSplitError || isError || isShareError}
+        isError={isUploadError || isCreateSplitError || isShareError}
         isLoading={isLoading}
         isCreatingSplit={isCreateSplitLoading}
-        isUploadingToIPFS={isUploading}
+        isUploadingToIPFS={isUploadPending}
         isPending={isPending}
         isShareLoading={isShareLoading}
         isShareSuccess={isShareSuccess}
@@ -1017,7 +1098,10 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
         data={receipt}
         farTxHash={farTxHash}
         isSuccess={isSuccess}
+        isStoringFrameData={isStoringFrameData}
         slug={slug}
+        isFrame={isFarcaster}
+        frameId={frameId}
       />
       {/* Switch Number 1 Start */}
       <div className="mb-4 m-4">
@@ -1676,7 +1760,11 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       ) : null}
 
       {!getEVMAuth ? (
-        <EVMWallets title="Login with EVM" className="mx-2 w-[97%]" />
+        <EVMWallets
+          title="Login with EVM"
+          login={login}
+          className="mx-2 w-[97%]"
+        />
       ) : isFarcaster && !isFarcasterAuth ? (
         <FarcasterAuth />
       ) : isOpenAction && !lensAuth?.profileHandle ? (
@@ -1694,7 +1782,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
           <Button
             className="w-full outline-none flex justify-center items-center gap-2"
             disabled={isLoadingSwitchNetwork}
-            onClick={() => switchNetwork(selectedChainId)}
+            onClick={() => switchChain({ chainId: selectedChainId })}
             color="red"
           >
             {isLoadingSwitchNetwork ? "Switching" : "Switch"} to{" "}
@@ -1707,7 +1795,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       ) : (
         <div className="mx-2">
           <Button
-            disabled={!write || networksDataSmartPosts()?.isUnsupportedChain}
+            disabled={isPending || networksDataSmartPosts()?.isUnsupportedChain}
             fullWidth
             // color="yellow"
             onClick={handleSubmit}

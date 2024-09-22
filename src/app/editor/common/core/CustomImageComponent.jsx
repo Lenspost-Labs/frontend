@@ -1,15 +1,21 @@
 // Seperate component for Lazy loading (CustomImage) - 29Jun2023
 
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import { Button, Card, Menu, MenuItem, Position } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
+import {
+  Button,
+  Card,
+  Menu,
+  MenuItem,
+  Position,
+  Popover,
+} from "@blueprintjs/core";
 import { replaceImageURL } from "../../../../utils/replaceUrl";
 import { useEffect, useState } from "react";
 import { useStore } from "../../../../hooks/polotno";
 import { useContext } from "react";
 import { Context } from "../../../../providers/context/ContextProvider";
 import { addressCrop, assetsTrack } from "../../../../utils";
-import posthog from "posthog-js";
+import { useLocalStorage } from "../../../../hooks/app";
 
 // Custom Image card component start - 23Jun2023
 const CustomImageComponent = ({
@@ -25,6 +31,9 @@ const CustomImageComponent = ({
   recipientWallet,
   showAuthor,
   author,
+
+  // For TopbarMobile
+  imgClassName,
 }) => {
   const store = useStore();
   const [base64Data, setBase64Data] = useState("");
@@ -32,6 +41,13 @@ const CustomImageComponent = ({
     lensCollectNftRecipientDataRef,
     assetsRecipientDataRef,
     nftRecipientDataRef,
+
+    isMobile,
+    actionType,
+    setOpenBottomBar,
+    setCurOpenedPanel,
+
+    setIsOnboardingOpen
   } = useContext(Context);
 
   // convert to base64
@@ -55,6 +71,10 @@ const CustomImageComponent = ({
 
   // Function to add image on the Canvas/Page
   const handleClickOrDrop = () => {
+    if (isMobile) {
+      setOpenBottomBar(false);
+      setCurOpenedPanel(null);
+    }
     changeCanvasDimension &&
       store.setSize(
         dimensions[0] || item?.width,
@@ -114,7 +134,10 @@ const CustomImageComponent = ({
     }
 
     // track assets selected
-    assetsTrack(item, assetType, collectionName);
+    assetsTrack(item, assetType, collectionName, actionType, isMobile);
+
+    // Only to close onboarding modal on Image Drop
+    setIsOnboardingOpen(false);
   };
 
   useEffect(() => {
@@ -142,15 +165,15 @@ const CustomImageComponent = ({
         onDragEnd={handleClickOrDrop}
         onClick={handleClickOrDrop}
       >
-        <div className="mb-3">
-          <LazyLoadImage
-            className="rounded-lg"
-            placeholderSrc={base64Data}
-            effect="blur"
-            src={base64Data}
-            alt="Preview Image"
-          />
-        </div>
+        {/* <div className="mb-3"> */}
+        <LazyLoadImage
+          className={`rounded-lg ${imgClassName}`}
+          placeholderSrc={base64Data}
+          effect="blur"
+          src={base64Data}
+          alt="Preview Image"
+        />
+        {/* </div> */}
 
         {/* if nft is a lens collect */}
         {isLensCollect?.isLensCollect ||
@@ -186,25 +209,48 @@ const CustomImageComponent = ({
         )}
 
         {hasOptionBtn && (
-          <div
-            style={{ position: "absolute", top: "5px", right: "5px" }}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <Popover2
-              content={
-                <Menu>
-                  <MenuItem icon="trash" text="Delete" onClick={onDelete} />
-                </Menu>
-              }
-              position={Position.BOTTOM}
-            >
-              <div id="makePublic">
-                <Button icon="more" />
+          <>
+            {isMobile && (
+              <div
+                style={{ position: "absolute", top: "5px", right: "5px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Button
+                  style={{ zIndex: 1000000 }}
+                  icon="trash"
+                  onClick={onDelete}
+                />
               </div>
-            </Popover2>
-          </div>
+            )}
+            {!isMobile && (
+              <div
+                style={{ position: "absolute", top: "5px", right: "5px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Popover
+                  content={
+                    <Menu style={{ zIndex: 1000000 }}>
+                      <MenuItem
+                        style={{ zIndex: 1000000 }}
+                        icon="trash"
+                        text="Delete"
+                        onClick={onDelete}
+                      />
+                    </Menu>
+                  }
+                  position={Position.BOTTOM}
+                >
+                  <div id="makePublic">
+                    <Button icon="more" />
+                  </div>
+                </Popover>
+              </div>
+            )}
+          </>
         )}
       </Card>
     </>

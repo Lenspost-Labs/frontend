@@ -2,20 +2,24 @@ import { Fragment, useContext, useState } from "react";
 import { ShareIcon } from "../../../../../assets/assets";
 import {
   ShareSection,
-  SolanaMint,
+  SolanaMintWrapper,
   ZoraMint,
   LensShareWrapper,
+  XShare,
+  FarcasterShareWrapper,
 } from "../../right-section";
 import { Drawer } from "@blueprintjs/core";
 import { Context } from "../../../../../providers/context";
-import FarcasterShareWrapper from "../../right-section/share/farcaster-share/FarcasterShareWrapper";
-import { LensShare } from "../../right-section/share/lens-share/components";
-import { AllTasksNRewards } from "../../right-section/profile/components/section/AllTasksNRewards";
+import EditIconShare from "../../../../../assets/EditIconsMobile/EditIconShare";
+import { ERC1155Edition } from "../../right-section/share/zora-mint/components";
+import { useAppUrl } from "../../../../../hooks/app";
 
 const ShareButton = () => {
   const [transitionRtoL, setTransitionRtoL] = useState(false);
+  const { urlQueryActionType } = useAppUrl();
 
-  const { menu, setMenu, isShareOpen, setIsShareOpen } = useContext(Context);
+  const { menu, setMenu, isShareOpen, setIsShareOpen, isMobile } =
+    useContext(Context);
 
   // const [isShareOpen, setIsShareOpen] = useState(false);
 
@@ -27,17 +31,33 @@ const ShareButton = () => {
 
   return (
     <>
-      <button
-        onClick={() => {
-          // setIsShareOpen(!isShareOpen);
-          setIsShareOpen(true)
-          setMenu("share");
-        }}
-        className="outline-none"
-      >
-        <ShareIcon />
-      </button>
+      {!isMobile && (
+        <button
+          onClick={() => {
+            // setIsShareOpen(!isShareOpen);
+            setIsShareOpen(true);
+            setMenu("share");
+          }}
+          className="outline-none"
+        >
+          <ShareIcon />
+        </button>
+      )}
 
+      {isMobile && (
+        <div
+          onClick={() => {
+            setIsShareOpen(true);
+            setMenu("share");
+            if (isMobile) {
+              setMenu("farcasterShare");
+            }
+          }}
+          className="flex items-center"
+        >
+          <EditIconShare />
+        </div>
+      )}
       <Drawer
         transitionDuration={200}
         isOpen={isShareOpen}
@@ -55,10 +75,12 @@ const ShareButton = () => {
                 {/* {menu === "lensmonetization" && <LensShare />} */}
                 {menu === "farcasterShare" && <FarcasterShareWrapper />}
                 {menu === "lensmonetization" && <LensShareWrapper />}
-                {menu === "solanaMint" && <SolanaMint />}
+                {menu === "solanaMint" && <SolanaMintWrapper />}
+                {menu === "xshare" && <XShare />}
                 {typeof menu === "number" && (
                   <ZoraMint selectedChainId={menu} />
                 )}
+                {menu === "ERC1155" && <ZoraMint />}
               </div>
             </div>
           </div>

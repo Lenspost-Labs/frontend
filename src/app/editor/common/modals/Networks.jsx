@@ -14,13 +14,14 @@ import {
 import HiOutlineSwitchHorizontal from "@meronex/icons/hi/HiOutlineSwitchHorizontal";
 import AiOutlineCloseCircle from "@meronex/icons/ai/AiOutlineCloseCircle";
 import FaRegDotCircle from "@meronex/icons/fa/FaRegDotCircle";
-import { useNetwork, useSwitchNetwork } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { chainLogo } from "../../../../utils";
+import { zora } from "viem/chains";
 
 const Networks = ({ className, chains, isUnsupportedChain }) => {
-  const { chain } = useNetwork();
-  const { isError, error, isLoading, isSuccess, switchNetwork, variables } =
-    useSwitchNetwork();
+  const { chain, chainId } = useAccount();
+  const { isError, error, isLoading, isSuccess, switchChain, variables } =
+    useSwitchChain();
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(!open);
@@ -66,10 +67,14 @@ const Networks = ({ className, chains, isUnsupportedChain }) => {
         <DialogBody>
           {chains?.map((network, index) => (
             <>
-              <List className="border rounded-lg my-2 p-0">
+              <List key={index} className="border rounded-lg my-2 p-0">
                 <ListItem
                   onClick={() => {
-                    network?.id !== chain?.id && switchNetwork(network?.id);
+                    console.log(`chain ${chain?.id} network ${network?.id}`);
+                    network?.id !== chain?.id &&
+                      switchChain({
+                        chainId: network?.id,
+                      });
                   }}
                   className="p-2 hover:shadow-lg"
                 >

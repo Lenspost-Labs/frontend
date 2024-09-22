@@ -38,8 +38,17 @@ import animationData from "../../../../../assets/lottie/loaders/aiGeneration.jso
 import { useStore } from "../../../../../hooks/polotno";
 import { Context } from "../../../../../providers/context";
 import { Tab, Tabs, TabsHeader, TabsBody } from "@material-tailwind/react";
-import { getFalAiImage, getFalImgtoImg } from "../../../../../services";
-
+import {
+  claimReward,
+  getFalAiImage,
+  getFalImgtoImg,
+} from "../../../../../services";
+import useUser from "../../../../../hooks/user/useUser";
+import { toast } from "react-toastify";
+import { posterTokenSymbol } from "../../../../../data";
+import coinImg from "../../../../../assets/svgs/Coin.svg";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocalStorage } from "../../../../../hooks/app";
 // Tab1 - Search Tab
 
 const RANDOM_QUERIES = [
@@ -53,13 +62,24 @@ const RANDOM_QUERIES2 = [
   // "A bustling marketplace in a medieval fantasy setting",
   "Merchants selling exotic goods and performers entertaining the crowd.",
   "An underwater paradise with coral reefs teeming with colorful fish",
+  "Ethereum network movie poster with vitalik dandelion"
 ];
 
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = ["Mountains", "Hearts", "Robots", "NFTS", "Elon"];
 
-const CompSearch = () => {
+export const CompSearch = () => {
+  const {
+    setOpenLeftBar,
+    openLeftBar,
+    openBottomBar,
+    setOpenBottomBar,
+    isMobile,
+  } = useContext(Context);
   const store = useStore();
+  const { points } = useUser();
+  const { userId } = useLocalStorage();
+
   // load data
   const [data, setData] = useState(null);
   const [stStatusCode, setStStatusCode] = useState(0);
@@ -69,8 +89,34 @@ const CompSearch = () => {
   const [query, setQuery] = useState();
   // RANDOM_QUERIES[(RANDOM_QUERIES.length * Math.random()) | 0]
 
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: mutClaimReward } = useMutation({
+    mutationFn: async ({ taskId }) => {
+      try {
+        const result = await claimReward({ taskId: taskId });
+
+        // Refetch the user profile after successful claim
+        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+
+        return result;
+      } catch (error) {
+        console.error("Error claiming reward:", error);
+        throw error;
+      }
+    },
+  });
+
   const fnGenerateImages = async () => {
     if (!query) {
+      return;
+    }
+    if (!points) {
+      toast.error(`Error Fetching ${posterTokenSymbol} Points`);
+      return;
+    }
+    if (points < 1) {
+      toast.error(`Not enough ${posterTokenSymbol} points`);
       return;
     }
     async function load() {
@@ -84,6 +130,10 @@ const CompSearch = () => {
           setIsLoading(false);
           setStStatusCode(200);
           setData(response.data);
+
+          await mutClaimReward({
+            taskId: 5,
+          });
         } else if (data.status === 429) {
           setIsLoading(false);
           setStStatusCode(429);
@@ -132,6 +182,7 @@ const CompSearch = () => {
           />
           <MatButton className="mb-4" onClick={fnGenerateImages}>
             Generate
+            <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
           </MatButton>
           {/* 
 			<button className="bg-[#e1f16b] w-full px-4 p-1  mb-4 rounded-md hover:bg-[#e0f26cce]" onClick={fnGenerateImages}>Generate</button>
@@ -169,7 +220,7 @@ const CompSearch = () => {
         </div>
       )}
       {query == "" ||
-        (!data &&  !isLoading &&(
+        (!data && !isLoading && (
           <div className="p-2 pt-4  text-center text-gray-500">
             Give a prompt and click Generate to get started
           </div>
@@ -178,7 +229,20 @@ const CompSearch = () => {
       {!isLoading && stStatusCode === 200 && (
         <>
           {data?.images.map((val, key) => (
-            <CustomImageComponent key={key} preview={val.url} />
+            <div
+              onClick={() => {
+                if (isMobile) {
+                  if (openBottomBar) {
+                    setOpenBottomBar(false);
+                  }
+                  if (openLeftBar) {
+                    setOpenLeftBar(false);
+                  }
+                }
+              }}
+            >
+              <CustomImageComponent key={key} preview={val.url} />
+            </div>
           ))}
         </>
       )}
@@ -248,7 +312,7 @@ const CompDesignify = () => {
 
 const CompInstructImage = () => {
   const { fastPreview } = useContext(Context);
-
+  const { points } = useUser();
   const [responseImage, setResponseImage] = useState(""); // For Newly generated Image Preview
   const [uploadedImg, setUploadedImg] = useState(); //For Uploaded Preview
   const [clicked, setClicked] = useState(false);
@@ -262,11 +326,38 @@ const CompInstructImage = () => {
   // Testing all the APIs from getimg.ai
   // Function : json to base64
 
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: mutClaimReward } = useMutation({
+    mutationFn: async ({ taskId }) => {
+      try {
+        const result = await claimReward({ taskId: taskId });
+
+        // Refetch the user profile after successful claim
+        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+
+        return result;
+      } catch (error) {
+        console.error("Error claiming reward:", error);
+        throw error;
+      }
+    },
+  });
+
   const fnJsonToBase64 = (json) => {
     return btoa(JSON.stringify(json));
   };
 
   const fnCallInstructImgAPI = async () => {
+    if (!points) {
+      toast.error(`Error Fetching ${posterTokenSymbol} Points`);
+      return;
+    }
+    if (points < 1) {
+      toast.error(`Not enough ${posterTokenSymbol} points`);
+      return;
+    }
+
     setClicked(true);
     setResponseImage("");
 
@@ -310,6 +401,10 @@ const CompInstructImage = () => {
         //   setResponseImage("");
         //   setStDisplayMessage(response.data.error.type);
         // }
+
+        mutClaimReward({
+          taskId: 5,
+        });
         setClicked(false);
       })
       .catch((err) => {
@@ -400,6 +495,7 @@ const CompInstructImage = () => {
           onClick={fnCallInstructImgAPI}
         >
           Generate
+          <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
         </MatButton>
 
         {!responseImage && !clicked && (

@@ -7,15 +7,7 @@ import {
 } from "../../env/env";
 import { getFromLocalStorage } from "../../../utils/localStorage";
 import { LOCAL_STORAGE } from "../../../data";
-
-const API =
-  ENVIRONMENT === "production"
-    ? BACKEND_PROD_URL
-    : ENVIRONMENT === "development"
-    ? BACKEND_DEV_URL
-    : ENVIRONMENT === "localhost"
-    ? BACKEND_LOCAL_URL
-    : BACKEND_LOCAL_URL;
+import { api, API } from "./config";
 
 /**
  * @param walletAddress string
@@ -28,38 +20,23 @@ const API =
  * @param store store object
  */
 
-// add default header (autherization and content type) in axios for all the calls except login api
-// Create an instance of Axios
-const api = axios.create();
-
-// Add a request interceptor
-api.interceptors.request.use(
-  (config) => {
-    const jwtToken = getFromLocalStorage(LOCAL_STORAGE.userAuthToken);
-
-    // Exclude the login API from adding the default header
-
-    // Add your default header here
-    config.headers["Authorization"] = `Bearer ${jwtToken}`;
-    config.headers["Content-Type"] = "application/json";
-    config.headers["Access-Control-Allow-Origin"] = "*";
-    config.headers["Access-Control-Allow-Methods"] = "*";
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
 const limit = 10;
 
 // evm auth apis start
-export const evmAuth = async ({ walletAddress, signature, message }) => {
-  const result = await api.post(`${API}/auth/evm`, {
-    evm_address: walletAddress,
-    signature: signature,
-    message: message,
-  });
+export const evmAuth = async ({ walletAddress }) => {
+  const jwtToken = getFromLocalStorage(LOCAL_STORAGE.privy);
+
+  const result = await axios.post(
+    `${API}/auth/evm`,
+    {
+      evm_address: walletAddress,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+  );
 
   return result?.data;
 };
@@ -476,6 +453,12 @@ export const getFeaturedAssets = async (type, page) => {
   };
 };
 
+// get all authors
+export const getAuthors = async () => {
+  const result = await api.get(`${API}/asset/all-authors`);
+  return result?.data;
+};
+
 // asset apis end
 
 // Remove Background API
@@ -557,6 +540,14 @@ export const uploadUserAssetToIPFS = async (image) => {
   return result?.data;
 };
 
+export const uploadJSONtoIPFS = async (json) => {
+  const result = await api.post(`${API}/util/upload-json-ipfs`, {
+    json,
+  });
+
+  return result?.data;
+};
+
 // get user assets endpoint
 export const getUserAssets = async (page) => {
   const result = await api.get(`${API}/user/upload`, {
@@ -609,6 +600,15 @@ export const claimReward = async (data) => {
   };
 };
 
+// Generate Invite code
+export const apiGenerateInviteCode = async () => {
+  const result = await api.post(`${API}/user/loyalty/generate-code`);
+
+  return {
+    data: result?.data,
+  };
+};
+
 export const apiGenerateShareSlug = async (data) => {
   const result = await api.post(
     `${API}/user/canvas/generate-share-slug?canvasId=${data}`
@@ -628,6 +628,22 @@ export const apiGetJSONDataForSlug = async (data) => {
 };
 export const apiGetOgImageForSlug = async (data) => {
   const result = await api.get(`${API}/util/get-slug-details?slug=${data}`);
+  return {
+    data: result?.data,
+  };
+};
+
+export const apiBuySubscription = async (data) => {
+  const result = await api.post(`${API}/mint/buy`, data);
+  return {
+    data: result?.data,
+  };
+};
+
+export const apiGetPolotnoTexts = async () => {
+  const result = await api.get(
+    `https://api.polotno.com/api/get-text-templates?KEY=OpcLd8G0QzCfvasc0WkU`
+  );
   return {
     data: result?.data,
   };

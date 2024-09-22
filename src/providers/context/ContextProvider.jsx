@@ -1,5 +1,8 @@
 import React, { createContext, useRef, useState } from "react";
 import posthog from "posthog-js";
+import { randomId } from "../../utils";
+import { ENVIRONMENT } from "../../services";
+import { base, baseSepolia } from "viem/chains";
 
 posthog.init("phc_CvXLACFkyLdhJjiGLxlix6ihbGjumRvGjUFSinPWJYD", {
   api_host: "https://eu.posthog.com",
@@ -9,10 +12,11 @@ export const Context = createContext();
 
 const ContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [session, setSession] = useState("");
   const [text, setText] = useState("");
   const contextCanvasIdRef = useRef(null);
   const canvasBase64Ref = useRef([]);
-  const [postName, setPostName] = useState("");
+  const [postName, setPostName] = useState("Awesome Poster");
   const [postDescription, setPostDescription] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -22,6 +26,7 @@ const ContextProvider = ({ children }) => {
   // Profile Panel
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [openedProfileModal, setOpenedProfileModal] = useState(false);
+  const [openedLoginModal, setOpenedLoginModal] = useState(false);
   const [openedModalName, setOpenedModalName] = useState("");
 
   // User data from Profile panel
@@ -242,7 +247,7 @@ const ContextProvider = ({ children }) => {
     royaltySplitRecipients: [
       {
         address: "",
-        share: null,
+        percentAllocation: null,
       },
     ],
 
@@ -354,6 +359,10 @@ const ContextProvider = ({ children }) => {
       isLike: false,
       isRecast: false,
       isFollow: false,
+      isChannel: false,
+      channelValue: "",
+      isCollection: false,
+      collectionAddress: "",
 
       allowedMints: "",
       allowedMintsIsError: false,
@@ -367,6 +376,9 @@ const ContextProvider = ({ children }) => {
       isExternalLink: false,
       externalLink: "",
 
+      isCollectionAddressError: false,
+      collectionAddressError: "",
+
       isExternalLinkError: false,
       externalLinkError: "",
 
@@ -377,7 +389,8 @@ const ContextProvider = ({ children }) => {
       isCustomCurrAmountError: false,
       customCurrAmountError: "",
 
-      customCurrName: "DEGEN",
+      customCurrSymbol: "",
+      customCurrAddress: "",
 
       fcSplitRevenueRecipients: [
         {
@@ -389,6 +402,11 @@ const ContextProvider = ({ children }) => {
       // split recipient error
       isFcSplitError: false,
       fcSplitErrorMsg: "",
+
+      selectedNetwork: {
+        id: "",
+        name: "",
+      },
     },
   });
 
@@ -477,8 +495,19 @@ const ContextProvider = ({ children }) => {
     dispatcherStatus: false,
   });
 
-  // console.log("ContextProvider", farcasterStates?.frameData);
-  // console.log("ContextProvider", zoraErc721StatesError);
+  const [isMobile, setIsMobile] = useState(false);
+  const [actionType, setActionType] = useState("");
+  const [curOpenedPanel, setCurOpenedPanel] = useState("");
+  const [openLeftBar, setOpenLeftBar] = useState(false);
+  const [openBottomBar, setOpenBottomBar] = useState(false);
+  const [removedWMarkCanvas, setRemovedWMarkCanvas] = useState();
+  const chainId = ENVIRONMENT === "production" ? base?.id : baseSepolia?.id;
+  const [curOpenedTabLevel1, setCurOpenedTabLevel1] = useState("");
+  const [curOpenedTabLevel2, setCurOpenedTabLevel2] = useState("");
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+
+  // console.log("ContextProvider", actionType);
+  // console.log("randomNum ", postName);
 
   return (
     <Context.Provider
@@ -500,6 +529,10 @@ const ContextProvider = ({ children }) => {
         // for modal in profile panel
         openedModalName,
         setOpenedModalName,
+
+        //for mobile login modal
+        openedLoginModal,
+        setOpenedLoginModal,
 
         // for twitter auth
         queryParams,
@@ -643,6 +676,42 @@ const ContextProvider = ({ children }) => {
         // for solana tab
         solanaTab,
         setSolanaTab,
+
+        // session
+        session,
+        setSession,
+
+        // Mobile UI
+        isMobile,
+        setIsMobile,
+
+        // action type
+        actionType,
+        setActionType,
+
+        // for mobile Tabs :
+        curOpenedPanel,
+        setCurOpenedPanel,
+        openLeftBar,
+        setOpenLeftBar,
+        openBottomBar,
+        setOpenBottomBar,
+        // For watermark
+        removedWMarkCanvas,
+        setRemovedWMarkCanvas,
+
+        chainId,
+
+        // For tracking sub tabs opened
+        // Like Memes inside mobPanelStickers
+        curOpenedTabLevel1,
+        setCurOpenedTabLevel1,
+        curOpenedTabLevel2,
+        setCurOpenedTabLevel2,
+
+        // For Onboarding modal : 
+        isOnboardingOpen,
+        setIsOnboardingOpen,
       }}
     >
       {children}

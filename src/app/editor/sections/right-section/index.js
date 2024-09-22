@@ -1,7 +1,15 @@
+import FarcasterShareWrapper from "./share/farcaster-share/FarcasterShareWrapper";
 import LensShareWrapper from "./share/lens-share/LensShareWrapper";
-import SolanaMint from "./share/solana-mint/SolanaMintWrapper";
+import SolanaMintWrapper from "./share/solana-mint/SolanaMintWrapper";
 import ShareSection from "./share/ShareSection";
 import ZoraMint from "./share/zora-mint/ZoraMint";
-import ProfilePanel from "./profile/ProfilePanel";
+import XShare from "./share/x-share/XShare";
 
-export { ShareSection, LensShareWrapper, SolanaMint, ZoraMint, ProfilePanel };
+export {
+  ShareSection,
+  FarcasterShareWrapper,
+  LensShareWrapper,
+  SolanaMintWrapper,
+  ZoraMint,
+  XShare,
+};

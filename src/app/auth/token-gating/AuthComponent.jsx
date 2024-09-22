@@ -1,4 +1,3 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAccount, useDisconnect } from "wagmi";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -21,18 +20,21 @@ import {
   SolanaWallets,
 } from "../../editor/sections/top-section/auth/wallets";
 import { useSolanaWallet } from "../../../hooks/solana";
+import usePrivyAuth from "../../../hooks/privy-auth/usePrivyAuth";
+import { usePrivy } from "@privy-io/react-auth";
 
 const AuthComponent = () => {
   const getHasUserSeenTheApp = getFromLocalStorage("hasUserSeenTheApp");
   const getifUserEligible = getFromLocalStorage("ifUserEligible");
   const { address, isConnected } = useAccount();
+  const { logout } = usePrivy();
   const { disconnect } = useDisconnect();
   const { solanaDisconnect, solanaConnected, solanaAddress } =
     useSolanaWallet();
   const navigate = useNavigate();
   const [isUserEligible, setIsUserEligible] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
-
+  const { login } = usePrivyAuth();
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["isHolderOfCollection"],
     queryFn: () => getIsUserWhitelisted(address || solanaAddress),
@@ -280,7 +282,7 @@ const AuthComponent = () => {
                   <Button
                     className="bg-[#2c346b]"
                     onClick={() => {
-                      disconnect();
+                      logout();
                       solanaDisconnect();
                     }}
                   >
@@ -298,7 +300,7 @@ const AuthComponent = () => {
                   <div className="mb-2 p-2 flex flex-row justify-center gap-2">
                     {/* {<ConnectButton />} */}
                     <SolanaWallets title="Solana" />
-                    <EVMWallets title="EVM" />
+                    <EVMWallets title="EVM" login={login} />
                   </div>
                 </>
               )}

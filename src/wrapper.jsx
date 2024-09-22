@@ -16,6 +16,8 @@ const radius = 8;
 const queryClient = new QueryClient();
 
 export const Wrapper = () => {
+  // Checks here for /editor approach
+  
   return (
     <EVMWalletProvider>
       <SolanaWalletProvider>

@@ -1,11 +1,13 @@
 import React from "react";
 
-const Logo = () => {
+const Logo = ({ propWidth, propHeight }) => {
   return (
     <div className="flex items-center justify-between cursor-pointer w-[40%] sm:w-[20%] lg:w-[10%]">
       <img
-        className="flex items-center justify-start object-contain"
-        src="/logo.png"
+        width={propWidth}
+        height={propHeight}
+        className="flex items-center justify-start object-contain px-2"
+        src="/logo-trans-bg.svg"
         alt="lenspost"
       />
     </div>

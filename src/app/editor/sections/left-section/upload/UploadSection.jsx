@@ -28,7 +28,7 @@ import { UploadFileDropzone } from "./components";
 import { LoadingAnimatedComponent } from "../../../common";
 import { useAppAuth } from "../../../../../hooks/app";
 
-const UploadPanel = () => {
+export const UploadPanel = () => {
   const { isAuthenticated } = useAppAuth();
   const { isDisconnected, address } = useAccount();
   const queryClient = useQueryClient();
@@ -57,6 +57,7 @@ const UploadPanel = () => {
   } = useMutation({
     mutationKey: "delete-user-asset",
     mutationFn: deleteUserAsset,
+    // This is working fine, we can keep it - 13Aug24
     onSuccess: (data) => {
       toast.success(data?.message);
       queryClient.invalidateQueries(["userAssets"], { exact: true });
@@ -104,7 +105,6 @@ const UploadPanel = () => {
       </div>
 
       <hr className="my-2" />
-      {/* <SearchComponent onClick={false} query={""} setQuery={""} placeholder="Search designs by id" /> */}
 
       {isError ? (
         <ErrorComponent error={error} />

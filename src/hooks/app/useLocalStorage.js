@@ -13,11 +13,10 @@ const useLocalStorage = () => {
     }
   };
 
-  const authToken = getFromLocalStorage(LOCAL_STORAGE.authToken);
+  const authToken = getFromLocalStorage(LOCAL_STORAGE.userAuthToken);
   const evmAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const solanaAuth = getFromLocalStorage(LOCAL_STORAGE.solanaAuth);
   const isFarcasterAuth = getFromLocalStorage(LOCAL_STORAGE.farcasterAuth);
-  const loggedInUserAddress = getFromLocalStorage(LOCAL_STORAGE.userAddress);
   const userAuthTime = getFromLocalStorage(LOCAL_STORAGE.userAuthTime);
   const lensAuth = getFromLocalStorage(LOCAL_STORAGE.lensAuth);
   const ifUserEligible = getFromLocalStorage(LOCAL_STORAGE.ifUserEligible);
@@ -30,13 +29,15 @@ const useLocalStorage = () => {
   const userId = getFromLocalStorage(LOCAL_STORAGE.userId);
   const isWatermark = getFromLocalStorage(LOCAL_STORAGE.isWatermark);
   const userLOA = getFromLocalStorage(LOCAL_STORAGE.userLOA);
+  const fcComposerAuth = getFromLocalStorage(LOCAL_STORAGE.FcComposerAuth);
+  const actionType = getFromLocalStorage(LOCAL_STORAGE.actionType);
+  const userAddress = getFromLocalStorage(LOCAL_STORAGE.userAddress);
 
   return {
     authToken,
     evmAuth,
     solanaAuth,
     isFarcasterAuth,
-    loggedInUserAddress,
     userAuthTime,
     lensAuth,
     ifUserEligible,
@@ -47,6 +48,9 @@ const useLocalStorage = () => {
     userId,
     isWatermark,
     userLOA,
+    fcComposerAuth,
+    actionType,
+    userAddress,
   };
 };
 

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import {
-  ENVIRONMENT,
+  claimReward,
   getENSDomain,
   shareOnSocials,
   uploadUserAssetToIPFS,
@@ -13,27 +13,25 @@ import {
   errorMessage,
   addressCrop,
   saveToLocalStorage,
+  chainLogo,
+  priceFormatter,
 } from "../../../../../../../utils";
-import {
-  useAppAuth,
-  useLocalStorage,
-  useReset,
-} from "../../../../../../../hooks/app";
+import { useAppAuth, useLocalStorage } from "../../../../../../../hooks/app";
 import {
   APP_ETH_ADDRESS,
-  DEGEN_CURRENCY_ADDRESS,
-  ERROR,
   FRAME_URL,
   LOCAL_STORAGE,
+  TOKEN_LIST,
   URL_REGEX,
-  degenChain,
+  isSponsoredChain,
 } from "../../../../../../../data";
 import {
+  Avatar,
   Button,
   Option,
   Select,
   Spinner,
-  Typography,
+  Textarea,
 } from "@material-tailwind/react";
 import { EVMWallets } from "../../../../top-section/auth/wallets";
 import FarcasterAuth from "./FarcasterAuth";
@@ -43,7 +41,7 @@ import { ZoraDialog } from "../../zora-mint/components";
 import logoFarcaster from "../../../../../../../assets/logos/logoFarcaster.jpg";
 import {
   deployZoraContract,
-  getFrame,
+  getImageByCanvasId,
   getOrCreateWallet,
   mintToXchain,
   postFrame,
@@ -52,29 +50,29 @@ import { InputBox, InputErrorMsg, NumberInputBox } from "../../../../../common";
 import Topup from "./Topup";
 import {
   useAccount,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-  useSwitchNetwork,
-  useWaitForTransaction,
+  useWriteContract,
+  useSwitchChain,
+  useWaitForTransactionReceipt,
 } from "wagmi";
 import WithdrawFunds from "./WithdrawFunds";
 import { zoraNftCreatorV1Config } from "@zoralabs/zora-721-contracts";
-import { zoraURLErc721 } from "../../zora-mint/utils";
-import TiDelete from "@meronex/icons/ti/TiDelete";
+import { http } from "viem";
+import { config } from "../../../../../../../providers/EVM/EVMWalletProvider";
 import BsPlus from "@meronex/icons/bs/BsPlus";
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import { useBalance } from "wagmi";
-import { base } from "viem/chains";
+import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
+import { usePrivy } from "@privy-io/react-auth";
+import WatermarkRemover from "../../components/WatermarkRemover";
 
 const FarcasterNormalPost = () => {
-  const { resetState } = useReset();
   const { address } = useAccount();
-  const { chain } = useNetwork();
-  const { userLOA } = useLocalStorage();
+  const { chain } = useAccount();
+  const { userLOA, userAddress } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
-  const { switchNetwork, isLoading: isLoadingSwitchNetwork } =
-    useSwitchNetwork();
+  const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
+  const { login: privyLogin, authenticated } = usePrivy();
+  const { login } = usePrivyAuth();
 
   // farcaster states
   const [isShareLoading, setIsShareLoading] = useState(false);
@@ -82,12 +80,7 @@ const FarcasterNormalPost = () => {
   const [isError, setIsError] = useState(false);
   const [farTxHash, setFarTxHash] = useState("");
 
-  // FC Split recipients
-  const [recipientsLensHandle, setRecipientsLensHandle] = useState([]);
-  const [totalPercentage, setTotalPercentage] = useState(0);
-
   // zora contract deploy states
-  // const [isDeployingZoraContract, setIsDeployingZoraContract] = useState(false);
   const [isDeployingZoraContractError, setIsDeployingZoraContractError] =
     useState(false);
   const [isDeployingZoraContractSuccess, setIsDeployingZoraContractSuccess] =
@@ -116,8 +109,16 @@ const FarcasterNormalPost = () => {
     splitError,
     setSplitError,
     parentRecipientListRef,
+    fastPreview,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
+    chainId,
+    setPostName,
+    setPostDescription,
+    actionType,
+    posthog,
+    // For Mobile only
+    isMobile,
   } = useContext(Context);
 
   const { isFarcasterAuth } = useLocalStorage();
@@ -132,21 +133,14 @@ const FarcasterNormalPost = () => {
     isRefetching: isWalletRefetching,
   } = useQuery({
     queryKey: ["getOrCreateWallet"],
-    queryFn: () => getOrCreateWallet(),
+    queryFn: () => getOrCreateWallet(chainId),
     refetchOnWindowFocus: false,
   });
 
-  const {
-    data: currencyData,
-    isError: isCurrencyError,
-    isLoading: isCurrencyLoading,
-    error: currencyError,
-    isSuccess: isCurrencySuccess,
-    refetch: refetchCurrency,
-    isRefetching: isCurrencyRefetching,
-  } = useBalance({
-    address: "0x62b14E5D09BC0C340116B5BC87d787377C07A820",
-    chainId: degenChain?.id,
+  const { data: getImageByCanvasIdData } = useQuery({
+    queryKey: ["getImageByCanvasId"],
+    queryFn: () => getImageByCanvasId(contextCanvasIdRef?.current),
+    refetchOnWindowFocus: false,
   });
 
   const { mutateAsync: deployZoraContractMutation } = useMutation({
@@ -185,7 +179,6 @@ const FarcasterNormalPost = () => {
     },
   });
 
-  const chainId = ENVIRONMENT === "production" ? 8453 : 999999999; // 999999999 - zora sepolia
   const isCreatorSponsored = farcasterStates?.frameData?.isCreatorSponsored;
   const LOA = walletData?.publicAddress ? walletData?.publicAddress : userLOA;
   const allowedMints = farcasterStates?.frameData?.allowedMints;
@@ -195,8 +188,8 @@ const FarcasterNormalPost = () => {
     postName?.split(" ")[0].toUpperCase(),
     allowedMints,
     "500",
-    address,
-    isCreatorSponsored ? LOA : address,
+    address || userAddress,
+    isCreatorSponsored ? LOA : address || userAddress,
     {
       publicSalePrice: "0",
       maxSalePurchasePerAddress: "4294967295",
@@ -265,13 +258,13 @@ const FarcasterNormalPost = () => {
   };
 
   const checkCustomCurrAmt = () => {
-    if (farcasterStates?.frameData?.customCurrAmount <= 0.01) {
+    if (farcasterStates?.frameData?.customCurrAmount <= 0.0001) {
       setFarcasterStates((prevState) => ({
         ...prevState,
         frameData: {
           ...prevState.frameData,
           isCustomCurrAmountError: true,
-          customCurrAmountError: "Minimum price is 0.01",
+          customCurrAmountError: "Minimum price is 0.0001",
         },
       }));
       return false;
@@ -284,8 +277,8 @@ const FarcasterNormalPost = () => {
   const sortRecipientsByAddress = (recipients) => {
     return recipients.sort((a, b) =>
       a.address
-        .toLowerCase()
-        .localeCompare(b.address.toLowerCase(), undefined, {
+        ?.toLowerCase()
+        ?.localeCompare(b.address.toLowerCase(), undefined, {
           sensitivity: "base",
         })
     );
@@ -298,7 +291,7 @@ const FarcasterNormalPost = () => {
 
     // Aggregate percent allocations by address
     recipients.forEach((recipient) => {
-      const address = recipient.address.toLowerCase();
+      const address = recipient.address?.toLowerCase();
       if (addressMap.has(address)) {
         addressMap.set(
           address,
@@ -331,12 +324,19 @@ const FarcasterNormalPost = () => {
         },
       };
 
+      if (name === "title") {
+        setPostName(value);
+      }
+      if (name === "description") {
+        setPostDescription(value);
+      }
+
       // Check if the name is "allowedMints" and perform validation
       if (name === "allowedMints") {
         if (!value || value <= 0) {
           newState.frameData.allowedMintsIsError = true;
           newState.frameData.allowedMintsError =
-            "Please enter a valid number of mints";
+            "Please enter a valid number of allowed mints";
         } else {
           newState.frameData.allowedMintsIsError = false;
           newState.frameData.allowedMintsError = "";
@@ -354,12 +354,23 @@ const FarcasterNormalPost = () => {
         }
       }
 
+      if (name === "collectionAddress") {
+        if (!value) {
+          newState.frameData.isCollectionAddressError = true;
+          newState.frameData.collectionAddressError =
+            "Please enter a valid address";
+        } else {
+          newState.frameData.isCollectionAddressError = false;
+          newState.frameData.collectionAddressError = "";
+        }
+      }
+
       // check if custom currency amount is a valid number
       if (name === "customCurrAmount") {
-        if (!value || value <= 0.01) {
+        if (!value || value <= 0.0001) {
           newState.frameData.isCustomCurrAmountError = true;
           newState.frameData.customCurrAmountError =
-            "Price should not be less than 0.01";
+            "Price should not be less than 0.0001";
         } else {
           newState.frameData.isCustomCurrAmountError = false;
           newState.frameData.customCurrAmountError = "";
@@ -370,33 +381,23 @@ const FarcasterNormalPost = () => {
     });
   };
 
-  // create edition configs
-  const {
-    config,
-    error: prepareError,
-    isError: isPrepareError,
-  } = usePrepareContractWrite({
-    abi: zoraNftCreatorV1Config.abi,
-    address:
-      chain?.id == 8453
-        ? "0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c"
-        : zoraNftCreatorV1Config.address[chainId],
-    functionName: "createEditionWithReferral",
-    args: argsArr,
-  });
+  config.transports = {
+    [chain?.id]: http(),
+  };
 
   const {
-    write,
+    writeContract,
     data,
     error: writeError,
-    isLoading,
+    isPending: isLoading,
     isError: isWriteError,
-  } = useContractWrite(config);
+  } = useWriteContract(config);
+
   const {
     data: receipt,
     isLoading: isPending,
     isSuccess,
-  } = useWaitForTransaction({ hash: data?.hash });
+  } = useWaitForTransactionReceipt({ hash: data });
 
   // deploy zora contract
   const deployZoraContractFn = async (deployArgs) => {
@@ -405,9 +406,11 @@ const FarcasterNormalPost = () => {
     deployZoraContractMutation(deployArgs)
       .then((res) => {
         setRespContractAddress(res?.contract_address || res?.contract);
-
         setIsDeployingZoraContractSuccess(true);
         setIsDeployingZoraContract(false);
+        if (farcasterStates?.frameData?.isCustomCurrMint) {
+          setSlug(res?.slug);
+        }
       })
       .catch((err) => {
         setIsDeployingZoraContractError(true);
@@ -421,23 +424,28 @@ const FarcasterNormalPost = () => {
 
     const params = {
       canvasId: contextCanvasIdRef.current,
-      owner: address,
+      owner: address || userAddress,
       isTopUp: farcasterStates.frameData?.isTopup,
       allowedMints: Number(farcasterStates.frameData?.allowedMints),
       metadata: {
         name: postName,
         description: postDescription,
       },
-      isLike: farcasterStates.frameData?.isLike,
-      isRecast: farcasterStates.frameData?.isRecast,
+      isLike: isMobile ? true : farcasterStates.frameData?.isLike,
+      isRecast: isMobile ? true : farcasterStates.frameData?.isRecast,
       isFollow: farcasterStates.frameData?.isFollow,
       redirectLink: farcasterStates.frameData?.externalLink,
       contractAddress: respContractAddress,
       chainId: farcasterStates?.frameData?.isCustomCurrMint
-        ? degenChain?.id
-        : base?.id,
+        ? farcasterStates?.frameData?.selectedNetwork?.id
+        : farcasterStates?.frameData?.isCreatorSponsored
+        ? chainId
+        : chainId,
       creatorSponsored: farcasterStates.frameData?.isCreatorSponsored,
+      gatedChannels: farcasterStates.frameData?.channelValue?.id,
+      gatedCollections: farcasterStates.frameData?.collectionAddress,
     };
+
     postFrameData(params)
       .then((res) => {
         if (res?.status === "success") {
@@ -464,7 +472,7 @@ const FarcasterNormalPost = () => {
       canvasParams = {
         ...canvasParams,
         zoraMintLink: "",
-        channelId: farcasterStates.channel?.id,
+        channelId: farcasterStates.channelValue?.channelValue?.id,
       };
     }
 
@@ -473,6 +481,15 @@ const FarcasterNormalPost = () => {
         ...canvasParams,
         frameLink: FRAME_URL + "/frame/" + frameId,
       };
+      if (
+        !farcasterStates?.frameData?.isCreatorSponsored &&
+        !farcasterStates?.frameData?.isCustomCurrMint
+      ) {
+        canvasParams = {
+          ...canvasParams,
+          isTransactional: true,
+        };
+      }
     }
 
     return canvasParams;
@@ -481,6 +498,43 @@ const FarcasterNormalPost = () => {
   // share post on lens
   const sharePost = async (platform) => {
     setIsShareLoading(true);
+
+    if (isMobile && actionType === "composer") {
+      const imageUrl = getImageByCanvasIdData[0];
+      const embeds = farcasterStates?.frameData?.isFrame
+        ? FRAME_URL + "/frame/" + frameId
+        : imageUrl;
+      console.log(embeds);
+      window.parent.postMessage(
+        {
+          type: "createCast",
+          data: {
+            cast: {
+              text: postDescription,
+              embeds: [embeds],
+            },
+          },
+        },
+        "*"
+      );
+
+      if (farcasterStates?.frameData?.isFrame) {
+        posthog.capture("Canvas shared as Frame", {
+          canvas_id: contextCanvasIdRef.current,
+          frameId,
+          access_platform: "composer",
+        });
+      } else {
+        posthog.capture("Canvas Posted To Farcaster", {
+          canvas_id: contextCanvasIdRef.current,
+          access_platform: "composer",
+        });
+      }
+
+      setIsShareLoading(false);
+      console.log("shared");
+      return;
+    }
 
     const canvasData = {
       id: contextCanvasIdRef.current,
@@ -498,6 +552,11 @@ const FarcasterNormalPost = () => {
           setIsShareLoading(false);
           setFarTxHash(res?.txHash);
           setIsShareSuccess(true);
+
+          // Claim the task for the user
+          claimReward({
+            taskId: 3,
+          });
 
           // open the dialog
         } else if (res?.error || res?.reason === "REJECTED") {
@@ -522,12 +581,12 @@ const FarcasterNormalPost = () => {
 
     // check if name is provided
     if (!postName) {
-      toast.error("Please provide a name");
+      toast.error("Please provide a title");
       return;
     }
 
     // check if description is provided
-    if (!postDescription) {
+    if (farcasterStates.frameData?.isFrame && !postDescription) {
       toast.error("Please provide a description");
       return;
     }
@@ -543,7 +602,7 @@ const FarcasterNormalPost = () => {
       (farcasterStates.frameData?.allowedMintsIsError ||
         !farcasterStates.frameData?.allowedMints)
     ) {
-      toast.error("Please enter allowed mints");
+      toast.error("Please enter a valid number of allowed mints");
       return;
     }
 
@@ -593,8 +652,23 @@ const FarcasterNormalPost = () => {
       farcasterStates.frameData?.isCustomCurrMint &&
       !checkCustomCurrAmt()
     ) {
-      // toast.error("Please enter a valid price for the token");
       return;
+    }
+
+    if (
+      farcasterStates.frameData?.isFrame &&
+      farcasterStates.frameData?.isCustomCurrMint &&
+      !farcasterStates.frameData?.selectedNetwork?.id
+    ) {
+      return toast.error("Please select a network");
+    }
+
+    if (
+      farcasterStates.frameData?.isFrame &&
+      farcasterStates.frameData?.isCustomCurrMint &&
+      !farcasterStates.frameData?.customCurrSymbol
+    ) {
+      return toast.error("Please select a currency");
     }
 
     if (farcasterStates.frameData?.isFrame) {
@@ -611,7 +685,7 @@ const FarcasterNormalPost = () => {
       canvasId: contextCanvasIdRef.current,
       mintLink: receipt?.logs[0]?.address,
       chain: chain?.name,
-      contractType: 721,
+      contractType: "ZORA721",
       chainId: chain?.id,
       hash: receipt?.logs[0]?.address,
     };
@@ -773,6 +847,10 @@ const FarcasterNormalPost = () => {
     });
   };
 
+  const isSponsoredChainFn = () => {
+    return isSponsoredChain?.includes(chain?.id);
+  };
+
   // add recipient to the split list
   useEffect(() => {
     if (isAuthenticated) {
@@ -816,7 +894,7 @@ const FarcasterNormalPost = () => {
       const deployArgs = {
         contract_type: "721",
         canvasId: contextCanvasIdRef.current,
-        chainId: base?.id,
+        chainId: chainId,
         args: argsArr,
       };
       deployZoraContractFn(deployArgs);
@@ -826,10 +904,13 @@ const FarcasterNormalPost = () => {
       // Deploy custom currency arguments
       const deployArgs = {
         contract_type: 721,
-        chainId: degenChain?.id,
+        chainId: farcasterStates?.frameData?.selectedNetwork?.id,
         canvasId: contextCanvasIdRef.current,
-        currency: DEGEN_CURRENCY_ADDRESS,
-        pricePerToken: Number(farcasterStates?.frameData?.customCurrAmount),
+        currency: farcasterStates?.frameData?.customCurrAddress,
+        pricePerToken: priceFormatter(
+          chain?.id,
+          farcasterStates?.frameData?.customCurrAmount
+        ),
         maxSupply: farcasterStates?.frameData?.allowedMints,
         args: [postName, postName?.split(" ")[0].toUpperCase(), 500],
         recipients: sortRecipientsByAddress(
@@ -845,11 +926,23 @@ const FarcasterNormalPost = () => {
   }, [isUploadSuccess]);
 
   useEffect(() => {
-    if (isUploadSuccess && !farcasterStates.frameData?.isCreatorSponsored) {
+    if (
+      isUploadSuccess &&
+      !farcasterStates.frameData?.isCreatorSponsored &&
+      !farcasterStates.frameData?.isCustomCurrMint
+    ) {
       setIsPostingFrame(false);
-      write?.();
+      writeContract({
+        abi: zoraNftCreatorV1Config.abi,
+        address:
+          chain?.id == 8453
+            ? "0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c"
+            : zoraNftCreatorV1Config.address[chainId],
+        functionName: "createEditionWithReferral",
+        args: argsArr,
+      });
     }
-  }, [isUploadSuccess, write]);
+  }, [isUploadSuccess]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -886,8 +979,8 @@ const FarcasterNormalPost = () => {
       toast.error(writeError?.message.split("\n")[0]);
     }
 
-    if (isPrepareError) {
-      console.log("prepare error", prepareError);
+    if (isWriteError) {
+      console.log("prepare error", writeError);
       // toast.error(prepareError.message);
     }
 
@@ -901,14 +994,33 @@ const FarcasterNormalPost = () => {
     setIsDeployingZoraContractError(false);
   }, [
     isWriteError,
-    isPrepareError,
     isError,
     isPostingFrameError,
     isDeployingZoraContractError,
     isUploadError,
   ]);
 
-  console.log("Topup balance", walletData?.balance);
+  useEffect(() => {
+    setTimeout(() => {
+      refetchWallet();
+    }, 1000);
+  }, [farcasterStates?.frameData?.selectedNetwork?.name]);
+
+  useEffect(() => {
+    if (actionType === "composer") {
+      setFarcasterStates({
+        ...farcasterStates,
+        frameData: {
+          ...farcasterStates.frameData,
+          isCreatorSponsored: true,
+          isCustomCurrMint: false,
+        },
+      });
+    }
+  }, []);
+
+  // Don't remove it
+  console.log({ topUp_balance: walletData?.balance });
 
   return (
     <>
@@ -920,7 +1032,7 @@ const FarcasterNormalPost = () => {
           isPostingFrameError ||
           isDeployingZoraContractError ||
           isWriteError ||
-          (farcasterStates?.frameData?.isCreatorSponsored && prepareError) ||
+          (farcasterStates?.frameData?.isCreatorSponsored && writeError) ||
           isUploadError
         }
         isLoading={isLoading}
@@ -940,35 +1052,86 @@ const FarcasterNormalPost = () => {
         isDeployingZoraContract={isDeployingZoraContract}
         slug={slug}
       />
-      <div className="mb-4 m-4">
-        <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Channel </h2>
-          <Switch
-            checked={farcasterStates.isChannel}
-            onChange={() =>
-              setFarcasterStates({
-                ...farcasterStates,
-                isChannel: !farcasterStates.isChannel,
-              })
-            }
-            className={`${
-              farcasterStates.isChannel ? "bg-[#e1f16b]" : "bg-gray-200"
-            } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-          >
-            <span
+
+      {actionType !== "composer" && (
+        <div className="mb-4 m-4">
+          <div className="flex justify-between">
+            <h2 className="text-lg mb-2"> Channel </h2>
+            <Switch
+              checked={farcasterStates.isChannel}
+              onChange={() =>
+                setFarcasterStates({
+                  ...farcasterStates,
+                  isChannel: !farcasterStates.isChannel,
+                })
+              }
               className={`${
-                farcasterStates.isChannel ? "translate-x-6" : "translate-x-1"
-              } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-            />{" "}
-          </Switch>
+                farcasterStates.isChannel ? "bg-[#e1f16b]" : "bg-gray-200"
+              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  farcasterStates.isChannel ? "translate-x-6" : "translate-x-1"
+                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+              />{" "}
+            </Switch>
+          </div>
+          <div className="w-4/5 opacity-75">
+            {" "}
+            Share your post in the Farcaster channel.{" "}
+          </div>
         </div>
-        <div className="w-4/5 opacity-75">
-          {" "}
-          Share your post in the Farcaster channel.{" "}
+      )}
+      {actionType === "composer" && (
+        <div className="mb-4 m-4">
+          <div className="flex justify-between">
+            <h2 className="text-lg mb-2"> Share as cast </h2>
+            <Switch
+              checked={!farcasterStates?.frameData?.isFrame}
+              onChange={() =>
+                setFarcasterStates({
+                  ...farcasterStates,
+                  frameData: {
+                    ...farcasterStates.frameData,
+                    isFrame: !farcasterStates?.frameData?.isFrame,
+                  },
+                })
+              }
+              className={`${
+                !farcasterStates?.frameData.isFrame
+                  ? "bg-[#e1f16b]"
+                  : "bg-gray-200"
+              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+            >
+              <span
+                className={`${
+                  !farcasterStates?.frameData.isFrame
+                    ? "translate-x-6"
+                    : "translate-x-1"
+                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+              />{" "}
+            </Switch>
+          </div>
+          <div className="w-4/5 opacity-75">
+            {" "}
+            Share as a cast on Farcaster.{" "}
+          </div>
         </div>
-      </div>
-      <div className={`m-4 ${!farcasterStates.isChannel && "hidden"}`}>
-        <FarcasterChannel />
+      )}
+
+      <div className={`mx-4 ${!farcasterStates?.isChannel && "hidden"}`}>
+        <FarcasterChannel
+          channelState={farcasterStates.channelValue?.channelValue}
+          setChannelState={(channelValue) =>
+            setFarcasterStates({
+              ...farcasterStates,
+              channelValue: {
+                ...farcasterStates.channelValue,
+                channelValue,
+              },
+            })
+          }
+        />
       </div>
 
       <div className="mb-4 m-4">
@@ -1046,256 +1209,440 @@ const FarcasterNormalPost = () => {
           <div
             className={`${!farcasterStates.frameData?.isGateWith && "hidden"}`}
           >
+            {!isMobile && (
+              <>
+                <div className="flex justify-between py-2">
+                  <h2 className="text-lg mb-2"> Like </h2>
+                  <Switch
+                    checked={farcasterStates.frameData?.isLike}
+                    onChange={() =>
+                      setFarcasterStates({
+                        ...farcasterStates,
+                        frameData: {
+                          ...farcasterStates.frameData,
+                          isLike: !farcasterStates.frameData?.isLike,
+                        },
+                      })
+                    }
+                    className={`${
+                      farcasterStates.frameData?.isLike
+                        ? "bg-[#e1f16b]"
+                        : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                  >
+                    <span
+                      className={`${
+                        farcasterStates.frameData?.isLike
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                    />{" "}
+                  </Switch>
+                </div>
+
+                <div className="flex justify-between py-2">
+                  <h2 className="text-lg mb-2"> Recast </h2>
+                  <Switch
+                    checked={farcasterStates.frameData?.isRecast}
+                    onChange={() =>
+                      setFarcasterStates({
+                        ...farcasterStates,
+                        frameData: {
+                          ...farcasterStates.frameData,
+                          isRecast: !farcasterStates.frameData?.isRecast,
+                        },
+                      })
+                    }
+                    className={`${
+                      farcasterStates.frameData?.isRecast
+                        ? "bg-[#e1f16b]"
+                        : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                  >
+                    <span
+                      className={`${
+                        farcasterStates.frameData?.isRecast
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                    />{" "}
+                  </Switch>
+                </div>
+
+                <div className="flex justify-between py-2">
+                  <h2 className="text-lg mb-2"> Follow </h2>
+                  <Switch
+                    checked={farcasterStates.frameData?.isFollow}
+                    onChange={() =>
+                      setFarcasterStates({
+                        ...farcasterStates,
+                        frameData: {
+                          ...farcasterStates.frameData,
+                          isFollow: !farcasterStates.frameData?.isFollow,
+                        },
+                      })
+                    }
+                    className={`${
+                      farcasterStates.frameData?.isFollow
+                        ? "bg-[#e1f16b]"
+                        : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                  >
+                    <span
+                      className={`${
+                        farcasterStates.frameData?.isFollow
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                    />{" "}
+                  </Switch>
+                </div>
+              </>
+            )}
             <div className="flex justify-between py-2">
-              <h2 className="text-lg mb-2"> Like </h2>
+              <h2 className="text-lg mb-2"> Channel </h2>
               <Switch
-                checked={farcasterStates.frameData?.isLike}
+                checked={farcasterStates.frameData?.isChannel}
                 onChange={() =>
                   setFarcasterStates({
                     ...farcasterStates,
                     frameData: {
                       ...farcasterStates.frameData,
-                      isLike: !farcasterStates.frameData?.isLike,
+                      isChannel: !farcasterStates.frameData?.isChannel,
                     },
                   })
                 }
                 className={`${
-                  farcasterStates.frameData?.isLike
+                  farcasterStates.frameData?.isChannel
                     ? "bg-[#e1f16b]"
                     : "bg-gray-200"
                 } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
               >
                 <span
                   className={`${
-                    farcasterStates.frameData?.isLike
+                    farcasterStates.frameData?.isChannel
                       ? "translate-x-6"
                       : "translate-x-1"
                   } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
                 />{" "}
               </Switch>
             </div>
-
-            <div className="flex justify-between py-2">
-              <h2 className="text-lg mb-2"> Recast </h2>
-              <Switch
-                checked={farcasterStates.frameData?.isRecast}
-                onChange={() =>
+            <div
+              className={`${!farcasterStates.frameData?.isChannel && "hidden"}`}
+            >
+              <FarcasterChannel
+                channelState={farcasterStates.frameData.channelValue}
+                setChannelState={(channelValue) =>
                   setFarcasterStates({
                     ...farcasterStates,
                     frameData: {
                       ...farcasterStates.frameData,
-                      isRecast: !farcasterStates.frameData?.isRecast,
+                      channelValue,
                     },
                   })
                 }
-                className={`${
-                  farcasterStates.frameData?.isRecast
-                    ? "bg-[#e1f16b]"
-                    : "bg-gray-200"
-                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-              >
-                <span
-                  className={`${
-                    farcasterStates.frameData?.isRecast
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                />{" "}
-              </Switch>
+              />
             </div>
-
-            <div className="flex justify-between py-2">
-              <h2 className="text-lg mb-2"> Follow </h2>
-              <Switch
-                checked={farcasterStates.frameData?.isFollow}
-                onChange={() =>
-                  setFarcasterStates({
-                    ...farcasterStates,
-                    frameData: {
-                      ...farcasterStates.frameData,
-                      isFollow: !farcasterStates.frameData?.isFollow,
-                    },
-                  })
-                }
-                className={`${
-                  farcasterStates.frameData?.isFollow
-                    ? "bg-[#e1f16b]"
-                    : "bg-gray-200"
-                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-              >
-                <span
-                  className={`${
-                    farcasterStates.frameData?.isFollow
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                />{" "}
-              </Switch>
+            {!isMobile && (
+              <>
+                <div className="flex justify-between py-2">
+                  <h2 className="text-lg mb-2"> Collection </h2>
+                  <Switch
+                    checked={farcasterStates.frameData?.isCollection}
+                    onChange={() =>
+                      setFarcasterStates({
+                        ...farcasterStates,
+                        frameData: {
+                          ...farcasterStates.frameData,
+                          isCollection:
+                            !farcasterStates.frameData?.isCollection,
+                        },
+                      })
+                    }
+                    className={`${
+                      farcasterStates.frameData?.isCollection
+                        ? "bg-[#e1f16b]"
+                        : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                  >
+                    <span
+                      className={`${
+                        farcasterStates.frameData?.isCollection
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                    />{" "}
+                  </Switch>
+                </div>
+              </>
+            )}
+            <div
+              className={`${
+                !farcasterStates.frameData?.isCollection && "hidden"
+              } mt-2`}
+            >
+              <InputBox
+                label="Collection address"
+                name="collectionAddress"
+                onChange={(e) => handleChange(e, "collectionAddress")}
+                onFocus={(e) => handleChange(e, "collectionAddress")}
+              />
+              {farcasterStates.frameData?.isCollectionAddressError && (
+                <InputErrorMsg
+                  message={farcasterStates.frameData?.collectionAddressError}
+                />
+              )}
             </div>
           </div>
         </div>
 
-        <div className="mb-4">
-          <div className="flex justify-between">
-            <h2 className="text-lg mb-2"> External Link </h2>
-            <Switch
-              checked={farcasterStates.frameData?.isExternalLink}
-              onChange={() =>
-                setFarcasterStates({
-                  ...farcasterStates,
-                  frameData: {
-                    ...farcasterStates.frameData,
-                    isExternalLink: !farcasterStates.frameData?.isExternalLink,
-                  },
-                })
-              }
-              className={`${
-                farcasterStates.frameData?.isExternalLink
-                  ? "bg-[#e1f16b]"
-                  : "bg-gray-200"
-              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-            >
-              <span
+        {!isMobile && (
+          <>
+            <div className="mb-4">
+              <div className="flex justify-between">
+                <h2 className="text-lg mb-2"> External Link </h2>
+                <Switch
+                  checked={farcasterStates.frameData?.isExternalLink}
+                  onChange={() =>
+                    setFarcasterStates({
+                      ...farcasterStates,
+                      frameData: {
+                        ...farcasterStates.frameData,
+                        isExternalLink:
+                          !farcasterStates.frameData?.isExternalLink,
+                      },
+                    })
+                  }
+                  className={`${
+                    farcasterStates.frameData?.isExternalLink
+                      ? "bg-[#e1f16b]"
+                      : "bg-gray-200"
+                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                >
+                  <span
+                    className={`${
+                      farcasterStates.frameData?.isExternalLink
+                        ? "translate-x-6"
+                        : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  />{" "}
+                </Switch>
+              </div>
+              <div className="w-4/5 opacity-75">
+                {" "}
+                Let user know more about your frame.{" "}
+              </div>
+
+              <div
                 className={`${
-                  farcasterStates.frameData?.isExternalLink
-                    ? "translate-x-6"
-                    : "translate-x-1"
-                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-              />{" "}
-            </Switch>
-          </div>
-          <div className="w-4/5 opacity-75">
-            {" "}
-            Let user know more about your frame.{" "}
-          </div>
+                  !farcasterStates.frameData?.isExternalLink && "hidden"
+                } mt-2`}
+              >
+                <InputBox
+                  label="External Link"
+                  name="externalLink"
+                  onChange={(e) => handleChange(e, "externalLink")}
+                  onFocus={(e) => handleChange(e, "externalLink")}
+                />
+              </div>
 
-          <div
-            className={`${
-              !farcasterStates.frameData?.isExternalLink && "hidden"
-            } mt-2`}
-          >
-            <InputBox
-              label="External Link"
-              name="externalLink"
-              onChange={(e) => handleChange(e, "externalLink")}
-              onFocus={(e) => handleChange(e, "externalLink")}
-            />
-          </div>
+              {farcasterStates.frameData?.isExternalLinkError && (
+                <InputErrorMsg
+                  message={farcasterStates.frameData?.isExternalLinkError}
+                />
+              )}
+            </div>
 
-          {farcasterStates.frameData?.isExternalLinkError && (
-            <InputErrorMsg
-              message={farcasterStates.frameData?.isExternalLinkError}
-            />
-          )}
-        </div>
-
-        {/* Start  */}
-        {/* Start Degen-L3 Mint */}
-        {/* <div className="mb-4">
-          <div className="flex justify-between">
-            <h2 className="text-lg mb-2"> Custom currency Mint </h2>
-            <Switch
-              checked={farcasterStates.frameData?.isCustomCurrMint}
-              onChange={() =>
-                setFarcasterStates({
-                  ...farcasterStates,
-                  frameData: {
-                    ...farcasterStates.frameData,
-                    isCustomCurrMint:
-                      !farcasterStates.frameData?.isCustomCurrMint,
-                  },
-                })
-              }
-              className={`${
-                farcasterStates.frameData?.isCustomCurrMint
-                  ? "bg-[#e1f16b]"
-                  : "bg-gray-200"
-              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-            >
-              <span
-                className={`${
-                  farcasterStates.frameData?.isCustomCurrMint
-                    ? "translate-x-6"
-                    : "translate-x-1"
-                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-              />{" "}
-            </Switch>
-          </div>
-          <div className="w-4/5 opacity-75">
-            {" "}
-            Mint NFTs with custom currencies like $DEGEN{" "}
-          </div>
-        </div> */}
-
+            {/* Start  */}
+            {/* Start Degen-L3 Mint */}
+            <div className="mb-4">
+              <div className="flex justify-between">
+                <h2 className="text-lg mb-2"> Custom currency Mint </h2>
+                <Switch
+                  checked={farcasterStates.frameData?.isCustomCurrMint}
+                  onChange={() =>
+                    setFarcasterStates({
+                      ...farcasterStates,
+                      frameData: {
+                        ...farcasterStates.frameData,
+                        isCustomCurrMint:
+                          !farcasterStates.frameData?.isCustomCurrMint,
+                        isCreatorSponsored: false,
+                      },
+                    })
+                  }
+                  className={`${
+                    farcasterStates.frameData?.isCustomCurrMint
+                      ? "bg-[#e1f16b]"
+                      : "bg-gray-200"
+                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                >
+                  <span
+                    className={`${
+                      farcasterStates.frameData?.isCustomCurrMint
+                        ? "translate-x-6"
+                        : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  />{" "}
+                </Switch>
+              </div>
+              <div className="w-4/5 opacity-75">
+                {" "}
+                Mint NFTs with custom currencies like $DEGEN{" "}
+              </div>
+            </div>
+          </>
+        )}
         <div
           className={`${
             !farcasterStates.frameData?.isCustomCurrMint && "hidden"
           } mt-2`}
         >
+          {isSponsoredChainFn() ? (
+            <>
+              <p className="text-end mt-4">
+                <span>Topup account:</span>
+                {isWalletLoading || isWalletRefetching ? (
+                  <span className="text-blue-500"> Loading address... </span>
+                ) : (
+                  <span
+                    className="text-blue-500 cursor-pointer"
+                    onClick={() => {
+                      navigator.clipboard.writeText(walletData?.publicAddress);
+                      toast.success("Copied topup account address");
+                    }}
+                  >
+                    {" "}
+                    {addressCrop(walletData?.publicAddress)}
+                  </span>
+                )}
+              </p>
+              <p className="text-end">
+                <span>Topup balance:</span>
+                {isWalletLoading || isWalletRefetching ? (
+                  <span className="text-blue-500"> Loading balance... </span>
+                ) : (
+                  <span>
+                    {" "}
+                    {walletData?.balance} {chain?.nativeCurrency?.symbol}{" "}
+                  </span>
+                )}
+              </p>
+            </>
+          ) : null}
+          <div className="flex flex-col py-4">
+            <Select
+              animate={{
+                mount: { y: 0 },
+                unmount: { y: 25 },
+              }}
+              label="Network"
+              name="Network"
+              id="Network"
+              value={farcasterStates?.frameData?.selectedNetwork?.name}
+            >
+              {LENSPOST_721_ENALBED_CHAINS?.map((network) => (
+                <Option
+                  key={network?.id}
+                  onClick={() => {
+                    switchChain({ chainId: network?.id });
+                    setFarcasterStates({
+                      ...farcasterStates,
+                      frameData: {
+                        ...farcasterStates.frameData,
+                        selectedNetwork: {
+                          id: network?.id,
+                          name: network?.name,
+                        },
+                        customCurrSymbol: "",
+                        customCurrAddress: "",
+                      },
+                    });
+                  }}
+                >
+                  <div className="flex items-center gap-1">
+                    <Avatar
+                      variant="circular"
+                      alt={network?.name}
+                      src={chainLogo(network?.id)}
+                      className="w-6 h-6"
+                    />
+                    <p>{network?.name}</p>
+                  </div>
+                </Option>
+              ))}
+            </Select>
+          </div>
           <div className="my-2">
-            <p className="text-sm">
-              {" "}
-              {walletData?.sponsored > 0
-                ? `${
-                    walletData?.sponsored
-                  } mints are free. Topup with your custom currency if you want
-              to drop more than ${walletData?.sponsored} mints ${" "}`
-                : "You don't have any free mint. please Topup with your custom currency to mint"}{" "}
-            </p>
             <div
               className={`${
                 !farcasterStates.frameData?.isCustomCurrMint && "hidden"
               } `}
             >
-              <div className="flex flex-row justify-between">
-                <div className="flex flex-col py-4">
-                  <NumberInputBox
-                    min={"1"}
-                    step={"1"}
-                    label="Price"
-                    name="customCurrAmount"
-                    onChange={(e) => handleChange(e, "customCurrAmount")}
-                    onFocus={(e) => handleChange(e, "customCurrAmount")}
-                    value={farcasterStates?.frameData?.customCurrAmount}
-                  />
-                </div>
+              {farcasterStates?.frameData?.selectedNetwork?.name && (
+                <>
+                  <div className="flex flex-row justify-between">
+                    <div className="flex flex-col py-4">
+                      <NumberInputBox
+                        min={"1"}
+                        step={"1"}
+                        label="Price"
+                        name="customCurrAmount"
+                        onChange={(e) => handleChange(e, "customCurrAmount")}
+                        onFocus={(e) => handleChange(e, "customCurrAmount")}
+                        value={farcasterStates?.frameData?.customCurrAmount}
+                      />
+                    </div>
 
-                <div className="flex flex-col py-4 mx-2">
-                  {/* <label htmlFor="price"></label> */}
-                  <Select
-                    animate={{
-                      mount: { y: 0 },
-                      unmount: { y: 25 },
-                    }}
-                    label="Currency"
-                    name="customCurrName"
-                    id="customCurrName"
-                    value={farcasterStates.frameData.customCurrName}
-                  >
-                    {["DEGEN"].map((currency) => (
-                      <Option
-                        key={currency}
-                        onClick={() => {
-                          setFarcasterStates({
-                            ...farcasterStates,
-                            frameData: {
-                              ...farcasterStates.frameData,
-                              customCurrName: currency,
-                            },
-                          });
+                    <div className="flex flex-col py-4 mx-2">
+                      {/* <label htmlFor="price"></label> */}
+                      <Select
+                        animate={{
+                          mount: { y: 0 },
+                          unmount: { y: 25 },
                         }}
+                        label="Currency"
+                        name="customCurrSymbol"
+                        id="customCurrSymbol"
+                        value={farcasterStates?.frameData?.customCurrSymbol}
                       >
-                        {currency.toUpperCase()}
-                      </Option>
-                    ))}
-                  </Select>
-                </div>
-              </div>
+                        {TOKEN_LIST[
+                          farcasterStates?.frameData?.selectedNetwork?.name
+                        ]?.map((currency) => (
+                          <Option
+                            key={currency?.id}
+                            onClick={() => {
+                              setFarcasterStates({
+                                ...farcasterStates,
+                                frameData: {
+                                  ...farcasterStates.frameData,
+                                  customCurrSymbol: currency?.symbol,
+                                  customCurrAddress: currency?.address,
+                                },
+                              });
+                            }}
+                          >
+                            <div className="flex items-center gap-1">
+                              <Avatar
+                                variant="circular"
+                                alt={currency?.symbol}
+                                src={currency?.logoURI}
+                                className="w-6 h-6"
+                              />
+                              <p>{currency?.name}</p>
+                            </div>
+                          </Option>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
 
-              {farcasterStates?.frameData?.isCustomCurrAmountError && (
-                <InputErrorMsg
-                  message={farcasterStates?.frameData.customCurrAmountError}
-                />
+                  {farcasterStates?.frameData?.isCustomCurrAmountError && (
+                    <InputErrorMsg
+                      message={farcasterStates?.frameData.customCurrAmountError}
+                    />
+                  )}
+                </>
               )}
             </div>
 
@@ -1320,10 +1667,20 @@ const FarcasterNormalPost = () => {
                 message={farcasterStates.frameData?.allowedMintsError}
               />
             )}
+
+            {farcasterStates.frameData?.isCustomCurrMint &&
+              farcasterStates.frameData?.allowedMints > walletData?.sponsored &&
+              isSponsoredChainFn() && (
+                <Topup
+                  topUpAccount={walletData?.publicAddress}
+                  balance={walletData?.balance}
+                  refetchWallet={refetchWallet}
+                  sponsored={walletData?.sponsored}
+                />
+              )}
           </div>
         </div>
         {/* End */}
-
         <div
           className={`mb-4 ${
             !farcasterStates.frameData?.isCustomCurrMint && "hidden"
@@ -1438,16 +1795,16 @@ const FarcasterNormalPost = () => {
             </div>
           </div>
         </div>
-
         {/* End Degen-L3 Mint */}
-
-        {!farcasterStates.frameData?.isCustomCurrMint && (
-          <>
+        {/* {!farcasterStates.frameData?.isCustomCurrMint && ( */}
+        <>
+          {actionType !== "composer" && (
             <div className="mb-4">
               <div className="flex justify-between">
                 <h2 className="text-lg mb-2"> Sponsor Mints </h2>
                 <Switch
                   checked={farcasterStates.frameData?.isCreatorSponsored}
+                  disabled={actionType === "composer"}
                   onChange={() =>
                     setFarcasterStates({
                       ...farcasterStates,
@@ -1455,6 +1812,7 @@ const FarcasterNormalPost = () => {
                         ...farcasterStates.frameData,
                         isCreatorSponsored:
                           !farcasterStates.frameData?.isCreatorSponsored,
+                        isCustomCurrMint: false,
                       },
                     })
                   }
@@ -1478,85 +1836,63 @@ const FarcasterNormalPost = () => {
                 Let your audience mint your frame for free.{" "}
               </div>
             </div>
-
-            <div
-              className={`${
-                !farcasterStates.frameData?.isCreatorSponsored && "hidden"
-              } mt-2`}
-            >
-              <div className="my-2">
-                <p className="text-sm">
-                  {" "}
-                  {walletData?.sponsored > 0
-                    ? `${
-                        walletData?.sponsored
-                      } mints are free. Topup with Base ETH if you want
+          )}
+          {/* {actionType !== "composer" && ( */}
+          <div
+            className={`${
+              !farcasterStates.frameData?.isCreatorSponsored && "hidden"
+            } mt-2`}
+          >
+            <div className="my-2">
+              <p className="text-sm">
+                {" "}
+                {walletData?.sponsored > 0
+                  ? `${
+                      walletData?.sponsored
+                    } mints are free. Topup with Base ETH if you want
               to drop more than ${walletData?.sponsored} mints ${" "}`
-                    : "You don't have any free mint. please Topup with Base ETH to mint"}{" "}
-                </p>
-                <p className="text-end mt-4">
-                  <span>Topup account:</span>
-                  {isWalletLoading || isWalletRefetching ? (
-                    <span className="text-blue-500"> Loading address... </span>
-                  ) : (
-                    <span
-                      className="text-blue-500 cursor-pointer"
-                      onClick={() => {
-                        navigator.clipboard.writeText(
-                          walletData?.publicAddress
-                        );
-                        toast.success("Copied topup account address");
-                      }}
-                    >
-                      {" "}
-                      {addressCrop(walletData?.publicAddress)}
-                    </span>
-                  )}
-                </p>
-                <p className="text-end">
-                  <span>Topup balance:</span>
-                  {isWalletLoading || isWalletRefetching ? (
-                    <span className="text-blue-500"> Loading balance... </span>
-                  ) : (
-                    <span> {walletData?.balance} Base ETH</span>
-                  )}
-                </p>
-                <div className="flex flex-col w-full py-2">
-                  <NumberInputBox
-                    min={1}
-                    step={1}
-                    label="Allowed Mints"
-                    name="allowedMints"
-                    onChange={(e) => handleChange(e, "allowedMints")}
-                    onFocus={(e) => handleChange(e, "allowedMints")}
-                    value={farcasterStates.frameData.allowedMints}
-                  />
-                </div>
+                  : "Please Topup with Base ETH to sponsor the gas."}{" "}
+              </p>
 
-                {farcasterStates.frameData?.allowedMintsIsError && (
-                  <InputErrorMsg
-                    message={farcasterStates.frameData?.allowedMintsError}
-                  />
-                )}
+              {actionType !== "composer" ? (
+                <>
+                  <p className="text-end mt-4">
+                    <span>Topup account:</span>
+                    {isWalletLoading || isWalletRefetching ? (
+                      <span className="text-blue-500">
+                        {" "}
+                        Loading address...{" "}
+                      </span>
+                    ) : (
+                      <span
+                        className="text-blue-500 cursor-pointer"
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            walletData?.publicAddress
+                          );
+                          toast.success("Copied topup account address");
+                        }}
+                      >
+                        {" "}
+                        {addressCrop(walletData?.publicAddress)}
+                      </span>
+                    )}
+                  </p>
 
-                {farcasterStates.frameData?.isCreatorSponsored &&
-                  farcasterStates.frameData?.allowedMints >
-                    walletData?.sponsored && (
-                    <Topup
-                      topUpAccount={walletData?.publicAddress}
-                      balance={walletData?.balance}
-                      refetch={refetchWallet}
-                      sponsored={walletData?.sponsored}
-                    />
-                  )}
-              </div>
-            </div>
+                  <p className="text-end">
+                    <span>Topup balance:</span>
+                    {isWalletLoading || isWalletRefetching ? (
+                      <span className="text-blue-500">
+                        {" "}
+                        Loading balance...{" "}
+                      </span>
+                    ) : (
+                      <span> {walletData?.balance} Base ETH</span>
+                    )}
+                  </p>
+                </>
+              ) : null}
 
-            <div
-              className={`${
-                farcasterStates.frameData?.isCreatorSponsored && "hidden"
-              } mt-2`}
-            >
               <div className="flex flex-col w-full py-2">
                 <NumberInputBox
                   min={1}
@@ -1574,33 +1910,112 @@ const FarcasterNormalPost = () => {
                   message={farcasterStates.frameData?.allowedMintsError}
                 />
               )}
-            </div>
-          </>
-        )}
 
-        {walletData?.balance > 0 && (
+              {farcasterStates.frameData?.isCreatorSponsored &&
+                farcasterStates.frameData?.allowedMints >
+                  walletData?.sponsored && (
+                  <Topup
+                    topUpAccount={walletData?.publicAddress}
+                    balance={walletData?.balance}
+                    refetchWallet={refetchWallet}
+                    sponsored={walletData?.sponsored}
+                  />
+                )}
+            </div>
+          </div>
+          {/* )} */}
+          {/* Or here we can just add description for Mobile */}
+          {(actionType === "composer" || isMobile) && (
+            <>
+              <div className="mb-4">
+                <div className="flex justify-between">
+                  <h2 className="text-lg"> Title & Description</h2>
+                </div>
+                {/* <div className="w-4/5 opacity-75">
+                  {" "}
+                  Enter title fot the NFT.{" "}
+                </div> */}
+              </div>
+              <div className="flex flex-col gap-2">
+                <InputBox
+                  label={"Title"}
+                  name="title"
+                  onChange={(e) => handleChange(e)}
+                  value={postName}
+                />
+                <Textarea
+                  label={"Description"}
+                  name="description"
+                  onChange={(e) => handleChange(e)}
+                  value={postDescription}
+                />
+              </div>
+            </>
+          )}
+          <div
+            className={`${
+              (farcasterStates.frameData?.isCreatorSponsored ||
+                farcasterStates?.frameData?.isCustomCurrMint) &&
+              "hidden"
+            } mt-2`}
+          >
+            <div className="flex flex-col w-full py-2">
+              <NumberInputBox
+                min={1}
+                step={1}
+                label="Allowed Mints"
+                name="allowedMints"
+                onChange={(e) => handleChange(e, "allowedMints")}
+                onFocus={(e) => handleChange(e, "allowedMints")}
+                value={farcasterStates.frameData.allowedMints}
+              />
+            </div>
+
+            {farcasterStates.frameData?.allowedMintsIsError && (
+              <InputErrorMsg
+                message={farcasterStates.frameData?.allowedMintsError}
+              />
+            )}
+          </div>
+        </>
+        {/* // )} */}
+        {actionType !== "composer" && walletData?.balance > 0 && (
           <WithdrawFunds refetchWallet={refetchWallet} />
         )}
       </div>
-
+      {/* {isMobile && (
+        <div className="mx-4">
+          <Textarea
+            label={"Description"}
+            name="description"
+            onChange={(e) => handleChange(e)}
+            value={postDescription}
+          />
+        </div>
+      )} */}
       <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
-        {!getEVMAuth ? (
-          <EVMWallets title="Login with EVM" className="mx-2" />
-        ) : !isFarcasterAuth ? (
+        {!getEVMAuth && actionType !== "composer" ? (
+          <EVMWallets title={"Login with EVM"} className="mx-2" login={login} />
+        ) : !isFarcasterAuth && (!isMobile || actionType !== "composer") ? (
           <FarcasterAuth />
         ) : farcasterStates?.frameData?.isFrame &&
           !farcasterStates?.frameData?.isCustomCurrMint &&
           !farcasterStates?.frameData?.isCreatorSponsored &&
-          chain?.id != 8453 ? (
+          chain?.id != chainId &&
+          !isMobile ? (
           <div className="mx-2 outline-none">
             <Button
               className="w-full outline-none flex justify-center items-center gap-2"
               disabled={isLoadingSwitchNetwork}
-              onClick={() => switchNetwork && switchNetwork(8453)}
+              onClick={() =>
+                switchChain({
+                  chainId: chainId,
+                })
+              }
               color="red"
             >
               {isLoadingSwitchNetwork ? "Switching" : "Switch"} to
-              {chain?.id != 8453 ? " base" : "a suported"} Network{" "}
+              {chain?.id != chainId ? " base" : "a suported"} Network{" "}
               {isLoadingSwitchNetwork && <Spinner />}
             </Button>
           </div>
@@ -1611,11 +2026,18 @@ const FarcasterNormalPost = () => {
               onClick={handleSubmit}
               // color="yellow"
             >
-              Share
+              {/* Share */}
+              Let's GO
             </Button>
           </div>
         )}
       </div>
+
+      {isMobile && (
+        <div className="mt-4">
+          <WatermarkRemover />
+        </div>
+      )}
     </>
   );
 };

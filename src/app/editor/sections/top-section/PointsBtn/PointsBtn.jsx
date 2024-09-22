@@ -1,25 +1,26 @@
+
 import { Fragment, useContext, useEffect, useState } from "react";
 import { ShareIcon } from "../../../../../assets/assets";
 import {
   ShareSection,
-  SolanaMint,
+  SolanaMintWrapper,
   ZoraMint,
   LensShareWrapper,
-  ProfilePanel,
 } from "../../right-section";
 import { Drawer } from "@blueprintjs/core";
 import { Context } from "../../../../../providers/context";
-import FarcasterShareWrapper from "../../right-section/share/farcaster-share/FarcasterShareWrapper";
 import { useAccount } from "wagmi";
 import { getAvatar } from "../../../../../utils";
 import { Avatar } from "@material-tailwind/react";
 import { AllTasksNRewards } from "../../right-section/profile/components/section/AllTasksNRewards";
-import ProfilePanelV2 from "../../right-section/profile/ProfilePanelV2";
+import ProfilePanel from "../../right-section/profile/ProfilePanel";
+import { useUser } from "../../../../../hooks/user";
 
 const PointsBtn = () => {
   const [transitionRtoL, setTransitionRtoL] = useState(false);
+  const { profileImage } = useUser();
 
-  const { menu, setMenu, isProfileOpen, setIsProfileOpen } =
+  const { menu, setMenu, isProfileOpen, setIsProfileOpen, setOpenLeftBar } =
     useContext(Context);
   const { address } = useAccount();
 
@@ -39,6 +40,7 @@ const PointsBtn = () => {
         onClick={() => {
           setMenu("profile");
           setIsProfileOpen(!isProfileOpen);
+          setOpenLeftBar(false);
         }}
         className="outline-none"
       >
@@ -47,7 +49,7 @@ const PointsBtn = () => {
           variant="circular"
           alt="profile picture"
           className="cursor-pointer outline outline-black"
-          src={getAvatar(address)}
+          src={profileImage || getAvatar(address)}
         />
       </button>
 
@@ -63,7 +65,7 @@ const PointsBtn = () => {
           <div className="overflow-scroll">
             <div className="fixed inset-y-0 right-0 flex max-w-full top-2">
               <div className="w-screen max-w-sm mb-2">
-                {menu === "profile" && <ProfilePanelV2 />}
+                {menu === "profile" && <ProfilePanel />}
                 {menu === "allTasksnRewards" && <AllTasksNRewards />}
               </div>
             </div>

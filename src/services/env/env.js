@@ -9,6 +9,7 @@ export const WALLETCONNECT_PROJECT_ID = import.meta.env
 export const AIRSTACK_API_KEY = import.meta.env.VITE_AIRSTACK_API_KEY;
 export const NEYNAR_CLIENT_ID = import.meta.env.VITE_NEYNAR_CLIENT_ID;
 export const XMTP_ENV = import.meta.env.VITE_XMTP_ENV;
+export const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID;
 
 // Meme API
 export const MEME_API_URL = import.meta.env.VITE_MEME_API_URL;

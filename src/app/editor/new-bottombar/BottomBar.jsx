@@ -1,8 +1,16 @@
-import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverHandler,
+  Tooltip
+} from "@material-tailwind/react";
+import { getGoogleFontsListAPI } from "polotno/config";
+import { TextSection } from "polotno/side-panel";
+import { useStore } from "../../../hooks/polotno/";
+import { SpeedDialX } from "../common/elements/SpeedDial";
 import {
   EditorIconAIPanel,
   EditorIconDraw,
-  EditorIconHelp,
   EditorIconLeftRotate,
   EditorIconNFTS,
   EditorIconPointer,
@@ -10,31 +18,16 @@ import {
   EditorIconShape,
   EditorIconTemplates,
   EditorIconTextCursor,
-  EditorIconUpload,
+  EditorIconUpload
 } from "../editorIcons/EditorIcons";
-import { getGoogleFontsListAPI, getGoogleFontImage } from "polotno/config";
-import { useStore } from "../../../hooks/polotno/";
-import {
-  Popover,
-  PopoverHandler,
-  PopoverContent,
-  Button,
-  Input,
-  Tooltip,
-} from "@material-tailwind/react";
-import { SearchComponent } from "../common";
-import { TemplatePanel } from "../sections/left-section/template/TemplateSection";
-import { NFTPanel } from "../sections/left-section/nft/NFTSection";
-import useOpenedPanel from "./hooks/useOpenedPanel";
-import { MemePanel } from "../sections/left-section/meme/MemeSection";
-import { SpeedDialX } from "../common/elements/SpeedDial";
 import { DesignPanel } from "../sections/left-section/design/DesignSection";
-import { TextSection } from "polotno/side-panel";
 import { AIImagePanel } from "../sections/left-section/image/AIImageSection";
-import { Shapes } from "polotno/side-panel/elements-panel";
-import { Shape } from "polotno/model/shape-model";
-import { ShapePanel } from "../sections/left-section/shape/ShapeSection";
+import { MemePanel } from "../sections/left-section/meme/MemeSection";
+import { NFTPanel } from "../sections/left-section/nft/NFTSection";
 import { ResizePanel } from "../sections/left-section/resize/ResizeSection";
+import { ShapePanel } from "../sections/left-section/shape/ShapeSection";
+import { TemplatePanel } from "../sections/left-section/template/TemplateSection";
+import useOpenedPanel from "./hooks/useOpenedPanel";
 
 const BottomBar = () => {
   const store = useStore();
@@ -223,7 +216,7 @@ const BottomBar = () => {
 
           {/* The content that is displayed on the popover : 
           reactive based on the opened panel custom hook - useOpenedPanel */}
-          <PopoverContent className="z-50  sm:w-[96vw] md:w-[32vw] h-[64vh] p-4 rounded-2xl">
+          <PopoverContent className="z-50 h-[64vh] p-4 rounded-2xl">
             {openedPanel === "Memes" && <MemePanel />}
             {openedPanel === "Upload" && <DesignPanel />}
             {openedPanel === "NFTs" && <NFTPanel />}

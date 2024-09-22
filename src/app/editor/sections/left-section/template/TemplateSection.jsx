@@ -179,15 +179,10 @@ const DesignCard = ({
   );
 };
 
-// Design card component end
 
-// <<<<<<< feat/revamp-ui
-// export const TemplatePanel = () => {
-//   const [tab, setTab] = useState("lenspost");
-// =======
-const TemplatePanel = () => {
+export const TemplatePanel = () => {
   const [tab, setTab] = useState("poster");
-// >>>>>>> feat/one-ui
+
   const [stIsModalOpen, setStIsModalOpen] = useState(false);
 
   return (

@@ -45,10 +45,6 @@ export function SpeedDialX() {
 
     <div className="">
       <div className="">
-// =======
-//     <div className="relative h-8 mb-6 mr-2">
-//       <div className="md: absolute bottom-0 right-0">
-// >>>>>>> feat/one-ui
         <SpeedDial>
           <SpeedDialHandler>
             <IconButton size="lg" className="rounded-full bg-white">

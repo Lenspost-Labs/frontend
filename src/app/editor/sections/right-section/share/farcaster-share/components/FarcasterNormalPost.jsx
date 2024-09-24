@@ -500,6 +500,20 @@ const FarcasterNormalPost = () => {
     setIsShareLoading(true);
 
     if (isMobile && actionType === "composer") {
+      // Posthog tracking
+      if (farcasterStates?.frameData?.isFrame) {
+        posthog.capture("Canvas shared as Frame", {
+          canvas_id: contextCanvasIdRef.current,
+          frameId,
+          access_platform: "composer",
+        });
+      } else {
+        posthog.capture("Canvas Posted To Farcaster", {
+          canvas_id: contextCanvasIdRef.current,
+          access_platform: "composer",
+        });
+      }
+
       const imageUrl = getImageByCanvasIdData[0];
       const embeds = farcasterStates?.frameData?.isFrame
         ? FRAME_URL + "/frame/" + frameId
@@ -517,19 +531,6 @@ const FarcasterNormalPost = () => {
         },
         "*"
       );
-
-      if (farcasterStates?.frameData?.isFrame) {
-        posthog.capture("Canvas shared as Frame", {
-          canvas_id: contextCanvasIdRef.current,
-          frameId,
-          access_platform: "composer",
-        });
-      } else {
-        posthog.capture("Canvas Posted To Farcaster", {
-          canvas_id: contextCanvasIdRef.current,
-          access_platform: "composer",
-        });
-      }
 
       setIsShareLoading(false);
       console.log("shared");

@@ -10,6 +10,7 @@ import X_Logo from "./logos/X_logo.png";
 
 const arbitrumLogo = "https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg";
 const degenLogo = "https://basescan.org/token/images/degentips_32.png";
+const polygonLogo = "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg";
 
 export {
   SolanaLogo,
@@ -23,4 +24,5 @@ export {
   degenLogo,
   HamLogo,
   X_Logo,
+  polygonLogo,
 };

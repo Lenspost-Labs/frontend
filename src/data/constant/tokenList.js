@@ -99,4 +99,14 @@ export const TOKEN_LIST = {
       logoURI: "https://arbiscan.io/token/images/centre-usdc_28.png",
     },
   ],
+  Polygon: [
+    {
+      id: 137,
+      address: "0x0000000000000000000000000000000000001010",
+      symbol: "MATIC",
+      name: "Matic Token",
+      decimals: 18,
+      logoURI: "https://polygonscan.com/token/images/polygonmatic_new_32.png",
+    },
+  ],
 };

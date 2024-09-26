@@ -30,6 +30,7 @@ import { TemplatePanel } from "../sections/left-section/template/TemplateSection
 import useOpenedPanel from "./hooks/useOpenedPanel";
 import { useContext } from "react";
 import { Context } from "../../../providers/context";
+import Toolbar from "polotno/toolbar/toolbar";
 
 const BottomBar = () => {
   const store = useStore();
@@ -44,7 +45,13 @@ const BottomBar = () => {
   // to get image path you can use this:
   return (
     <>
-      <div className="flex justify-between p-2 items-center h-[88px] overflow-x-scroll">
+      {!isMobile && (
+        <div className="w-full px-16">
+          <Toolbar downloadButtonEnabled store={store} components={[]} />
+        </div>
+      )}
+
+      <div className="flex justify-between p-2 items-center overflow-x-scroll">
         <Popover
           placement="top-end"
           offset={16}

@@ -292,4 +292,6 @@ img {
 
 .go3593045756{
   z-index: 0;
+  border-radius: 16px !important;
+  border: 0.5px solid rgb(227, 227, 227) !important;
 }

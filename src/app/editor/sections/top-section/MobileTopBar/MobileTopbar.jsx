@@ -209,10 +209,10 @@ const MobileTopbar = () => {
                     <div className="text-lg p-2 ">
                       {" "}
                       Featured campaign{" "}
-                      <span className="text-[#2C346B] italic bg-[#ecff5f] py-0.5 px-4 rounded-full border">
+                      {/* <span className="text-[#2C346B] italic bg-[#ecff5f] py-0.5 px-4 rounded-full border">
                         {" "}
                         #SummerOfPhi{" "}
-                      </span>
+                      </span> */}
                     </div>
                     <div
                       className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2 flex items-center text-nowrap text-xs"
@@ -230,7 +230,7 @@ const MobileTopbar = () => {
                     {/* Featured Stickers */}
                     <CustomHorizontalScroller
                       type="props"
-                      author="phi"
+                      author="moxie"
                       campaign={null}
                     />
                   </div>
@@ -252,7 +252,7 @@ const MobileTopbar = () => {
                     {/* Featured Stickers */}
                     <CustomHorizontalScroller
                       type="props"
-                      author="moxie"
+                      author="degen"
                       campaign={null}
                     />
                   </div>

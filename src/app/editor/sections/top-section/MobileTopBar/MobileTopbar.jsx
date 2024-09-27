@@ -253,7 +253,7 @@ const MobileTopbar = () => {
                     <CustomHorizontalScroller
                       type="props"
                       author="degen"
-                      campaign={null}
+                      campaign={"degen"}
                     />
                   </div>
                 </div>

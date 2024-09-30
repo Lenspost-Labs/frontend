@@ -102,9 +102,9 @@ export const TOKEN_LIST = {
   Polygon: [
     {
       id: 137,
-      address: "0x0000000000000000000000000000000000001010",
-      symbol: "MATIC",
-      name: "Matic Token",
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "POL",
+      name: "Polygon Token",
       decimals: 18,
       logoURI: "https://polygonscan.com/token/images/polygonmatic_new_32.png",
     },

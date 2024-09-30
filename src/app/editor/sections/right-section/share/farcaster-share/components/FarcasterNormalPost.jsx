@@ -123,6 +123,8 @@ const FarcasterNormalPost = () => {
 
   const { isFarcasterAuth } = useLocalStorage();
 
+  const isCreatorSponsored = farcasterStates?.frameData?.isCreatorSponsored;
+
   const {
     data: walletData,
     isError: isWalletError,
@@ -133,7 +135,7 @@ const FarcasterNormalPost = () => {
     isRefetching: isWalletRefetching,
   } = useQuery({
     queryKey: ["getOrCreateWallet"],
-    queryFn: () => getOrCreateWallet(chain?.id),
+    queryFn: () => getOrCreateWallet(isCreatorSponsored ? chainId : chain?.id),
     refetchOnWindowFocus: false,
   });
 
@@ -179,7 +181,6 @@ const FarcasterNormalPost = () => {
     },
   });
 
-  const isCreatorSponsored = farcasterStates?.frameData?.isCreatorSponsored;
   const LOA = walletData?.publicAddress ? walletData?.publicAddress : userLOA;
   const allowedMints = farcasterStates?.frameData?.allowedMints;
 

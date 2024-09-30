@@ -6,6 +6,7 @@ import {
   arbitrumLogo,
   degenLogo,
   HamLogo,
+  polygonLogo,
 } from "../assets";
 
 const chainLogos = {
@@ -21,6 +22,7 @@ const chainLogos = {
   666666666: degenLogo, // Degen
   5112: HamLogo,
   16600: EthLogo, // Og
+  137: polygonLogo, // polygon
 };
 
 export const chainLogo = (chainId) => {

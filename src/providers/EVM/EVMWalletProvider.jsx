@@ -50,6 +50,7 @@ export const config = createConfig({
           optimism,
           arbitrum,
           polygonMumbai,
+          polygon,
           degen,
           ham,
           og,

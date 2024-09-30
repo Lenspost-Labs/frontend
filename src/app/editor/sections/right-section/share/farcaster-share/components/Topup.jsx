@@ -10,7 +10,7 @@ import {
 } from "@material-tailwind/react";
 
 import { useEstimateFeesPerGas, useAccount, useSwitchChain } from "wagmi";
-import { base, baseSepolia } from "wagmi/chains";
+import { base, baseSepolia, confluxESpace } from "wagmi/chains";
 import { useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 import { http, parseEther } from "viem";
 import { toast } from "react-toastify";
@@ -37,7 +37,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
     error: feeError,
     isLoading: isFeeLoading,
   } = useEstimateFeesPerGas({
-    chainId: chainId,
+    chainId: chain?.id,
     formatUnits: "ether",
   });
 
@@ -296,7 +296,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
                     onClick={() =>
                       sendTransaction({
                         to: topUpAccount,
-                        chainId: chainId,
+                        chainId: chain?.id,
                         value: extraPayForMints
                           ? parseEther(extraPayForMints)
                           : parseEther(payForMints),

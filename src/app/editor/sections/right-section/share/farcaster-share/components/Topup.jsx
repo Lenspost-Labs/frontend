@@ -46,7 +46,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
   const isTopup = farcasterStates.frameData?.isTopup;
   const selectedNetwork = farcasterStates?.frameData?.selectedNetwork;
   const isCustomCurrMint = farcasterStates?.frameData?.isCustomCurrMint;
-  const TxFeeForDeployment = chain?.id === 137 ? 0.004 : 0.00009;
+  const TxFeeForDeployment = chain?.id === 137 ? 0.2 : 0.00009;
   const txFeeForMint = isCustomCurrMint ? 0.00003 : 0.00005;
   const isCreatorSponsored = farcasterStates.frameData.isCreatorSponsored;
 

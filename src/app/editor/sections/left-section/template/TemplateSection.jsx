@@ -294,7 +294,7 @@ export const LenspostTemplates = () => {
               hasSeeMore
               seeMoreFn={() => store.openSidePanel("Backgrounds2")}
             />
-            <CompCarousel type="background" author="kitty" campaign="kitty" />
+            <CompCarousel type="background" author="" campaign="halloween" />
 
             {/*  Featured Panels : Stickers */}
             <SecNameHeading

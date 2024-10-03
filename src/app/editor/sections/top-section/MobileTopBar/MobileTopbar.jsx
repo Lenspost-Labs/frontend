@@ -272,7 +272,7 @@ const MobileTopbar = () => {
                         <EditIconRightArrow />{" "}
                       </div> */}
                     </div>
-                    <CompCarousel type="background" />
+                    <CompCarousel type="background" campaign={"halloween"} />
                   </div>
                 )}
                 <div className="text-lg p-2 "> Gen AI </div>

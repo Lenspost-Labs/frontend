@@ -231,7 +231,7 @@ const MobileTopbar = () => {
                     <CustomHorizontalScroller
                       type="props"
                       author="moxie"
-                      campaign={null}
+                      campaign={"moxie"}
                     />
                   </div>
                   <div className="flex justify-between items-center mt-4">

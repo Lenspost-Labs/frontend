@@ -70,7 +70,8 @@ const CustomHorizontalScroller = ({ type, author, campaign }) => {
             {data?.pages[0]?.data.length > 0 &&
               data?.pages
                 .flatMap((item) => item?.data)
-                .slice(0, 10)
+                // .slice(0, 10)
+                .reverse()
                 .map((item, index) => {
                   return (
                     <div

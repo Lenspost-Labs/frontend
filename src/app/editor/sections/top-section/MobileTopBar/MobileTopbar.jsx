@@ -231,7 +231,7 @@ const MobileTopbar = () => {
                     <CustomHorizontalScroller
                       type="props"
                       author="moxie"
-                      campaign={null}
+                      campaign={"moxie"}
                     />
                   </div>
                   <div className="flex justify-between items-center mt-4">
@@ -272,7 +272,7 @@ const MobileTopbar = () => {
                         <EditIconRightArrow />{" "}
                       </div> */}
                     </div>
-                    <CompCarousel type="background" />
+                    <CompCarousel type="background" campaign={"halloween"} />
                   </div>
                 )}
                 <div className="text-lg p-2 "> Gen AI </div>

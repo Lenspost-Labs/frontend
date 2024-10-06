@@ -664,7 +664,7 @@ const Editor = () => {
       >
         <div
           style={{
-            height: isMobile ? "calc(100% - 8px)" : "calc(100% - 75px)",
+            height: isMobile ? "calc(100% - 8px)" : "calc(88%)",
           }}
         >
           {!isMobile && (
@@ -673,6 +673,12 @@ const Editor = () => {
               <NewTopbar />
             </div>
           )}
+          {!isMobile && (
+            <div className="w-full px-16">
+              <Toolbar downloadButtonEnabled store={store} components={[]} />
+            </div>
+          )}
+
           <PolotnoContainer className="min-h-400 md:min-h-full">
             <div id="second-step" className="mx-2"></div>
             <WorkspaceWrap>

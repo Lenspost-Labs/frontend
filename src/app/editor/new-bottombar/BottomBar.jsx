@@ -45,12 +45,6 @@ const BottomBar = () => {
   // to get image path you can use this:
   return (
     <>
-      {!isMobile && (
-        <div className="w-full px-16">
-          <Toolbar downloadButtonEnabled store={store} components={[]} />
-        </div>
-      )}
-
       <div className="flex justify-between p-2 items-center overflow-x-scroll">
         <Popover
           placement="top-end"

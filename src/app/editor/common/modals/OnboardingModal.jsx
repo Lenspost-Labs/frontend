@@ -22,9 +22,9 @@ const OnboardingModal = () => {
   const handleOpen = () => setIsOnboardingOpen(!isOnboardingOpen);
 
   const leftFeaturedImages = [
-    "https://fal.media/files/penguin/QQB-9cBeLiodf3YtlV4R9.jpeg",
-    "https://fal.media/files/tiger/xcnSyvUNDyELbujRMVjrL.jpeg",
-    "https://fal.media/files/monkey/p74fgPJWeRyVoy7n3rD3i.jpeg",
+    "https://fal.media/files/penguin/8c9GCFXoRUmQ580d55zNd.jpeg",
+    "https://fal.media/files/monkey/1oLthO-0_9tP0AoRj_wUS.jpeg",
+    "https://fal.media/files/zebra/Xk2h82Ovetl-VaspTiKiK.jpeg",
   ];
 
   const steps = [

@@ -97,103 +97,23 @@ export const setBroadcastOnChainTx = async (id, signature) => {
 // twitter apis start
 // need auth token (jwt)
 export const twitterAuthenticate = async () => {
-  try {
-    // authenticated request
-    const result = await api.get(`${API}/auth/twitter/authenticate`);
+  const result = await api.post(`${API}/twitter/authenticate`);
 
-    if (result?.status === 200) {
-      return {
-        data: result?.data,
-      };
-    } else if (result?.status === 400) {
-      return {
-        error: result?.data?.message,
-      };
-    } else {
-      return {
-        error: "Something went wrong, please try again later",
-      };
-    }
-  } catch (error) {
-    if (error?.response?.status === 500) {
-      console.log({
-        InternalServerError:
-          error?.response?.data?.message || error?.response?.data?.name,
-      });
-      return {
-        error: "Internal Server Error, please try again later",
-      };
-    } else if (error?.response?.status === 404) {
-      console.log({ 404: error?.response?.statusText });
-      return {
-        error: "Something went wrong, please try again later",
-      };
-    } else if (error?.response?.status === 400) {
-      console.log({ 400: error?.response?.data?.message });
-      return {
-        error: error?.response?.statusText,
-      };
-    } else {
-      return {
-        error: "Something went wrong, please try again later",
-      };
-    }
-  }
+  return result?.data;
 };
 // twitter apis end
 
 // twitter callback apis start
 // need auth token (jwt)
-export const twitterAuthenticateCallback = async (state, code) => {
-  try {
-    // authenticated request
-    const result = await api.get(`${API}/auth/twitter/callback`, {
-      params: {
-        state: state,
-        code: code,
-      },
-    });
+export const twitterAuthenticateCallback = async (
+  oauth_token,
+  oauth_verifier
+) => {
+  const result = await api.get(
+    `${API}/twitter/callback?oauth_token=${oauth_token}&oauth_verifier=${oauth_verifier}`
+  );
 
-    console.log("result", result);
-
-    if (result?.status === 200) {
-      return {
-        data: result?.data,
-      };
-    } else if (result?.status === 400) {
-      return {
-        error: result?.data?.message,
-      };
-    } else {
-      return {
-        error: "Something went wrong, please try again later",
-      };
-    }
-  } catch (error) {
-    if (error?.response?.status === 500) {
-      console.log({
-        InternalServerError:
-          error?.response?.data?.message || error?.response?.data?.name,
-      });
-      return {
-        error: "Internal Server Error, please try again later",
-      };
-    } else if (error?.response?.status === 404) {
-      console.log({ 404: error?.response?.statusText });
-      return {
-        error: "Something went wrong, please try again later",
-      };
-    } else if (error?.response?.status === 400) {
-      console.log({ 400: error?.response?.data?.message });
-      return {
-        error: error?.response?.statusText,
-      };
-    } else {
-      return {
-        error: "Something went wrong, please try again later",
-      };
-    }
-  }
+  return result?.data;
 };
 // twitter callback apis end
 

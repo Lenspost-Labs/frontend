@@ -15,7 +15,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useLocalStorage } from "../../../../../hooks/app";
 import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 import { EVMWallets } from "../../top-section/auth/wallets";
-import { claimReward } from "../../../../../services";
+import { claimReward, twitterAuthenticate } from "../../../../../services";
 import WatermarkRemover from "./components/WatermarkRemover";
 import { baseSepolia } from "viem/chains";
 
@@ -82,9 +82,8 @@ const ShareSection = () => {
   // Aurh for twitter
   const twitterAuth = async () => {
     const res = await twitterAuthenticate();
-    if (res?.data) {
-      // console.log(res?.data?.message);
-      window.open(res?.data?.message, "_parent");
+    if (res?.authUrl) {
+      window.open(res?.authUrl?.url, "_blank");
     } else if (res?.error) {
       toast.error(res?.error);
     }
@@ -322,33 +321,41 @@ const ShareSection = () => {
             <hr />
             <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Share on socials</p>
-              <div className="flex ">
-                <>
-                  <div className="flex items-center space-x-12 py-5">
-                    <div onClick={() => setMenu("farcasterShare")}>
-                      {" "}
-                      <img
-                        className="w-10 cursor-pointer rounded-md"
-                        src={logoFarcaster}
-                        alt="Farcaster"
-                      />{" "}
-                    </div>
+              <div className="flex space-x-8">
+                <div className="flex items-center space-x-12 py-5">
+                  <div onClick={() => setMenu("farcasterShare")}>
+                    {" "}
+                    <img
+                      className="w-10 cursor-pointer rounded-md"
+                      src={logoFarcaster}
+                      alt="Farcaster"
+                    />{" "}
                   </div>
-                  <div
-                    className={`flex items-center py-5 space-x-12 ${
-                      !isMobile ? "ml-8" : " "
-                    }`}
-                  >
-                    <div onClick={() => setMenu("lensmonetization")}>
-                      {" "}
-                      <img
-                        className="w-10 cursor-pointer"
-                        src="/other-icons/share-section/iconLens.png"
-                        alt="Lens"
-                      />{" "}
-                    </div>
+                </div>
+                <div
+                  className={`flex items-center py-5 space-x-12 ${
+                    !isMobile ? "ml-8" : " "
+                  }`}
+                >
+                  <div onClick={() => setMenu("lensmonetization")}>
+                    {" "}
+                    <img
+                      className="w-10 cursor-pointer"
+                      src="/other-icons/share-section/iconLens.png"
+                      alt="Lens"
+                    />{" "}
                   </div>
-                </>
+                </div>
+                <div className="flex items-center space-x-12 py-5">
+                  <div onClick={twitterAuth}>
+                    {" "}
+                    <img
+                      className="w-10 cursor-pointer rounded-md"
+                      src={X_Logo}
+                      alt="Farcaster"
+                    />{" "}
+                  </div>
+                </div>
               </div>
             </div>
             <hr />

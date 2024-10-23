@@ -23,6 +23,12 @@ export const replaceImageURL = (url) => {
   } else if (url.includes("https://ipfs.infura.io/ipfs/")) {
     const replacedURL = url.replace("https://ipfs.infura.io/ipfs/", "");
     return `https://lenspost-ipfs.b-cdn.net/${replacedURL}`;
+  } else if (url.includes("pub-2ae8c1134d9a4424b3e00475c4421a7a.r2.dev")) {
+    const replacedURL = url.replace(
+      "https://pub-2ae8c1134d9a4424b3e00475c4421a7a.r2.dev/",
+      ""
+    );
+    return `https://lenspost-r2.b-cdn.net/${replacedURL}`;
   } else {
     return url;
   }

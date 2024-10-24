@@ -43,9 +43,9 @@ const RANDOM_QUERIES = [
 // This array is to display other queries on the frontend - 22Jul2023
 const RANDOM_QUERIES2 = [
 	// "A bustling marketplace in a medieval fantasy setting",
-	'Merchants selling exotic goods and performers entertaining the crowd.',
 	'An underwater paradise with coral reefs teeming with colorful fish',
-	'Ethereum network movie poster with vitalik dandelion',
+	'Pepe the frog enjoying Halloween 🎃 with friends',
+	'Pepe the frog wearing degen hat in a haunted house',
 ]
 
 // This array is to display short words as prompts on the frontend - 22Jul2023

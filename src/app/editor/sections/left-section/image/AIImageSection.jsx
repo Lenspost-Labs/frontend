@@ -62,7 +62,7 @@ const RANDOM_QUERIES2 = [
   // "A bustling marketplace in a medieval fantasy setting",
   "An underwater paradise with coral reefs teeming with colorful fish",
   "Pepe the frog enjoying Halloween 🎃 with friends",
-  "Pepe the frog wearing degen hat in a haunted house"
+  "Pepe the frog wearing degen hat in a haunted house",
 ];
 
 // This array is to display short words as prompts on the frontend - 22Jul2023
@@ -185,6 +185,124 @@ export const CompSearch = () => {
             <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
           </MatButton>
           {/* 
+
+  const {
+    setOpenLeftBar,
+    openLeftBar,
+    openBottomBar,
+    setOpenBottomBar,
+    isMobile,
+  } = useContext(Context);
+  const store = useStore();
+  const { points } = useUser();
+  const { userId } = useLocalStorage();
+
+  // load data
+  const [data, setData] = useState(null);
+  const [stStatusCode, setStStatusCode] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const [query, setQuery] = useState();
+  // RANDOM_QUERIES[(RANDOM_QUERIES.length * Math.random()) | 0]
+
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: mutClaimReward } = useMutation({
+    mutationFn: async ({ taskId }) => {
+      try {
+        const result = await claimReward({ taskId: taskId });
+
+        // Refetch the user profile after successful claim
+        await queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+
+        return result;
+      } catch (error) {
+        console.error("Error claiming reward:", error);
+        throw error;
+      }
+    },
+  });
+
+  const fnGenerateImages = async () => {
+    if (!query) {
+      return;
+    }
+    // if (!points) {
+    //   toast.error(`Error Fetching ${posterTokenSymbol} Points`);
+    //   return;
+    // }
+    // if (points < 1) {
+    //   toast.error(`Not enough ${posterTokenSymbol} points`);
+    //   return;
+    // }
+    async function load() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        setIsLoading(true);
+        const response = await getFalAiImage(query);
+        setStStatusCode(response.status);
+        if (response.status === 200) {
+          setIsLoading(false);
+          setStStatusCode(200);
+          setData(response.data);
+
+          await mutClaimReward({
+            taskId: 5,
+          });
+        } else if (data.status === 429) {
+          setIsLoading(false);
+          setStStatusCode(429);
+        }
+      } catch (e) {
+        console.log("err", e);
+        // setError(e);
+        setError(e.message);
+        setIsLoading(false);
+        // setStStatusCode(429);
+      }
+      setIsLoading(false);
+    }
+    load();
+  };
+
+  useEffect(() => {
+    fnGenerateImages();
+  }, []);
+
+  useEffect(() => {
+    consoleLogonlyDev(query);
+  }, [query]);
+
+  return (
+    <>
+      <div className="">
+        <div className="flex flex-col">
+          <Textarea
+            // className="h-16 mb-2 border px-4 py-1 rounded-md w-full outline-none focus:ring-1 focus:ring-blue-500"
+            leftIcon="search"
+            // placeholder={query || "Search or Give a prompt"}
+            label="Search or Give a prompt"
+            // placeholder={query ||  "Search or Give a prompt"}
+            onChange={(e) => {
+              setQuery(e.target.value);
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                // setQuery(e.target.value);
+                fnGenerateImages();
+              }
+            }}
+            value={query}
+            type="search"
+          />
+          <MatButton className="mb-4" onClick={fnGenerateImages}>
+            Generate
+            <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
+          </MatButton>
+          {/* 
+
 			<button className="bg-[#e1f16b] w-full px-4 p-1  mb-4 rounded-md hover:bg-[#e0f26cce]" onClick={fnGenerateImages}>Generate</button>
 			*/}
         </div>
@@ -349,14 +467,14 @@ const CompInstructImage = () => {
   };
 
   const fnCallInstructImgAPI = async () => {
-    if (!points) {
-      toast.error(`Error Fetching ${posterTokenSymbol} Points`);
-      return;
-    }
-    if (points < 1) {
-      toast.error(`Not enough ${posterTokenSymbol} points`);
-      return;
-    }
+    // if (!points) {
+    //   toast.error(`Error Fetching ${posterTokenSymbol} Points`);
+    //   return;
+    // }
+    // if (points < 1) {
+    //   toast.error(`Not enough ${posterTokenSymbol} points`);
+    //   return;
+    // }
 
     setClicked(true);
     setResponseImage("");

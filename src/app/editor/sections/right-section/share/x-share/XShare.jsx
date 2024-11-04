@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SharePanelHeaders } from '../components'
 import { Button } from '@material-tailwind/react'
 import { Context } from '../../../../../../providers/context'
@@ -24,6 +24,12 @@ const XShare = () => {
 		mutationKey: 'shareOnTwitter',
 		mutationFn: shareOnSocials,
 	})
+
+	// useEffect(() => {
+	// 	if (!contextCanvasIdRef.current) {
+	// 		toast.error('Please create a frame first')
+	// 	}
+	// }, [contextCanvasIdRef.current])
 
 	// Aurh for twitter
 	const twitterAuth = async () => {
@@ -80,7 +86,11 @@ const XShare = () => {
 			})
 	}
 
-	let tweetUrl = `https://x.com/${xAuth.userName}/status/`
+	let tweetUrl = ''
+
+	if (xAuth?.userName) {
+		tweetUrl = `https://x.com/${xAuth.userName}/status/`
+	}
 
 	return (
 		<>

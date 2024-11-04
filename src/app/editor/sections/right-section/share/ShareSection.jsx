@@ -19,6 +19,7 @@ import { EVMWallets } from '../../top-section/auth/wallets'
 import { claimReward } from '../../../../../services'
 import WatermarkRemover from './components/WatermarkRemover'
 import { baseSepolia } from 'viem/chains'
+import { toast } from 'react-toastify'
 
 const ShareSection = () => {
 	const chains = useChains()
@@ -128,6 +129,14 @@ const ShareSection = () => {
 	const setState = () => {
 		setMenu('ERC1155')
 		setZoraTab('ERC1155')
+	}
+
+	const setCurrentMenu = (menu) => {
+		if (contextCanvasIdRef?.current) {
+			setMenu(menu)
+		} else {
+			toast.error('Please create a frame first')
+		}
 	}
 
 	return (
@@ -289,19 +298,19 @@ const ShareSection = () => {
 							<div className="flex ">
 								<>
 									<div className="flex items-center space-x-12 py-5">
-										<div onClick={() => setMenu('farcasterShare')}>
+										<div onClick={() => setCurrentMenu('farcasterShare')}>
 											{' '}
 											<img className="w-10 cursor-pointer rounded-md" src={logoFarcaster} alt="Farcaster" />{' '}
 										</div>
 									</div>
 									<div className={`flex items-center py-5 space-x-12 ${!isMobile ? 'ml-8' : ' '}`}>
-										<div onClick={() => setMenu('xshare')}>
+										<div onClick={() => setCurrentMenu('xshare')}>
 											{' '}
 											<img className="w-10 cursor-pointer rounded-md" src={logoTwitter} alt="X" />{' '}
 										</div>
 									</div>
 									<div className={`flex items-center py-5 space-x-12 ${!isMobile ? 'ml-8' : ' '}`}>
-										<div onClick={() => setMenu('lensmonetization')}>
+										<div onClick={() => setCurrentMenu('lensmonetization')}>
 											{' '}
 											<img className="w-10 cursor-pointer" src="/other-icons/share-section/iconLens.png" alt="Lens" />{' '}
 										</div>
@@ -317,7 +326,7 @@ const ShareSection = () => {
 							<div className="flex flex-wrap items-center gap-10 my-3">
 								{filterChains().map((item) => {
 									return (
-										<div key={item?.id} className="cursor-pointer flex flex-col items-center" onClick={() => setMenu(item?.id)}>
+										<div key={item?.id} className="cursor-pointer flex flex-col items-center" onClick={() => setCurrentMenu(item?.id)}>
 											{' '}
 											<img className="w-10 h-10" src={chainLogo(item?.id)} alt={item?.name} />{' '}
 											<Typography className="text-md font-semibold">{item?.name}</Typography>
@@ -331,7 +340,7 @@ const ShareSection = () => {
 						<div className={`relative mt-6 px-4 sm:px-6`}>
 							<p className="text-lg">Mint as an NFT on Solana</p>
 							<div className="flex flex-wrap items-center gap-10 my-3">
-								<div className="cursor-pointer flex flex-col items-center" onClick={() => setMenu('solanaMint')}>
+								<div className="cursor-pointer flex flex-col items-center" onClick={() => setCurrentMenu('solanaMint')}>
 									{' '}
 									<img className="w-10" src={logoSolana} alt="Solana" /> <Typography className="text-md font-semibold">Solana</Typography>
 								</div>

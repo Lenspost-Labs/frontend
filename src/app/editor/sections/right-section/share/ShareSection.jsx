@@ -132,11 +132,12 @@ const ShareSection = () => {
 	}
 
 	const setCurrentMenu = (menu) => {
-		if (contextCanvasIdRef?.current) {
-			setMenu(menu)
-		} else {
-			toast.error('Please create a frame first')
-		}
+		setMenu(menu)
+		// if (contextCanvasIdRef?.current) {
+		// 	setMenu(menu)
+		// } else {
+		// 	toast.error('Please create a frame first')
+		// }
 	}
 
 	return (
@@ -154,93 +155,6 @@ const ShareSection = () => {
 						<div className="">Share this Design</div>
 						<div className="z-100 cursor-pointer" onClick={() => setIsShareOpen(!isShareOpen)}>
 							<BsX size="24" />
-						</div>
-					</div>
-				</div>
-				<div className="relative mt-0 px-4 pt-1 pb-1 sm:px-6">
-					<div className="space-y-4">
-						<div className="flex items-center justify-between"></div>
-						{/* <InputBox
-              label={"Title"}
-              name="title"
-              autoFocus={true}
-              onChange={(e) => handleInputChange(e)}
-              value={postName}
-            /> */}
-						<div className="space-x-2">
-							{!isMobile && (
-								<>
-									<Textarea
-										label="Description"
-										name="description"
-										onChange={(e) => handleInputChange(e)}
-										value={postDescription}
-										// placeholder="Write a description..."
-										// className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
-									/>
-									{charLimitError && <div className="text-red-500 text-sm">{charLimitError}</div>}
-								</>
-							)}
-
-							{/* Using default textarea from HTML to avoid unnecessary focus only for mobile */}
-							{/* iPhone issue */}
-							{isMobile && (
-								<>
-									<textarea
-										cols={30}
-										type="text"
-										className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
-										label="Description"
-										name="description"
-										onChange={(e) => handleInputChange(e)}
-										value={postDescription}
-										placeholder="Write a description..."
-										// className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
-									/>
-									{charLimitError && <div className="text-red-500 text-sm">{charLimitError}</div>}
-								</>
-							)}
-
-							<div className="flex flex-row">
-								{/* Open the emoji panel - 22Jul2023 */}
-								{/* Dynamic Emoji on the screen based on click */}
-
-								<button
-									title="Open emoji panel"
-									className={`"m-2 p-2 rounded-md ${stClickedEmojiIcon && 'border border-red-400'}"`}
-									onClick={() => setStClickedEmojiIcon(!stClickedEmojiIcon)}
-								>
-									<Emoji unified={stClickedEmojiIcon ? '274c' : '1f60a'} emojiStyle={EmojiStyle.NATIVE} size={24} />
-								</button>
-								<div
-									onClick={() => {
-										setStCalendarClicked(!stCalendarClicked)
-										setStShareClicked(true)
-									}}
-									className=" ml-4 py-2 rounded-md cursor-pointer"
-								>
-									{/* <MdcCalendarClock className="h-10 w-10" /> */}
-								</div>
-							</div>
-
-							{/* Emoji Implementation - 21Jul2023 */}
-							{stClickedEmojiIcon && (
-								<div className="shadow-lg mt-2 absolute z-40">
-									<EmojiPicker
-										onEmojiClick={fnEmojiClick}
-										autoFocusSearch={true}
-										// width="96%"
-										className="m-2"
-										lazyLoadEmojis={true}
-										previewConfig={{
-											defaultCaption: 'Pick one!',
-											defaultEmoji: '1f92a', // 🤪
-										}}
-										searchPlaceHolder="Search"
-										emojiStyle={EmojiStyle.NATIVE}
-									/>
-								</div>
-							)}
 						</div>
 					</div>
 				</div>
@@ -273,7 +187,6 @@ const ShareSection = () => {
         <Button className="mx-6" onClick={fnCallRemoveWatermark}>
           Remove Watermark
         </Button> */}
-
 				{/* Share - Icons - 18Jun2023 */}
 				{isMobile &&
 					(!evmAuth && actionType !== 'composer' ? (
@@ -293,7 +206,6 @@ const ShareSection = () => {
 							</Button>
 						</div>
 					))}
-
 				{!isMobile && (
 					<>
 						<hr />
@@ -332,7 +244,7 @@ const ShareSection = () => {
 									return (
 										<div key={item?.id} className="cursor-pointer flex flex-col items-center" onClick={() => setCurrentMenu(item?.id)}>
 											{' '}
-											<img className="w-10 h-10" src={chainLogo(item?.id)} alt={item?.name} />{' '}
+											<img className="w-10 h-10" src={chainLogo(item?.id)} alt={`${item?.name} blockchain logo`} />{' '}
 											<Typography className="text-md font-semibold">{item?.name}</Typography>
 										</div>
 									)

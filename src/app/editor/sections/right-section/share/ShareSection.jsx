@@ -284,6 +284,10 @@ const ShareSection = () => {
 								Share on Farcaster
 							</Button>
 
+							<Button className="mx-6" onClick={() => setMenu('xshare')}>
+								Share on X
+							</Button>
+
 							<Button className="mx-6" onClick={setState}>
 								Create 1155 edition
 							</Button>

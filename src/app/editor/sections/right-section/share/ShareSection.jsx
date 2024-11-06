@@ -192,14 +192,16 @@ const ShareSection = () => {
 					(!evmAuth && actionType !== 'composer' ? (
 						<EVMWallets title={'Login with EVM'} className="mx-2" login={login} />
 					) : (
-						<div className="flex flex-col gap-2">
+						<div className="flex flex-col mt-4 gap-2">
 							<Button className="mx-6" onClick={() => setMenu('farcasterShare')}>
 								Share on Farcaster
 							</Button>
 
-							<Button className="mx-6" onClick={() => setMenu('xshare')}>
-								Share on X
-							</Button>
+							{actionType !== 'composer' && (
+								<Button className="mx-6" onClick={() => setMenu('xshare')}>
+									Share on X
+								</Button>
+							)}
 
 							<Button className="mx-6" onClick={setState}>
 								Create 1155 edition

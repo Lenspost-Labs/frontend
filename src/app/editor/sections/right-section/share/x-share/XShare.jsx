@@ -43,6 +43,7 @@ const XShare = () => {
 	const [isCopy, setIsCopy] = useState(false)
 	const [tweetId, setTweetId] = useState('')
 	const { xAuth } = useLocalStorage()
+	const [twitterLoggedIn, setTwitterLoggedIn] = useState(false)
 	const [twitterAuthLoading, setTwitterAuthLoading] = useState(false)
 
 	const { mutateAsync: shareOnTwitter } = useMutation({
@@ -73,6 +74,18 @@ const XShare = () => {
 		}
 	}, [])
 
+	useEffect(() => {
+		checkTwitterAuth()
+	}, [])
+
+	const checkTwitterAuth = async () => {
+		const res = await isAuthenticated()
+		const isXAuthenticated = res?.data?.isAuthenticated
+		if (isXAuthenticated) {
+			setTwitterLoggedIn(true)
+		}
+	}
+
 	// Aurh for twitter
 	const twitterAuth = async () => {
 		setIsLoading(true)
@@ -97,7 +110,7 @@ const XShare = () => {
 			const res = await isAuthenticated()
 			const isXAuthenticated = res?.data?.isAuthenticated
 			if (isXAuthenticated) {
-				setTwitterAuthLoading(true)
+				setTwitterLoggedIn(true)
 				console.log('isAuthenticated')
 				const canvasData = {
 					id: contextCanvasIdRef.current,
@@ -133,7 +146,7 @@ const XShare = () => {
 						toast.error(err.message)
 					})
 			} else {
-				setTwitterAuthLoading(false)
+				setTwitterLoggedIn(false)
 				toast.error('Please login to Twitter/X to share your frame')
 			}
 		} catch (error) {
@@ -205,7 +218,7 @@ const XShare = () => {
 								</span>
 							</div>
 						)}
-						{!xAuth && !xAuth?.userId ? (
+						{!twitterLoggedIn && !xAuth?.userId ? (
 							<div className="flex py-5 px-5 text-center gap-5 flex-col items-center justify-center">
 								<p className="text-sm text-gray-500">You're not logged in to Twitter/X, Please login to share your frame</p>
 								<Button className="w-full outline-none" loading={isLoading} onClick={twitterAuth}>
@@ -310,11 +323,13 @@ const XShare = () => {
 										<Button className="w-full outline-none" loading={isShareLoading} onClick={handleSubmit}>
 											Share on X
 										</Button>
-										<div className="flex py-5 text-center gap-5 flex-col items-center justify-center">
-											<Button className="w-full outline-none" loading={isLoading} onClick={twitterAuth}>
-												Login To X
-											</Button>
-										</div>
+										{!twitterLoggedIn && (
+											<div className="flex py-5 text-center gap-5 flex-col items-center justify-center">
+												<Button className="w-full outline-none" loading={isLoading} onClick={twitterAuth}>
+													Login To X
+												</Button>
+											</div>
+										)}
 									</div>
 								</>
 							)

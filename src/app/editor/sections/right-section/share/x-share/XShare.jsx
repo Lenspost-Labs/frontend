@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { SharePanelHeaders } from '../components'
 import { Context } from '../../../../../../providers/context'
 import { useSolanaWallet } from '../../../../../../hooks/solana'
-import { shareOnSocials, twitterAuthenticate } from '../../../../../../services'
+import { shareOnSocials, twitterAuthenticate, XAuthenticated } from '../../../../../../services'
 import { useLocalStorage } from '../../../../../../hooks/app'
 import { toast } from 'react-toastify'
 import { useMutation } from '@tanstack/react-query'
@@ -43,12 +43,18 @@ const XShare = () => {
 	const [isCopy, setIsCopy] = useState(false)
 	const [tweetId, setTweetId] = useState('')
 	const { xAuth } = useLocalStorage()
+	const [twitterLoggedIn, setTwitterLoggedIn] = useState(false)
+	const [twitterAuthLoading, setTwitterAuthLoading] = useState(false)
 
 	const { mutateAsync: shareOnTwitter } = useMutation({
 		mutationKey: 'shareOnTwitter',
 		mutationFn: shareOnSocials,
 	})
 
+	const { mutateAsync: isAuthenticated } = useMutation({
+		mutationKey: 'isAuthenticated',
+		mutationFn: XAuthenticated,
+	})
 	// useEffect(() => {
 	// 	if (!contextCanvasIdRef.current) {
 	// 		toast.error('Please create a frame first')
@@ -68,6 +74,18 @@ const XShare = () => {
 		}
 	}, [])
 
+	useEffect(() => {
+		checkTwitterAuth()
+	}, [])
+
+	const checkTwitterAuth = async () => {
+		const res = await isAuthenticated()
+		const isXAuthenticated = res?.data?.isAuthenticated
+		if (isXAuthenticated) {
+			setTwitterLoggedIn(true)
+		}
+	}
+
 	// Aurh for twitter
 	const twitterAuth = async () => {
 		setIsLoading(true)
@@ -76,51 +94,66 @@ const XShare = () => {
 			if (res?.data) {
 				window.open(res?.data?.authUrl, '_parent')
 			} else if (res?.error) {
+				console.log(res?.error)
 				toast.error(res?.error)
 			}
 		} catch (error) {
-			console.log(error)
+			console.log(error.message)
 		} finally {
 			setIsLoading(false)
 		}
 	}
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		setIsShareLoading(true)
-		const canvasData = {
-			id: contextCanvasIdRef.current,
-			name: 'Twitter post',
-			content: postDescription,
-		}
-
-		shareOnTwitter({
-			canvasData: canvasData,
-			canvasParams: '',
-			platform: 'twitter',
-		})
-			.then((res) => {
-				if (res?.tweetData) {
-					setIsShareLoading(false)
-					setTweetId(res?.tweetData?.data?.id)
-					setIsShareSuccess(true)
-
-					// Claim the task for the user
-					claimReward({
-						taskId: 3,
-					})
-
-					// open the dialog
-				} else if (res?.error || res?.reason === 'REJECTED') {
-					setIsError(true)
-					setIsShareLoading(false)
-					toast.error(res?.error)
+		try {
+			const res = await isAuthenticated()
+			const isXAuthenticated = res?.data?.isAuthenticated
+			if (isXAuthenticated) {
+				setTwitterLoggedIn(true)
+				console.log('isAuthenticated')
+				const canvasData = {
+					id: contextCanvasIdRef.current,
+					name: 'Twitter post',
+					content: postDescription,
 				}
-			})
-			.catch((err) => {
-				setIsError(true)
-				setIsShareLoading(false)
-				toast.error(errorMessage(err))
-			})
+				shareOnTwitter({
+					canvasData: canvasData,
+					canvasParams: '',
+					platform: 'twitter',
+				})
+					.then((res) => {
+						if (res?.tweetData) {
+							setIsShareLoading(false)
+							setTweetId(res?.tweetData?.data?.id)
+							setIsShareSuccess(true)
+
+							// Claim the task for the user
+							claimReward({
+								taskId: 3,
+							})
+
+							// open the dialog
+						} else if (res?.error || res?.reason === 'REJECTED') {
+							setIsError(true)
+							setIsShareLoading(false)
+							toast.error(res?.error)
+						}
+					})
+					.catch((err) => {
+						setIsError(true)
+						setIsShareLoading(false)
+						toast.error(err.message)
+					})
+			} else {
+				setTwitterLoggedIn(false)
+				toast.error('Please login to Twitter/X to share your frame')
+			}
+		} catch (error) {
+			console.log(error)
+		} finally {
+			setIsShareLoading(false)
+		}
 	}
 
 	// Function to handle emoji click
@@ -185,7 +218,7 @@ const XShare = () => {
 								</span>
 							</div>
 						)}
-						{!xAuth && !xAuth?.userId ? (
+						{!twitterLoggedIn && !xAuth?.userId ? (
 							<div className="flex py-5 px-5 text-center gap-5 flex-col items-center justify-center">
 								<p className="text-sm text-gray-500">You're not logged in to Twitter/X, Please login to share your frame</p>
 								<Button className="w-full outline-none" loading={isLoading} onClick={twitterAuth}>
@@ -290,6 +323,13 @@ const XShare = () => {
 										<Button className="w-full outline-none" loading={isShareLoading} onClick={handleSubmit}>
 											Share on X
 										</Button>
+										{!twitterLoggedIn && (
+											<div className="flex py-5 text-center gap-5 flex-col items-center justify-center">
+												<Button className="w-full outline-none" loading={isLoading} onClick={twitterAuth}>
+													Login To X
+												</Button>
+											</div>
+										)}
 									</div>
 								</>
 							)

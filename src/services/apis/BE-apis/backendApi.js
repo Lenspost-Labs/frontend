@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BACKEND_DEV_URL, BACKEND_PROD_URL, BACKEND_LOCAL_URL, ENVIRONMENT } from '../../env/env'
-import { getFromLocalStorage } from '../../../utils/localStorage'
+import { getFromLocalStorage, saveToLocalStorage } from '../../../utils/localStorage'
 import { LOCAL_STORAGE } from '../../../data'
 import { api, API } from './config'
 
@@ -92,6 +92,7 @@ export const twitterAuthenticate = async () => {
 		const result = await api.post(`${API}/twitter/authenticate`)
 
 		if (result?.status === 200) {
+			saveToLocalStorage(LOCAL_STORAGE.twitterAuth, JSON.stringify(result?.data))
 			return {
 				data: result?.data,
 			}
@@ -107,8 +108,13 @@ export const twitterAuthenticate = async () => {
 	} catch (error) {
 		if (error?.response?.status === 500) {
 			console.log({
-				InternalServerError: error?.response?.data?.message || error?.response?.data?.name,
+				InternalServerError: error?.response?.data?.error || error?.response?.data?.name,
 			})
+			if (error?.response?.data?.error) {
+				return {
+					error: 'Twitter API access is currently restricted. Please try again later or contact support.',
+				}
+			}
 			return {
 				error: 'Internal Server Error, please try again later',
 			}
@@ -177,6 +183,48 @@ export const twitterAuthenticateCallback = async (token, verifier) => {
 	}
 }
 // twitter callback apis end
+
+export const XAuthenticated = async () => {
+	try {
+		const result = await api.get(`${API}/twitter/isAuthenticated`)
+		if (result?.status === 200) {
+			return {
+				data: result?.data,
+			}
+		} else if (result?.status === 400) {
+			return {
+				error: result?.data?.message,
+			}
+		} else {
+			return {
+				error: 'Something went wrong, please try again later',
+			}
+		}
+	} catch (error) {
+		if (error?.response?.status === 500) {
+			console.log({
+				InternalServerError: error?.response?.data?.message || error?.response?.data?.name,
+			})
+			return {
+				error: 'Internal Server Error, please try again later',
+			}
+		} else if (error?.response?.status === 404) {
+			console.log({ 404: error?.response?.statusText })
+			return {
+				error: 'Something went wrong, please try again later',
+			}
+		} else if (error?.response?.status === 400) {
+			console.log({ 400: error?.response?.data?.message })
+			return {
+				error: error?.response?.statusText,
+			}
+		} else {
+			return {
+				error: 'Something went wrong, please try again later',
+			}
+		}
+	}
+}
 
 // NFT apis start
 // upload users' nft endpoint

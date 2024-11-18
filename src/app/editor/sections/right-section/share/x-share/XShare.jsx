@@ -111,7 +111,7 @@ const XShare = () => {
 			const isXAuthenticated = res?.data?.isAuthenticated
 			if (isXAuthenticated) {
 				setTwitterLoggedIn(true)
-				console.log('isAuthenticated')
+				console.log('handleSubmit', isXAuthenticated)
 				const canvasData = {
 					id: contextCanvasIdRef.current,
 					name: 'Twitter post',
@@ -123,10 +123,12 @@ const XShare = () => {
 					platform: 'twitter',
 				})
 					.then((res) => {
-						if (res?.tweetData) {
+						console.log('shareOnTwitter success', res?.data)
+						if (res?.data?.tweetData) {
 							setIsShareLoading(false)
-							setTweetId(res?.tweetData?.data?.id)
+							setTweetId(res?.data?.tweetData?.data?.id)
 							setIsShareSuccess(true)
+							toast.success('Successfully shared')
 
 							// Claim the task for the user
 							claimReward({
@@ -141,16 +143,23 @@ const XShare = () => {
 						}
 					})
 					.catch((err) => {
+						console.log('Full error:', err)
+						console.log('Error response:', err.response)
+						console.log('Error response data:', err?.response?.data)
 						setIsError(true)
 						setIsShareLoading(false)
-						toast.error(err.message)
+						if (err?.response?.data?.message?.errors?.[0]?.message === 'Could not authenticate you') {
+							twitterAuth()
+						}
+						toast.error(err?.response?.data?.message?.errors?.[0]?.message)
 					})
 			} else {
 				setTwitterLoggedIn(false)
 				toast.error('Please login to Twitter/X to share your frame')
+				//twitterAuth()
 			}
 		} catch (error) {
-			console.log(error)
+			console.log('handleSubmit', error)
 		} finally {
 			setIsShareLoading(false)
 		}

@@ -46,8 +46,8 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
   const isTopup = farcasterStates.frameData?.isTopup;
   const selectedNetwork = farcasterStates?.frameData?.selectedNetwork;
   const isCustomCurrMint = farcasterStates?.frameData?.isCustomCurrMint;
-  const TxFeeForDeployment = chain?.id === 137 ? 0.4 : 0.00009;
-  const txFeeForMint = isCustomCurrMint ? 0.00003 : 0.00005;
+  const TxFeeForDeployment = chain?.id === 137 ? 0.5 : 0.00009;
+  const txFeeForMint = isCustomCurrMint ? 0.00005 : 0.00005;
   const isCreatorSponsored = farcasterStates.frameData.isCreatorSponsored;
 
   //   bcoz first 10 is free so we are subtracting 10 from total mints

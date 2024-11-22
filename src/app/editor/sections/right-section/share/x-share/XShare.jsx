@@ -46,6 +46,8 @@ const XShare = () => {
 	const [twitterLoggedIn, setTwitterLoggedIn] = useState(false)
 	const [twitterAuthLoading, setTwitterAuthLoading] = useState(false)
 	const [isAuthChecking, setIsAuthChecking] = useState(true)
+	const [canShare, setCanShare] = useState(true)
+	const [timeRemaining, setTimeRemaining] = useState(0)
 
 	const { mutateAsync: shareOnTwitter } = useMutation({
 		mutationKey: 'shareOnTwitter',
@@ -77,6 +79,10 @@ const XShare = () => {
 
 	useEffect(() => {
 		checkTwitterAuth()
+		checkShareCooldown()
+		// Check remaining time every second if we're in cooldown
+		const interval = setInterval(checkShareCooldown, 1000)
+		return () => clearInterval(interval)
 	}, [])
 
 	const checkTwitterAuth = async () => {
@@ -92,6 +98,30 @@ const XShare = () => {
 		} finally {
 			setIsAuthChecking(false)
 		}
+	}
+
+	const checkShareCooldown = () => {
+		const lastShareTime = localStorage.getItem('lastTwitterShare')
+		if (lastShareTime) {
+			const cooldownPeriod = 30 * 60 * 1000 // 30 minutes in milliseconds
+			const timeSinceLastShare = Date.now() - parseInt(lastShareTime)
+			const remainingTime = cooldownPeriod - timeSinceLastShare
+
+			if (remainingTime > 0) {
+				setCanShare(false)
+				setTimeRemaining(Math.ceil(remainingTime / 1000)) // Convert to seconds
+			} else {
+				setCanShare(true)
+				setTimeRemaining(0)
+				localStorage.removeItem('lastTwitterShare')
+			}
+		}
+	}
+
+	const formatTimeRemaining = (seconds) => {
+		const minutes = Math.floor(seconds / 60)
+		const remainingSeconds = seconds % 60
+		return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
 	}
 
 	// Aurh for twitter
@@ -113,6 +143,13 @@ const XShare = () => {
 	}
 
 	const handleSubmit = async () => {
+		if (!canShare) {
+			toast.error(`Please wait ${formatTimeRemaining(timeRemaining)} before sharing again`)
+			return
+		}
+
+		toast.info('Sharing on X is disabled for now!')
+		return
 		setIsShareLoading(true)
 		try {
 			const res = await isAuthenticated()
@@ -133,6 +170,10 @@ const XShare = () => {
 					.then((res) => {
 						console.log('shareOnTwitter success', res?.data)
 						if (res?.data?.tweetData) {
+							// Store the share timestamp on success
+							localStorage.setItem('lastTwitterShare', Date.now().toString())
+							setCanShare(false)
+
 							setIsShareLoading(false)
 							setTweetId(res?.data?.tweetData?.data?.id)
 							setIsShareSuccess(true)
@@ -344,8 +385,8 @@ const XShare = () => {
 									</div>
 
 									<div className="mx-4 my-2 outline-none">
-										<Button className="w-full outline-none" disabled={isShareLoading} loading={isShareLoading} onClick={handleSubmit}>
-											Share on X
+										<Button className="w-full outline-none" disabled={isShareLoading || !canShare} loading={isShareLoading} onClick={handleSubmit}>
+											{canShare ? 'Share on X' : `Wait ${formatTimeRemaining(timeRemaining)} to share again`}
 										</Button>
 										{!twitterLoggedIn && (
 											<div className="flex py-5 text-center gap-5 flex-col items-center justify-center">

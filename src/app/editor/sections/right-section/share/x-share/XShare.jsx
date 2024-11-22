@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import { useMutation } from '@tanstack/react-query'
 import BiCopy from '@meronex/icons/bi/BiCopy'
 import EmojiPicker, { EmojiStyle, Emoji } from 'emoji-picker-react'
-import { Button, Textarea, Typography } from '@material-tailwind/react'
+import { Button, Spinner, Textarea, Typography } from '@material-tailwind/react'
 
 const XShare = () => {
 	const {
@@ -45,6 +45,9 @@ const XShare = () => {
 	const { xAuth } = useLocalStorage()
 	const [twitterLoggedIn, setTwitterLoggedIn] = useState(false)
 	const [twitterAuthLoading, setTwitterAuthLoading] = useState(false)
+	const [isAuthChecking, setIsAuthChecking] = useState(true)
+	const [canShare, setCanShare] = useState(true)
+	const [timeRemaining, setTimeRemaining] = useState(0)
 
 	const { mutateAsync: shareOnTwitter } = useMutation({
 		mutationKey: 'shareOnTwitter',
@@ -76,14 +79,49 @@ const XShare = () => {
 
 	useEffect(() => {
 		checkTwitterAuth()
+		checkShareCooldown()
+		// Check remaining time every second if we're in cooldown
+		const interval = setInterval(checkShareCooldown, 1000)
+		return () => clearInterval(interval)
 	}, [])
 
 	const checkTwitterAuth = async () => {
-		const res = await isAuthenticated()
-		const isXAuthenticated = res?.data?.isAuthenticated
-		if (isXAuthenticated) {
-			setTwitterLoggedIn(true)
+		setIsAuthChecking(true)
+		try {
+			const res = await isAuthenticated()
+			const isXAuthenticated = res?.data?.isAuthenticated
+			if (isXAuthenticated) {
+				setTwitterLoggedIn(true)
+			}
+		} catch (error) {
+			console.error('Auth check failed:', error)
+		} finally {
+			setIsAuthChecking(false)
 		}
+	}
+
+	const checkShareCooldown = () => {
+		const lastShareTime = localStorage.getItem('lastTwitterShare')
+		if (lastShareTime) {
+			const cooldownPeriod = 30 * 60 * 1000 // 30 minutes in milliseconds
+			const timeSinceLastShare = Date.now() - parseInt(lastShareTime)
+			const remainingTime = cooldownPeriod - timeSinceLastShare
+
+			if (remainingTime > 0) {
+				setCanShare(false)
+				setTimeRemaining(Math.ceil(remainingTime / 1000)) // Convert to seconds
+			} else {
+				setCanShare(true)
+				setTimeRemaining(0)
+				localStorage.removeItem('lastTwitterShare')
+			}
+		}
+	}
+
+	const formatTimeRemaining = (seconds) => {
+		const minutes = Math.floor(seconds / 60)
+		const remainingSeconds = seconds % 60
+		return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
 	}
 
 	// Aurh for twitter
@@ -105,6 +143,13 @@ const XShare = () => {
 	}
 
 	const handleSubmit = async () => {
+		if (!canShare) {
+			toast.error(`Please wait ${formatTimeRemaining(timeRemaining)} before sharing again`)
+			return
+		}
+
+		toast.info('Sharing on X is disabled for now!')
+		return
 		setIsShareLoading(true)
 		try {
 			const res = await isAuthenticated()
@@ -125,6 +170,10 @@ const XShare = () => {
 					.then((res) => {
 						console.log('shareOnTwitter success', res?.data)
 						if (res?.data?.tweetData) {
+							// Store the share timestamp on success
+							localStorage.setItem('lastTwitterShare', Date.now().toString())
+							setCanShare(false)
+
 							setIsShareLoading(false)
 							setTweetId(res?.data?.tweetData?.data?.id)
 							setIsShareSuccess(true)
@@ -151,7 +200,11 @@ const XShare = () => {
 						if (err?.response?.data?.message?.errors?.[0]?.message === 'Could not authenticate you') {
 							twitterAuth()
 						}
-						toast.error(err?.response?.data?.message?.errors?.[0]?.message)
+						if (err?.response?.data?.message?.errors?.length > 0) {
+							toast.error(err?.response?.data?.message?.errors?.[0]?.message)
+						} else {
+							toast.error(err?.response?.data?.message)
+						}
 					})
 			} else {
 				setTwitterLoggedIn(false)
@@ -206,7 +259,11 @@ const XShare = () => {
 				panelHeader={'Share Options'}
 				panelContent={
 					<>
-						{isShareSuccess && (
+						{isAuthChecking ? (
+							<div className="flex py-5 px-5 text-center gap-5 flex-col items-center justify-center">
+								<Spinner />
+							</div>
+						) : isShareSuccess ? (
 							<div className="flex flex-col pt-10 py-5 gap-2 items-center justify-center">
 								Successfully shared.
 								<span className="flex gap-1 items-center">
@@ -226,8 +283,7 @@ const XShare = () => {
 									{isCopy?.id === 1 && <span className="text-green-500">Copied</span>}
 								</span>
 							</div>
-						)}
-						{!twitterLoggedIn && !xAuth?.userId ? (
+						) : !twitterLoggedIn && !xAuth?.userId ? (
 							<div className="flex py-5 px-5 text-center gap-5 flex-col items-center justify-center">
 								<p className="text-sm text-gray-500">You're not logged in to Twitter/X, Please login to share your frame</p>
 								<Button className="w-full outline-none" loading={isLoading} onClick={twitterAuth}>
@@ -329,12 +385,12 @@ const XShare = () => {
 									</div>
 
 									<div className="mx-4 my-2 outline-none">
-										<Button className="w-full outline-none" loading={isShareLoading} onClick={handleSubmit}>
-											Share on X
+										<Button className="w-full outline-none" disabled={isShareLoading || !canShare} loading={isShareLoading} onClick={handleSubmit}>
+											{canShare ? 'Share on X' : `Wait ${formatTimeRemaining(timeRemaining)} to share again`}
 										</Button>
 										{!twitterLoggedIn && (
 											<div className="flex py-5 text-center gap-5 flex-col items-center justify-center">
-												<Button className="w-full outline-none" loading={isLoading} onClick={twitterAuth}>
+												<Button className="w-full outline-none" disabled={isLoading} loading={isLoading} onClick={twitterAuth}>
 													Login To X
 												</Button>
 											</div>

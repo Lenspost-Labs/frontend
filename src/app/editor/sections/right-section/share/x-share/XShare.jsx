@@ -124,64 +124,54 @@ const XShare = () => {
 		// return
 		setIsShareLoading(true)
 		try {
-			const res = await isAuthenticated()
-			const isXAuthenticated = res?.data?.isAuthenticated
-			if (isXAuthenticated) {
-				setTwitterLoggedIn(true)
-				console.log('handleSubmit', isXAuthenticated)
-				const canvasData = {
-					id: contextCanvasIdRef.current,
-					name: 'Twitter post',
-					content: postDescription,
-				}
-				shareOnTwitter({
-					canvasData: canvasData,
-					canvasParams: '',
-					platform: 'twitter',
-				})
-					.then((res) => {
-						console.log('shareOnTwitter success', res?.data)
-						if (res?.data?.tweetData) {
-							// Store the share timestamp on success
-							//localStorage.setItem('lastTwitterShare', Date.now().toString())
+			const canvasData = {
+				id: contextCanvasIdRef.current,
+				name: 'Twitter post',
+				content: postDescription,
+			}
+			shareOnTwitter({
+				canvasData: canvasData,
+				canvasParams: '',
+				platform: 'twitter',
+			})
+				.then((res) => {
+					console.log('shareOnTwitter success', res?.data)
+					if (res?.data?.tweetData) {
+						// Store the share timestamp on success
+						//localStorage.setItem('lastTwitterShare', Date.now().toString())
 
-							setIsShareLoading(false)
-							setTweetId(res?.data?.tweetData?.data?.id)
-							setIsShareSuccess(true)
-							toast.success('Successfully shared')
+						setIsShareLoading(false)
+						setTweetId(res?.data?.tweetData?.data?.id)
+						setIsShareSuccess(true)
+						toast.success('Successfully shared')
 
-							// Claim the task for the user
-							claimReward({
-								taskId: 3,
-							})
+						// Claim the task for the user
+						claimReward({
+							taskId: 3,
+						})
 
-							// open the dialog
-						} else if (res?.error || res?.reason === 'REJECTED') {
-							setIsError(true)
-							setIsShareLoading(false)
-							toast.error(res?.error)
-						}
-					})
-					.catch((err) => {
-						console.log('Full error:', err)
-						console.log('Error response:', err.response)
-						console.log('Error response data:', err?.response?.data)
+						// open the dialog
+					} else if (res?.error || res?.reason === 'REJECTED') {
 						setIsError(true)
 						setIsShareLoading(false)
-						if (err?.response?.data?.message?.errors?.[0]?.message === 'Could not authenticate you') {
-							twitterAuth()
-						}
-						if (err?.response?.data?.message?.errors?.length > 0) {
-							toast.error(err?.response?.data?.message?.errors?.[0]?.message)
-						} else {
-							toast.error(err?.response?.data?.message)
-						}
-					})
-			} else {
-				setTwitterLoggedIn(false)
-				toast.error('Please login to Twitter/X to share your frame')
-				//twitterAuth()
-			}
+						toast.error(res?.error)
+					}
+				})
+				.catch((err) => {
+					console.log('Full error:', err)
+					console.log('Error response:', err.response)
+					console.log('Error response data:', err?.response?.data)
+					setIsError(true)
+					setIsShareLoading(false)
+					if (err?.response?.data?.message?.errors?.[0]?.message === 'Could not authenticate you') {
+						twitterAuth()
+					}
+					if (err?.response?.data?.message?.errors?.length > 0) {
+						toast.error(err?.response?.data?.message?.errors?.[0]?.message)
+					} else {
+						toast.error(err?.response?.data?.message)
+					}
+				})
 		} catch (error) {
 			console.log('handleSubmit', error)
 		} finally {

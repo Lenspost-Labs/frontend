@@ -71,6 +71,10 @@ const ShareSection = () => {
 			id: 42161,
 			name: 'Arbitrum One',
 		},
+		{
+			id: 1155,
+			name: 'Story IP',
+		},
 	]
 
 	const filterChains = () => {
@@ -238,6 +242,14 @@ const ShareSection = () => {
 						</div>
 						<hr />
 
+						<div className={`relative mt-6 px-4 sm:px-6`}>
+							<p className="text-lg">Mint as an NFT on Story IP</p>
+							<div className="flex flex-wrap items-center gap-10 my-3">
+								<div className="cursor-pointer flex flex-col items-center" onClick={() => setCurrentMenu('storyMint')}>
+									<img className="w-10 h-10" src={chainLogo(1155)} alt="Story IP" /> <Typography className="text-md font-semibold">Story IP</Typography>
+								</div>
+							</div>
+						</div>
 						<hr />
 						<div className={`relative mt-6 px-4 sm:px-6`}>
 							<p className="text-lg">Mint as an NFT on EVM</p>

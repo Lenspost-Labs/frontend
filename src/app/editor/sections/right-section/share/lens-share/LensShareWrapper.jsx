@@ -57,7 +57,7 @@ const LensShareWrapper = () => {
 				panelHeader={'Monetization Settings'}
 				panelContent={
 					<>
-						<div className="relative mt-0 px-4 pt-1 pb-1 sm:px-4">
+						<div className="relative mt-0 pt-1 pb-1">
 							<div className="space-y-4">
 								<div className="flex items-center justify-between"></div>
 								{/* <InputBox
@@ -148,7 +148,7 @@ const LensShareWrapper = () => {
 							</div>
 						</div>
 						{/* Tabs for Smart Post / Normal */}
-						<Tabs className="overflow-scroll my-2 px-4" value={lensTab}>
+						<Tabs className="overflow-scroll my-2" value={lensTab}>
 							<TabsHeader className="relative top-0 ">
 								<Tab value={'normalPost'} className="appFont" onClick={() => setLensTab('normalPost')}>
 									{' '}

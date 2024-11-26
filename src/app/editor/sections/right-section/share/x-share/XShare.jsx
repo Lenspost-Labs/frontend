@@ -120,8 +120,6 @@ const XShare = () => {
 	}
 
 	const handleSubmit = async () => {
-		toast.info('Sharing on X is disabled for now!')
-		return
 		setIsShareLoading(true)
 		try {
 			const canvasData = {

@@ -1,6 +1,6 @@
 import { Fragment, useContext, useState } from 'react'
 import { ShareIcon } from '../../../../../assets/assets'
-import { ShareSection, SolanaMintWrapper, ZoraMint, LensShareWrapper, XShare, FarcasterShareWrapper } from '../../right-section'
+import { ShareSection, SolanaMintWrapper, ZoraMint, LensShareWrapper, XShare, FarcasterShareWrapper, StoryMint } from '../../right-section'
 import { Drawer } from '@blueprintjs/core'
 import { Context } from '../../../../../providers/context'
 import EditIconShare from '../../../../../assets/EditIconsMobile/EditIconShare'
@@ -70,6 +70,7 @@ const ShareButton = () => {
 								{menu === 'solanaMint' && <SolanaMintWrapper />}
 								{menu === 'xshare' && <XShare />}
 								{typeof menu === 'number' && <ZoraMint selectedChainId={menu} />}
+								{menu === 'storyMint' && <StoryMint selectedChainId={menu} />}
 								{menu === 'ERC1155' && <ZoraMint />}
 							</div>
 						</div>

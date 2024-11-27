@@ -5,10 +5,11 @@ import { useSolanaWallet } from '../../../../../../hooks/solana'
 import { claimReward, shareOnSocials, twitterAuthenticate, XAuthenticated } from '../../../../../../services'
 import { useLocalStorage } from '../../../../../../hooks/app'
 import { toast } from 'react-toastify'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import BiCopy from '@meronex/icons/bi/BiCopy'
 import EmojiPicker, { EmojiStyle, Emoji } from 'emoji-picker-react'
 import { Button, Spinner, Textarea, Typography } from '@material-tailwind/react'
+import { errorMessage } from '../../../../../../utils'
 
 const XShare = () => {
 	const {
@@ -42,10 +43,9 @@ const XShare = () => {
 	const [isError, setIsError] = useState(false)
 	const [isCopy, setIsCopy] = useState(false)
 	const [tweetId, setTweetId] = useState('')
-	const { xAuth } = useLocalStorage()
+	const [xAuth, setXAuth] = useState(null)
 	const [twitterLoggedIn, setTwitterLoggedIn] = useState(false)
 	const [twitterAuthLoading, setTwitterAuthLoading] = useState(false)
-	const [isAuthChecking, setIsAuthChecking] = useState(true)
 	const [timeRemaining, setTimeRemaining] = useState(0)
 
 	const { mutateAsync: shareOnTwitter } = useMutation({
@@ -53,47 +53,24 @@ const XShare = () => {
 		mutationFn: shareOnSocials,
 	})
 
-	const { mutateAsync: isAuthenticated } = useMutation({
-		mutationKey: 'isAuthenticated',
-		mutationFn: XAuthenticated,
+	const { data: authData, isLoading: isAuthChecking } = useQuery({
+		queryKey: ['isAuthenticated'],
+		queryFn: XAuthenticated,
+		refetchOnWindowFocus: true,
 	})
+
+	useEffect(() => {
+		if (authData?.data?.isAuthenticated) {
+			setXAuth(authData?.data?.username)
+			setTwitterLoggedIn(true)
+		}
+	}, [authData])
+
 	// useEffect(() => {
 	// 	if (!contextCanvasIdRef.current) {
 	// 		toast.error('Please create a frame first')
 	// 	}
 	// }, [contextCanvasIdRef.current])
-
-	useEffect(() => {
-		const handleClickOutside = (event) => {
-			if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
-				setStClickedEmojiIcon(false)
-			}
-		}
-
-		document.addEventListener('mousedown', handleClickOutside)
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside)
-		}
-	}, [])
-
-	useEffect(() => {
-		checkTwitterAuth()
-	}, [])
-
-	const checkTwitterAuth = async () => {
-		setIsAuthChecking(true)
-		try {
-			const res = await isAuthenticated()
-			const isXAuthenticated = res?.data?.isAuthenticated
-			if (isXAuthenticated) {
-				setTwitterLoggedIn(true)
-			}
-		} catch (error) {
-			console.error('Auth check failed:', error)
-		} finally {
-			setIsAuthChecking(false)
-		}
-	}
 
 	const formatTimeRemaining = (seconds) => {
 		const minutes = Math.floor(seconds / 60)
@@ -107,7 +84,7 @@ const XShare = () => {
 		try {
 			const res = await twitterAuthenticate()
 			if (res?.data) {
-				window.open(res?.data?.authUrl, '_parent')
+				window.open(res?.data?.authUrl, '_blank')
 			} else if (res?.error) {
 				console.log(res?.error)
 				toast.error(res?.error)
@@ -140,6 +117,7 @@ const XShare = () => {
 
 						setTweetId(res?.tweetData?.data?.id)
 						setIsShareSuccess(true)
+						setIsShareLoading(false)
 						toast.success('Successfully shared')
 
 						// Claim the task for the user
@@ -150,18 +128,18 @@ const XShare = () => {
 						// open the dialog
 					} else if (res?.error || res?.reason === 'REJECTED') {
 						setIsError(true)
-						setIsShareLoading(false)
 						toast.error(res?.error)
 					}
 				})
 				.catch((err) => {
+					setIsShareLoading(false)
 					console.log('Full error:', err)
 					toast.error(errorMessage(err))
 				})
 		} catch (error) {
 			console.log('handleSubmit', error)
 		} finally {
-			setIsShareLoading(false)
+			//setIsShareLoading(false)
 		}
 	}
 
@@ -193,10 +171,17 @@ const XShare = () => {
 		}
 	}
 
+	console.log('authData', { xAuth, isAuthChecking, twitterLoggedIn })
+
 	let tweetUrl = ''
 
-	if (xAuth?.userName) {
-		tweetUrl = `https://x.com/${xAuth.userName}/status/`
+	if (xAuth) {
+		tweetUrl = `https://x.com/${xAuth}/status/`
+	}
+
+	// Add click handler to focus window
+	const handleWindowClick = () => {
+		window.focus()
 	}
 
 	return (
@@ -230,7 +215,7 @@ const XShare = () => {
 									{isCopy?.id === 1 && <span className="text-green-500">Copied</span>}
 								</span>
 							</div>
-						) : !twitterLoggedIn && !xAuth?.userId ? (
+						) : !xAuth || !twitterLoggedIn ? (
 							<div className="flex py-5 px-5 text-center gap-5 flex-col items-center justify-center">
 								<p className="text-sm text-gray-500">You're not logged in to Twitter/X, Please login to share your frame</p>
 								<Button className="w-full outline-none" loading={isLoading} onClick={twitterAuth}>
@@ -333,7 +318,7 @@ const XShare = () => {
 
 									<div className="mx-4 my-2 outline-none">
 										<Button className="w-full outline-none" disabled={isShareLoading} loading={isShareLoading} onClick={handleSubmit}>
-											Share on X
+											{isShareLoading ? 'Sharing on X...' : 'Share on X'}
 										</Button>
 										{!twitterLoggedIn && (
 											<div className="flex py-5 text-center gap-5 flex-col items-center justify-center">

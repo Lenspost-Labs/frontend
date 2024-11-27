@@ -92,7 +92,7 @@ export const twitterAuthenticate = async () => {
 		const result = await api.post(`${API}/twitter/authenticate`)
 
 		if (result?.status === 200) {
-			saveToLocalStorage(LOCAL_STORAGE.twitterAuth, JSON.stringify(result?.data))
+			saveToLocalStorage(LOCAL_STORAGE.twitterAuthURL, JSON.stringify(result?.data))
 			return {
 				data: result?.data,
 			}

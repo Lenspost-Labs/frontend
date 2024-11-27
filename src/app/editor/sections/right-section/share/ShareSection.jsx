@@ -39,7 +39,8 @@ const ShareSection = () => {
 
 		isShareOpen,
 		setIsShareOpen,
-
+		setOpenBottomBar,
+		setCurOpenedPanel,
 		contextCanvasIdRef,
 		actionType,
 		isMobile,
@@ -136,6 +137,7 @@ const ShareSection = () => {
 	}
 
 	const setCurrentMenu = (menu) => {
+		console.log('setCurrentMenu', menu)
 		setMenu(menu)
 		// if (contextCanvasIdRef?.current) {
 		// 	setMenu(menu)
@@ -157,7 +159,13 @@ const ShareSection = () => {
 						{/* For alignment */}
 						<div className=""> {''} </div>
 						<div className="">Share this Design</div>
-						<div className="z-100 cursor-pointer" onClick={() => setIsShareOpen(!isShareOpen)}>
+						<div
+							className="z-100 cursor-pointer"
+							onClick={() => {
+								setIsShareOpen(!isShareOpen)
+								setOpenBottomBar(false)
+							}}
+						>
 							<BsX size="24" />
 						</div>
 					</div>
@@ -197,12 +205,24 @@ const ShareSection = () => {
 						<EVMWallets title={'Login with EVM'} className="mx-2" login={login} />
 					) : (
 						<div className="flex flex-col mt-4 gap-2">
-							<Button className="mx-6" onClick={() => setMenu('farcasterShare')}>
+							<Button
+								className="mx-6"
+								onClick={() => {
+									setCurrentMenu('farcasterShare')
+									setOpenBottomBar(false)
+								}}
+							>
 								Share on Farcaster
 							</Button>
 
 							{actionType !== 'composer' && (
-								<Button className="mx-6" onClick={() => setMenu('xshare')}>
+								<Button
+									className="mx-6"
+									onClick={() => {
+										setCurrentMenu('xshare')
+										setOpenBottomBar(false)
+									}}
+								>
 									Share on X
 								</Button>
 							)}

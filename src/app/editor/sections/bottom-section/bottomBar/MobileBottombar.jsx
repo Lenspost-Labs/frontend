@@ -23,6 +23,7 @@ import { ImagePlus } from 'lucide-react'
 import { Share2 } from 'lucide-react'
 import { TypeOutline } from 'lucide-react'
 import { Sticker } from 'lucide-react'
+import { ShareSection } from '../../right-section'
 
 const MobileBottombar = () => {
 	const { curOpenedPanel, setCurOpenedPanel, openBottomBar, setOpenBottomBar, curOpenedTabLevel1 } = useContext(Context)
@@ -121,20 +122,22 @@ const MobileBottombar = () => {
 					>
 						<Sticker size={24} />
 					</div>
-					<div
+					<ShareButton />
+					{/* <div
 						onClick={() => {
 							//  	setOpenBottomBar(false)
 							//fnOpenPanel('mobPanelShare')
 							// setOpenBottomBar(!openBottomBar);
 							// setMenu("share");
 							// setIsShareOpen(true);
-							setOpenBottomBar(false)
+							setOpenBottomBar(true)
+							//fnOpenPanel('mobPanelShare')
 							setCurOpenedPanel('mobPanelShare')
 						}}
 						className={`${curOpenedPanel === 'mobPanelShare' ? 'bg-[#e1f16b]' : ''} p-1 rounded-lg`}
 					>
 						<Share2 size={24} />
-					</div>
+					</div> */}
 				</div>
 
 				{/* Custom Drawer for Bottom Bar - Pure tailwind CSS only */}
@@ -226,6 +229,8 @@ const MobileBottombar = () => {
 									</Tabs>
 								</>
 							)}
+
+							{/* {curOpenedPanel === 'mobPanelShare' && <ShareSection />} */}
 
 							{curOpenedPanel === 'mobPanelEffects' && <>Effects</>}
 						</>

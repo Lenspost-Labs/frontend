@@ -1,17 +1,18 @@
 import { Fragment, useContext, useState } from 'react'
 import { ShareIcon } from '../../../../../assets/assets'
-import { ShareSection, SolanaMintWrapper, ZoraMint, LensShareWrapper, XShare, FarcasterShareWrapper } from '../../right-section'
+import { ShareSection, SolanaMintWrapper, ZoraMint, LensShareWrapper, XShare, FarcasterShareWrapper, StoryMint } from '../../right-section'
 import { Drawer } from '@blueprintjs/core'
 import { Context } from '../../../../../providers/context'
 import EditIconShare from '../../../../../assets/EditIconsMobile/EditIconShare'
 import { ERC1155Edition } from '../../right-section/share/zora-mint/components'
 import { useAppUrl } from '../../../../../hooks/app'
+import { Share2 } from 'lucide-react'
 
 const ShareButton = () => {
 	const [transitionRtoL, setTransitionRtoL] = useState(false)
 	const { urlQueryActionType } = useAppUrl()
 
-	const { menu, setMenu, isShareOpen, setIsShareOpen, isMobile } = useContext(Context)
+	const { menu, setMenu, isShareOpen, setIsShareOpen, isMobile, curOpenedPanel } = useContext(Context)
 
 	// const [isShareOpen, setIsShareOpen] = useState(false);
 
@@ -42,12 +43,12 @@ const ShareButton = () => {
 						setIsShareOpen(true)
 						setMenu('share')
 						// if (isMobile) {
-						//   setMenu("farcasterShare");
+						// 	setMenu('farcasterShare')
 						// }
 					}}
-					className="flex items-center"
+					className={`${curOpenedPanel === 'mobPanelShare' ? 'bg-[#e1f16b]' : ''} p-1 rounded-lg`}
 				>
-					<EditIconShare />
+					<Share2 size={24} />
 				</div>
 			)}
 			<Drawer
@@ -70,6 +71,7 @@ const ShareButton = () => {
 								{menu === 'solanaMint' && <SolanaMintWrapper />}
 								{menu === 'xshare' && <XShare />}
 								{typeof menu === 'number' && <ZoraMint selectedChainId={menu} />}
+								{menu === 'storyMint' && <StoryMint selectedChainId={menu} />}
 								{menu === 'ERC1155' && <ZoraMint />}
 							</div>
 						</div>

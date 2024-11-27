@@ -19,4 +19,5 @@ export const LOCAL_STORAGE = {
 	actionType: 'action.type',
 	fid: 'fid',
 	twitterAuth: 'poster.twitter',
+	twitterAuthURL: 'poster.twitter.url',
 }

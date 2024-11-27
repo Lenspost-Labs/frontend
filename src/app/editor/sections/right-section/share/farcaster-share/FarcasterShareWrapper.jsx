@@ -63,7 +63,7 @@ const FarcasterShareWrapper = () => {
 				panelHeader={'How do you want to share?'}
 				panelContent={
 					<>
-						<div className="relative mt-0 px-4 pt-1 pb-1 sm:px-4">
+						<div className="relative mt-0 pt-1 pb-1">
 							<div className="space-y-4">
 								<div className="flex items-center justify-between"></div>
 								{/* <InputBox
@@ -154,7 +154,7 @@ const FarcasterShareWrapper = () => {
 							</div>
 						</div>
 						{/* Tabs for Smart Post / Normal */}
-						<Tabs className="overflow-scroll my-2 px-4" value={farcasterTab}>
+						<Tabs className="overflow-scroll my-2" value={farcasterTab}>
 							{/* Don't show Tabs header for Composer */}
 							{/* {!actionType === "composer" && ( */}
 							<>

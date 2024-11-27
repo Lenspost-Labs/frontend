@@ -39,7 +39,8 @@ const ShareSection = () => {
 
 		isShareOpen,
 		setIsShareOpen,
-
+		setOpenBottomBar,
+		setCurOpenedPanel,
 		contextCanvasIdRef,
 		actionType,
 		isMobile,
@@ -70,6 +71,10 @@ const ShareSection = () => {
 		{
 			id: 42161,
 			name: 'Arbitrum One',
+		},
+		{
+			id: 1155,
+			name: 'Story IP',
 		},
 	]
 
@@ -132,6 +137,7 @@ const ShareSection = () => {
 	}
 
 	const setCurrentMenu = (menu) => {
+		console.log('setCurrentMenu', menu)
 		setMenu(menu)
 		// if (contextCanvasIdRef?.current) {
 		// 	setMenu(menu)
@@ -153,7 +159,13 @@ const ShareSection = () => {
 						{/* For alignment */}
 						<div className=""> {''} </div>
 						<div className="">Share this Design</div>
-						<div className="z-100 cursor-pointer" onClick={() => setIsShareOpen(!isShareOpen)}>
+						<div
+							className="z-100 cursor-pointer"
+							onClick={() => {
+								setIsShareOpen(!isShareOpen)
+								setOpenBottomBar(false)
+							}}
+						>
 							<BsX size="24" />
 						</div>
 					</div>
@@ -193,12 +205,24 @@ const ShareSection = () => {
 						<EVMWallets title={'Login with EVM'} className="mx-2" login={login} />
 					) : (
 						<div className="flex flex-col mt-4 gap-2">
-							<Button className="mx-6" onClick={() => setMenu('farcasterShare')}>
+							<Button
+								className="mx-6"
+								onClick={() => {
+									setCurrentMenu('farcasterShare')
+									setOpenBottomBar(false)
+								}}
+							>
 								Share on Farcaster
 							</Button>
 
 							{actionType !== 'composer' && (
-								<Button className="mx-6" onClick={() => setMenu('xshare')}>
+								<Button
+									className="mx-6"
+									onClick={() => {
+										setCurrentMenu('xshare')
+										setOpenBottomBar(false)
+									}}
+								>
 									Share on X
 								</Button>
 							)}
@@ -238,6 +262,15 @@ const ShareSection = () => {
 						</div>
 						<hr />
 
+						<div className={`relative mt-6 px-4 sm:px-6`}>
+							<p className="text-lg">Mint NFT on Story Protocol</p>
+							<div className="flex flex-wrap items-center gap-10 my-3">
+								<div className="cursor-pointer flex flex-col items-center" onClick={() => setCurrentMenu('storyMint')}>
+									<img className="w-10 h-10" src={chainLogo(1155)} alt="Story Protocol" />{' '}
+									<Typography className="text-md font-semibold">Story Protocol</Typography>
+								</div>
+							</div>
+						</div>
 						<hr />
 						<div className={`relative mt-6 px-4 sm:px-6`}>
 							<p className="text-lg">Mint as an NFT on EVM</p>

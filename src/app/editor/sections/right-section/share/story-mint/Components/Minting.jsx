@@ -41,6 +41,16 @@ const licenseOptions = [
 	},
 ]
 
+const revenueShareOptions = [
+	{ label: '0', value: '0' },
+	{ label: '10', value: '10' },
+	{ label: '20', value: '20' },
+	{ label: '30', value: '30' },
+	{ label: '40', value: '40' },
+	{ label: '50', value: '50' },
+	{ label: 'Custom', value: 'custom' },
+]
+
 const Minting = () => {
 	const { postDescription, setMenu, canvasBase64Ref, setPostDescription, contextCanvasIdRef, isMobile } = useContext(Context)
 	const { resetState } = useReset()
@@ -64,6 +74,7 @@ const Minting = () => {
 	const [collectionSymbol, setCollectionSymbol] = useState('')
 	const [revShare, setRevShare] = useState(0)
 	const [license, setLicense] = useState('')
+	const [customRevShare, setCustomRevShare] = useState('')
 
 	const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth)
 
@@ -162,8 +173,6 @@ const Minting = () => {
 		}
 	}, [isTxSuccess, txData])
 
-	console.log('isTxSuccess', txData)
-
 	useEffect(() => {
 		if (isWriteError || isTxError) {
 			const error = writeError || txError
@@ -182,6 +191,9 @@ const Minting = () => {
 		}
 	}, [isUploadJSONSuccess])
 
+	// Add a new state to track if custom is selected
+	const [isCustomSelected, setIsCustomSelected] = useState(false)
+
 	const handleInputChange = (e) => {
 		const value = e.target.value
 		const name = e.target.name
@@ -199,7 +211,21 @@ const Minting = () => {
 				setCollectionSymbol('Default Symbol')
 			}
 		} else if (name === 'revenueShare') {
-			setRevShare(value)
+			if (value === 'custom') {
+				setRevShare('')
+				setIsCustomSelected(true)
+			} else {
+				setRevShare(value)
+				setIsCustomSelected(false)
+			}
+		} else if (name === 'customRevShare') {
+			if (value === '' || /^\d+$/.test(value)) {
+				const numValue = parseInt(value)
+				if (value === '' || (numValue >= 0 && numValue <= 100)) {
+					setCustomRevShare(value)
+					setRevShare(value === '' ? '' : numValue)
+				}
+			}
 		} else if (name === 'license') {
 			setLicense(value)
 		} else if (name === 'description') {
@@ -337,14 +363,28 @@ const Minting = () => {
 
 					{license === getPILTypeString(2) && (
 						<div className="mt-4">
-							<InputBox
-								name="revenueShare"
+							<SelectBox
+								options={revenueShareOptions}
 								onChange={(e) => handleInputChange(e)}
-								onFocus={(e) => handleInputChange(e)}
-								value={revShare}
+								name="revenueShare"
 								label="Revenue Share"
-								placeholder="0"
+								value={isCustomSelected ? 'custom' : revShare.toString()}
 							/>
+							{isCustomSelected && (
+								<div className="mt-2">
+									<InputBox
+										label="Custom Revenue Share (%)"
+										name="customRevShare"
+										type="text"
+										min="0"
+										max="100"
+										disabled={isLoading}
+										onChange={(e) => handleInputChange(e)}
+										value={customRevShare}
+										placeholder="Enter value between 0-100"
+									/>
+								</div>
+							)}
 						</div>
 					)}
 				</div>

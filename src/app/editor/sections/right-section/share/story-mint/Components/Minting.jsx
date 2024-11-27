@@ -12,18 +12,43 @@ import { getFromLocalStorage } from '../../../../../../../utils'
 import { LOCAL_STORAGE, STORY_ODYSSEY_ADDRESS } from '../../../../../../../data'
 import { storyOdysseyTestnet } from '../../../../../../../data/network/storyOdyssey'
 import storyABI from '../../../../../../../data/json/storyABI.json'
-import { InputBox } from '../../../../../common'
+import { InputBox, SelectBox } from '../../../../../common'
 import { EVMWallets } from '../../../../top-section/auth/wallets'
-import { Button } from '@material-tailwind/react'
+import { Button, Textarea } from '@material-tailwind/react'
 import usePrivyAuth from '../../../../../../../hooks/privy-auth/usePrivyAuth'
-import { Textarea } from '@material-tailwind/react'
+
+const getPILTypeString = (type) => {
+	switch (type) {
+		case 0:
+			return 'NON_COMMERCIAL_REMIX'
+		case 2:
+			return 'COMMERCIAL_REMIX'
+		case 1:
+			return 'COMMERCIAL_USE'
+		default:
+			return ''
+	}
+}
+
+const licenseOptions = [
+	{
+		label: 'Non-Commercial Remix',
+		value: getPILTypeString(0),
+	},
+	{
+		label: 'Commercial Remix',
+		value: getPILTypeString(2),
+	},
+]
 
 const Minting = () => {
-	const { postDescription, canvasBase64Ref, setPostDescription, contextCanvasIdRef } = useContext(Context)
+	const { postDescription, setMenu, canvasBase64Ref, setPostDescription, contextCanvasIdRef, isMobile } = useContext(Context)
 	const { resetState } = useReset()
 	const { login } = usePrivyAuth()
 	const { isAuthenticated } = useAppAuth()
 	const { address, isConnected } = useAccount()
+
+	const [charLimitError, setCharLimitError] = useState('')
 
 	const {
 		error: errorSwitchNetwork,
@@ -37,6 +62,8 @@ const Minting = () => {
 
 	const [collectionName, setCollectionName] = useState('')
 	const [collectionSymbol, setCollectionSymbol] = useState('')
+	const [revShare, setRevShare] = useState(0)
+	const [license, setLicense] = useState('')
 
 	const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth)
 
@@ -83,12 +110,26 @@ const Minting = () => {
 	// upload JSON data to IPFS
 	useEffect(() => {
 		if (uploadData?.message) {
-			const jsonData = {
+			let jsonData = {
 				name: collectionName,
 				symbol: collectionSymbol,
 				description: postDescription,
 				image: `ipfs://${uploadData?.message}`,
+				pilType: license,
+				pilTerms: {},
 			}
+
+			let pilTerms = {}
+
+			if (license === getPILTypeString(2)) {
+				pilTerms = {
+					mintingFee: 0,
+					currency: '0xC0F6E387aC0B324Ec18EAcf22EE7271207dCE3d5',
+					commercialRevShare: revShare,
+				}
+			}
+
+			jsonData = { ...jsonData, pilTerms }
 			uploadJSONtoIPFSMutate(jsonData)
 		}
 	}, [isUploadSuccess])
@@ -121,6 +162,8 @@ const Minting = () => {
 		}
 	}, [isTxSuccess, txData])
 
+	console.log('isTxSuccess', txData)
+
 	useEffect(() => {
 		if (isWriteError || isTxError) {
 			const error = writeError || txError
@@ -138,6 +181,38 @@ const Minting = () => {
 			mint721()
 		}
 	}, [isUploadJSONSuccess])
+
+	const handleInputChange = (e) => {
+		const value = e.target.value
+		const name = e.target.name
+		const maxByteLimit = 195
+		const byteLength = new TextEncoder().encode(value).length
+
+		if (name === 'title') {
+			setCollectionName(value)
+			if (isMobile) {
+				setCollectionName('Default Title')
+			}
+		} else if (name === 'symbol') {
+			setCollectionSymbol(value)
+			if (isMobile) {
+				setCollectionSymbol('Default Symbol')
+			}
+		} else if (name === 'revenueShare') {
+			setRevShare(value)
+		} else if (name === 'license') {
+			setLicense(value)
+		} else if (name === 'description') {
+			if (byteLength > maxByteLimit) {
+				setCharLimitError('Maximun character limit exceeded')
+				setPostDescription(value.substring(0, value.length - (byteLength - maxByteLimit)))
+			} else {
+				setCharLimitError('')
+				setPostDescription(value)
+			}
+		}
+	}
+
 	// checking unsupported chain for individual networks
 	const isUnsupportedChain = () => {
 		if (chainId !== storyOdysseyTestnet.id && !isSuccessSwitchNetwork) return true
@@ -197,46 +272,95 @@ const Minting = () => {
 		<div>
 			<div className=" mt-1 pt-2 pb-4">
 				<div className="flex justify-between">
-					<h2 className="text-lg"> Collection Details </h2>
+					<h2 className="text-lg"> NFT Details </h2>
 				</div>
 			</div>
 
 			<div className={` `}>
 				<div className="flex flex-col w-full py-2">
 					<InputBox
-						label="Collection Name"
-						name="contractName"
+						label="Name"
+						name="title"
 						disabled={isLoading}
-						onChange={(e) => setCollectionName(e.target.value)}
-						onFocus={(e) => setCollectionName(e.target.value)}
+						onChange={(e) => handleInputChange(e)}
+						onFocus={(e) => handleInputChange(e)}
 						value={collectionName}
 					/>
 
-					<div className="mt-2">
+					<div className="mt-4">
 						<InputBox
-							label="Collection Symbol"
-							name="contractSymbol"
+							label="Symbol"
+							name="symbol"
 							disabled={isLoading}
-							onChange={(e) => setCollectionSymbol(e.target.value)}
-							onFocus={(e) => setCollectionSymbol(e.target.value)}
+							onChange={(e) => handleInputChange(e)}
+							onFocus={(e) => handleInputChange(e)}
 							value={collectionSymbol}
 						/>
 					</div>
-					<div className="mt-2">
-						<Textarea
-							label="Description"
-							name="description"
-							disabled={isLoading}
-							onChange={(e) => setPostDescription(e.target.value)}
-							onFocus={(e) => setPostDescription(e.target.value)}
-							value={postDescription}
+					<div className="mt-4">
+						{!isMobile ? (
+							<Textarea
+								label="Description"
+								name="description"
+								disabled={isLoading}
+								onChange={(e) => handleInputChange(e)}
+								onFocus={(e) => handleInputChange(e)}
+								value={postDescription}
+							/>
+						) : (
+							<textarea
+								cols={30}
+								type="text"
+								className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+								label="Description"
+								name="description"
+								onChange={(e) => handleInputChange(e)}
+								onFocus={(e) => handleInputChange(e)}
+								value={postDescription}
+								placeholder="Write a description..."
+								// className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+							/>
+						)}
+						{charLimitError && <div className="text-red-500 text-sm">{charLimitError}</div>}
+					</div>
+					<div className="mt-4">
+						<SelectBox
+							options={licenseOptions.map((option) => ({
+								...option,
+								value: option.value.toString(),
+							}))}
+							onChange={(e) => handleInputChange(e)}
+							name="license"
+							label="License"
 						/>
 					</div>
+
+					{license === getPILTypeString(2) && (
+						<div className="mt-4">
+							<InputBox
+								name="revenueShare"
+								onChange={(e) => handleInputChange(e)}
+								onFocus={(e) => handleInputChange(e)}
+								value={revShare}
+								label="Revenue Share"
+								placeholder="0"
+							/>
+						</div>
+					)}
 				</div>
 			</div>
 			{isTxSuccess && txData ? (
-				<div className="flex flex-col gap-2 justify-center items-center">
-					<p className="text-green-500">Collection minted successfully!</p>
+				<div className="flex flex-col gap-2 mt-4 justify-center items-center">
+					<p className="text-green-500 font-bold">NFT minted successfully!</p>
+					<p className="font-bold text-lg mt-3">Share NFT on Social Platforms</p>
+					<div className="flex items-center gap-5">
+						<Button className="font-medium" onClick={() => setMenu('xshare')}>
+							Share on X
+						</Button>
+						<Button className="font-medium" onClick={() => setMenu('farcasterShare')}>
+							Share on Farcaster
+						</Button>
+					</div>
 					<a
 						href={`${storyOdysseyTestnet?.blockExplorers?.default.url}/tx/${txData?.transactionHash}`}
 						className="text-purple-500 hover:underline"
@@ -249,7 +373,7 @@ const Minting = () => {
 			) : !getEVMAuth ? (
 				<EVMWallets title="Login with EVM" login={login} className="w-[97%]" />
 			) : isUnsupportedChain() ? (
-				<div className="outline-none">
+				<div className="outline-none mt-4">
 					<Button
 						className="w-full outline-none flex justify-center items-center gap-2"
 						disabled={isLoadingSwitchNetwork}
@@ -261,7 +385,7 @@ const Minting = () => {
 					</Button>
 				</div>
 			) : (
-				<div className="">
+				<div className="mt-4">
 					<Button
 						disabled={isPending || isUnsupportedChain() || isLoading}
 						fullWidth
@@ -270,7 +394,7 @@ const Minting = () => {
 						onClick={handleSubmit}
 					>
 						{' '}
-						{isLoading ? 'Minting...' : 'Mint IP'}
+						{isLoading ? 'Minting...' : 'Mint NFT'}
 					</Button>
 				</div>
 			)}

@@ -243,10 +243,11 @@ const ShareSection = () => {
 						<hr />
 
 						<div className={`relative mt-6 px-4 sm:px-6`}>
-							<p className="text-lg">Mint as an NFT on Story IP</p>
+							<p className="text-lg">Mint NFT on Story Protocol</p>
 							<div className="flex flex-wrap items-center gap-10 my-3">
 								<div className="cursor-pointer flex flex-col items-center" onClick={() => setCurrentMenu('storyMint')}>
-									<img className="w-10 h-10" src={chainLogo(1155)} alt="Story IP" /> <Typography className="text-md font-semibold">Story IP</Typography>
+									<img className="w-10 h-10" src={chainLogo(1155)} alt="Story Protocol" />{' '}
+									<Typography className="text-md font-semibold">Story Protocol</Typography>
 								</div>
 							</div>
 						</div>

@@ -352,7 +352,7 @@ export const shareOnSocials = async ({ canvasData, canvasParams, platform }) => 
 		platform: platform,
 	})
 
-	return result
+	return result?.data
 }
 // canvas apis end
 

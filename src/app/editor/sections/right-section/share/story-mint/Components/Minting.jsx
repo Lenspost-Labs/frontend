@@ -169,7 +169,7 @@ const Minting = () => {
 		if (isTxSuccess) {
 			console.log('isTxSuccess', txData)
 			//resetState()
-			toast.success('Collection minted successfully!')
+			toast.success('NFT minted successfully!')
 		}
 	}, [isTxSuccess, txData])
 
@@ -402,7 +402,7 @@ const Minting = () => {
 						</Button>
 					</div>
 					<a
-						href={`${storyOdysseyTestnet?.blockExplorers?.default.url}/tx/${txData?.transactionHash}`}
+						href={`${storyOdysseyTestnet?.blockExplorers?.default.url}/token/${STORY_ODYSSEY_ADDRESS}`}
 						className="text-purple-500 hover:underline"
 						rel="noreferrer"
 						target="_blank"

@@ -133,13 +133,12 @@ const XShare = () => {
 				platform: 'twitter',
 			})
 				.then((res) => {
-					console.log('shareOnTwitter success', res?.data)
-					if (res?.data?.tweetData) {
+					console.log('shareOnTwitter success', res)
+					if (res?.tweetData) {
 						// Store the share timestamp on success
 						//localStorage.setItem('lastTwitterShare', Date.now().toString())
 
-						setIsShareLoading(false)
-						setTweetId(res?.data?.tweetData?.data?.id)
+						setTweetId(res?.tweetData?.data?.id)
 						setIsShareSuccess(true)
 						toast.success('Successfully shared')
 
@@ -157,18 +156,7 @@ const XShare = () => {
 				})
 				.catch((err) => {
 					console.log('Full error:', err)
-					console.log('Error response:', err.response)
-					console.log('Error response data:', err?.response?.data)
-					setIsError(true)
-					setIsShareLoading(false)
-					if (err?.response?.data?.message?.errors?.[0]?.message === 'Could not authenticate you') {
-						twitterAuth()
-					}
-					if (err?.response?.data?.message?.errors?.length > 0) {
-						toast.error(err?.response?.data?.message?.errors?.[0]?.message)
-					} else {
-						toast.error(err?.response?.data?.message)
-					}
+					toast.error(errorMessage(err))
 				})
 		} catch (error) {
 			console.log('handleSubmit', error)

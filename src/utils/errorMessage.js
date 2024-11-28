@@ -6,7 +6,7 @@ export const errorMessage = (error) => {
 			})
 			return 'Internal Server Error, please try again later'
 		} else if (error?.response?.status === 401) {
-			console.log({ 401: error?.response?.statusText })
+			console.log({ 401: error?.response?.data?.message })
 			return error?.response?.data?.message
 		} else if (error?.response?.status === 404) {
 			console.log({
@@ -25,9 +25,9 @@ export const errorMessage = (error) => {
 			return error?.response?.data?.message
 		} else if (error?.response?.status === 429) {
 			console.log({
-				429: error?.response?.data?.error,
+				429: error?.response?.data?.error || error?.response?.data?.message,
 			})
-			return error?.response?.data?.error
+			return error?.response?.data?.error || error?.response?.data?.message
 		}
 	} else {
 		return 'Something went wrong, please try again later'

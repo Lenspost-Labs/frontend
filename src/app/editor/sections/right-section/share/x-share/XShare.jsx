@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { SharePanelHeaders } from '../components'
 import { Context } from '../../../../../../providers/context'
 import { useSolanaWallet } from '../../../../../../hooks/solana'
-import { claimReward, shareOnSocials, twitterAuthenticate, XAuthenticated } from '../../../../../../services'
-import { useLocalStorage } from '../../../../../../hooks/app'
+import { claimReward, shareOnX, twitterAuthenticate, XAuthenticated } from '../../../../../../services'
 import { toast } from 'react-toastify'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import BiCopy from '@meronex/icons/bi/BiCopy'
@@ -50,7 +49,7 @@ const XShare = () => {
 
 	const { mutateAsync: shareOnTwitter } = useMutation({
 		mutationKey: 'shareOnTwitter',
-		mutationFn: shareOnSocials,
+		mutationFn: shareOnX,
 	})
 
 	const { data: authData, isLoading: isAuthChecking } = useQuery({

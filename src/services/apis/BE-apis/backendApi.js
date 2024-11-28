@@ -354,6 +354,16 @@ export const shareOnSocials = async ({ canvasData, canvasParams, platform }) => 
 
 	return result?.data
 }
+
+export const shareOnX = async ({ canvasData, canvasParams, platform }) => {
+	const result = await api.post(`${API}/twitter/tweet`, {
+		canvasData: canvasData,
+		canvasParams: canvasParams,
+		platform: platform,
+	})
+
+	return result?.data
+}
 // canvas apis end
 
 // collection apis start

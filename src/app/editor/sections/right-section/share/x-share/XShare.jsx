@@ -90,6 +90,7 @@ const XShare = () => {
 			}
 		} catch (error) {
 			console.log(error.message)
+			toast.error(errorMessage(error))
 		} finally {
 			setIsLoading(false)
 		}
@@ -114,7 +115,7 @@ const XShare = () => {
 						// Store the share timestamp on success
 						//localStorage.setItem('lastTwitterShare', Date.now().toString())
 
-						setTweetId(res?.tweetData?.data?.id)
+						setTweetId(res?.tweetData?.id)
 						setIsShareSuccess(true)
 						setIsShareLoading(false)
 						toast.success('Successfully shared')

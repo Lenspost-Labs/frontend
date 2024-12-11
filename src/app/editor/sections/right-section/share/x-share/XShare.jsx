@@ -110,12 +110,11 @@ const XShare = () => {
 				platform: 'twitter',
 			})
 				.then((res) => {
-					console.log('shareOnTwitter success', res)
-					if (res?.tweetData) {
+					if (res?.data?.tweetData) {
 						// Store the share timestamp on success
 						//localStorage.setItem('lastTwitterShare', Date.now().toString())
 
-						setTweetId(res?.tweetData?.id)
+						setTweetId(res?.data?.tweetData?.id)
 						setIsShareSuccess(true)
 						setIsShareLoading(false)
 						toast.success('Successfully shared')
@@ -170,8 +169,6 @@ const XShare = () => {
 			}
 		}
 	}
-
-	console.log('authData', { xAuth, isAuthChecking, twitterLoggedIn })
 
 	let tweetUrl = ''
 

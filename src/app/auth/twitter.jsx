@@ -23,6 +23,7 @@ function TwitterCallback() {
 	const saveToStorage = async (oauth_token, oauth_verifier) => {
 		try {
 			const res = await twitterAuthenticateCallback(oauth_token, oauth_verifier)
+			console.log(res)
 			if (res?.data?.success) {
 				// saveToLocalStorage(LOCAL_STORAGE.twitterAuth, {
 				// 	userId: res?.data?.data?.twitterUserId,

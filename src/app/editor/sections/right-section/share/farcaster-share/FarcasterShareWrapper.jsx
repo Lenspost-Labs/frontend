@@ -8,13 +8,13 @@ import { ERC1155Edition } from '../zora-mint/components'
 import EmojiPicker, { EmojiStyle, Emoji } from 'emoji-picker-react'
 
 const FarcasterShareWrapper = () => {
-	const { setPostName, postDescription, setPostDescription, stCalendarClicked, setStCalendarClicked, farcasterTab, setFarcasterTab, isMobile } =
+	const { setPostName, postDescription, setPostDescription, stCalendarClicked, setStCalendarClicked, farcasterTab, setFarcasterTab, actionType, isMobile } =
 		useContext(Context)
 
 	const emojiPickerRef = useRef(null)
 	const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false)
 	const [charLimitError, setCharLimitError] = useState('')
-	const { urlQueryActionType: actionType } = useAppUrl()
+	//const { urlQueryActionType: actionType } = useAppUrl()
 
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -90,7 +90,7 @@ const FarcasterShareWrapper = () => {
 
 									{/* Using default textarea from HTML to avoid unnecessary focus only for mobile */}
 									{/* iPhone issue */}
-									{isMobile && (
+									{isMobile && actionType !== 'composer' && (
 										<>
 											<textarea
 												cols={30}

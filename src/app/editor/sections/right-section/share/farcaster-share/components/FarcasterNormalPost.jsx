@@ -848,10 +848,13 @@ const FarcasterNormalPost = () => {
 
 	useEffect(() => {
 		if (isWalletSuccess) {
-			console.log('isWalletSuccess', isWalletSuccess)
 			saveToLocalStorage(LOCAL_STORAGE.userLOA, walletData?.publicAddress)
 		}
+
+		console.log('isWalletSuccess', { isWalletSuccess, walletData })
 	}, [isWalletSuccess])
+
+	console.log('isWalletSuccess', { isWalletSuccess, walletData })
 
 	// error handling for mint
 	useEffect(() => {

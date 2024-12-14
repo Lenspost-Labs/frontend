@@ -848,6 +848,7 @@ const FarcasterNormalPost = () => {
 
 	useEffect(() => {
 		if (isWalletSuccess) {
+			console.log('isWalletSuccess', isWalletSuccess)
 			saveToLocalStorage(LOCAL_STORAGE.userLOA, walletData?.publicAddress)
 		}
 	}, [isWalletSuccess])

@@ -85,6 +85,7 @@ const FarcasterNormalPost = () => {
 	const { isFarcasterAuth } = useLocalStorage()
 
 	const isCreatorSponsored = farcasterStates?.frameData?.isCreatorSponsored
+	const isComposerAction = actionType === 'composer'
 
 	const {
 		data: walletData,
@@ -96,7 +97,7 @@ const FarcasterNormalPost = () => {
 		isRefetching: isWalletRefetching,
 	} = useQuery({
 		queryKey: ['getOrCreateWallet'],
-		queryFn: () => getOrCreateWallet(isCreatorSponsored ? chainId : chain?.id),
+		queryFn: () => getOrCreateWallet(isComposerAction ? chainId : isCreatorSponsored ? chainId : chain?.id),
 		refetchOnWindowFocus: false,
 	})
 
@@ -850,8 +851,6 @@ const FarcasterNormalPost = () => {
 		if (isWalletSuccess) {
 			saveToLocalStorage(LOCAL_STORAGE.userLOA, walletData?.publicAddress)
 		}
-
-		console.log('isWalletSuccess', { isWalletSuccess, walletData })
 	}, [isWalletSuccess])
 
 	console.log('isWalletSuccess', { isWalletSuccess, walletData })

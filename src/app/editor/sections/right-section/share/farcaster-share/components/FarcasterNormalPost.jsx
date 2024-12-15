@@ -168,8 +168,6 @@ const FarcasterNormalPost = () => {
 		APP_ETH_ADDRESS,
 	]
 
-	console.log('argsArr', argsArr)
-
 	// check if recipient address is same
 	const isRecipientAddDuplicate = () => {
 		const result = farcasterStates?.frameData?.fcSplitRevenueRecipients.filter((item, index) => {

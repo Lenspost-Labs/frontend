@@ -88,14 +88,14 @@ export const CompSearch = () => {
 		if (!query) {
 			return
 		}
-		// if (!points) {
-		//   toast.error(`Error Fetching ${posterTokenSymbol} Points`);
-		//   return;
-		// }
-		// if (points < 1) {
-		//   toast.error(`Not enough ${posterTokenSymbol} points`);
-		//   return;
-		// }
+		if (!points) {
+			toast.error(`Error Fetching ${posterTokenSymbol} Points`)
+			return
+		}
+		if (points < 1) {
+			toast.error(`Not enough ${posterTokenSymbol} points`)
+			return
+		}
 		async function load() {
 			setIsLoading(true)
 			setError(null)
@@ -111,7 +111,7 @@ export const CompSearch = () => {
 					await mutClaimReward({
 						taskId: 5,
 					})
-				} else if (data.status === 429) {
+				} else if (response.status === 429) {
 					setIsLoading(false)
 					setStStatusCode(429)
 				}

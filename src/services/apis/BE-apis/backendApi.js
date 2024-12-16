@@ -617,6 +617,14 @@ export const claimReward = async (data) => {
 	}
 }
 
+export const getAIImage = async (data) => {
+	const result = await api.post(`${API}/ai/text-image`, data)
+
+	return {
+		data: result?.data,
+	}
+}
+
 // Generate Invite code
 export const apiGenerateInviteCode = async () => {
 	const result = await api.post(`${API}/user/loyalty/generate-code`)

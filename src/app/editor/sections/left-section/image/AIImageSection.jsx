@@ -4,33 +4,22 @@
 // ---- ----
 
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { observer } from 'mobx-react-lite'
-import { InputGroup, Button, Icon } from '@blueprintjs/core'
 import { SectionTab } from 'polotno/side-panel'
-import { getKey } from 'polotno/utils/validate-key'
-import { getImageSize } from 'polotno/utils/image'
-import FaBrain from '@meronex/icons/fa/FaBrain'
-import { t } from 'polotno/utils/l10n'
-import { ImagesGrid } from 'polotno/side-panel/images-grid'
-import { useInfiniteAPI } from 'polotno/utils/use-api'
-import { getCrop } from 'polotno/utils/image'
 import { AIIcon } from '../../../../../assets/assets'
 import axios from 'axios'
 import FormData from 'form-data'
-import { CustomImageComponent, LoadingAnimatedComponent, MessageComponent } from '../../../common'
-import { Textarea, Button as MatButton, Input, Chip } from '@material-tailwind/react'
-import { base64Stripper, consoleLogonlyDev, firstLetterCapital } from '../../../../../utils'
+import { CustomImageComponent, MessageComponent } from '../../../common'
+import { Textarea, Button as MatButton } from '@material-tailwind/react'
+import { consoleLogonlyDev, firstLetterCapital } from '../../../../../utils'
 import Lottie from 'lottie-react'
 import animationData from '../../../../../assets/lottie/loaders/aiGeneration.json'
 import { useStore } from '../../../../../hooks/polotno'
 import { Context } from '../../../../../providers/context'
 import { Tab, Tabs, TabsHeader, TabsBody } from '@material-tailwind/react'
-import { claimReward, getFalAiImage, getFalImgtoImg } from '../../../../../services'
+import { claimReward, getAIImage, getFalImgtoImg } from '../../../../../services'
 import useUser from '../../../../../hooks/user/useUser'
-import { toast } from 'react-toastify'
-import { posterTokenSymbol } from '../../../../../data'
 import coinImg from '../../../../../assets/svgs/Coin.svg'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLocalStorage } from '../../../../../hooks/app'
 // Tab1 - Search Tab
 
@@ -68,6 +57,11 @@ export const CompSearch = () => {
 
 	const queryClient = useQueryClient()
 
+	const { mutateAsync: aiMutate } = useMutation({
+		mutationKey: 'ai-text-to-image',
+		mutationFn: getAIImage,
+	})
+
 	const { mutateAsync: mutClaimReward } = useMutation({
 		mutationFn: async ({ taskId }) => {
 			try {
@@ -88,35 +82,35 @@ export const CompSearch = () => {
 		if (!query) {
 			return
 		}
-		if (!points) {
-			toast.error(`Error Fetching ${posterTokenSymbol} Points`)
-			return
-		}
-		if (points < 1) {
-			toast.error(`Not enough ${posterTokenSymbol} points`)
-			return
-		}
+		// if (!points) {
+		// 	toast.error(`Error Fetching ${posterTokenSymbol} Points`)
+		// 	return
+		// }
+		// if (points < 1) {
+		// 	toast.error(`Not enough ${posterTokenSymbol} points`)
+		// 	return
+		// }
 		async function load() {
 			setIsLoading(true)
 			setError(null)
 			try {
 				setIsLoading(true)
-				const response = await getFalAiImage(query)
-				setStStatusCode(response.status)
-				if (response.status === 200) {
+				const response = await aiMutate({ prompt: query })
+				setStStatusCode(response.data.status)
+				if (response.data.status === 'success') {
 					setIsLoading(false)
 					setStStatusCode(200)
-					setData(response.data)
+					setData(response.data.data)
 
 					await mutClaimReward({
 						taskId: 5,
 					})
-				} else if (response.status === 429) {
+				} else if (response.data.status === 429) {
 					setIsLoading(false)
 					setStStatusCode(429)
 				}
 			} catch (e) {
-				console.log('err', e)
+				console.log('fnGenerateImages err: ', e)
 				// setError(e);
 				setError(e.message)
 				setIsLoading(false)

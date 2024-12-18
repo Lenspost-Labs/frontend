@@ -32,15 +32,15 @@ const RANDOM_QUERIES = [
 // This array is to display other queries on the frontend - 22Jul2023
 const RANDOM_QUERIES2 = [
 	// "A bustling marketplace in a medieval fantasy setting",
-	'Pepe the frog wearing top hat sipping tea at the beach 🏖️',
-	'Bull with sunglasses flexing as hero 😎 crypto prices pumping',
-	'Waifu with purple hair at the fairy garden',
+	'bull with sunglasses and santa hat with crypto prices sky rocketing xmas',
+	'Christmas waifu fairy',
+	'pepe the frog christmas elf near beautiful xmas tree',
 ]
 
 // This array is to display short words as prompts on the frontend - 22Jul2023
-const RANDOM_QUERIES3 = ['Mountains', 'Hearts', 'Robots', 'NFTS', 'Elon']
+const RANDOM_QUERIES3 = ['Xmas', 'Crypto Bull', 'Snow', 'Winter', 'Mountains', 'Hearts', 'Robots', 'NFTS', 'Elon']
 
-export const CompSearch = () => {
+export const CompSearch = ({ featuredImages }) => {
 	const { setOpenLeftBar, openLeftBar, openBottomBar, setOpenBottomBar, isMobile } = useContext(Context)
 	const store = useStore()
 	const { points } = useUser()
@@ -277,23 +277,32 @@ export const CompSearch = () => {
 			<button className="bg-[#e1f16b] w-full px-4 p-1  mb-4 rounded-md hover:bg-[#e0f26cce]" onClick={fnGenerateImages}>Generate</button>
 			*/}
 				</div>
-				<div className="hidden md:flex flex-row overflow-x-scroll">
-					{RANDOM_QUERIES3.map((val, key) => {
-						return (
-							<div onClick={() => setQuery(val)} className="m-1 mb-2 px-2 py-1 text-xs rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100">
-								{val}
-							</div>
-						)
-					})}
+				<div className="flex flex-row justify-between items-center gap-2 w-full">
+					<div className="flex flex-col overflow-x-scroll">
+						{RANDOM_QUERIES2.map((val, key) => {
+							return (
+								<div
+									onClick={() => setQuery(val)}
+									className="m-1 mb-2 px-2 py-1 text-xs rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100 overflow-x-scroll"
+								>
+									{val}
+								</div>
+							)
+						})}
+					</div>
+					<div className="hidden md:grid grid-cols-3 overflow-x-scroll">
+						{RANDOM_QUERIES3.map((val, key) => {
+							return (
+								<div
+									onClick={() => setQuery(val)}
+									className="m-1 mb-2 items-center justify-center flex px-2 py-1 text-xs rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100"
+								>
+									{val}
+								</div>
+							)
+						})}
+					</div>
 				</div>
-
-				{RANDOM_QUERIES2.map((val, key) => {
-					return (
-						<div onClick={() => setQuery(val)} className="m-1 mb-2 px-2 py-1 text-xs rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100 overflow-x-scroll">
-							{val}
-						</div>
-					)
-				})}
 			</div>
 			{/* {isLoading && <LoadingAnimatedComponent />} */}
 			{isLoading && (
@@ -302,10 +311,22 @@ export const CompSearch = () => {
 					{/* Generating Image... */}
 				</div>
 			)}
-			{query == '' || (!data && !isLoading && <div className="p-2 pt-4  text-center text-gray-500">Give a prompt and click Generate to get started</div>)}
+			{!data && !isLoading && (
+				<>
+					<div className="p-2 pb-4  text-center text-gray-500">Unleash your creativity — Enter a prompt and let AI do the magic!</div>
+					{featuredImages && (
+						<div className="flex flex-row justify-between gap-2 w-full">
+							{featuredImages?.map((img, index) => (
+								<CustomImageComponent key={index} preview={img} alt="image" />
+							))}
+						</div>
+					)}
+					<div className="p-2 pb-4  text-center text-gray-500">Get inspired with trending festive AI art prompts — Choose, click, and create!</div>
+				</>
+			)}
 
 			{!isLoading && stStatusCode === 200 && (
-				<>
+				<div className="flex flex-row  items-center justify-center gap-2 w-full">
 					{data?.images.map((val, key) => (
 						<div
 							onClick={() => {
@@ -318,15 +339,14 @@ export const CompSearch = () => {
 									}
 								}
 							}}
+							className="max-w-md w-full"
 						>
 							<CustomImageComponent key={key} preview={val.url} />
 						</div>
 					))}
-				</>
+				</div>
 			)}
-
 			{!isLoading && error && <div className="mt-4 p-2 text-red-600 bg-red-50 rounded-md">{error}</div>}
-
 			{stStatusCode === 429 && (
 				// <div className="mt-4 p-2 text-orange-600 bg-orange-100 rounded-md">
 				//   You are Rate limited for now, Please check back after 60s

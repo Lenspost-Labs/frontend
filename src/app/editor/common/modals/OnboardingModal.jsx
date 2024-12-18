@@ -21,9 +21,9 @@ const OnboardingModal = () => {
 	const handleOpen = () => setIsOnboardingOpen(!isOnboardingOpen)
 
 	const leftFeaturedImages = [
-		'https://fal.media/files/tiger/rZUMmtA68wH-wDv7kCGS8.jpeg',
-		'https://fal.media/files/zebra/6YpfuybE8HQAQBkeb6-7b.jpeg',
-		'https://fal.media/files/koala/GNOhPyggUJtmaIqFcP509.jpeg',
+		'https://fal.media/files/rabbit/ZkzUQBGHOmZHM5V4clGP6.jpeg',
+		'https://fal.media/files/tiger/h1sE82kcxn7CA-tHEaGkn.jpeg',
+		'https://fal.media/files/monkey/QTO8WpunKmv5hGGKH9141.jpeg',
 	]
 
 	const steps = [
@@ -74,14 +74,13 @@ const OnboardingModal = () => {
 			content: (
 				<div className="flex flex-row justify-between gap-2 max-h-full min-h-full">
 					<>
-						<div className="w-1/4">
+						{/* <div className="w-1/4">
 							{leftFeaturedImages?.map((img, index) => (
 								<CustomImageComponent key={index} preview={img} alt="image" />
 							))}
-							Headstart here
-						</div>
-						<div className="w-3/4">
-							<CompSearch />
+						</div> */}
+						<div className="w-full">
+							<CompSearch featuredImages={leftFeaturedImages} />
 						</div>
 					</>
 				</div>
@@ -131,7 +130,7 @@ const OnboardingModal = () => {
 					{/* <DialogBody> */}
 
 					<div className="bg-white rounded-lg shadow-xl w-full p-6 relative">
-						<div className="absolute top-2 right-2">
+						<div className="absolute top-4 right-4 pr-2 pt-3">
 							<div className="flex items-center">
 								<VscVerified className="inline-block w-5 h-5 text-[#E15F77] bg-[#fec6d0] rounded-full" />
 								<span className="ml-1 text-gray-500">{points}</span>

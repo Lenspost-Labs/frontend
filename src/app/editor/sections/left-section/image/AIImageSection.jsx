@@ -132,7 +132,7 @@ export const CompSearch = ({ featuredImages }) => {
 	return (
 		<>
 			<div className="">
-				<div className="flex flex-col">
+				<div className="flex flex-col gap-2">
 					<Textarea
 						// className="h-16 mb-2 border px-4 py-1 rounded-md w-full outline-none focus:ring-1 focus:ring-blue-500"
 						leftIcon="search"

@@ -137,7 +137,7 @@ const OnboardingModal = () => {
 							</div>
 						</div>
 
-						<h2 className="text-2xl font-bold mb-4 text-center">{steps[currentStep].title}</h2>
+						<h2 className="text-xl font-bold mb-4 text-center">{steps[currentStep].title}</h2>
 						<div className="text-center mb-6">{steps[currentStep].content}</div>
 						<div className="flex justify-between items-center cursor-pointer">
 							<div className="space-x-1">

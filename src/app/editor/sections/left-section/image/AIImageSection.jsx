@@ -278,7 +278,7 @@ export const CompSearch = ({ featuredImages }) => {
 			*/}
 				</div>
 				<div className="flex flex-row justify-between items-center gap-2 w-full">
-					<div className="flex flex-col overflow-x-scroll">
+					<div className="flex flex-col w-full items-center overflow-x-scroll">
 						{RANDOM_QUERIES2.map((val, key) => {
 							return (
 								<div
@@ -290,7 +290,7 @@ export const CompSearch = ({ featuredImages }) => {
 							)
 						})}
 					</div>
-					<div className="hidden md:grid grid-cols-3 overflow-x-scroll">
+					{/* <div className="hidden sm:grid grid-cols-3 overflow-x-scroll">
 						{RANDOM_QUERIES3.map((val, key) => {
 							return (
 								<div
@@ -301,7 +301,7 @@ export const CompSearch = ({ featuredImages }) => {
 								</div>
 							)
 						})}
-					</div>
+					</div> */}
 				</div>
 			</div>
 			{/* {isLoading && <LoadingAnimatedComponent />} */}
@@ -315,13 +315,15 @@ export const CompSearch = ({ featuredImages }) => {
 				<>
 					<div className="p-2 pb-4  text-center text-gray-500">Unleash your creativity — Enter a prompt and let AI do the magic!</div>
 					{featuredImages && (
-						<div className="flex flex-row justify-between gap-2 w-full">
-							{featuredImages?.map((img, index) => (
-								<CustomImageComponent key={index} preview={img} alt="image" />
-							))}
-						</div>
+						<>
+							<div className="flex flex-row justify-between gap-2 w-full">
+								{featuredImages?.map((img, index) => (
+									<CustomImageComponent key={index} preview={img} alt="image" />
+								))}
+							</div>
+							<div className="p-2 pb-4  text-center text-gray-500">Get inspired with trending festive AI art prompts — Choose, click, and create!</div>
+						</>
 					)}
-					<div className="p-2 pb-4  text-center text-gray-500">Get inspired with trending festive AI art prompts — Choose, click, and create!</div>
 				</>
 			)}
 

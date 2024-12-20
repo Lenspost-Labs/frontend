@@ -192,7 +192,7 @@ const MobileTopbar = () => {
 									<div className="flex justify-between items-center">
 										<div className="text-lg p-2 ">
 											{' '}
-											Featured campaign{' '}
+											Trending Artist{' '}
 											{/* <span className="text-[#2C346B] italic bg-[#ecff5f] py-0.5 px-4 rounded-full border">
                         {" "}
                         #SummerOfPhi{" "}
@@ -212,7 +212,32 @@ const MobileTopbar = () => {
 
 									<div className="flex w-full overflow-x-auto">
 										{/* Featured Stickers */}
-										<CustomHorizontalScroller type="props" author="moxie" campaign={'moxie'} />
+										<CustomHorizontalScroller type="props" author="BizarreBeasts" campaign={'BizarreBeasts'} />
+									</div>
+
+									<div className="flex justify-between items-center">
+										<div className="text-lg p-2 ">
+											{' '}
+											Featured campaign{' '}
+											{/* <span className="text-[#2C346B] italic bg-[#ecff5f] py-0.5 px-4 rounded-full border">
+                        {" "}
+                        #SummerOfPhi{" "}
+                      </span> */}
+										</div>
+										<div
+											className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2 flex items-center text-nowrap text-xs"
+											onClick={() => {
+												fnCloseLeftOpenEditorPanel('mobPanelStickers')
+												setCurOpenedTabLevel1('stickers')
+											}}
+										>
+											See More
+											<EditIconRightArrow />{' '}
+										</div>
+									</div>
+									<div className="flex w-full overflow-x-auto">
+										{/* Featured Stickers */}
+										<CustomHorizontalScroller type="props" author="$brunette" campaign={'brunette'} />
 									</div>
 									<div className="flex justify-between items-center mt-4">
 										<div className="text-lg p-2 "> Featured community </div>

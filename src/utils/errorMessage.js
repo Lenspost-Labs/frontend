@@ -4,7 +4,9 @@ export const errorMessage = (error) => {
 			console.log({
 				InternalServerError: error?.response?.data?.message || error?.response?.data?.name || error?.response?.data?.message?.name,
 			})
-			return 'Internal Server Error, please try again later'
+			return (
+				error?.response?.data?.message || error?.response?.data?.name || error?.response?.data?.message?.name || 'Internal Server Error, please try again later'
+			)
 		} else if (error?.response?.status === 401) {
 			console.log({ 401: error?.response?.data?.message })
 			return error?.response?.data?.message

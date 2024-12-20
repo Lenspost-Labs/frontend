@@ -10,7 +10,7 @@ import axios from 'axios'
 import FormData from 'form-data'
 import { CustomImageComponent, MessageComponent } from '../../../common'
 import { Textarea, Button as MatButton } from '@material-tailwind/react'
-import { consoleLogonlyDev, firstLetterCapital } from '../../../../../utils'
+import { consoleLogonlyDev, errorMessage, firstLetterCapital } from '../../../../../utils'
 import Lottie from 'lottie-react'
 import animationData from '../../../../../assets/lottie/loaders/aiGeneration.json'
 import { useStore } from '../../../../../hooks/polotno'
@@ -40,7 +40,7 @@ const RANDOM_QUERIES2 = [
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = ['Xmas', 'Crypto Bull', 'Snow', 'Winter', 'Mountains', 'Hearts', 'Robots', 'NFTS', 'Elon']
 
-export const CompSearch = ({ featuredImages }) => {
+export const CompSearch = ({ featuredImages, isPanel = false }) => {
 	const { setOpenLeftBar, openLeftBar, openBottomBar, setOpenBottomBar, isMobile } = useContext(Context)
 	const store = useStore()
 	const { points } = useUser()
@@ -110,9 +110,9 @@ export const CompSearch = ({ featuredImages }) => {
 					setStStatusCode(429)
 				}
 			} catch (e) {
-				console.log('fnGenerateImages err: ', e)
+				console.log('fnGenerateImages err: ', errorMessage(e))
 				// setError(e);
-				setError(e.message)
+				setError(errorMessage(e))
 				setIsLoading(false)
 				// setStStatusCode(429);
 			}
@@ -278,7 +278,7 @@ export const CompSearch = ({ featuredImages }) => {
 			*/}
 				</div>
 				<div className="flex flex-row justify-between items-center gap-2 w-full">
-					<div className="flex flex-col w-full items-center overflow-x-scroll">
+					<div className="overflow-x-scroll">
 						{RANDOM_QUERIES2.map((val, key) => {
 							return (
 								<div
@@ -290,18 +290,20 @@ export const CompSearch = ({ featuredImages }) => {
 							)
 						})}
 					</div>
-					{/* <div className="hidden sm:grid grid-cols-3 overflow-x-scroll">
-						{RANDOM_QUERIES3.map((val, key) => {
-							return (
-								<div
-									onClick={() => setQuery(val)}
-									className="m-1 mb-2 items-center justify-center flex px-2 py-1 text-xs rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100"
-								>
-									{val}
-								</div>
-							)
-						})}
-					</div> */}
+					{!isPanel && (
+						<div className="hidden sm:grid grid-cols-3 overflow-x-scroll">
+							{RANDOM_QUERIES3.map((val, key) => {
+								return (
+									<div
+										onClick={() => setQuery(val)}
+										className="m-1 mb-2 items-center justify-center flex px-2 py-1 text-xs rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100"
+									>
+										{val}
+									</div>
+								)
+							})}
+						</div>
+					)}
 				</div>
 			</div>
 			{/* {isLoading && <LoadingAnimatedComponent />} */}
@@ -609,7 +611,7 @@ const AIImagePanel = () => {
 
 				<TabsBody className="h-full">
 					<div className="p-2"></div>
-					{currentTab === 'prompt' && <CompSearch />}
+					{currentTab === 'prompt' && <CompSearch isPanel={true} />}
 					{currentTab === 'instruct' && <CompInstructImage />}
 				</TabsBody>
 			</Tabs>

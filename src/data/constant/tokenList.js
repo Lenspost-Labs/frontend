@@ -1,4 +1,5 @@
 import { ham } from "../network/ham";
+import { CDN_IMAGE_URL } from "./constant";
 
 export const TOKEN_LIST = {
   Base: [
@@ -17,6 +18,14 @@ export const TOKEN_LIST = {
       name: "Degen",
       decimals: 18,
       logoURI: "https://basescan.org/token/images/degentips_32.png",
+    },
+    {
+      id: 8453,
+      address: "0x34C990Ee5aA627E9304234cc59b0734163eAc06b",
+      symbol: "BRUNETTE",
+      name: "Brunette",
+      decimals: 18,
+      logoURI: `${CDN_IMAGE_URL}/web-assets/brunette_token.jpg`,
     },
     {
       id: 8453,

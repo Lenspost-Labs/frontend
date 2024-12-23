@@ -2,13 +2,17 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { SharePanelHeaders } from '../components'
 import { Context } from '../../../../../../providers/context'
 import { useSolanaWallet } from '../../../../../../hooks/solana'
-import { claimReward, shareOnX, twitterAuthenticate, XAuthenticated } from '../../../../../../services'
+import { claimReward, disconnectTwitter, shareOnX, twitterAuthenticate, XAuthenticated } from '../../../../../../services'
 import { toast } from 'react-toastify'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import BiCopy from '@meronex/icons/bi/BiCopy'
 import EmojiPicker, { EmojiStyle, Emoji } from 'emoji-picker-react'
 import { Button, Spinner, Textarea, Typography } from '@material-tailwind/react'
 import { errorMessage } from '../../../../../../utils'
+
+import coinImg from '../../../../../../assets/svgs/Coin.svg'
+import useUser from '../../../../../../hooks/user/useUser'
+import { posterTokenSymbol } from '../../../../../../data'
 
 const XShare = () => {
 	const {
@@ -46,6 +50,8 @@ const XShare = () => {
 	const [twitterLoggedIn, setTwitterLoggedIn] = useState(false)
 	const [twitterAuthLoading, setTwitterAuthLoading] = useState(false)
 	const [timeRemaining, setTimeRemaining] = useState(0)
+
+	const { points } = useUser()
 
 	const { mutateAsync: shareOnTwitter } = useMutation({
 		mutationKey: 'shareOnTwitter',
@@ -98,6 +104,14 @@ const XShare = () => {
 
 	const handleSubmit = async () => {
 		setIsShareLoading(true)
+		if (!points) {
+			toast.error(`Error Fetching ${posterTokenSymbol} Points`)
+			return
+		}
+		if (points < 1 || points < 30) {
+			toast.error(`Not enough ${posterTokenSymbol} points`)
+			return
+		}
 		try {
 			const canvasData = {
 				id: contextCanvasIdRef.current,
@@ -139,6 +153,26 @@ const XShare = () => {
 			console.log('handleSubmit', error)
 		} finally {
 			//setIsShareLoading(false)
+		}
+	}
+
+	const handleDisconnect = async () => {
+		setIsLoading(true)
+		try {
+			const res = await disconnectTwitter()
+			if (res?.data) {
+				toast.success('Successfully disconnected!')
+				setTwitterLoggedIn(false)
+				setXAuth(null)
+			} else if (res?.error) {
+				console.log(res?.error)
+				toast.error(res?.error)
+			}
+		} catch (error) {
+			console.log(error.message)
+			toast.error(errorMessage(error))
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
@@ -315,7 +349,10 @@ const XShare = () => {
 
 									<div className="mx-4 my-2 outline-none">
 										<Button className="w-full outline-none" disabled={isShareLoading} loading={isShareLoading} onClick={handleSubmit}>
-											{isShareLoading ? 'Sharing on X...' : 'Share on X'}
+											{isShareLoading ? 'Sharing on X...' : 'Share on X'} <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
+										</Button>
+										<Button color="red" className="w-full mt-3 outline-none" disabled={isShareLoading} onClick={handleDisconnect}>
+											Disconnect
 										</Button>
 										{!twitterLoggedIn && (
 											<div className="flex py-5 text-center gap-5 flex-col items-center justify-center">

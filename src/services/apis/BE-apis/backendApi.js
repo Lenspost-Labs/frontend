@@ -137,6 +137,56 @@ export const twitterAuthenticate = async () => {
 }
 // twitter apis end
 
+// disconnect twitter apis start
+export const disconnectTwitter = async () => {
+	const result = await api.post(`${API}/twitter/disconnect`)
+	try {
+		if (result?.status === 200) {
+			saveToLocalStorage(LOCAL_STORAGE.twitterAuthURL, null)
+			return {
+				data: result?.data,
+			}
+		} else if (result?.status === 400) {
+			return {
+				error: result?.data?.message,
+			}
+		} else {
+			return {
+				error: 'Something went wrong, please try again later',
+			}
+		}
+	} catch (error) {
+		if (error?.response?.status === 500) {
+			console.log({
+				InternalServerError: error?.response?.data?.error || error?.response?.data?.name,
+			})
+			if (error?.response?.data?.error) {
+				return {
+					error: 'Twitter API access is currently restricted. Please try again later or contact support.',
+				}
+			}
+			return {
+				error: 'Internal Server Error, please try again later',
+			}
+		} else if (error?.response?.status === 404) {
+			console.log({ 404: error?.response?.statusText })
+			return {
+				error: 'Something went wrong, please try again later',
+			}
+		} else if (error?.response?.status === 400) {
+			console.log({ 400: error?.response?.data?.message })
+			return {
+				error: error?.response?.statusText,
+			}
+		} else {
+			return {
+				error: 'Something went wrong, please try again later',
+			}
+		}
+	}
+}
+// disconnect twitter apis end
+
 // twitter callback apis start
 // need auth token (jwt)
 export const twitterAuthenticateCallback = async (token, verifier) => {

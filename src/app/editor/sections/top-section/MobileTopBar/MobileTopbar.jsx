@@ -215,7 +215,7 @@ const MobileTopbar = () => {
 										<CustomHorizontalScroller type="props" author="BizarreBeasts" campaign={'BizarreBeasts'} />
 									</div>
 
-									<div className="flex justify-between items-center">
+									<div className="flex justify-between items-center mt-4">
 										<div className="text-lg p-2 ">
 											{' '}
 											Featured campaign{' '}
@@ -239,7 +239,7 @@ const MobileTopbar = () => {
 										{/* Featured Stickers */}
 										<CustomHorizontalScroller type="props" author="$brunette" campaign={'brunette'} />
 									</div>
-									<div className="flex justify-between items-center mt-4">
+									<div className="flex justify-between flex-col mt-4">
 										<div className="text-lg p-2 "> Featured community </div>
 										{/* <div
                       className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
@@ -251,11 +251,27 @@ const MobileTopbar = () => {
                       {" "}
                       <EditIconRightArrow />{" "}
                     </div> */}
-									</div>
 
-									<div className="flex w-full overflow-x-auto">
-										{/* Featured Stickers */}
-										<CustomHorizontalScroller type="props" author="degen" campaign={'degen'} />
+										<div className="flex w-full overflow-x-auto">
+											{/* Featured Stickers */}
+											<CustomHorizontalScroller type="props" author="degen" campaign={'degen'} />
+										</div>
+									</div>
+									{/* Base Bingo */}
+									<div className="flex flex-col justify-between mt-4">
+										<div className="text-lg p-2 "> Base Bingo </div>
+										<div className="flex w-full overflow-x-auto">
+											<CustomHorizontalScroller type="props" author="Base Bingo" campaign={'Base Bingo'} />
+										</div>
+									</div>
+									{/* Story Xmas */}
+									<div className="flex flex-col justify-between mt-4">
+										<div className="text-lg p-2 "> Story Xmass</div>
+										<div className="flex flex-col w-full overflow-x-auto">
+											<CustomHorizontalScroller type="props" author="Ippy Xmas" campaign={'Ippy Xmas'} />
+											<CustomHorizontalScroller type="props" author="Ippy Xmas 2" campaign={'Ippy Xmas 2'} />
+											<CustomHorizontalScroller type="props" author="Ippy Xmas 1" campaign={'Ippy Xmas 1'} />
+										</div>
 									</div>
 								</div>
 

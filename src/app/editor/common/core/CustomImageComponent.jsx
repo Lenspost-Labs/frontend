@@ -34,7 +34,7 @@ const CustomImageComponent = ({
 		lensCollectNftRecipientDataRef,
 		assetsRecipientDataRef,
 		nftRecipientDataRef,
-
+		assetsIdListRef,
 		isMobile,
 		actionType,
 		setOpenBottomBar,
@@ -113,7 +113,7 @@ const CustomImageComponent = ({
 		}
 
 		if (item?.id) {
-			assetsRecipientDataRef.current.push({
+			assetsIdListRef.current.push({
 				elementId: store.selectedElements[0]?.id,
 				assetId: item?.id,
 			})

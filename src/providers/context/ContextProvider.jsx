@@ -433,6 +433,9 @@ const ContextProvider = ({ children }) => {
 	// elementId and handle data for assets nft
 	const assetsRecipientDataRef = useRef([])
 
+	// assetsId list
+	const assetsIdListRef = useRef([])
+
 	// elementId and handle data for nfts
 	const nftRecipientDataRef = useRef([])
 
@@ -717,6 +720,9 @@ const ContextProvider = ({ children }) => {
 				// For x auth
 				xAuth,
 				setXAuth,
+
+				// assetsId list
+				assetsIdListRef,
 			}}
 		>
 			{children}

@@ -93,6 +93,7 @@ const Editor = () => {
 		referredFromRef,
 		lensCollectNftRecipientDataRef,
 		assetsRecipientDataRef,
+		assetsIdListRef,
 		nftRecipientDataRef,
 		bgRemoverRecipientDataRef,
 		preStoredRecipientDataRef,
@@ -333,6 +334,7 @@ const Editor = () => {
 						referredFrom: recipientDataCombiner().recipients,
 						assetsRecipientElementData: recipientDataFilter().recipientsData,
 						preview: canvasBase64Ref.current,
+						assetIds: [...new Set(assetsIdListRef.current.map((item) => item?.assetId).filter((id) => id !== undefined))] || [],
 					}
 					createCanvasAsync(reqbody)
 						.then((res) => {
@@ -358,6 +360,7 @@ const Editor = () => {
 						referredFrom: recipientDataCombiner().recipients,
 						assetsRecipientElementData: recipientDataFilter().recipientsData,
 						preview: canvasBase64Ref.current,
+						assetIds: [...new Set(assetsIdListRef.current.map((item) => item?.assetId).filter((id) => id !== undefined))] || [],
 					}
 					updateCanvasAsync(reqbody)
 						.then((res) => {

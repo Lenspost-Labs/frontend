@@ -362,7 +362,6 @@ const Editor = () => {
 						preview: canvasBase64Ref.current,
 						assetIds: [...new Set(assetsIdListRef.current.map((item) => item?.assetId).filter((id) => id !== undefined))] || [],
 					}
-					console.log('reqbody', reqbody)
 					updateCanvasAsync(reqbody)
 						.then((res) => {
 							if (res?.status === 'success') {

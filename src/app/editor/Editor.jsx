@@ -333,6 +333,7 @@ const Editor = () => {
 						referredFrom: recipientDataCombiner().recipients,
 						assetsRecipientElementData: recipientDataFilter().recipientsData,
 						preview: canvasBase64Ref.current,
+						assetIds: [...new Set(assetsRecipientDataRef.current.map((item) => item?.assetId).filter((id) => id !== undefined))] || [],
 					}
 					createCanvasAsync(reqbody)
 						.then((res) => {
@@ -358,6 +359,7 @@ const Editor = () => {
 						referredFrom: recipientDataCombiner().recipients,
 						assetsRecipientElementData: recipientDataFilter().recipientsData,
 						preview: canvasBase64Ref.current,
+						assetIds: [...new Set(assetsRecipientDataRef.current.map((item) => item?.assetId).filter((id) => id !== undefined))] || [],
 					}
 					updateCanvasAsync(reqbody)
 						.then((res) => {

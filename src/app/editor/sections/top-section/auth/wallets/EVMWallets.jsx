@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react'
 import { EVMLogo } from '../../../../../../assets'
 import { evmAuth } from '../../../../../../services'
 import { useMutation } from '@tanstack/react-query'
-import { useAppKit } from '@reown/appkit/react'
+import { useAppKit, useAppKitProvider } from '@reown/appkit/react'
 import { useContext, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { getFromLocalStorage, saveToLocalStorage } from '../../../../../../utils'
@@ -13,6 +13,7 @@ import useAppUrl from '../../../../../../hooks/app/useAppUrl'
 import { useAppKitAccount, useDisconnect } from '@reown/appkit/react'
 import { Context } from '../../../../../../providers/context'
 import { useSignMessage } from 'wagmi'
+import bs58 from 'bs58'
 
 const EVMWallets = ({ title, className }) => {
 	const { open, close } = useAppKit()
@@ -27,6 +28,23 @@ const EVMWallets = ({ title, className }) => {
 		mutationFn: evmAuth,
 	})
 	const evmConnected = getFromLocalStorage(LOCAL_STORAGE.evmConnected)
+	const { walletProvider } = useAppKitProvider('solana')
+
+	async function onSolanaSignMessage() {
+		try {
+			if (!walletProvider || !address) {
+				throw Error('user is disconnected')
+			}
+			const encodedMessage = new TextEncoder().encode('Sign the message to login')
+			const signatureBuffer = await walletProvider.signMessage(encodedMessage)
+			const signatureBase58 = bs58.encode(signatureBuffer)
+			setSignature(signatureBase58)
+		} catch (err) {
+			console.error('Signature error:', err)
+			toast.error('Failed to sign message')
+			disconnect()
+		}
+	}
 
 	const handleSignMessage = async () => {
 		try {
@@ -47,6 +65,9 @@ const EVMWallets = ({ title, className }) => {
 
 	useEffect(() => {
 		const initializeSignature = async () => {
+			if (caipAddress?.startsWith('solana:')) {
+				return await onSolanaSignMessage()
+			}
 			if (address && isConnected && !signature && evmConnected) {
 				await handleSignMessage()
 			}
@@ -99,8 +120,7 @@ const EVMWallets = ({ title, className }) => {
 				setText('')
 			}
 		} else {
-			console.log('error by privy')
-			console.log(error)
+			console.log('error by reown')
 			toast.error('Something went wrong')
 			disconnect()
 			setIsLoading(false)

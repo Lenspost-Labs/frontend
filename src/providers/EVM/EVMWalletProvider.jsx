@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 //import { polygon, mainnet, zora, optimism, base, polygonMumbai, baseSepolia, arbitrum, degen } from 'wagmi/chains'
 import { ENVIRONMENT, WALLETCONNECT_PROJECT_ID } from '../../services'
-import { cookieStorage, createStorage, http } from 'wagmi'
+import { cookieStorage, cookieToInitialState, createStorage, http } from 'wagmi'
 import { ham, og } from '../../data'
 
 import { storyOdysseyTestnet } from '../../data/network/storyOdyssey'
@@ -18,14 +18,14 @@ export const solanaWeb3JsAdapter = new SolanaAdapter({
 	wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
 })
 
-const projectId = WALLETCONNECT_PROJECT_ID
+const projectId = '3e12a2ad7ab5182d72004b6f4491cf6c'
 
 export const wagmiAdapter = new WagmiAdapter({
 	storage: createStorage({
 		storage: cookieStorage,
 	}),
 	ssr: true,
-	projectId: WALLETCONNECT_PROJECT_ID,
+	projectId,
 	networks:
 		ENVIRONMENT === 'production'
 			? [solana, base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og, storyOdysseyTestnet]
@@ -65,7 +65,11 @@ export const appKit = createAppKit({
 	projectId,
 	features: {
 		analytics: true,
+		email: true, // default to true
+		socials: ['google', 'x', 'github', 'discord', 'apple', 'facebook', 'farcaster'],
+		emailShowWallets: true, // default to true
 	},
+	allWallets: 'SHOW',
 })
 
 const queryClient = new QueryClient()

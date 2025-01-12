@@ -20,7 +20,7 @@ import { useAccount, useWriteContract, useSwitchChain, useWaitForTransactionRece
 import WithdrawFunds from './WithdrawFunds'
 import { zoraNftCreatorV1Config } from '@zoralabs/zora-721-contracts'
 import { http } from 'viem'
-import { config } from '../../../../../../../providers/EVM/EVMWalletProvider'
+import { wagmiAdapter } from '../../../../../../../providers/EVM/EVMWalletProvider'
 import BsPlus from '@meronex/icons/bs/BsPlus'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import { LENSPOST_721_ENALBED_CHAINS } from '../../../../../../../data/constant/enabledChain'
@@ -324,11 +324,11 @@ const FarcasterNormalPost = () => {
 		})
 	}
 
-	config.transports = {
+	wagmiAdapter.transports = {
 		[chain?.id]: http(),
 	}
 
-	const { writeContract, data, error: writeError, isPending: isLoading, isError: isWriteError } = useWriteContract(config)
+	const { writeContract, data, error: writeError, isPending: isLoading, isError: isWriteError } = useWriteContract(wagmiAdapter)
 
 	const { data: receipt, isLoading: isPending, isSuccess } = useWaitForTransactionReceipt({ hash: data })
 

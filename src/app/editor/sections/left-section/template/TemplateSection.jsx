@@ -253,7 +253,7 @@ export const LenspostTemplates = () => {
 						<SecNameHeading animationData={animationData} name={'Featured Stickers'} hasSeeMore seeMoreFn={() => store.openSidePanel('Elements')} />
 						<CustomHorizontalScroller type="props" author="phi" campaign={null} />
 
-						<div className="ml-2 mt-4 mb-1 "> Lenspost Templates </div>
+						<div className="ml-2 mt-4 mb-1 "> Poster Templates </div>
 						{/* <div className=" overflow-y-scroll">  */}
 						{data?.pages[0]?.data?.length > 0 ? (
 							<>

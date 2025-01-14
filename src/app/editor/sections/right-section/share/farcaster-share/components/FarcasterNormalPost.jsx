@@ -467,7 +467,7 @@ const FarcasterNormalPost = () => {
 
 		const canvasData = {
 			id: contextCanvasIdRef.current,
-			name: 'Farcaster post',
+			name: postName,
 			content: postDescription,
 		}
 

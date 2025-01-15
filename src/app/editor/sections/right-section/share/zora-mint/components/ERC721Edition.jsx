@@ -25,11 +25,11 @@ import { ZoraLogo } from '../../../../../../../assets'
 import { wagmiAdapter } from '../../../../../../../providers/EVM/EVMWalletProvider'
 import { http } from 'viem'
 import { degen, polygon } from 'viem/chains'
-import usePrivyAuth from '../../../../../../../hooks/privy-auth/usePrivyAuth'
+import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 
 const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 	const { address } = useAccount()
-	const { login } = usePrivyAuth()
+	const { login } = useReownAuth()
 	const { isAuthenticated } = useAppAuth()
 	const { isFarcasterAuth, lensAuth, dispatcher } = useLocalStorage()
 	const chainId = useChainId()

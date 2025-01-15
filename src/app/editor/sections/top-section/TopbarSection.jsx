@@ -24,9 +24,9 @@ const TopbarSection = () => {
 					{!isAuthenticated && (
 						<>
 							<div className="hidden md:flex items-center gap-3">
-								<Typography className="font-semibold text-lg">Login with</Typography>
-								<SolanaWallets title="Solana" />
-								<EVMWallets title="EVM" />
+								{/* <Typography className="font-semibold text-lg">Login with</Typography> */}
+								{/* <SolanaWallets title="Solana" /> */}
+								<EVMWallets />
 							</div>
 							<MobileLoginBtn />
 						</>

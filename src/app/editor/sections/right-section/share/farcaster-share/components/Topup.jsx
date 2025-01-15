@@ -9,13 +9,14 @@ import { http, parseEther } from 'viem'
 import { toast } from 'react-toastify'
 import { wagmiAdapter } from '../../../../../../../providers/EVM/EVMWalletProvider'
 import { ENVIRONMENT } from '../../../../../../../services'
-import { usePrivy } from '@privy-io/react-auth'
+import { useAppAuth } from '../../../../../../../hooks/app'
 
 const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
 	const { farcasterStates, setFarcasterStates, chainId } = useContext(Context)
 	const [extraPayForMints, setExtraPayForMints] = useState(null)
 	const { chain } = useAccount()
-	const { authenticated, login } = usePrivy()
+	const { login } = useReownAuth()
+	const { isAuthenticated } = useAppAuth()
 	const { data: switchData, isLoading: switchLoading, isError: switchError, error: switchErrorData, switchChain } = useSwitchChain()
 
 	const {
@@ -136,7 +137,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
 	//         <ListItem
 	//           className="flex justify-between items-center gap-2"
 	//           onClick={() => {
-	//             !authenticated
+	//             !isAuthenticated
 	//               ? login()
 	//               : switchChain({
 	//                   chainId: chainId,
@@ -144,7 +145,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
 	//           }}
 	//         >
 	//           <Typography variant="h6" color="blue-gray">
-	//             {!authenticated
+	//             {!isAuthenticated
 	//               ? "Please connect your wallet for topup"
 	//               : `Click here to switch to
 	//             ${ENVIRONMENT === "production" ? "Base" : "BaseSepolia"} chain for
@@ -211,7 +212,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
 						<Typography variant="h6" color="green">
 							Sufficient balance to sponsor the gas
 						</Typography>
-					) : !authenticated ? (
+					) : !isAuthenticated ? (
 						<>
 							<Typography variant="h6" color="blue-gray">
 								Please connect your wallet to topup

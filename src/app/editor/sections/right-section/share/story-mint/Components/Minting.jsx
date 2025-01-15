@@ -15,7 +15,7 @@ import storyABI from '../../../../../../../data/json/storyABI.json'
 import { InputBox, SelectBox } from '../../../../../common'
 import { EVMWallets } from '../../../../top-section/auth/wallets'
 import { Button, Textarea } from '@material-tailwind/react'
-import usePrivyAuth from '../../../../../../../hooks/privy-auth/usePrivyAuth'
+import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 
 const getPILTypeString = (type) => {
 	switch (type) {
@@ -54,7 +54,7 @@ const revenueShareOptions = [
 const Minting = () => {
 	const { postDescription, setMenu, canvasBase64Ref, setPostDescription, contextCanvasIdRef, isMobile } = useContext(Context)
 	const { resetState } = useReset()
-	const { login } = usePrivyAuth()
+	const { login } = useReownAuth()
 	const { isAuthenticated } = useAppAuth()
 	const { address, isConnected } = useAccount()
 

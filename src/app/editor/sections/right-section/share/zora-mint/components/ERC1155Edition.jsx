@@ -20,7 +20,6 @@ import { chainLogo, errorMessage } from '../../../../../../../utils'
 import { mintToXchain } from '../../../../../../../services/apis/BE-apis'
 import ZoraDialog from './ZoraDialog'
 import { base, baseSepolia } from 'viem/chains'
-import { usePrivy } from '@privy-io/react-auth'
 
 const ERC1155Edition = () => {
 	const {
@@ -45,7 +44,8 @@ const ERC1155Edition = () => {
 	const chainId = useChainId()
 	const publicClient = usePublicClient()
 	const walletClient = useWalletClient()
-	const { login, authenticated } = usePrivy()
+	const { login } = useReownAuth()
+
 	const { address } = useAccount()
 	const { writeContract } = useWriteContract()
 	const { isAuthenticated } = useAppAuth()
@@ -970,7 +970,7 @@ const ERC1155Edition = () => {
 				</>
 			)}
 			<div className="mx-0 my-4">
-				{actionType === 'composer' && !authenticated ? (
+				{actionType === 'composer' && !isAuthenticated ? (
 					<Button fullWidth onClick={login}>
 						{' '}
 						Connect wallet{' '}

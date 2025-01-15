@@ -1,18 +1,16 @@
-import { useDisconnect } from 'wagmi'
-import { useSolanaWallet } from '../solana'
 import { useContext } from 'react'
 import { Context } from '../../providers/context'
 import useReset from './useReset'
 import * as Sentry from '@sentry/react'
-import { usePrivy } from '@privy-io/react-auth'
+import { useDisconnect } from '@reown/appkit/react'
 
 const useLogout = () => {
-	const { solanaDisconnect } = useSolanaWallet()
 	const { disconnect } = useDisconnect()
 	const { posthog } = useContext(Context)
 	const { resetState } = useReset()
 
 	const logout = () => {
+		localStorage.setItem('evmConnected', 'false')
 		localStorage.clear()
 		resetState()
 		disconnect()

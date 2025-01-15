@@ -24,9 +24,8 @@ import { wagmiAdapter } from '../../../../../../../providers/EVM/EVMWalletProvid
 import BsPlus from '@meronex/icons/bs/BsPlus'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import { LENSPOST_721_ENALBED_CHAINS } from '../../../../../../../data/constant/enabledChain'
-import usePrivyAuth from '../../../../../../../hooks/privy-auth/usePrivyAuth'
-import { usePrivy } from '@privy-io/react-auth'
 import WatermarkRemover from '../../components/WatermarkRemover'
+import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 
 const FarcasterNormalPost = () => {
 	const { address } = useAccount()
@@ -34,8 +33,7 @@ const FarcasterNormalPost = () => {
 	const { userLOA, userAddress } = useLocalStorage()
 	const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth)
 	const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain()
-	const { login: privyLogin, authenticated } = usePrivy()
-	const { login } = usePrivyAuth()
+	const { login } = useReownAuth()
 
 	// farcaster states
 	const [isShareLoading, setIsShareLoading] = useState(false)

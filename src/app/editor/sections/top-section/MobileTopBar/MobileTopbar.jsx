@@ -14,7 +14,6 @@ import { DesignPanel } from '../../left-section/design/DesignSection'
 import { CompSearch } from '../../left-section/image/AIImageSection'
 import { CompCarousel, CustomHorizontalScroller, CustomImageComponent } from '../../../common'
 import { EVMWallets } from '../auth/wallets'
-import usePrivyAuth from '../../../../../hooks/privy-auth/usePrivyAuth'
 import { useAppAuth, useAppUrl } from '../../../../../hooks/app'
 import { EVMLogo } from '../../../../../assets'
 import PointsBtn from '../PointsBtn/PointsBtn'
@@ -30,6 +29,7 @@ import { WandSparkles } from 'lucide-react'
 import { House } from 'lucide-react'
 import { FolderSearch } from 'lucide-react'
 import { FolderSearch2 } from 'lucide-react'
+import useReownAuth from '../../../../../hooks/reown-auth/useReownAuth'
 const MobileTopbar = () => {
 	const { urlQueryActionType } = useAppUrl()
 
@@ -48,7 +48,7 @@ const MobileTopbar = () => {
 		curOpenedTabLevel2,
 		setCurOpenedTabLevel2,
 	} = useContext(Context)
-	const { login } = usePrivyAuth()
+	const { login } = useReownAuth()
 	const { isAuthenticated } = useAppAuth()
 	const { points } = useUser()
 	const { fnCloseLeftOpenEditorPanel } = useMobilePanelFunctions()

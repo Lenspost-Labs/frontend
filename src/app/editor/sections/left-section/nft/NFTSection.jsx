@@ -25,14 +25,10 @@ import { useAppAuth } from '../../../../../hooks/app'
 import { Tab, Tabs, TabsHeader, TabsBody, Typography } from '@material-tailwind/react'
 import { LOCAL_STORAGE } from '../../../../../data'
 import { EVMWallets, SolanaWallets } from '../../top-section/auth/wallets'
-import { usePrivy } from '@privy-io/react-auth'
-import usePrivyAuth from '../../../../../hooks/privy-auth/usePrivyAuth'
 import { storyOdysseyTestnet } from '../../../../../data/network/storyOdyssey'
 
 const NFTPanel = () => {
 	const [tab, setTab] = useState('wallet')
-	const { login } = usePrivyAuth()
-	const { isConnected } = useAccount()
 	return (
 		<div className="h-full flex flex-col">
 			{/* <h1 className="text-lg">NFT</h1> */}

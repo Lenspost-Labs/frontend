@@ -44,7 +44,7 @@ const ERC1155Edition = () => {
 	const chainId = useChainId()
 	const publicClient = usePublicClient()
 	const walletClient = useWalletClient()
-	const { login } = useReownAuth()
+	const { openReown } = useReownAuth()
 
 	const { address } = useAccount()
 	const { writeContract } = useWriteContract()
@@ -971,7 +971,7 @@ const ERC1155Edition = () => {
 			)}
 			<div className="mx-0 my-4">
 				{actionType === 'composer' && !isAuthenticated ? (
-					<Button fullWidth onClick={login}>
+					<Button fullWidth onClick={() => openReown('AllWallets')}>
 						{' '}
 						Connect wallet{' '}
 					</Button>

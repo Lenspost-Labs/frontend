@@ -48,7 +48,7 @@ const MobileTopbar = () => {
 		curOpenedTabLevel2,
 		setCurOpenedTabLevel2,
 	} = useContext(Context)
-	const { login } = useReownAuth()
+	const { openReown } = useReownAuth()
 	const { isAuthenticated } = useAppAuth()
 	const { points } = useUser()
 	const { fnCloseLeftOpenEditorPanel } = useMobilePanelFunctions()
@@ -127,8 +127,15 @@ const MobileTopbar = () => {
 
 						<div className="flex gap-2 items-center">
 							{!isAuthenticated && (
-								<Button size="md" color="black" title="EVM" onClick={login}>
-									<img src={EVMLogo} alt="evm" className="h-4 w-4 object-contain bg-cover mr-2" />
+								<Button
+									size="md"
+									color="black"
+									title="EVM"
+									onClick={() => {
+										openReown('AllWallets')
+										setOpenLeftBar(!openLeftBar)
+									}}
+								>
 									Login
 								</Button>
 							)}

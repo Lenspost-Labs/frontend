@@ -15,7 +15,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
 	const { farcasterStates, setFarcasterStates, chainId } = useContext(Context)
 	const [extraPayForMints, setExtraPayForMints] = useState(null)
 	const { chain } = useAccount()
-	const { login } = useReownAuth()
+	const { openReown } = useReownAuth()
 	const { isAuthenticated } = useAppAuth()
 	const { data: switchData, isLoading: switchLoading, isError: switchError, error: switchErrorData, switchChain } = useSwitchChain()
 
@@ -217,7 +217,7 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
 							<Typography variant="h6" color="blue-gray">
 								Please connect your wallet to topup
 							</Typography>
-							<Button onClick={login}>Connect</Button>
+							<Button onClick={() => openReown('AllWallets')}>Connect</Button>
 						</>
 					) : isCreatorSponsored && chain?.id !== chainId ? (
 						<>

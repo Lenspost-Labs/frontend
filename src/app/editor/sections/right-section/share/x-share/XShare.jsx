@@ -37,7 +37,6 @@ const XShare = () => {
 		isMobile,
 	} = useContext(Context)
 	const emojiPickerRef = useRef(null)
-	const { solanaAddress } = useSolanaWallet()
 	const [isLoading, setIsLoading] = useState(false)
 	const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false)
 	const [charLimitError, setCharLimitError] = useState('')

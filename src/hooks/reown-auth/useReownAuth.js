@@ -10,21 +10,25 @@ import * as Sentry from '@sentry/react'
 import useAppUrl from '../app/useAppUrl'
 import { useAppKit, useAppKitAccount, useAppKitProvider, useDisconnect, useWalletInfo } from '@reown/appkit/react'
 import base58 from 'bs58'
+import { useLogout } from '../app'
 
 const useReownAuth = () => {
 	const { open: openReown, close: closeReown } = useAppKit()
 	const { posthog, setText, setIsLoading, setSession, setOpenedLoginModal } = useContext(Context)
 	const { disconnect } = useDisconnect()
 	const { walletInfo } = useWalletInfo()
+	const { logout } = useLogout()
 	const { urlQueryActionType } = useAppUrl()
 	const { signMessageAsync } = useSignMessage()
 	const [signature, setSignature] = useState('')
 	const [isSolana, setIsSolana] = useState(false)
 	const { address, caipAddress, isConnected, status, embeddedWalletInfo } = useAppKitAccount()
+	const evmConnected = getFromLocalStorage(LOCAL_STORAGE.evmConnected)
+	const { walletProvider } = useAppKitProvider('solana')
 
 	const isAuthenticated = isConnected && address
 
-	//console.log('useAppKitAccount', { address, caipAddress, signature, walletInfo, isConnected, status, embeddedWalletInfo })
+	console.log('useAppKitAccount', { address, caipAddress, signature, walletInfo, isConnected, status, evmConnected })
 
 	const { mutateAsync: evmAuthAsync } = useMutation({
 		mutationKey: 'evmAuth',
@@ -36,21 +40,20 @@ const useReownAuth = () => {
 		mutationFn: solanaAuth,
 	})
 
-	const evmConnected = getFromLocalStorage(LOCAL_STORAGE.evmConnected)
-	const { walletProvider } = useAppKitProvider('solana')
-
 	async function onSolanaSignMessage() {
 		try {
 			if (!walletProvider || !address) {
-				throw Error('user is disconnected')
+				throw Error('User is disconnected')
 			}
 			const encodedMessage = new TextEncoder().encode('Sign the message to login')
 			const signatureBuffer = await walletProvider.signMessage(encodedMessage)
 			const signatureBase58 = base58.encode(signatureBuffer)
-			setSignature(signatureBase58)
+			if (signatureBase58) {
+				setSignature(signatureBase58)
+			}
 		} catch (err) {
-			console.error('Signature error:', err)
-			toast.error('Failed to sign message')
+			console.error('Solana: Signature error:', err)
+			toast.error('Solana: Failed to sign message')
 			disconnect()
 		}
 	}
@@ -60,17 +63,21 @@ const useReownAuth = () => {
 			const signature = await signMessageAsync({
 				message: 'Sign the message to login',
 			})
-			setSignature(signature)
+			if (signature) {
+				setSignature(signature)
+			}
 		} catch (error) {
-			console.error('Signature error:', error)
-			toast.error('Failed to sign message')
+			console.error('EVM: Signature error:', error)
+			toast.error('EVM: Failed to sign message')
 			disconnect()
 		}
 	}
 
 	useEffect(() => {
 		if (address && isConnected) {
-			saveToLocalStorage(LOCAL_STORAGE.evmConnected, true)
+			if (!evmConnected) {
+				saveToLocalStorage(LOCAL_STORAGE.evmConnected, true)
+			}
 		} else {
 			setSignature('')
 			setIsSolana(false)
@@ -80,20 +87,32 @@ const useReownAuth = () => {
 
 	useEffect(() => {
 		const initializeSignature = async () => {
-			if (caipAddress?.startsWith('solana:') && address && !signature && isConnected && evmConnected) {
-				setIsSolana(true)
-				return await onSolanaSignMessage()
-			}
-			if (address && !signature && isConnected && evmConnected) {
-				setIsSolana(false)
-				return await handleSignMessage()
+			// Add a check for an ongoing signature request
+			if (signature || !address || !isConnected) return
+
+			// Only proceed if we have an explicit evmConnected=true in localStorage
+			// AND we have a valid auth token
+			const isExplicitlyConnected = getFromLocalStorage(LOCAL_STORAGE.evmConnected) === true
+			const hasValidAuth = getFromLocalStorage(LOCAL_STORAGE.userAuthToken)
+
+			if (isExplicitlyConnected && !hasValidAuth) {
+				if (caipAddress?.startsWith('solana:')) {
+					setIsSolana(true)
+					return await onSolanaSignMessage()
+				} else {
+					setIsSolana(false)
+					return await handleSignMessage()
+				}
 			}
 		}
-		initializeSignature()
-	}, [address, isConnected, signature, caipAddress, evmConnected])
+
+		// Debounce the signature request
+		const timeoutId = setTimeout(initializeSignature, 500)
+		return () => clearTimeout(timeoutId)
+	}, [address, isConnected, signature, caipAddress]) // Remove evmConnected from dependencies
 
 	useEffect(() => {
-		if (signature) {
+		if (signature && evmConnected) {
 			handleLogin()
 		}
 	}, [signature, evmConnected])
@@ -121,6 +140,9 @@ const useReownAuth = () => {
 				asyncRequest(request).then((res) => {
 					//console.log('res', res)
 					toast.success(`${urlQueryActionType === 'composer' ? 'Wallet connected' : 'Login successful'}`)
+					if (isSolana) {
+						saveToLocalStorage(LOCAL_STORAGE.solanaAuth, true)
+					}
 					saveToLocalStorage(LOCAL_STORAGE.evmAuth, true)
 					saveToLocalStorage(LOCAL_STORAGE.userAuthToken, res.jwt)
 					saveToLocalStorage(LOCAL_STORAGE.userAuthTime, new Date().getTime())
@@ -145,6 +167,7 @@ const useReownAuth = () => {
 				//console.log(error)
 				toast.error('Something went wrong')
 				disconnect()
+				logout()
 				closeReown()
 				setIsLoading(false)
 				setOpenedLoginModal(false)
@@ -155,6 +178,7 @@ const useReownAuth = () => {
 			toast.error('Something went wrong')
 			disconnect()
 			closeReown()
+			logout()
 			setIsLoading(false)
 			setOpenedLoginModal(false)
 			setText('')

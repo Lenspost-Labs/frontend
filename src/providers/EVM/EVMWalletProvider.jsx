@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 //import { polygon, mainnet, zora, optimism, base, polygonMumbai, baseSepolia, arbitrum, degen } from 'wagmi/chains'
-import { ENVIRONMENT, WALLETCONNECT_PROJECT_ID } from '../../services'
+import { ENVIRONMENT, REOWN_PROJECT_ID, WALLETCONNECT_PROJECT_ID } from '../../services'
 import { cookieStorage, cookieToInitialState, createStorage, http } from 'wagmi'
 import { ham, og } from '../../data'
 
@@ -18,7 +18,7 @@ export const solanaWeb3JsAdapter = new SolanaAdapter({
 	wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
 })
 
-const projectId = '3e12a2ad7ab5182d72004b6f4491cf6c'
+const projectId = REOWN_PROJECT_ID
 
 export const wagmiAdapter = new WagmiAdapter({
 	storage: createStorage({
@@ -64,10 +64,14 @@ export const appKit = createAppKit({
 	metadata: metadata,
 	projectId,
 	features: {
+		legalCheckbox: true,
 		analytics: true,
 		email: true, // default to true
 		socials: ['google', 'x', 'github', 'discord', 'apple', 'facebook', 'farcaster'],
 		emailShowWallets: true, // default to true
+		connectMethodsOrder: ['social', 'email', 'wallet'],
+		enableCoinbase: true, // true by default
+		coinbasePreference: 'smartWalletOnly',
 	},
 	allWallets: 'SHOW',
 })

@@ -21,6 +21,7 @@ const XShare = () => {
 		setPostName,
 		postDescription,
 		setPostDescription,
+		isMobile,
 		stFormattedDate,
 		setStFormattedDate,
 		stFormattedTime,
@@ -34,7 +35,6 @@ const XShare = () => {
 
 		contextCanvasIdRef,
 		actionType,
-		isMobile,
 	} = useContext(Context)
 	const emojiPickerRef = useRef(null)
 	const { solanaAddress } = useSolanaWallet()

@@ -137,7 +137,6 @@ const ShareSection = () => {
 	}
 
 	const setCurrentMenu = (menu) => {
-		console.log('setCurrentMenu', menu)
 		setMenu(menu)
 		// if (contextCanvasIdRef?.current) {
 		// 	setMenu(menu)

@@ -1,12 +1,13 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { polygon, mainnet, zora, optimism, base, polygonMumbai, baseSepolia, arbitrum, degen } from 'wagmi/chains'
 import { ALCHEMY_API_KEY, ENVIRONMENT, PRIVY_APP_ID, WALLETCONNECT_PROJECT_ID } from '../../services'
-import { http } from 'wagmi'
+import { cookieStorage, createStorage, http } from 'wagmi'
 import { ham, og } from '../../data'
 
 import { PrivyProvider } from '@privy-io/react-auth'
 import { WagmiProvider, createConfig } from '@privy-io/wagmi'
 import { storyOdysseyTestnet } from '../../data/network/storyOdyssey'
+import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors'
 
 // Replace this with your Privy config
 export const privyConfig = {
@@ -23,15 +24,22 @@ export const privyConfig = {
 	},
 }
 
+const RPC_PAYMASTER = 'https://api.developer.coinbase.com/rpc/v1/base/lM7uaModtCZ0EMOC1UjAjGt6ACDFNWMH'
+
 export const config = createConfig({
 	appName: 'Poster.fun',
 	projectId: WALLETCONNECT_PROJECT_ID,
+	storage: createStorage({
+		storage: cookieStorage,
+	}),
+	connectors: [injected(), coinbaseWallet(), walletConnect({ projectId: WALLETCONNECT_PROJECT_ID })],
 	chains:
 		ENVIRONMENT === 'production'
 			? [base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og, storyOdysseyTestnet]
 			: [base, baseSepolia, zora, optimism, arbitrum, polygonMumbai, polygon, degen, ham, og, storyOdysseyTestnet],
+	transport: http(RPC_PAYMASTER),
 	transports: {
-		[base.id]: http(),
+		[base.id]: http(RPC_PAYMASTER),
 		[mainnet.id]: http(),
 		[zora.id]: http(),
 		[optimism.id]: http(),

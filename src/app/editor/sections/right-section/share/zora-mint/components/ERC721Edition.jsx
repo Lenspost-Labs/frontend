@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { Switch } from '@headlessui/react'
 import { InputBox, InputErrorMsg, Networks, NumberInputBox } from '../../../../../common'
-import { Button, Option, Select, Spinner, Typography } from '@material-tailwind/react'
+import { Button, Option, Select, Spinner, Textarea, Typography } from '@material-tailwind/react'
 import { DateTimePicker } from '@atlaskit/datetime-picker'
 import BsPlus from '@meronex/icons/bs/BsPlus'
 import { XCircleIcon } from '@heroicons/react/24/outline'
 import { Context } from '../../../../../../../providers/context'
 import { toast } from 'react-toastify'
 import { useAccount, useChainId, useWriteContract, useSwitchChain, useWaitForTransactionReceipt, useConfig } from 'wagmi'
+import { useCapabilities, useWriteContracts } from 'wagmi/experimental'
 import { useAppAuth, useLocalStorage } from '../../../../../../../hooks/app'
 import { APP_ETH_ADDRESS, ERROR, FRAME_URL, LOCAL_STORAGE, MINT_URL, ham } from '../../../../../../../data'
 import { ENVIRONMENT, getENSDomain, shareOnSocials, uploadUserAssetToIPFS } from '../../../../../../../services'
@@ -26,6 +27,7 @@ import { config } from '../../../../../../../providers/EVM/EVMWalletProvider'
 import { http } from 'viem'
 import { degen, polygon } from 'viem/chains'
 import usePrivyAuth from '../../../../../../../hooks/privy-auth/usePrivyAuth'
+import EmojiPicker, { Emoji, EmojiStyle } from 'emoji-picker-react'
 
 const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 	const { address } = useAccount()
@@ -48,6 +50,38 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 	const [respContractAddress, setRespContractAddress] = useState(null)
 	const [frameId, setFrameId] = useState(null)
 	const [isPostingFrameSuccess, setIsPostingFrameSuccess] = useState(false)
+
+	const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false)
+	const [charLimitError, setCharLimitError] = useState('')
+	const emojiPickerRef = useRef(null)
+
+	console.log('config', { selectedChainId })
+
+	function fnEmojiClick(emojiData) {
+		setPostDescription(postDescription + emojiData?.emoji) //Add emoji to description
+	}
+
+	const handleInputChange = (e) => {
+		const value = e.target.value
+		const name = e.target.name
+		const maxByteLimit = 195
+		const byteLength = new TextEncoder().encode(value).length
+
+		if (name === 'title') {
+			setPostName(value)
+			if (isMobile) {
+				setPostName('Default Title')
+			}
+		} else if (name === 'description') {
+			if (byteLength > maxByteLimit) {
+				setCharLimitError('Maximun character limit exceeded')
+				setPostDescription(value.substring(0, value.length - (byteLength - maxByteLimit)))
+			} else {
+				setCharLimitError('')
+				setPostDescription(value)
+			}
+		}
+	}
 
 	// farcaster data states
 	const [farTxHash, setFarTxHash] = useState('')
@@ -72,12 +106,15 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
 	const {
 		postName,
+		setPostName,
+		postDescription,
+		setPostDescription,
+		isMobile,
 		zoraErc721Enabled,
 		setZoraErc721Enabled,
 		zoraErc721StatesError,
 		setZoraErc721StatesError,
 		contextCanvasIdRef,
-		postDescription,
 		parentRecipientListRef,
 		canvasBase64Ref,
 		setFarcasterStates,
@@ -365,6 +402,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 	const restrictRecipientInput = (e, index, recipient) => {
 		const isRecipient = parentRecipientListRef.current.includes(recipient)
 		const isUserAddress = recipient === address
+		console.log('restrictRecipientInput', { isUserAddress, isRecipient })
 		if (index === 0 || isRecipient) {
 			if (isUserAddress) {
 				handleRecipientChange(index, 'address', e.target.value)
@@ -591,6 +629,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 			controller: APP_ETH_ADDRESS,
 			// controller is the owner of the split contract that will make it mutable contract
 		}
+		console.log('args', args)
 		return args
 	}
 
@@ -697,6 +736,17 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 	}
 
 	const { writeContract, data, error: prepareError, isPending: isLoading, isError: isPrepareError } = useWriteContract(config)
+	const { writeContracts } = useWriteContracts({
+		mutation: {
+			onSuccess: (data) => {
+				console.log('writeContracts', data)
+				setIsDeployingZoraContractSuccess(true)
+				setRespContractAddress(data?.logs[0]?.address)
+				setIsShareLoading(false)
+				console.log('Mint successful')
+			},
+		},
+	})
 
 	const { data: receipt, isLoading: isPending, isSuccess } = useWaitForTransactionReceipt({ hash: data })
 
@@ -883,16 +933,46 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 		}
 	}, [isUploadSuccess])
 
+	const { data: availableCapabilities } = useCapabilities({
+		account: address,
+	})
+	const capabilities = useMemo(() => {
+		if (!availableCapabilities || !address) return {}
+		const capabilitiesForChain = availableCapabilities[address.chainId]
+		if (capabilitiesForChain['paymasterService'] && capabilitiesForChain['paymasterService'].supported) {
+			return {
+				paymasterService: {
+					url: `https://api.developer.coinbase.com/rpc/v1/base/https://api.developer.coinbase.com/rpc/v1/base/lM7uaModtCZ0EMOC1UjAjGt6ACDFNWMH`, //For production use proxy
+				},
+			}
+		}
+		return {}
+	}, [availableCapabilities, address])
+
+	console.log('capabilities', capabilities)
+
 	// mint on Zora
 	useEffect(() => {
 		if (createSplitData?.splitAddress) {
 			setTimeout(() => {
-				writeContract({
-					abi: zoraNftCreatorV1Config.abi,
-					address: chain?.id == 8453 ? '0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c' : zoraNftCreatorV1Config.address[chainId],
-					functionName: 'createEditionWithReferral',
-					args: handleMintSettings().args,
+				writeContracts({
+					account: address,
+					contracts: [
+						{
+							abi: zoraNftCreatorV1Config.abi,
+							address: chain?.id == 8453 ? '0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c' : zoraNftCreatorV1Config.address[chainId],
+							functionName: 'createEditionWithReferral',
+							args: handleMintSettings().args,
+						},
+					],
+					capabilities,
 				})
+				// writeContract({
+				// 	abi: zoraNftCreatorV1Config.abi,
+				// 	address: chain?.id == 8453 ? '0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c' : zoraNftCreatorV1Config.address[chainId],
+				// 	functionName: 'createEditionWithReferral',
+				// 	args: handleMintSettings().args,
+				// })
 			}, 1000)
 		}
 	}, [isCreateSplitSuccess])
@@ -986,8 +1066,6 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 		}
 	}, [isErrorSwitchNetwork, isSuccessSwitchNetwork])
 
-	console.log({ selectedChainId })
-
 	return (
 		<>
 			<ZoraDialog
@@ -1011,6 +1089,87 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 				frameId={frameId}
 			/>
 			{/* Switch Number 1 Start */}
+			<div className="space-y-4">
+				<div className="flex items-center justify-between"></div>
+				<div className="space-x-2">
+					{!isMobile && (
+						<>
+							<Textarea
+								label="Description"
+								name="description"
+								onChange={(e) => handleInputChange(e)}
+								value={postDescription}
+								// placeholder="Write a description..."
+								// className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+							/>
+							{charLimitError && <div className="text-red-500 text-sm">{charLimitError}</div>}
+						</>
+					)}
+
+					{/* Using default textarea from HTML to avoid unnecessary focus only for mobile */}
+					{/* iPhone issue */}
+					{isMobile && (
+						<>
+							<textarea
+								cols={30}
+								type="text"
+								className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+								label="Description"
+								name="description"
+								onChange={(e) => handleInputChange(e)}
+								value={postDescription}
+								placeholder="Write a description..."
+								// className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+							/>
+							{charLimitError && <div className="text-red-500 text-sm">{charLimitError}</div>}
+						</>
+					)}
+
+					<div className="flex flex-row">
+						{/* Open the emoji panel - 22Jul2023 */}
+						{/* Dynamic Emoji on the screen based on click */}
+
+						<button
+							title="Open emoji panel"
+							className={`"rounded-md ${stClickedEmojiIcon && 'pt-1'}"`}
+							onClick={(event) => {
+								event.stopPropagation()
+								setStClickedEmojiIcon(!stClickedEmojiIcon)
+							}}
+						>
+							<Emoji unified={stClickedEmojiIcon ? '274c' : '1f60a'} emojiStyle={EmojiStyle.NATIVE} size={22} />
+						</button>
+						<div
+							onClick={() => {
+								setStCalendarClicked(!stCalendarClicked)
+								setStShareClicked(true)
+							}}
+							className=" py-2 rounded-md cursor-pointer"
+						>
+							{/* <MdcCalendarClock className="h-10 w-10" /> */}
+						</div>
+					</div>
+
+					{/* Emoji Implementation - 21Jul2023 */}
+					{stClickedEmojiIcon && (
+						<div className="shadow-lg mt-2 absolute z-40" ref={emojiPickerRef}>
+							<EmojiPicker
+								onEmojiClick={fnEmojiClick}
+								autoFocusSearch={true}
+								// width="96%"
+								className="m-0"
+								lazyLoadEmojis={true}
+								previewConfig={{
+									defaultCaption: 'Pick one!',
+									defaultEmoji: '1f92a', // 🤪
+								}}
+								searchPlaceHolder="Search"
+								emojiStyle={EmojiStyle.NATIVE}
+							/>
+						</div>
+					)}
+				</div>
+			</div>
 			<div className=" mt-1 pt-2 pb-4">
 				<div className="flex justify-between">
 					<h2 className="text-lg mb-2"> Collection Details </h2>

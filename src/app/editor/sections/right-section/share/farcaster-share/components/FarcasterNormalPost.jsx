@@ -1,3 +1,4 @@
+
 import { useContext, useEffect, useState } from 'react'
 import { claimReward, getENSDomain, shareOnSocials, uploadUserAssetToIPFS } from '../../../../../../../services'
 import { toast } from 'react-toastify'
@@ -1617,36 +1618,59 @@ const FarcasterNormalPost = () => {
 									<h2 className="text-lg"> Title & Description</h2>
 								</div>
 								{/* <div className="w-4/5 opacity-75">
+
                   {" "}
                   Enter title fot the NFT.{" "}
                 </div> */}
-							</div>
-							<div className="flex flex-col gap-2">
-								<InputBox label={'Title'} name="title" onChange={(e) => handleChange(e)} value={postName} />
-								<Textarea label={'Description'} name="description" onChange={(e) => handleChange(e)} value={postDescription} />
-							</div>
-						</>
-					)}
-					<div className={`${(farcasterStates.frameData?.isCreatorSponsored || farcasterStates?.frameData?.isCustomCurrMint) && 'hidden'} mt-2`}>
-						<div className="flex flex-col w-full py-2">
-							<NumberInputBox
-								min={1}
-								step={1}
-								label="Allowed Mints"
-								name="allowedMints"
-								onChange={(e) => handleChange(e, 'allowedMints')}
-								onFocus={(e) => handleChange(e, 'allowedMints')}
-								value={farcasterStates.frameData.allowedMints}
-							/>
-						</div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <InputBox
+                  label={"Title"}
+                  name="title"
+                  onChange={(e) => handleChange(e)}
+                  value={postName}
+                />
+                <Textarea
+                  label={"Description"}
+                  name="description"
+                  onChange={(e) => handleChange(e)}
+                  value={postDescription}
+                />
+              </div>
+            </>
+          )}
+          <div
+            className={`${
+              (farcasterStates.frameData?.isCreatorSponsored ||
+                farcasterStates?.frameData?.isCustomCurrMint) &&
+              "hidden"
+            } mt-2`}
+          >
+            <div className="flex flex-col w-full py-2">
+              <NumberInputBox
+                min={1}
+                step={1}
+                label="Allowed Mints"
+                name="allowedMints"
+                onChange={(e) => handleChange(e, "allowedMints")}
+                onFocus={(e) => handleChange(e, "allowedMints")}
+                value={farcasterStates.frameData.allowedMints}
+              />
+            </div>
 
-						{farcasterStates.frameData?.allowedMintsIsError && <InputErrorMsg message={farcasterStates.frameData?.allowedMintsError} />}
-					</div>
-				</>
-				{/* // )} */}
-				{actionType !== 'composer' && walletData?.balance > 0 && <WithdrawFunds refetchWallet={refetchWallet} />}
-			</div>
-			{/* {isMobile && (
+            {farcasterStates.frameData?.allowedMintsIsError && (
+              <InputErrorMsg
+                message={farcasterStates.frameData?.allowedMintsError}
+              />
+            )}
+          </div>
+        </>
+        {/* // )} */}
+        {actionType !== "composer" && walletData?.balance > 0 && (
+          <WithdrawFunds refetchWallet={refetchWallet} />
+        )}
+      </div>
+      {/* {isMobile && (
         <div className="mx-4">
           <Textarea
             label={"Description"}
@@ -1656,52 +1680,53 @@ const FarcasterNormalPost = () => {
           />
         </div>
       )} */}
-			<div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
-				{!getEVMAuth && actionType !== 'composer' ? (
-					<EVMWallets title={'Login with EVM'} login={login} />
-				) : !isFarcasterAuth && (!isMobile || actionType !== 'composer') ? (
-					<FarcasterAuth />
-				) : farcasterStates?.frameData?.isFrame &&
-				  !farcasterStates?.frameData?.isCustomCurrMint &&
-				  !farcasterStates?.frameData?.isCreatorSponsored &&
-				  chain?.id != chainId &&
-				  !isMobile ? (
-					<div className="outline-none">
-						<Button
-							className="w-full outline-none flex justify-center items-center gap-2"
-							disabled={isLoadingSwitchNetwork}
-							onClick={() =>
-								switchChain({
-									chainId: chainId,
-								})
-							}
-							color="red"
-						>
-							{isLoadingSwitchNetwork ? 'Switching' : 'Switch'} to
-							{chain?.id != chainId ? ' base' : 'a suported'} Network {isLoadingSwitchNetwork && <Spinner />}
-						</Button>
-					</div>
-				) : (
-					<div className="my-2 outline-none">
-						<Button
-							className="w-full outline-none"
-							onClick={handleSubmit}
-							// color="yellow"
-						>
-							{/* Share */}
-							Let's GO
-						</Button>
-					</div>
-				)}
-			</div>
+      <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
+        {!getEVMAuth && actionType !== "composer" ? (
+          <EVMWallets title={"Login with EVM"} login={login} />
+        ) : !isFarcasterAuth && (!isMobile || actionType !== "composer") ? (
+          <FarcasterAuth />
+        ) : farcasterStates?.frameData?.isFrame &&
+          !farcasterStates?.frameData?.isCustomCurrMint &&
+          !farcasterStates?.frameData?.isCreatorSponsored &&
+          chain?.id != chainId &&
+          !isMobile ? (
+          <div className="outline-none">
+            <Button
+              className="w-full outline-none flex justify-center items-center gap-2"
+              disabled={isLoadingSwitchNetwork}
+              onClick={() =>
+                switchChain({
+                  chainId: chainId,
+                })
+              }
+              color="red"
+            >
+              {isLoadingSwitchNetwork ? "Switching" : "Switch"} to
+              {chain?.id != chainId ? " base" : "a suported"} Network{" "}
+              {isLoadingSwitchNetwork && <Spinner />}
+            </Button>
+          </div>
+        ) : (
+          <div className="my-2 outline-none">
+            <Button
+              className="w-full outline-none"
+              onClick={handleSubmit}
+              // color="yellow"
+            >
+              {/* Share */}
+              Let's GO
+            </Button>
+          </div>
+        )}
+      </div>
 
-			{isMobile && (
-				<div className="mt-4">
-					<WatermarkRemover />
-				</div>
-			)}
-		</>
-	)
-}
+      {isMobile && (
+        <div className="mt-4">
+          <WatermarkRemover />
+        </div>
+      )}
+    </>
+  );
+};
 
-export default FarcasterNormalPost
+export default FarcasterNormalPost;

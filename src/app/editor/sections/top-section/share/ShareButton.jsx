@@ -15,7 +15,6 @@ const ShareButton = () => {
 	const { menu, setMenu, isShareOpen, setIsShareOpen, isMobile, curOpenedPanel } = useContext(Context)
 
 	// const [isShareOpen, setIsShareOpen] = useState(false);
-
 	const transitionCSS = {
 		'transition-all': true,
 		'-left-80 w-80': transitionRtoL,

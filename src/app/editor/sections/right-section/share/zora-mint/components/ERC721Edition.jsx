@@ -22,6 +22,7 @@ import { LensAuth, LensDispatcher } from '../../lens-share/components'
 import { getFarUserDetails, mintToXchain, postFrame } from '../../../../../../../services/apis/BE-apis'
 import { zoraURLErc721 } from '../utils/zoraURL'
 import { ZoraLogo } from '../../../../../../../assets'
+
 import { wagmiAdapter } from '../../../../../../../providers/EVM/EVMWalletProvider'
 import { http } from 'viem'
 import { degen, polygon } from 'viem/chains'
@@ -30,6 +31,7 @@ import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 	const { address } = useAccount()
 	const { login } = useReownAuth()
+
 	const { isAuthenticated } = useAppAuth()
 	const { isFarcasterAuth, lensAuth, dispatcher } = useLocalStorage()
 	const chainId = useChainId()
@@ -599,9 +601,11 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 		const createReferral = APP_ETH_ADDRESS
 		const defaultAdmin = address
 
+
 		let contractName = 'My Lenspost Collection'
 		let symbol = 'MLC'
 		let description = 'This is my Lenspost Collection'
+
 		let allowList = []
 		let editionSize = '0xfffffffffff' // default open edition
 		let royaltyBps = '0' // 1% = 100 bps
@@ -692,11 +696,12 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 		return { args: arr }
 	}
 
+
 	wagmiAdapter.transports = {
 		[chain?.id]: http(),
 	}
 
-	const { writeContract, data, error: prepareError, isPending: isLoading, isError: isPrepareError } = useWriteContract(wagmiAdapter)
+
 
 	const { data: receipt, isLoading: isPending, isSuccess } = useWaitForTransactionReceipt({ hash: data })
 
@@ -1092,7 +1097,9 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 							id="chargeForMintCurrency"
 							value={zoraErc721Enabled.chargeForMintCurrency}
 						>
+
 							{['ETH'].map((currency) => (
+
 								<Option
 									key={currency}
 									onClick={() => {

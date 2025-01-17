@@ -242,9 +242,25 @@ const MobileTopbar = () => {
 											<EditIconRightArrow />{' '}
 										</div>
 									</div>
-									<div className="flex w-full overflow-x-auto">
-										{/* Featured Stickers */}
-										<CustomHorizontalScroller type="props" author="$brunette" campaign={'brunette'} />
+									{/* OwnTheDoge */}
+									<div className="flex flex-col justify-between mt-4">
+										<div className="text-lg p-2 "> OwnTheDoge </div>
+										<div className="flex w-full overflow-x-auto">
+											<CustomHorizontalScroller type="props" author="OwnTheDoge" campaign={'OwnTheDoge'} />
+										</div>
+									</div>
+									{/* OwnTheDoge */}
+									<div className="flex flex-col justify-between mt-4">
+										<div className="text-lg p-2 "> MrMiggles </div>
+										<div className="flex w-full overflow-x-auto">
+											<CustomHorizontalScroller type="props" author="MrMiggles" campaign={'MrMiggles'} />
+										</div>
+									</div>
+									<div className="flex flex-col justify-between mt-4">
+										<div className="text-lg p-2 "> $brunette </div>
+										<div className="flex w-full overflow-x-auto">
+											<CustomHorizontalScroller type="props" author="$brunette" campaign={'brunette'} />
+										</div>
 									</div>
 									<div className="flex justify-between flex-col mt-4">
 										<div className="text-lg p-2 "> Featured community </div>
@@ -271,7 +287,7 @@ const MobileTopbar = () => {
 											<CustomHorizontalScroller type="props" author="Base Bingo" campaign={'Base Bingo'} />
 										</div>
 									</div>
-									{/* Story Xmas */}
+									{/* Story Xmas 
 									<div className="flex flex-col justify-between mt-4">
 										<div className="text-lg p-2 "> Story Xmass</div>
 										<div className="flex flex-col w-full overflow-x-auto">
@@ -279,7 +295,7 @@ const MobileTopbar = () => {
 											<CustomHorizontalScroller type="props" author="Ippy Xmas 2" campaign={'Ippy Xmas 2'} />
 											<CustomHorizontalScroller type="props" author="Ippy Xmas 1" campaign={'Ippy Xmas 1'} />
 										</div>
-									</div>
+									</div>*/}
 								</div>
 
 								{urlQueryActionType != 'composer' && (

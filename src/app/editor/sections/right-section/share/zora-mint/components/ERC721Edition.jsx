@@ -1048,7 +1048,6 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     return {};
   }, [availableCapabilities, address]);
 
-  console.log("availableCapabilities", availableCapabilities);
   console.log("capabilities", capabilities);
 
   // mint on Zora

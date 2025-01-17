@@ -28,8 +28,8 @@ export const wagmiAdapter = new WagmiAdapter({
 	projectId,
 	networks:
 		ENVIRONMENT === 'production'
-			? [solana, base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og, storyOdysseyTestnet]
-			: [solana, solanaTestnet, solanaDevnet, base, baseSepolia, zora, optimism, arbitrum, polygonMumbai, polygon, degen, ham, og, storyOdysseyTestnet],
+			? [base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og, storyOdysseyTestnet, solana]
+			: [base, baseSepolia, zora, optimism, arbitrum, polygonMumbai, polygon, degen, ham, og, solana, solanaTestnet, solanaDevnet, storyOdysseyTestnet],
 
 	transports: {
 		[base.id]: http(),
@@ -44,6 +44,9 @@ export const wagmiAdapter = new WagmiAdapter({
 		[baseSepolia.id]: http(),
 		[arbitrum.id]: http(),
 		[storyOdysseyTestnet.id]: http(),
+		[solana.id]: http(),
+		[solanaTestnet.id]: http(),
+		[solanaDevnet.id]: http(),
 	},
 })
 
@@ -59,8 +62,8 @@ export const appKit = createAppKit({
 	adapters: [wagmiAdapter, solanaWeb3JsAdapter],
 	networks:
 		ENVIRONMENT === 'production'
-			? [solana, base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og, storyOdysseyTestnet]
-			: [solana, solanaTestnet, solanaDevnet, base, baseSepolia, zora, optimism, arbitrum, polygonMumbai, polygon, degen, ham, og, storyOdysseyTestnet],
+			? [base, mainnet, zora, optimism, arbitrum, polygon, degen, ham, og, solana, storyOdysseyTestnet]
+			: [base, baseSepolia, zora, optimism, arbitrum, polygonMumbai, polygon, degen, ham, og, solana, solanaTestnet, solanaDevnet, storyOdysseyTestnet],
 	metadata: metadata,
 	projectId,
 	features: {

@@ -8,14 +8,13 @@ import { getFromLocalStorage, saveToLocalStorage } from '../../utils'
 import { LOCAL_STORAGE } from '../../data'
 import * as Sentry from '@sentry/react'
 import useAppUrl from '../app/useAppUrl'
-import { useAppKit, useAppKitAccount, useAppKitProvider, useDisconnect, useWalletInfo } from '@reown/appkit/react'
+import { useAppKit, useAppKitAccount, useAppKitProvider, useWalletInfo } from '@reown/appkit/react'
 import base58 from 'bs58'
 import { useLogout } from '../app'
 
 const useReownAuth = () => {
 	const { open: openReown, close: closeReown } = useAppKit()
 	const { posthog, setText, setIsLoading, setSession, setOpenedLoginModal } = useContext(Context)
-	const { disconnect } = useDisconnect()
 	const { walletInfo } = useWalletInfo()
 	const { logout } = useLogout()
 	const { urlQueryActionType } = useAppUrl()
@@ -54,7 +53,7 @@ const useReownAuth = () => {
 		} catch (err) {
 			console.error('Solana: Signature error:', err)
 			toast.error('Solana: Failed to sign message')
-			disconnect()
+			logout()
 		}
 	}
 
@@ -69,7 +68,7 @@ const useReownAuth = () => {
 		} catch (error) {
 			console.error('EVM: Signature error:', error)
 			toast.error('EVM: Failed to sign message')
-			disconnect()
+			logout()
 		}
 	}
 
@@ -166,7 +165,6 @@ const useReownAuth = () => {
 				//console.log('error by auth endpoint')
 				//console.log(error)
 				toast.error('Something went wrong')
-				disconnect()
 				logout()
 				closeReown()
 				setIsLoading(false)
@@ -176,7 +174,6 @@ const useReownAuth = () => {
 		} else {
 			//console.log('error by reown')
 			toast.error('Something went wrong')
-			disconnect()
 			closeReown()
 			logout()
 			setIsLoading(false)

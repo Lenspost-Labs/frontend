@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { InputBox, InputErrorMsg, NumberInputBox } from '../../../../../common'
 import BsPlus from '@meronex/icons/bs/BsPlus'
-import { Button, Option, Select } from '@material-tailwind/react'
+import { Button, Option, Select, Textarea } from '@material-tailwind/react'
 import { DateTimePicker } from '@atlaskit/datetime-picker'
 import { useContext } from 'react'
 import { useEffect } from 'react'
 import { Switch } from '@headlessui/react'
 import { Context } from '../../../../../../../providers/context'
 import { APP_SOLANA_ADDRESS, LOCAL_STORAGE } from '../../../../../../../data'
-import { SolanaWallets } from '../../../../top-section/auth/wallets'
+import { EVMWallets, SolanaWallets } from '../../../../top-section/auth/wallets'
 import { errorMessage, getFromLocalStorage, jsConfettiFn } from '../../../../../../../utils'
 import { toast } from 'react-toastify'
 import { shareOnSocials } from '../../../../../../../services'
@@ -20,9 +20,12 @@ import { useAppAuth, useReset } from '../../../../../../../hooks/app'
 import { clusterApiUrl, Keypair, Connection, Transaction, VersionedTransaction } from '@solana/web3.js'
 import base58 from 'bs58'
 import { SwitchGroup, SharePanelHeaders } from '../../components'
+import EmojiPicker, { Emoji, EmojiStyle } from 'emoji-picker-react'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 const CompressedNft = () => {
-	const { solanaAddress, solanaSignTransaction } = useSolanaWallet()
+	const { address, caipAddress, isConnected, status } = useAppKitAccount()
+	const { walletProvider } = useAppKitProvider('solana')
 	const [sharing, setSharing] = useState(false)
 	const getSolanaAuth = getFromLocalStorage(LOCAL_STORAGE.solanaAuth)
 	const { isAuthenticated } = useAppAuth()
@@ -34,6 +37,7 @@ const CompressedNft = () => {
 	const {
 		solanaEnabled,
 		setSolanaEnabled,
+		setPostName,
 		postDescription,
 		setPostDescription,
 		contextCanvasIdRef,
@@ -44,8 +48,39 @@ const CompressedNft = () => {
 		setExplorerLink,
 		solanaStatesError,
 		setSolanaStatesError,
+		isMobile,
 	} = useContext(Context)
 	const { resetState } = useReset()
+
+	const emojiPickerRef = useRef(null)
+	const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false)
+	const [charLimitError, setCharLimitError] = useState('')
+
+	function fnEmojiClick(emojiData) {
+		setPostDescription(postDescription + emojiData?.emoji) //Add emoji to description
+	}
+
+	const handleInputChange = (e) => {
+		const value = e.target.value
+		const name = e.target.name
+		const maxByteLimit = 195
+		const byteLength = new TextEncoder().encode(value).length
+
+		if (name === 'title') {
+			setPostName(value)
+			if (isMobile) {
+				setPostName('Default Title')
+			}
+		} else if (name === 'description') {
+			if (byteLength > maxByteLimit) {
+				setCharLimitError('Maximun character limit exceeded')
+				setPostDescription(value.substring(0, value.length - (byteLength - maxByteLimit)))
+			} else {
+				setCharLimitError('')
+				setPostDescription(value)
+			}
+		}
+	}
 
 	const { mutateAsync: shareOnSolana } = useMutation({
 		mutationKey: 'shareOnSolana',
@@ -220,7 +255,7 @@ const CompressedNft = () => {
 	// restrict the input box if the recipient is in the parent list
 	const restrictRecipientInput = (e, index, recipient) => {
 		const isRecipient = parentRecipientListRef.current.includes(recipient)
-		const isUserAddress = recipient === solanaAddress
+		const isUserAddress = recipient === address
 		if (index === 0 || isRecipient) {
 			if (isUserAddress) {
 				handleRecipientChange(index, 'address', e.target.value)
@@ -509,6 +544,97 @@ const CompressedNft = () => {
           />
         )}
       </div> */}
+
+			<div className="relative mt-0 px-4 pt-1 pb-1 sm:px-4s">
+				<div className="space-y-4">
+					<div className="flex items-center justify-between"></div>
+					{/* <InputBox
+												label={"Title"}
+												name="title"
+												autoFocus={true}
+												onChange={(e) => handleInputChange(e)}
+												value={postName}
+											/> */}
+					<div className="space-x-2">
+						{!isMobile && (
+							<>
+								<Textarea
+									label="Description"
+									name="description"
+									onChange={(e) => handleInputChange(e)}
+									value={postDescription}
+									// placeholder="Write a description..."
+									// className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+								/>
+								{charLimitError && <div className="text-red-500 text-sm">{charLimitError}</div>}
+							</>
+						)}
+
+						{/* Using default textarea from HTML to avoid unnecessary focus only for mobile */}
+						{/* iPhone issue */}
+						{isMobile && (
+							<>
+								<textarea
+									cols={30}
+									type="text"
+									className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+									label="Description"
+									name="description"
+									onChange={(e) => handleInputChange(e)}
+									value={postDescription}
+									placeholder="Write a description..."
+									// className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+								/>
+								{charLimitError && <div className="text-red-500 text-sm">{charLimitError}</div>}
+							</>
+						)}
+
+						<div className="flex flex-row">
+							{/* Open the emoji panel - 22Jul2023 */}
+							{/* Dynamic Emoji on the screen based on click */}
+
+							<button
+								title="Open emoji panel"
+								className={`"rounded-md ${stClickedEmojiIcon && 'pt-1'}"`}
+								onClick={(event) => {
+									event.stopPropagation()
+									setStClickedEmojiIcon(!stClickedEmojiIcon)
+								}}
+							>
+								<Emoji unified={stClickedEmojiIcon ? '274c' : '1f60a'} emojiStyle={EmojiStyle.NATIVE} size={22} />
+							</button>
+							<div
+								onClick={() => {
+									setStCalendarClicked(!stCalendarClicked)
+									setStShareClicked(true)
+								}}
+								className=" py-2 rounded-md cursor-pointer"
+							>
+								{/* <MdcCalendarClock className="h-10 w-10" /> */}
+							</div>
+						</div>
+
+						{/* Emoji Implementation - 21Jul2023 */}
+						{stClickedEmojiIcon && (
+							<div className="shadow-lg mt-2 absolute z-40" ref={emojiPickerRef}>
+								<EmojiPicker
+									onEmojiClick={fnEmojiClick}
+									autoFocusSearch={true}
+									// width="96%"
+									className="m-0"
+									lazyLoadEmojis={true}
+									previewConfig={{
+										defaultCaption: 'Pick one!',
+										defaultEmoji: '1f92a', // 🤪
+									}}
+									searchPlaceHolder="Search"
+									emojiStyle={EmojiStyle.NATIVE}
+								/>
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
 
 			<div className="mb-4 mt-4">
 				<div className="flex justify-between">
@@ -1058,7 +1184,7 @@ const CompressedNft = () => {
 					</Button>
 				</div>
 			) : (
-				<SolanaWallets title="Login with Solana" className="w-full" />
+				<EVMWallets className="w-full" />
 			)}
 		</div>
 	)

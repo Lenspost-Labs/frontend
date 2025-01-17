@@ -41,7 +41,7 @@ import { Button, Select, Option, Tabs, Tab, TabsHeader, Alert, Spinner, Typograp
 import { EVMWallets } from '../../../../top-section/auth/wallets'
 import { SharePanelHeaders } from '../../components'
 import BsPlus from '@meronex/icons/bs/BsPlus'
-import usePrivyAuth from '../../../../../../../hooks/privy-auth/usePrivyAuth'
+import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 
 const LensShare = () => {
 	const [recipientsLensHandle, setRecipientsLensHandle] = useState([])
@@ -63,7 +63,7 @@ const LensShare = () => {
 		isSuccess: isSuccessSwitchNetwork,
 		switchChain,
 	} = useSwitchChain()
-	const { login } = usePrivyAuth()
+	const { login } = useReownAuth()
 
 	const {
 		setIsLoading,

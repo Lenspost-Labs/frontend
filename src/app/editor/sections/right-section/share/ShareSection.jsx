@@ -12,14 +12,13 @@ import logoTwitter from '../../../../../assets/logos/X_logo.png'
 import { InputBox } from '../../../common'
 import { X_Logo } from '../../../../../assets'
 import DownloadBtn from '../../top-section/download/DownloadBtn'
-import { usePrivy } from '@privy-io/react-auth'
 import { useLocalStorage } from '../../../../../hooks/app'
-import usePrivyAuth from '../../../../../hooks/privy-auth/usePrivyAuth'
 import { EVMWallets } from '../../top-section/auth/wallets'
 import { claimReward } from '../../../../../services'
 import WatermarkRemover from './components/WatermarkRemover'
 import { baseSepolia } from 'viem/chains'
 import { toast } from 'react-toastify'
+import useReownAuth from '../../../../../hooks/reown-auth/useReownAuth'
 
 const ShareSection = () => {
 	const chains = useChains()
@@ -47,9 +46,8 @@ const ShareSection = () => {
 	} = useContext(Context)
 	const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false)
 	const [charLimitError, setCharLimitError] = useState('')
-	const { authenticated, login: privyLogin } = usePrivy()
 	const { evmAuth } = useLocalStorage()
-	const { login } = usePrivyAuth()
+	const { login } = useReownAuth()
 
 	const chainsArray = [
 		{

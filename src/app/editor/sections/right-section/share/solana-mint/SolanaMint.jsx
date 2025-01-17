@@ -10,18 +10,19 @@ import { useEffect } from 'react'
 import { Switch } from '@headlessui/react'
 import { Context } from '../../../../../../providers/context'
 import { APP_SOLANA_ADDRESS, LOCAL_STORAGE } from '../../../../../../data'
-import { SolanaWallets } from '../../../top-section/auth/wallets'
+import { EVMWallets, SolanaWallets } from '../../../top-section/auth/wallets'
 import { errorMessage, getFromLocalStorage } from '../../../../../../utils'
 import { toast } from 'react-toastify'
 import { shareOnSocials } from '../../../../../../services'
 import { useMutation } from '@tanstack/react-query'
 import TiDelete from '@meronex/icons/ti/TiDelete'
 import { XCircleIcon } from '@heroicons/react/24/outline'
-import { useSolanaWallet } from '../../../../../../hooks/solana'
 import { useAppAuth, useReset } from '../../../../../../hooks/app'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 const SolanaMint = () => {
-	const { solanaAddress, solanaSignTransaction } = useSolanaWallet()
+	const { address, caipAddress, isConnected, status } = useAppKitAccount()
+	const { walletProvider } = useAppKitProvider('solana')
 	const [sharing, setSharing] = useState(false)
 	const getSolanaAuth = getFromLocalStorage(LOCAL_STORAGE.solanaAuth)
 	const { isAuthenticated } = useAppAuth()
@@ -29,6 +30,8 @@ const SolanaMint = () => {
 		tx: '',
 		mintId: '',
 	})
+	const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false)
+	const [charLimitError, setCharLimitError] = useState('')
 
 	const {
 		solanaEnabled,
@@ -43,6 +46,8 @@ const SolanaMint = () => {
 		setExplorerLink,
 		solanaStatesError,
 		setSolanaStatesError,
+		setPostName,
+		postName,
 	} = useContext(Context)
 	const { resetState } = useReset()
 
@@ -307,7 +312,7 @@ const SolanaMint = () => {
 	// restrict the input box if the recipient is in the parent list
 	const restrictRecipientInput = (e, index, recipient) => {
 		const isRecipient = parentRecipientListRef.current.includes(recipient)
-		const isUserAddress = recipient === solanaAddress
+		const isUserAddress = recipient === address
 		if (index === 0 || isRecipient) {
 			if (isUserAddress) {
 				handleRecipientChange(index, 'address', e.target.value)
@@ -532,7 +537,7 @@ const SolanaMint = () => {
 	// funtion for sign the transaction for solana master edition
 	const signTransaction = async () => {
 		try {
-			const txSignature = await solanaSignTransaction(solanaMasterEditionData.tx)
+			const txSignature = await walletProvider.signTransaction(solanaMasterEditionData.tx)
 			console.log('txSignature', txSignature)
 		} catch (error) {
 			console.log(error)
@@ -1091,7 +1096,7 @@ const SolanaMint = () => {
 								</Button>
 							</div>
 						) : (
-							<SolanaWallets title="Login with Solana" className="mx-0" />
+							<EVMWallets className="mx-0" />
 						)}
 					</>
 				}

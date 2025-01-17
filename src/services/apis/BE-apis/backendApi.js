@@ -18,19 +18,20 @@ import { api, API } from './config'
 const limit = 10
 
 // evm auth apis start
-export const evmAuth = async ({ walletAddress }) => {
+export const evmAuth = async ({ walletAddress, signature }) => {
 	const jwtToken = getFromLocalStorage(LOCAL_STORAGE.privy)
 
 	const result = await axios.post(
 		`${API}/auth/evm`,
 		{
 			evm_address: walletAddress,
-		},
-		{
-			headers: {
-				Authorization: `Bearer ${jwtToken}`,
-			},
+			signature: signature,
 		}
+		// {
+		// 	headers: {
+		// 		Authorization: `Bearer ${jwtToken}`,
+		// 	},
+		// }
 	)
 
 	return result?.data

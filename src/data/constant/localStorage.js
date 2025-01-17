@@ -1,6 +1,7 @@
 export const LOCAL_STORAGE = {
 	userAuthToken: 'user.auth.token',
 	evmAuth: 'evm.auth',
+	evmConnected: 'evm.connected',
 	solanaAuth: 'solana.auth',
 	lensAuth: 'lens.auth',
 	farcasterAuth: 'farcaster.auth',

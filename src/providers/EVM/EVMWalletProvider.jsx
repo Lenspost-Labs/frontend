@@ -69,15 +69,17 @@ export const appKit = createAppKit({
 	features: {
 		legalCheckbox: true,
 		analytics: true,
-		email: true, // default to true
+		email: false, // default to true
 		socials: ['google', 'x', 'github', 'discord', 'apple', 'facebook', 'farcaster'],
 		emailShowWallets: true, // default to true
-		connectMethodsOrder: ['social', 'email', 'wallet'],
+		connectMethodsOrder: ['wallet'],
 		enableCoinbase: true, // true by default
 		coinbasePreference: 'smartWalletOnly',
 	},
 	allWallets: 'SHOW',
 })
+
+//
 
 const queryClient = new QueryClient()
 

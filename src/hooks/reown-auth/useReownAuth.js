@@ -27,7 +27,7 @@ const useReownAuth = () => {
 
 	const isAuthenticated = isConnected && address
 
-	console.log('useAppKitAccount', { address, caipAddress, signature, walletInfo, isConnected, status, evmConnected })
+	//console.log('useAppKitAccount', { address, caipAddress, signature, walletInfo, isConnected, status, evmConnected })
 
 	const { mutateAsync: evmAuthAsync } = useMutation({
 		mutationKey: 'evmAuth',

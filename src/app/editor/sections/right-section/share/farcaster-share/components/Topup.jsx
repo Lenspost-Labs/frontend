@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import { wagmiAdapter } from '../../../../../../../providers/EVM/EVMWalletProvider'
 import { ENVIRONMENT } from '../../../../../../../services'
 import { useAppAuth } from '../../../../../../../hooks/app'
+import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 
 const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
 	const { farcasterStates, setFarcasterStates, chainId } = useContext(Context)

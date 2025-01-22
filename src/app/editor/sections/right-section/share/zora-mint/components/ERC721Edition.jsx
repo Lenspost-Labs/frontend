@@ -820,6 +820,8 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     [chain?.id]: http(),
   };
 
+  console.log(handleMintSettings()?.args);
+
   const {
     writeContract,
     data,
@@ -1031,17 +1033,25 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const { data: availableCapabilities } = useCapabilities({
     account: address,
   });
+
   const capabilities = useMemo(() => {
     if (!availableCapabilities || !address) return {};
     const capabilitiesForChain = availableCapabilities[chainId];
-    console.log("capabilitiesForChain", capabilitiesForChain);
+    console.log("Available capabilities for chain:", {
+      chainId,
+      capabilitiesForChain,
+      hasPaymaster: capabilitiesForChain?.["paymasterService"],
+      isSupported: capabilitiesForChain?.["paymasterService"]?.supported,
+    });
+
+    // For other networks
     if (
       capabilitiesForChain["paymasterService"] &&
       capabilitiesForChain["paymasterService"].supported
     ) {
       return {
         paymasterService: {
-          url: `https://api.developer.coinbase.com/rpc/v1/base/xGpaZvJ1cY6fUbaBnQAnA4BMrE4keI76`, //For production use proxy
+          url: "https://api.developer.coinbase.com/rpc/v1/base/xGpaZvJ1cY6fUbaBnQAnA4BMrE4keI76",
         },
       };
     }
@@ -1052,32 +1062,44 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
   // mint on Zora
   useEffect(() => {
+    console.log("useEffect capabilities", capabilities);
+
     if (createSplitData?.splitAddress) {
-      setTimeout(() => {
-        writeContracts({
-          account: address,
-          contracts: [
-            {
-              abi: zoraNftCreatorV1Config.abi,
-              address:
-                chain?.id == 8453
-                  ? "0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c"
-                  : zoraNftCreatorV1Config.address[chainId],
-              functionName: "createEditionWithReferral",
-              args: handleMintSettings().args,
-            },
-          ],
-          capabilities,
-        });
-        // writeContract({
-        // 	abi: zoraNftCreatorV1Config.abi,
-        // 	address: chain?.id == 8453 ? '0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c' : zoraNftCreatorV1Config.address[chainId],
-        // 	functionName: 'createEditionWithReferral',
-        // 	args: handleMintSettings().args,
-        // })
+      console.log("Split contract", createSplitData?.splitAddress);
+      console.log("Split address detected:", createSplitData.splitAddress);
+
+      const timeoutId = setTimeout(() => {
+        console.log(
+          "Preparing to write contracts with capabilities:",
+          capabilities
+        );
+
+        try {
+          writeContracts({
+            account: address,
+            contracts: [
+              {
+                abi: zoraNftCreatorV1Config.abi,
+                address:
+                  chain?.id == 8453
+                    ? "0x58C3ccB2dcb9384E5AB9111CD1a5DEA916B0f33c"
+                    : zoraNftCreatorV1Config.address[chainId],
+                functionName: "createEditionWithReferral",
+                args: handleMintSettings().args,
+              },
+            ],
+            capabilities,
+          });
+          console.log("writeContracts called successfully");
+        } catch (error) {
+          console.error("Error writing contracts:", error);
+        }
       }, 1000);
+
+      // Cleanup timeout on unmount
+      return () => clearTimeout(timeoutId);
     }
-  }, [isCreateSplitSuccess]);
+  }, [isCreateSplitSuccess, capabilities, address, chain?.id, chainId]);
 
   // create open adition on LENS
   useEffect(() => {

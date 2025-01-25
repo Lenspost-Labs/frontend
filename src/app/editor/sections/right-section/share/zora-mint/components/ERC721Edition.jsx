@@ -601,7 +601,6 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 		const createReferral = APP_ETH_ADDRESS
 		const defaultAdmin = address
 
-
 		let contractName = 'My Lenspost Collection'
 		let symbol = 'MLC'
 		let description = 'This is my Lenspost Collection'
@@ -696,12 +695,11 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 		return { args: arr }
 	}
 
-
 	wagmiAdapter.transports = {
 		[chain?.id]: http(),
 	}
 
-
+	const { writeContract, data, error: prepareError, isPending: isLoading, isError: isPrepareError } = useWriteContract(wagmiAdapter)
 
 	const { data: receipt, isLoading: isPending, isSuccess } = useWaitForTransactionReceipt({ hash: data })
 
@@ -1097,9 +1095,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 							id="chargeForMintCurrency"
 							value={zoraErc721Enabled.chargeForMintCurrency}
 						>
-
 							{['ETH'].map((currency) => (
-
 								<Option
 									key={currency}
 									onClick={() => {

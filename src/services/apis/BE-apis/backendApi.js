@@ -669,7 +669,8 @@ export const claimReward = async (data) => {
 }
 
 export const getAIImage = async (data) => {
-	const result = await api.post(`${API}/ai/text-image`, data)
+	const request = data
+	const result = await api.post(`${API}/ai/text-image`, request)
 
 	return {
 		data: result?.data,

@@ -89,10 +89,6 @@ const MobileTopbar = () => {
 			campaign: 'MrMiggles',
 		},
 		{
-			author: '$brunette',
-			campaign: '$brunette',
-		},
-		{
 			author: 'BizarreBeasts',
 			campaign: 'BizarreBeasts',
 		},
@@ -282,7 +278,7 @@ const MobileTopbar = () => {
 									</div>*/}
 								</div>
 
-								{urlQueryActionType != 'composer' && (
+								{/* {urlQueryActionType != 'composer' && (
 									<div className="flex flex-col">
 										<div className="flex justify-between items-center">
 											<div className="text-lg p-2 "> Featured backgrounds </div>
@@ -295,15 +291,15 @@ const MobileTopbar = () => {
                         {" "}
                         <EditIconRightArrow />{" "}
                       </div> */}
-										</div>
+								{/*</div>
 										<CompCarousel type="background" campaign={'halloween'} />
 									</div>
-								)}
-								<div className="text-lg p-2 "> Gen AI </div>
+								)} */}
+								{/* <div className="text-lg p-2 "> Gen AI </div>
 
 								<div className="flex overflow-x-auto whitespace-nowrap">
 									<ImagesWithArrows imagesArr={AIImagesMob} />
-								</div>
+								</div> */}
 							</div>
 						)}
 						{curOpenedPanel === 'mobPanelAI' && (

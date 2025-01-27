@@ -10,18 +10,19 @@ import { LOCAL_STORAGE } from '../../data'
 const useLogout = () => {
 	const { disconnect } = useDisconnectReown()
 	const { disconnect: disconnectWagmi } = useDisconnect()
-	const { posthog } = useContext(Context)
+	const { posthog, setIsLoggedOut } = useContext(Context)
 	const { resetState } = useReset()
 
 	const logout = () => {
 		console.log('logout')
-		saveToLocalStorage(LOCAL_STORAGE.evmConnected, false)
+		setIsLoggedOut(true)
+		disconnect()
+		disconnectWagmi()
+		//saveToLocalStorage(LOCAL_STORAGE.evmConnected, false)
 		localStorage.clear()
 		resetState()
 		posthog.reset()
 		Sentry.setUser(null)
-		disconnect()
-		disconnectWagmi()
 	}
 
 	return {

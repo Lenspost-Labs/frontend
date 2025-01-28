@@ -32,13 +32,13 @@ const RANDOM_QUERIES = [
 // This array is to display other queries on the frontend - 22Jul2023
 const RANDOM_QUERIES2 = [
 	// "A bustling marketplace in a medieval fantasy setting",
-	'bull with sunglasses and santa hat with crypto prices sky rocketing xmas',
-	'Christmas waifu fairy',
-	'pepe the frog christmas elf near beautiful xmas tree',
+	'Lunar new year (year of the snake)',
+	'waifu pixie angel in eden garden',
+	'A robot DJ playing music on a holographic turntable surrounded by dancing crowds',
 ]
 
 // This array is to display short words as prompts on the frontend - 22Jul2023
-const RANDOM_QUERIES3 = ['Xmas', 'Crypto Bull', 'Snow', 'Winter', 'Mountains', 'Hearts', 'Robots', 'NFTS', 'Elon']
+const RANDOM_QUERIES3 = ['Trump', 'Crypto Bull', 'Snow', 'Winter', 'Mountains', 'Hearts', 'Robots', 'NFTS', 'Elon']
 
 export const CompSearch = ({ featuredImages, isPanel = false }) => {
 	const { setOpenLeftBar, openLeftBar, openBottomBar, setOpenBottomBar, isMobile } = useContext(Context)

@@ -21,9 +21,9 @@ const OnboardingModal = () => {
 	const handleOpen = () => setIsOnboardingOpen(!isOnboardingOpen)
 
 	const leftFeaturedImages = [
-		'https://fal.media/files/rabbit/ZkzUQBGHOmZHM5V4clGP6.jpeg',
-		'https://fal.media/files/tiger/h1sE82kcxn7CA-tHEaGkn.jpeg',
-		'https://fal.media/files/monkey/QTO8WpunKmv5hGGKH9141.jpeg',
+		'https://lenspost-r2.b-cdn.net/ai_images/1738083494201.png',
+		'https://lenspost-r2.b-cdn.net/ai_images/1738083510203.png',
+		'https://lenspost-r2.b-cdn.net/ai_images/1738083523551.png',
 	]
 
 	const steps = [

@@ -26,6 +26,12 @@ const OnboardingModal = () => {
 		'https://lenspost-r2.b-cdn.net/ai_images/1738083523551.png',
 	]
 
+	const leftFeaturedImages2 = [
+		'https://lenspost-r2.b-cdn.net/ai_images/1738149846318.png',
+		'https://lenspost-r2.b-cdn.net/ai_images/1738149902276.png',
+		'https://lenspost-r2.b-cdn.net/ai_images/1738150069414.png',
+	]
+
 	const steps = [
 		{
 			title: 'Congratulations!',
@@ -80,7 +86,7 @@ const OnboardingModal = () => {
 							))}
 						</div> */}
 						<div className="w-full">
-							<CompSearch featuredImages={leftFeaturedImages} />
+							<CompSearch featuredImages={leftFeaturedImages} featuredImages2={leftFeaturedImages2} />
 						</div>
 					</>
 				</div>

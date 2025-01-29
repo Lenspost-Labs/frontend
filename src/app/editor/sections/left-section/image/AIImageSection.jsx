@@ -23,11 +23,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLocalStorage } from '../../../../../hooks/app'
 // Tab1 - Search Tab
 
-const RANDOM_QUERIES = [
-	'A serene lakeside scene at sunset with vibrant orange and purple hues reflecting off the calm waters.',
-	'An otherworldly forest with bioluminescent plants and colorful creatures lurking in the shadows.',
-	'Sea turtles gracefully gliding through the water, and a hidden shipwreck waiting to be explored.',
-]
+// const RANDOM_QUERIES = [
+// 	'A serene lakeside scene at sunset with vibrant orange and purple hues reflecting off the calm waters.',
+// 	'An otherworldly forest with bioluminescent plants and colorful creatures lurking in the shadows.',
+// 	'Sea turtles gracefully gliding through the water, and a hidden shipwreck waiting to be explored.',
+// ]
 
 // This array is to display other queries on the frontend - 22Jul2023
 const RANDOM_QUERIES2 = [
@@ -37,10 +37,19 @@ const RANDOM_QUERIES2 = [
 	'A robot DJ playing music on a holographic turntable surrounded by dancing crowds',
 ]
 
+const RANDOM_QUERIES = [
+	'Mr Miggles as Superman',
+	'Mr Miggles as Harry Porter',
+	'Mr Miggles shaking hands with President Trump',
+	'Mr Miggles takes over Japan',
+	'Mr Miggles as Hulk',
+	'Mr Miggles as Batman',
+]
+
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = ['Trump', 'Crypto Bull', 'Snow', 'Winter', 'Mountains', 'Hearts', 'Robots', 'NFTS', 'Elon']
 
-export const CompSearch = ({ featuredImages, isPanel = false }) => {
+export const CompSearch = ({ featuredImages, isPanel = false, featuredImages2 }) => {
 	const { setOpenLeftBar, openLeftBar, openBottomBar, setOpenBottomBar, isMobile } = useContext(Context)
 	const store = useStore()
 	const { points } = useUser()
@@ -120,6 +129,11 @@ export const CompSearch = ({ featuredImages, isPanel = false }) => {
 			setIsLoading(false)
 		}
 		load()
+	}
+
+	let featuredImagesToUse = featuredImages
+	if (model === 'MiggleV3') {
+		featuredImagesToUse = featuredImages2
 	}
 
 	useEffect(() => {
@@ -285,10 +299,11 @@ export const CompSearch = ({ featuredImages, isPanel = false }) => {
 			*/}
 				</div>
 				<div className="flex flex-row justify-between items-center gap-2 w-full">
-					<div className="overflow-x-scroll">
-						{RANDOM_QUERIES2.map((val, key) => {
+					<div className={`${model === 'MiggleV3' ? 'sm:grid w-full grid-cols-2 overflow-x-scroll' : 'overflow-auto'}`}>
+						{(model === 'MiggleV3' ? RANDOM_QUERIES : RANDOM_QUERIES2).map((val, key) => {
 							return (
 								<div
+									key={key}
 									onClick={() => setQuery(val)}
 									className="m-1 mb-2 px-2 py-1 text-xs rounded-md cursor-pointer bg-blue-50 hover:bg-blue-100 overflow-x-scroll"
 								>
@@ -297,7 +312,7 @@ export const CompSearch = ({ featuredImages, isPanel = false }) => {
 							)
 						})}
 					</div>
-					{!isPanel && (
+					{!isPanel && model !== 'MiggleV3' && (
 						<div className="hidden sm:grid grid-cols-3 overflow-x-scroll">
 							{RANDOM_QUERIES3.map((val, key) => {
 								return (
@@ -323,10 +338,10 @@ export const CompSearch = ({ featuredImages, isPanel = false }) => {
 			{!data && !isLoading && (
 				<>
 					<div className="p-2 pb-4  text-center text-gray-500">Unleash your creativity — Enter a prompt and let AI do the magic!</div>
-					{featuredImages && (
+					{featuredImagesToUse && (
 						<>
 							<div className="flex flex-row justify-between gap-2 w-full">
-								{featuredImages?.map((img, index) => (
+								{featuredImagesToUse?.map((img, index) => (
 									<CustomImageComponent key={index} preview={img} alt="image" />
 								))}
 							</div>

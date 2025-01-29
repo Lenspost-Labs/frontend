@@ -267,15 +267,6 @@ const MobileTopbar = () => {
 											</div>
 										</div>
 									))}
-									{/* Story Xmas 
-									<div className="flex flex-col justify-between mt-4">
-										<div className="text-lg p-2 "> Story Xmass</div>
-										<div className="flex flex-col w-full overflow-x-auto">
-											<CustomHorizontalScroller type="props" author="Ippy Xmas" campaign={'Ippy Xmas'} />
-											<CustomHorizontalScroller type="props" author="Ippy Xmas 2" campaign={'Ippy Xmas 2'} />
-											<CustomHorizontalScroller type="props" author="Ippy Xmas 1" campaign={'Ippy Xmas 1'} />
-										</div>
-									</div>*/}
 								</div>
 
 								{/* {urlQueryActionType != 'composer' && (

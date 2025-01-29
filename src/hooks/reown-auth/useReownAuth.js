@@ -14,7 +14,8 @@ import { useLogout } from '../app'
 
 const useReownAuth = () => {
 	const { open: openReown, close: closeReown } = useAppKit()
-	const { posthog, setText, setIsLoading, setSession, setOpenedLoginModal } = useContext(Context)
+	const { posthog, setText, setIsLoading, setSession, isLoggedOut, setIsLoggedOut, setOpenedLoginModal, showSignMessageModal, setShowSignMessageModal } =
+		useContext(Context)
 	const { walletInfo } = useWalletInfo()
 	const { logout } = useLogout()
 	const { urlQueryActionType } = useAppUrl()
@@ -49,31 +50,49 @@ const useReownAuth = () => {
 			const signatureBase58 = base58.encode(signatureBuffer)
 			if (signatureBase58) {
 				setSignature(signatureBase58)
+				setShowSignMessageModal(false)
+				setIsLoggedOut(false)
 			}
 		} catch (err) {
 			console.error('Solana: Signature error:', err)
 			toast.error('Solana: Failed to sign message')
+			setShowSignMessageModal(false)
+			setIsLoggedOut(false)
 			logout()
 		}
 	}
 
-	const handleSignMessage = async () => {
+	const handleSignEvmMessage = async () => {
 		try {
 			const signature = await signMessageAsync({
 				message: 'Sign the message to login',
 			})
 			if (signature) {
 				setSignature(signature)
+				setShowSignMessageModal(false)
+				setIsLoggedOut(false)
 			}
 		} catch (error) {
 			console.error('EVM: Signature error:', error)
 			toast.error('EVM: Failed to sign message')
+			setShowSignMessageModal(false)
+			setIsLoggedOut(false)
 			logout()
+		}
+	}
+
+	const handleSignMessage = async () => {
+		if (caipAddress?.startsWith('solana:') && isSolana) {
+			return await onSolanaSignMessage()
+		} else {
+			return await handleSignEvmMessage()
 		}
 	}
 
 	useEffect(() => {
 		if (address && isConnected) {
+			console.log('address', address)
+			console.log('isConnected', isConnected)
 			if (!evmConnected) {
 				saveToLocalStorage(LOCAL_STORAGE.evmConnected, true)
 			}
@@ -82,7 +101,7 @@ const useReownAuth = () => {
 			setIsSolana(false)
 			saveToLocalStorage(LOCAL_STORAGE.evmConnected, false)
 		}
-	}, [address, isConnected])
+	}, [address, isConnected, isLoggedOut])
 
 	useEffect(() => {
 		const initializeSignature = async () => {
@@ -97,10 +116,12 @@ const useReownAuth = () => {
 			if (isExplicitlyConnected && !hasValidAuth) {
 				if (caipAddress?.startsWith('solana:')) {
 					setIsSolana(true)
-					return await onSolanaSignMessage()
+					//return await onSolanaSignMessage()
+					setShowSignMessageModal(true)
 				} else {
 					setIsSolana(false)
-					return await handleSignMessage()
+					//return await handleSignMessage()
+					setShowSignMessageModal(true)
 				}
 			}
 		}
@@ -186,9 +207,23 @@ const useReownAuth = () => {
 		openReown('AllWallets')
 	}, [openReown])
 
+	const handleDisconnectWallet = () => {
+		logout()
+		closeReown()
+		setIsLoading(false)
+		setOpenedLoginModal(false)
+		setShowSignMessageModal(false)
+		setIsLoggedOut(false)
+		setText('')
+	}
+
 	return {
 		login,
 		isAuthenticated,
+		address,
+		caipAddress,
+		handleDisconnectWallet,
+		handleSignMessage,
 		// for reown auth
 		openReown,
 		closeReown,

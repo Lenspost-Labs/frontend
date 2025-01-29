@@ -20,6 +20,8 @@ const ContextProvider = ({ children }) => {
 	const [postDescription, setPostDescription] = useState('')
 	const [open, setOpen] = useState(false)
 	const [xAuth, setXAuth] = useState({})
+	const [showSignMessageModal, setShowSignMessageModal] = useState(false)
+	const [isLoggedOut, setIsLoggedOut] = useState(false)
 
 	// Modal: MyDesign Section
 	const [designModal, setDesignModal] = useState(false)
@@ -723,6 +725,14 @@ const ContextProvider = ({ children }) => {
 
 				// assetsId list
 				assetsIdListRef,
+
+				// for sign message modal
+				showSignMessageModal,
+				setShowSignMessageModal,
+
+				// for logout
+				isLoggedOut,
+				setIsLoggedOut,
 			}}
 		>
 			{children}

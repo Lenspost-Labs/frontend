@@ -45,6 +45,7 @@ import MobileBottombar from './sections/bottom-section/bottomBar/MobileBottombar
 import OnboardingModal from './common/modals/OnboardingModal'
 import { Sparkles } from 'lucide-react'
 import useMobilePanelFunctions from './common/mobileHooks/useMobilePanelFunctions'
+import SignMesasgeModal from './common/modals/SignMesasgeModal'
 
 // enable animations
 unstable_setAnimationsEnabled(true)
@@ -693,6 +694,8 @@ const Editor = () => {
 									<MobileBottombar />
 								</div>
 							)}
+
+							<SignMesasgeModal />
 
 							{!isMobile && (
 								<div className="flex flex-row justify-between items-center rounded-lg ">

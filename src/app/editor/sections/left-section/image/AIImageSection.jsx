@@ -37,14 +37,7 @@ const RANDOM_QUERIES2 = [
 	'A robot DJ playing music on a holographic turntable surrounded by dancing crowds',
 ]
 
-const RANDOM_QUERIES = [
-	'Mr Miggles as Superman',
-	'Mr Miggles as Harry Porter',
-	'Mr Miggles shaking hands with President Trump',
-	'Mr Miggles takes over Japan',
-	'Mr Miggles as Hulk',
-	'Mr Miggles as Batman',
-]
+const RANDOM_QUERIES = ['Miggles as Superman', 'Miggles shaking hands with President Trump', 'Miggles takes over Japan', 'Miggles as Batman']
 
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = ['Trump', 'Crypto Bull', 'Snow', 'Winter', 'Mountains', 'Hearts', 'Robots', 'NFTS', 'Elon']
@@ -105,7 +98,12 @@ export const CompSearch = ({ featuredImages, isPanel = false, featuredImages2 })
 			setError(null)
 			try {
 				setIsLoading(true)
-				const response = await aiMutate({ prompt: query, model })
+				let finalQuery = query
+				if (model === 'MiggleV3' && !query.toLowerCase().includes('miggles')) {
+					finalQuery = `miggles ${query}`
+				}
+				finalQuery = finalQuery.replace('Miggles', 'miggles')
+				const response = await aiMutate({ prompt: finalQuery, model })
 				setStStatusCode(response.data.status)
 				if (response.data.status === 'success') {
 					setIsLoading(false)
@@ -148,6 +146,14 @@ export const CompSearch = ({ featuredImages, isPanel = false, featuredImages2 })
 		<>
 			<div className="">
 				<div className="flex flex-col gap-2">
+					{model !== 'MiggleV3' && (
+						<div>
+							<p className="text-sm text-red-400">
+								We have a new AI model called <span className="font-bold">Miggles</span>. It's a bit different from the default one. <br />
+								You can try it out by selecting it from the dropdown below.
+							</p>
+						</div>
+					)}
 					<div>
 						<Select value={model} label="Select AI Model" onChange={(val) => setModel(val)}>
 							<Option value="MiggleV3">Miggles</Option>

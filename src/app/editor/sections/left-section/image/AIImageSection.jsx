@@ -147,10 +147,10 @@ export const CompSearch = ({ featuredImages, isPanel = false, featuredImages2 })
 			<div className="">
 				<div className="flex flex-col gap-2">
 					{model !== 'MiggleV3' && (
-						<div>
-							<p className="text-sm text-red-400">
-								We have a new AI model called <span className="font-bold">Miggles</span>. It's a bit different from the default one. <br />
-								You can try it out by selecting it from the dropdown below.
+						<div className="flex flex-col gap-2 mb-5 border border-yellow-900 bg-yellow-50 p-2 rounded-md">
+							<p className="text-sm text-yellow-900 font-medium">🔥 New AI Model: Mr. Miggles! 🔥</p>
+							<p className="text-sm text-yellow-900 font-medium">
+								Generate official Mr. Miggles AI posters 😻✨ and share them with the world! Select Miggles AI below to start. 🚀
 							</p>
 						</div>
 					)}

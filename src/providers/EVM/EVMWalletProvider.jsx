@@ -17,6 +17,7 @@ import { storyOdysseyTestnet } from "../../data/network/storyOdyssey";
 import { WagmiProvider } from "wagmi";
 
 import { createAppKit } from "@reown/appkit/react";
+import { DefaultSIWX } from "@reown/appkit-siwx";
 import {
   polygon,
   mainnet,
@@ -162,11 +163,12 @@ export const appKit = createAppKit({
       "farcaster",
     ],
     emailShowWallets: true, // default to true
-    connectMethodsOrder: ["wallet"],
+    connectMethodsOrder: ["social", "wallet"],
     enableCoinbase: true, // true by default
     coinbasePreference: "smartWalletOnly",
   },
   allWallets: "SHOW",
+  siwx: new DefaultSIWX(),
 });
 
 //

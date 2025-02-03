@@ -25,6 +25,7 @@
     "@reown/appkit": "^1.6.4",
     "@reown/appkit-adapter-solana": "^1.6.4",
     "@reown/appkit-adapter-wagmi": "^1.6.4",
+    "@reown/appkit-siwx": "^1.6.5",
     "@reown/appkit-wallet-button": "^1.6.4",
     "@sentry/react": "^7.108.0",
     "@sentry/vite-plugin": "^2.16.0",

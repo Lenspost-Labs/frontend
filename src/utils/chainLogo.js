@@ -9,6 +9,7 @@ import {
   polygonLogo,
   StoryIPLogo,
   MorphLogo,
+  campNetworkTestnetV2Logo,
 } from "../assets";
 
 const chainLogos = {
@@ -27,6 +28,7 @@ const chainLogos = {
   137: polygonLogo, // polygon
   1155: StoryIPLogo, // Story IP
   2818: MorphLogo,
+  325000: campNetworkTestnetV2Logo,
 };
 
 export const chainLogo = (chainId) => {

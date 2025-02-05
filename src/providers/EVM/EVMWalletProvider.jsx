@@ -11,7 +11,7 @@ import {
   createStorage,
   http,
 } from "wagmi";
-import { ham, og } from "../../data";
+import { campNetworkTestnetV2, ham, og } from "../../data";
 
 import { storyOdysseyTestnet } from "../../data/network/storyOdyssey";
 import { WagmiProvider } from "wagmi";
@@ -64,6 +64,7 @@ export const wagmiAdapter = new WagmiAdapter({
           storyOdysseyTestnet,
           morph,
           solana,
+          campNetworkTestnetV2,
         ]
       : [
           base,
@@ -81,6 +82,7 @@ export const wagmiAdapter = new WagmiAdapter({
           solanaDevnet,
           storyOdysseyTestnet,
           morph,
+          campNetworkTestnetV2,
         ],
 
   transports: {
@@ -97,6 +99,7 @@ export const wagmiAdapter = new WagmiAdapter({
     [arbitrum.id]: http(),
     [storyOdysseyTestnet.id]: http(),
     [morph.id]: http(),
+    [campNetworkTestnetV2.id]: http(),
     [solana.id]: http(),
     [solanaTestnet.id]: http(),
     [solanaDevnet.id]: http(),
@@ -128,6 +131,7 @@ export const appKit = createAppKit({
           solana,
           storyOdysseyTestnet,
           morph,
+          campNetworkTestnetV2,
         ]
       : [
           base,
@@ -145,6 +149,7 @@ export const appKit = createAppKit({
           solanaDevnet,
           storyOdysseyTestnet,
           morph,
+          campNetworkTestnetV2,
         ],
   metadata: metadata,
   projectId,

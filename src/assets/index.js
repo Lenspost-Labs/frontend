@@ -13,6 +13,8 @@ const arbitrumLogo = "https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg";
 const degenLogo = "https://basescan.org/token/images/degentips_32.png";
 const polygonLogo = "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg";
 const MorphLogo = "https://icons.llamao.fi/icons/chains/rsz_morph.jpg";
+const campNetworkTestnetV2Logo =
+  "https://camp-network-testnet.blockscout.com/assets/configs/network_icon_dark.svg";
 
 export {
   SolanaLogo,
@@ -29,4 +31,5 @@ export {
   polygonLogo,
   StoryIPLogo,
   MorphLogo,
+  campNetworkTestnetV2Logo,
 };

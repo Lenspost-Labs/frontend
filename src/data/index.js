@@ -1,3 +1,4 @@
+export * from "./network/campNetworkTestnetV2";
 export * from "./constant/NFTCredentials";
 export * from "./constant/constant";
 export * from "./constant/localStorage";

@@ -13,7 +13,6 @@ import { useAccount, useWalletClient } from "wagmi";
 import { Top5ProfileCard } from "../../Cards";
 
 // XMTP
-import { Client } from "@xmtp/xmtp-js";
 import "../../../../../../../../../polyfills";
 
 const InviteModal = () => {
@@ -40,20 +39,10 @@ const InviteModal = () => {
 
   // 0xE3811DeFd98AF92712e54b0b3E1735c1051C86D6
 
-  async function create_a_client() {
-    if (!walletClient) {
-      console.log("Wallet is not initialized");
-      return;
-    }
-
-    xmtp = await Client.create(walletClient, { env: "dev" });
-    console.log("Client created", xmtp.address);
-  }
-
   //Check if an address is on the network
   async function check_if_an_address_is_on_the_network() {
     //Message this XMTP message bot to get an immediate automated reply:
-    // gm.xmtp.eth (0x937C0d4a6294cdfa575de17382c7076b579DC176) 
+    // gm.xmtp.eth (0x937C0d4a6294cdfa575de17382c7076b579DC176)
     //
 
     if (xmtp) {
@@ -74,7 +63,7 @@ const InviteModal = () => {
 
     if (xmtp) {
       conversation = await xmtp.conversations.newConversation(WALLET_TO);
-      console.log(conversation)
+      console.log(conversation);
       console.log(`Conversation created with ${conversation.peerAddress}`);
     }
   }
@@ -90,7 +79,7 @@ const InviteModal = () => {
 
   // Send a message to XMTP
   const fnSendXmtpMessage = async () => {
-    await start_a_new_conversation()
+    await start_a_new_conversation();
     const res = await send_a_message();
     console.log(res);
   };
@@ -106,7 +95,9 @@ const InviteModal = () => {
 
   const fnGetTop5Interactions = async () => {
     setLoading(true);
-    const res = await getTop5SocialDetails({ address: ["0x983d6466FAC5B2aFe57e070283a4932A1bd0508F"] });
+    const res = await getTop5SocialDetails({
+      address: ["0x983d6466FAC5B2aFe57e070283a4932A1bd0508F"],
+    });
 
     // console.log(res);
     // res?.SocialFollowers?.Follower[0].followerAddress.socials[0].userAssociatedAddresses[0]
@@ -147,7 +138,6 @@ const InviteModal = () => {
 
   useEffect(() => {
     fnGetTop5Interactions();
-    create_a_client();
 
     // fnCreateXMTPClient();
     // fnNewConversation();

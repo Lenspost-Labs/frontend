@@ -37,3 +37,7 @@ export const posterTokenSymbol = "xPOSTER";
 export const R2_IMAGE_URL =
   "https://pub-2ae8c1134d9a4424b3e00475c4421a7a.r2.dev";
 export const CDN_IMAGE_URL = "https://lenspost-r2.b-cdn.net";
+
+export const X_INTENT_URL = "https://x.com/intent/post?text=";
+
+export const LP721SupportedChains = [2818, 325000];

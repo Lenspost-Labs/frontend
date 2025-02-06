@@ -19,7 +19,13 @@ import { ENVIRONMENT } from "../../../../../../../services";
 import { useAppAuth } from "../../../../../../../hooks/app";
 import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
 
-const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
+const Topup = ({
+  topUpAccount,
+  refetchWallet,
+  balance,
+  sponsored,
+  isCustomCurrMintOption,
+}) => {
   const { farcasterStates, setFarcasterStates, chainId } = useContext(Context);
   const [extraPayForMints, setExtraPayForMints] = useState(null);
   const { chain } = useAccount();
@@ -47,7 +53,8 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored }) => {
   const isSufficientBalance = farcasterStates.frameData?.isSufficientBalance;
   const isTopup = farcasterStates.frameData?.isTopup;
   const selectedNetwork = farcasterStates?.frameData?.selectedNetwork;
-  const isCustomCurrMint = farcasterStates?.frameData?.isCustomCurrMint;
+  const isCustomCurrMint =
+    isCustomCurrMintOption || farcasterStates?.frameData?.isCustomCurrMint;
   const TxFeeForDeployment =
     chain?.id === 137 ? 0.7 : chainId === morph?.id ? 0.0002 : 0.00009;
   const txFeeForMint = isCustomCurrMint ? 0.00005 : 0.00009;

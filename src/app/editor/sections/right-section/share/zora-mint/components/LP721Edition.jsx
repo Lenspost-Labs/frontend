@@ -158,6 +158,9 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     mutationFn: deployZoraContract,
   });
 
+  // Initialize the Select value prop properly
+  const [selectedCurrency, setSelectedCurrency] = useState("");
+
   // checking unsupported chain for individual networks
   const isUnsupportedChain = () => {
     // chains[0] is the polygon network
@@ -429,6 +432,24 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
           ...zoraErc721StatesError,
           isChargeForMintError: false,
           chargeForMintErrorMessage: "",
+        });
+      }
+    }
+
+    // check if currency is provided
+    if (name === "chargeForMintCurrencyAddress") {
+      if (!value) {
+        setZoraErc721StatesError({
+          ...zoraErc721StatesError,
+          isChargeForMintCurrencyAddressError: true,
+          chargeForMintCurrencyAddressErrorMessage: "Currency is required",
+        });
+        return;
+      } else {
+        setZoraErc721StatesError({
+          ...zoraErc721StatesError,
+          isChargeForMintCurrencyAddressError: false,
+          chargeForMintCurrencyAddressErrorMessage: "",
         });
       }
     }
@@ -845,8 +866,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
               label="Collection Description"
               name="contractDescription"
               onChange={(e) => handleChange(e)}
-              // onFocus={(e) => handleChange(e)}
-              value={zoraErc721Enabled.contractDescription}
+              value={zoraErc721Enabled.contractDescription || ""}
             />
           </div>
           {zoraErc721StatesError.isContractSymbolError && (
@@ -881,6 +901,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
         </div>
 
         <div className="flex flex-col py-2 mx-2">
+          {/* {TOKEN_LIST[chain?.name] && selectedCurrency && ( */}
           <Select
             animate={{
               mount: { y: 0 },
@@ -889,31 +910,34 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
             label="Currency"
             name="chargeForMintCurrency"
             id="chargeForMintCurrency"
-            value={zoraErc721Enabled.chargeForMintCurrency}
+            value={selectedCurrency?.symbol || ""}
           >
-            {TOKEN_LIST[chain?.name]?.map((currency) => (
-              <Option
-                key={currency}
-                onClick={() => {
-                  setZoraErc721Enabled({
-                    ...zoraErc721Enabled,
-                    chargeForMintCurrencySymbol: currency?.symbol,
-                    chargeForMintCurrencyAddress: currency?.address,
-                  });
-                }}
-              >
-                <div className="flex items-center gap-1">
-                  <Avatar
-                    variant="circular"
-                    alt={currency?.symbol}
-                    src={currency?.logoURI}
-                    className="w-6 h-6"
-                  />
-                  <p>{currency?.name}</p>
-                </div>
-              </Option>
-            ))}
+            {TOKEN_LIST[chain?.name] &&
+              TOKEN_LIST[chain?.name]?.map((currency) => (
+                <Option
+                  key={currency?.id}
+                  onClick={() => {
+                    setSelectedCurrency(currency);
+                    setZoraErc721Enabled({
+                      ...zoraErc721Enabled,
+                      chargeForMintCurrencySymbol: currency?.symbol,
+                      chargeForMintCurrencyAddress: currency?.address,
+                    });
+                  }}
+                >
+                  <div className="flex items-center gap-1">
+                    <Avatar
+                      variant="circular"
+                      alt={currency?.symbol}
+                      src={currency?.logoURI}
+                      className="w-6 h-6"
+                    />
+                    <Typography variant="small">{currency?.name}</Typography>
+                  </div>
+                </Option>
+              ))}
           </Select>
+          {/* )} */}
         </div>
       </div>
 

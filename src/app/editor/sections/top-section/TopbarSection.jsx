@@ -35,13 +35,6 @@ const TopbarSection = () => {
           {isAuthenticated ? (
             <div className="flex items-center justify-center space-x-4 md:space-x-6">
               {/* Discord Links - 19Jul2023 */}
-
-              <div id="fifth-step">
-                <ShareButton />
-              </div>
-              <div>
-                <DownloadBtn />
-              </div>
               <a
                 className="md:w-8 h-8 text-gray-600 md:flex hidden transition-transform transform-gpu"
                 target="_blank"
@@ -53,6 +46,13 @@ const TopbarSection = () => {
                   className="bg-transparent mix-blend-multiply w-full h-full transition-shadow hover:shadow-lg hover:shadow-gray-400 duration-300 ease-in-out rounded-full"
                 />
               </a>
+
+              <div id="fifth-step">
+                <ShareButton />
+              </div>
+              <div>
+                <DownloadBtn />
+              </div>
               <div className="flex gap-2" id="first-step">
                 {/* <ProfileMenu /> */}
                 <PointsBtn />

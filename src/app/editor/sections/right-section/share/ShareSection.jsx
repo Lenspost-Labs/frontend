@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useAccount, useChains } from "wagmi";
+import { useAccount, useChains, useSwitchChain } from "wagmi";
 import EmojiPicker, { EmojiStyle, Emoji } from "emoji-picker-react";
 import { DateTimePicker } from "@atlaskit/datetime-picker";
 import { chainLogo, getFromLocalStorage } from "../../../../../utils";
@@ -45,10 +45,18 @@ const ShareSection = () => {
     actionType,
     isMobile,
   } = useContext(Context);
-  const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState(false);
+  const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState("");
   const [charLimitError, setCharLimitError] = useState("");
   const { evmAuth } = useLocalStorage();
   const { login } = useReownAuth();
+
+  const {
+    error: errorSwitchNetwork,
+    isError: isErrorSwitchNetwork,
+    isLoading: isLoadingSwitchNetwork,
+    isSuccess: isSuccessSwitchNetwork,
+    switchChain,
+  } = useSwitchChain();
 
   const chainsArray = [
     {
@@ -156,6 +164,17 @@ const ShareSection = () => {
     // } else {
     // 	toast.error('Please create a frame first')
     // }
+  };
+
+  const setChainTab = (chainId) => {
+    switchChain({ chainId });
+    if (LP721SupportedChains.includes(chainId)) {
+      setZoraTab("LP721");
+    } else {
+      setZoraTab("ERC721");
+    }
+
+    setCurrentMenu(chainId);
   };
 
   return (
@@ -330,10 +349,7 @@ const ShareSection = () => {
                       key={item?.id}
                       className="cursor-pointer flex flex-col items-center"
                       onClick={() => {
-                        setCurrentMenu(item?.id);
-                        if (LP721SupportedChains.includes(item?.id)) {
-                          setZoraTab("LP721");
-                        }
+                        setChainTab(item?.id);
                       }}
                     >
                       {" "}

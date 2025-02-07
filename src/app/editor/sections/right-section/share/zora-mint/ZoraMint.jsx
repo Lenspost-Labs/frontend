@@ -8,12 +8,11 @@ import {
   Tab,
   Typography,
 } from "@material-tailwind/react";
-import { ERC1155Edition, ERC721Edition } from "./components";
-import LP721Edition from "./components/LP721Edition";
+import { ERC1155Edition, ERC721Edition, LP721Edition } from "./components";
+import { LP721SupportedChains } from "../../../../../../data";
 
 const ZoraMint = ({ selectedChainId }) => {
-  const { zoraTab, setZoraTab } = useContext(Context);
-  console.log("zoraTab", { zoraTab, selectedChainId });
+  const { zoraTab, setZoraTab, menu } = useContext(Context);
   return (
     <>
       <SharePanelHeaders
@@ -38,16 +37,18 @@ const ZoraMint = ({ selectedChainId }) => {
               </TabsHeader> */}
 
               {/* add components */}
+              {zoraTab === "LP721" && (
+                <LP721Edition
+                  isOpenAction={false}
+                  isFarcaster={false}
+                  selectedChainId={selectedChainId}
+                />
+              )}
               {zoraTab === "ERC721" && (
                 <ERC721Edition
                   isOpenAction={false}
                   selectedChainId={selectedChainId}
-                />
-              )}
-              {zoraTab === "LP721" && (
-                <LP721Edition
-                  isOpenAction={false}
-                  selectedChainId={selectedChainId}
+                  isFarcaster={false}
                 />
               )}
 

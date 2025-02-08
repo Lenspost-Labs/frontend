@@ -284,6 +284,9 @@ const ShareSection = () => {
                     alt="Farcaster"
                     onClick={() => setCurrentMenu("farcasterShare")}
                   />
+                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                    Farcaster
+                  </Typography>
                 </div>
                 <div className="inline-flex flex-col items-center">
                   <img
@@ -292,6 +295,9 @@ const ShareSection = () => {
                     alt="X"
                     onClick={() => setCurrentMenu("xshare")}
                   />
+                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                    X
+                  </Typography>
                 </div>
                 <div className="inline-flex flex-col items-center">
                   <img
@@ -300,6 +306,9 @@ const ShareSection = () => {
                     alt="Lens"
                     onClick={() => setCurrentMenu("lensmonetization")}
                   />
+                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                    Lens
+                  </Typography>
                 </div>
               </div>
             </div>

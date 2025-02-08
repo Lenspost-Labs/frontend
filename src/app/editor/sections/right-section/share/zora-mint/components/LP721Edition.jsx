@@ -79,6 +79,8 @@ import { http } from "viem";
 import { degen, polygon } from "viem/chains";
 import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
 
+import { Settings } from "lucide-react";
+
 const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const { address } = useAccount();
   const { login } = useReownAuth();
@@ -101,6 +103,9 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
   // farcaster data states
   const [slug, setSlug] = useState("");
+
+  //symbol state
+  const [showSymbol, setShowSymbol] = useState(false);
 
   const {
     error: errorSwitchNetwork,
@@ -360,166 +365,168 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const handleChange = (e, index, key) => {
     const { name, value } = e.target;
 
-    // First update the state value
-    setZoraErc721Enabled((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setZoraErc721Enabled((prev) => {
+      let updatedState = { ...prev, [name]: value };
 
-    // Then perform validation
+      // Auto-fill contractSymbol based on contractName
+      if (name === "contractName" && value) {
+        const autoSymbol = value.substring(0, 3).toUpperCase();
+        updatedState["contractSymbol"] = autoSymbol;
+      }
+
+      return updatedState;
+    });
+
+    // Perform validation
     if (name === "contractName") {
       if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isContractNameError: true,
-          contractNameErrorMessage: "Collection Name is required",
-        });
+          contractNameErrorMessage: "Collectible Name is required",
+        }));
       } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isContractNameError: false,
           contractNameErrorMessage: "",
-        });
+        }));
       }
     } else if (name === "contractSymbol") {
       if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isContractSymbolError: true,
-          contractSymbolErrorMessage: "Collection Symbol is required",
-        });
+          contractSymbolErrorMessage: "Collectible Symbol is required",
+        }));
       } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isContractSymbolError: false,
           contractSymbolErrorMessage: "",
-        });
+        }));
       }
     }
 
     if (name === "contractDescription") {
       if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isContractDescriptionError: true,
-          contractDescriptionErrorMessage: "Collection Description is required",
-        });
+          contractDescriptionErrorMessage:
+            "Collectible Description is required",
+        }));
       } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isContractDescriptionError: false,
           contractDescriptionErrorMessage: "",
-        });
+        }));
       }
     }
 
-    // check if price is provided
+    // Validation checks for other fields remain unchanged
     if (name === "chargeForMintPrice") {
       if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isChargeForMintError: true,
           chargeForMintErrorMessage: "Price is required",
-        });
+        }));
       } else if (value < 0.001) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isChargeForMintError: true,
           chargeForMintErrorMessage: "Price must be greater than 0.001",
-        });
+        }));
       } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isChargeForMintError: false,
           chargeForMintErrorMessage: "",
-        });
+        }));
       }
     }
 
-    // check if currency is provided
     if (name === "chargeForMintCurrencyAddress") {
       if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isChargeForMintCurrencyAddressError: true,
           chargeForMintCurrencyAddressErrorMessage: "Currency is required",
-        });
-        return;
+        }));
       } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isChargeForMintCurrencyAddressError: false,
           chargeForMintCurrencyAddressErrorMessage: "",
-        });
+        }));
       }
     }
 
-    // check if mint limit is provided
     if (name === "mintLimitPerAddress") {
       if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isMintLimitPerAddressError: true,
           limitedEditionErrorMessage: "Mint limit is required",
-        });
+        }));
       } else if (value < 1) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isMintLimitPerAddressError: true,
           limitedEditionErrorMessage: "Mint limit must be greater than 0",
-        });
+        }));
       } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isMintLimitPerAddressError: false,
           limitedEditionErrorMessage: "",
-        });
+        }));
       }
     }
 
-    // check if royalty percent is provided
     if (name === "royaltyPercent") {
       if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isRoyaltyPercentError: true,
           royaltyPercentErrorMessage: "Royalty percent is required",
-        });
+        }));
       } else if (value < 1 || value > 100) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isRoyaltyPercentError: true,
           royaltyPercentErrorMessage: "Royalty must be between 1% to 100%",
-        });
+        }));
       } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isRoyaltyPercentError: false,
           royaltyPercentErrorMessage: "",
-        });
+        }));
       }
     }
 
-    // check if max supply is provided
     if (name === "maxSupply") {
       if (!value) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isMaxSupplyError: true,
           maxSupplyErrorMessage: "Max supply is required",
-        });
+        }));
       } else if (value < 1) {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isMaxSupplyError: true,
           maxSupplyErrorMessage: "Max supply must be greater than 0",
-        });
+        }));
       } else {
-        setZoraErc721StatesError({
-          ...zoraErc721StatesError,
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
           isMaxSupplyError: false,
           maxSupplyErrorMessage: "",
-        });
+        }));
       }
     }
   };
@@ -606,7 +613,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       setZoraErc721StatesError({
         ...zoraErc721StatesError,
         isContractNameError: true,
-        contractNameErrorMessage: "Collection Name is required",
+        contractNameErrorMessage: "Collectible Name is required",
       });
       return;
     }
@@ -616,7 +623,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       setZoraErc721StatesError({
         ...zoraErc721StatesError,
         isContractDescriptionError: true,
-        contractDescriptionErrorMessage: "Collection Description is required",
+        contractDescriptionErrorMessage: "Collectible Description is required",
       });
       return;
     } else if (zoraErc721StatesError.isContractDescriptionError) {
@@ -628,7 +635,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       setZoraErc721StatesError({
         ...zoraErc721StatesError,
         isContractSymbolError: true,
-        contractSymbolErrorMessage: "Collection Symbol is required",
+        contractSymbolErrorMessage: "Collectible Symbol is required",
       });
       return;
     }
@@ -825,47 +832,60 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       {/* Switch Number 1 Start */}
       <div className=" mt-1 pt-2 pb-4">
         <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Collection Details </h2>
+          <h2 className="text-lg mb-2"> Collectible Details </h2>
         </div>
         <div className="w-4/5 opacity-75">
           {" "}
-          Set a Name and Symbol for the collection{" "}
+          Set a Name and Symbol for the collectible{" "}
         </div>
       </div>
 
-      <div className={` `}>
+      <div className={""}>
         <div className="flex flex-col w-full py-2">
-          <InputBox
-            label="Collection Name"
-            name="contractName"
-            onChange={(e) => handleChange(e)}
-            onFocus={(e) => handleChange(e)}
-            value={zoraErc721Enabled.contractName}
-          />
+          {/* Collectible Name with Cog Icon */}
+          <div className="flex items-center gap-2">
+            <InputBox
+              label="Collectible Name"
+              name="contractName"
+              onChange={handleChange}
+              onFocus={handleChange}
+              value={zoraErc721Enabled.contractName}
+            />
+            <Settings
+              className="cursor-pointer text-gray-500 hover:text-gray-700"
+              size={20}
+              onClick={() => setShowSymbol((prev) => !prev)}
+            />
+          </div>
           {zoraErc721StatesError.isContractNameError && (
             <InputErrorMsg
               message={zoraErc721StatesError.contractNameErrorMessage}
             />
           )}
-          <div className="mt-2">
-            <InputBox
-              label="Collection Symbol"
-              name="contractSymbol"
-              onChange={(e) => handleChange(e)}
-              // onFocus={(e) => handleChange(e)}
-              value={zoraErc721Enabled.contractSymbol}
-            />
-          </div>
-          {zoraErc721StatesError.isContractSymbolError && (
-            <InputErrorMsg
-              message={zoraErc721StatesError.contractSymbolErrorMessage}
-            />
+
+          {/* Collectible Symbol (Hidden Initially) */}
+          {showSymbol && (
+            <div className="mt-2">
+              <InputBox
+                label="Collectible Symbol"
+                name="contractSymbol"
+                onChange={handleChange}
+                value={zoraErc721Enabled.contractSymbol}
+              />
+              {zoraErc721StatesError.isContractSymbolError && (
+                <InputErrorMsg
+                  message={zoraErc721StatesError.contractSymbolErrorMessage}
+                />
+              )}
+            </div>
           )}
+
+          {/* Collectible Description */}
           <div className="mt-2">
             <Textarea
-              label="Collection Description"
+              label="Collectible Description"
               name="contractDescription"
-              onChange={(e) => handleChange(e)}
+              onChange={handleChange}
               value={zoraErc721Enabled.contractDescription || ""}
             />
           </div>
@@ -953,7 +973,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
       <div className="mb-4 mt-4">
         <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Split Pecipients </h2>
+          <h2 className="text-lg mb-2"> Split Recipients </h2>
         </div>
         <div className="w-4/5 opacity-75">
           {" "}

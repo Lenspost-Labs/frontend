@@ -1,5 +1,5 @@
 import SolanaLogo from "./svgs/solanaLogoMark.svg";
-import ZoraLogo from "./logos/logoZora.png";
+import ZoraLogo from "./logos/zora_new.png";
 import BraveLogo from "./logos/logoBrave.png";
 import EthLogo from "./logos/ethLogo.png";
 import BaseLogo from "./logos/baseLogo.png";

@@ -70,6 +70,8 @@ import { http } from "viem";
 import { degen, polygon } from "viem/chains";
 import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
 
+import { Settings } from "lucide-react";
+
 const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const { address } = useAccount();
   const { login } = useReownAuth();
@@ -97,6 +99,9 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   // farcaster data states
   const [farTxHash, setFarTxHash] = useState("");
   const [slug, setSlug] = useState("");
+
+  //symbol state
+  const [showSymbol, setShowSymbol] = useState(false);
 
   const {
     createSplit,
@@ -442,13 +447,13 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const handleChange = (e, index, key) => {
     const { name, value } = e.target;
 
-    // check if collection name and symbol are provided
+    // Auto-fill contract symbol based on contract name
     if (name === "contractName") {
       if (!value) {
         setZoraErc721StatesError({
           ...zoraErc721StatesError,
           isContractNameError: true,
-          contractNameErrorMessage: "Collection Name is required",
+          contractNameErrorMessage: "Collectible Name is required",
         });
       } else {
         setZoraErc721StatesError({
@@ -456,13 +461,22 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
           isContractNameError: false,
           contractNameErrorMessage: "",
         });
+
+        // Auto-fill contract symbol
+        const autoSymbol = value.substring(0, 3).toUpperCase();
+        setZoraErc721Enabled((prevState) => ({
+          ...prevState,
+          contractSymbol: autoSymbol,
+        }));
       }
-    } else if (name === "contractSymbol") {
+    }
+
+    if (name === "contractSymbol") {
       if (!value) {
         setZoraErc721StatesError({
           ...zoraErc721StatesError,
           isContractSymbolError: true,
-          contractSymbolErrorMessage: "Collection Symbol is required",
+          contractSymbolErrorMessage: "Collectibles Symbol is required",
         });
       } else {
         setZoraErc721StatesError({
@@ -814,7 +828,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       setZoraErc721StatesError({
         ...zoraErc721StatesError,
         isContractNameError: true,
-        contractNameErrorMessage: "Collection Name is required",
+        contractNameErrorMessage: "Collectibles Name is required",
       });
       return;
     }
@@ -824,7 +838,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       setZoraErc721StatesError({
         ...zoraErc721StatesError,
         isContractSymbolError: true,
-        contractSymbolErrorMessage: "Collection Symbol is required",
+        contractSymbolErrorMessage: "Collectibles Symbol is required",
       });
       return;
     }
@@ -1111,41 +1125,49 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       {/* Switch Number 1 Start */}
       <div className=" mt-1 pt-2 pb-4">
         <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Collection Details </h2>
+          <h2 className="text-lg mb-2"> Collectible Details </h2>
         </div>
         <div className="w-4/5 opacity-75">
           {" "}
-          Set a Name and Symbol for the collection{" "}
+          Set a Name and Symbol for the collectibles{" "}
         </div>
       </div>
 
-      <div className={` `}>
+      <div className={""}>
         <div className="flex flex-col w-full py-2">
-          <InputBox
-            label="Collection Name"
-            name="contractName"
-            onChange={(e) => handleChange(e)}
-            onFocus={(e) => handleChange(e)}
-            value={zoraErc721Enabled.contractName}
-          />
+          <div className="flex items-center gap-2">
+            <InputBox
+              label="Collectible Name"
+              name="contractName"
+              onChange={handleChange}
+              onFocus={handleChange}
+              value={zoraErc721Enabled.contractName}
+            />
+            <Settings
+              className="cursor-pointer text-gray-500 hover:text-gray-700"
+              size={20}
+              onClick={() => setShowSymbol((prev) => !prev)}
+            />
+          </div>
           {zoraErc721StatesError.isContractNameError && (
             <InputErrorMsg
               message={zoraErc721StatesError.contractNameErrorMessage}
             />
           )}
-          <div className="mt-2">
-            <InputBox
-              label="Collection Symbol"
-              name="contractSymbol"
-              onChange={(e) => handleChange(e)}
-              // onFocus={(e) => handleChange(e)}
-              value={zoraErc721Enabled.contractSymbol}
-            />
-          </div>
-          {zoraErc721StatesError.isContractSymbolError && (
-            <InputErrorMsg
-              message={zoraErc721StatesError.contractSymbolErrorMessage}
-            />
+          {showSymbol && (
+            <div className="mt-2">
+              <InputBox
+                label="Collectible Symbol"
+                name="contractSymbol"
+                onChange={handleChange}
+                value={zoraErc721Enabled.contractSymbol}
+              />
+              {zoraErc721StatesError.isContractSymbolError && (
+                <InputErrorMsg
+                  message={zoraErc721StatesError.contractSymbolErrorMessage}
+                />
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -1236,7 +1258,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
       <div className="mb-4 mt-4">
         <div className="flex justify-between">
-          <h2 className="text-lg mb-2"> Split Pecipients </h2>
+          <h2 className="text-lg mb-2"> Split Recipients </h2>
         </div>
         <div className="w-4/5 opacity-75">
           {" "}

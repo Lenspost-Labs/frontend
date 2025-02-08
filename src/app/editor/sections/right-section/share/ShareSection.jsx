@@ -274,115 +274,106 @@ const ShareSection = () => {
         {!isMobile && (
           <>
             <hr />
-            <div className={`relative mt-6 px-4 sm:px-6`}>
+            <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Share on socials</p>
-              <div className="flex ">
-                <>
-                  <div className="flex items-center space-x-12 py-5">
-                    <div onClick={() => setCurrentMenu("farcasterShare")}>
-                      {" "}
-                      <img
-                        className="w-10 cursor-pointer rounded-md"
-                        src={logoFarcaster}
-                        alt="Farcaster"
-                      />{" "}
-                    </div>
-                  </div>
-                  <div
-                    className={`flex items-center py-5 space-x-12 ${
-                      !isMobile ? "ml-8" : " "
-                    }`}
-                  >
-                    <div onClick={() => setCurrentMenu("xshare")}>
-                      {" "}
-                      <img
-                        className="w-10 cursor-pointer rounded-md"
-                        src={logoTwitter}
-                        alt="X"
-                      />{" "}
-                    </div>
-                  </div>
-                  <div
-                    className={`flex items-center py-5 space-x-12 ${
-                      !isMobile ? "ml-8" : " "
-                    }`}
-                  >
-                    <div onClick={() => setCurrentMenu("lensmonetization")}>
-                      {" "}
-                      <img
-                        className="w-10 cursor-pointer"
-                        src="/other-icons/share-section/iconLens.png"
-                        alt="Lens"
-                      />{" "}
-                    </div>
-                  </div>
-                </>
+              <div className="grid grid-cols-3 gap-x-10 gap-y-6 py-5">
+                <div className="inline-flex flex-col items-center">
+                  <img
+                    className="w-10 h-10 cursor-pointer rounded-md"
+                    src={logoFarcaster}
+                    alt="Farcaster"
+                    onClick={() => setCurrentMenu("farcasterShare")}
+                  />
+                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                    Farcaster
+                  </Typography>
+                </div>
+                <div className="inline-flex flex-col items-center">
+                  <img
+                    className="w-10 h-10 cursor-pointer rounded-md"
+                    src={logoTwitter}
+                    alt="X"
+                    onClick={() => setCurrentMenu("xshare")}
+                  />
+                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                    X
+                  </Typography>
+                </div>
+                <div className="inline-flex flex-col items-center">
+                  <img
+                    className="w-10 h-10 cursor-pointer"
+                    src="/other-icons/share-section/iconLens.png"
+                    alt="Lens"
+                    onClick={() => setCurrentMenu("lensmonetization")}
+                  />
+                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                    Lens
+                  </Typography>
+                </div>
               </div>
             </div>
+
             <hr />
 
-            <div className={`relative mt-6 px-4 sm:px-6`}>
+            <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Mint NFT on Story Protocol</p>
-              <div className="flex flex-wrap items-center gap-10 my-3">
-                <div
-                  className="cursor-pointer flex flex-col items-center"
-                  onClick={() => setCurrentMenu("storyMint")}
-                >
+              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                <div className="inline-flex flex-col items-center justify-center">
                   <img
                     className="w-10 h-10"
                     src={chainLogo(1155)}
                     alt="Story Protocol"
-                  />{" "}
-                  <Typography className="text-md font-semibold">
+                    onClick={() => setCurrentMenu("storyMint")}
+                  />
+                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
                     Story Protocol
                   </Typography>
                 </div>
               </div>
             </div>
+
             <hr />
-            <div className={`relative mt-6 px-4 sm:px-6`}>
+            <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Mint as an NFT on EVM</p>
-              <div className="flex flex-wrap items-center gap-10 my-3">
-                {filterChains().map((item) => {
-                  return (
-                    <div
-                      key={item?.id}
-                      className="cursor-pointer flex flex-col items-center"
-                      onClick={() => {
-                        setChainTab(item?.id);
-                      }}
-                    >
-                      {" "}
-                      <img
-                        className="w-10 h-10"
-                        src={chainLogo(item?.id)}
-                        alt={`${item?.name} blockchain logo`}
-                      />{" "}
-                      <Typography className="text-md font-semibold">
-                        {item?.name}
-                      </Typography>
-                    </div>
-                  );
-                })}
+              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                {filterChains().map((item) => (
+                  <div
+                    key={item?.id}
+                    className="cursor-pointer flex flex-col items-center gap-2"
+                    onClick={() => setChainTab(item?.id)}
+                  >
+                    <img
+                      className="w-10 h-10"
+                      src={chainLogo(item?.id)}
+                      alt={`${item?.name} blockchain logo`}
+                    />
+                    <Typography className="text-md font-semibold text-center">
+                      {item?.name}
+                    </Typography>
+                  </div>
+                ))}
               </div>
             </div>
+
             <hr />
 
-            <div className={`relative mt-6 px-4 sm:px-6`}>
+            <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Mint as an NFT on Solana</p>
-              <div className="flex flex-wrap items-center gap-10 my-3">
-                <div
-                  className="cursor-pointer flex flex-col items-center"
-                  onClick={() => setCurrentMenu("solanaMint")}
-                >
-                  {" "}
-                  <img className="w-10" src={logoSolana} alt="Solana" />{" "}
-                  <Typography className="text-md font-semibold">
+              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                <div className="inline-flex flex-col items-center justify-center">
+                  <img
+                    className="w-10 h-10"
+                    src={logoSolana}
+                    alt="Solana"
+                    onClick={() => setCurrentMenu("solanaMint")}
+                  />
+                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
                     Solana
                   </Typography>
                 </div>
               </div>
             </div>
+
             <hr />
           </>
         )}

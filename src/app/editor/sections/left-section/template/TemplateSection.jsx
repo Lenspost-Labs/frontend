@@ -152,27 +152,26 @@ const DesignCard = ({ item, id, preview, json, tab, isGated, gatedWith, referred
 // Design card component end
 
 const TemplatePanel = () => {
-	const [tab, setTab] = useState('poster')
+	const [tab, setTab] = useState('user')
 	const [stIsModalOpen, setStIsModalOpen] = useState(false)
 
 	return (
 		<div className="h-full flex flex-col">
 			{/* <h1 className="text-lg">Templates</h1> */}
-			<div className="flex items-center justify-center space-x-2 my-4 mb-0">
-				<button
+			{/* <div className="flex items-center justify-center space-x-2 my-4 mb-0">
+				 <button
 					className={`w-1/2 border px-2 py-1 border-black rounded-md ${tab === 'poster' && 'bg-[#1B1A1D]'} ${tab === 'poster' && 'text-white'}`}
 					onClick={() => setTab('poster')}
 				>
 					Poster Templates
-				</button>
+				</button> 
 				<button
 					className={`w-1/2 border border-black px-2 py-1 rounded-md ${tab === 'user' && 'bg-[#1B1A1D]'} ${tab === 'user' && 'text-white'}`}
 					onClick={() => setTab('user')}
 				>
-					{/* User Templates */}
 					Community Templates
 				</button>
-			</div>
+			</div> */}
 			{tab === 'poster' && <LenspostTemplates />}
 			{tab === 'user' && <UserTemplates />}
 		</div>

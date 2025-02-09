@@ -11,7 +11,110 @@ import { apiBuySubscription, ENVIRONMENT } from '../../../../services'
 import Networks from './Networks'
 import coinImg from '../../../../assets/svgs/Coin.svg'
 import { base, baseSepolia, optimism, zora } from 'viem/chains'
-const SubscriptionModal = () => {
+import { Heart } from 'lucide-react'
+import FaHeartbeat from '@meronex/icons/fa/FaHeartbeat'
+import AiFillHeart from '@meronex/icons/ai/AiFillHeart'
+import FaRegKissWinkHeart from '@meronex/icons/fa/FaRegKissWinkHeart'
+import IosHeartDislike from '@meronex/icons/ios/IosHeartDislike'
+const Packages = [
+	{
+		name: 'Sweet Start',
+		price: '3',
+		priceETH: '0.001',
+		amount: '30',
+	},
+	{
+		name: 'Love Plus',
+		price: '6',
+		priceETH: '0.002',
+		amount: '60',
+	},
+	{
+		name: 'Ultimate Love',
+		price: '9',
+		priceETH: '0.003',
+		amount: '90',
+	},
+]
+
+const SparklingCoin = () => {
+	return (
+		<div className="coin">
+			<div className="front jump">
+				<div className="star"></div>
+				<span className="currency">$</span>
+				<div className="shapes">
+					<div className="shape_l"></div>
+					<div className="shape_r"></div>
+					<span className="top">Poster</span>
+					<span className="bottom">Gold</span>
+				</div>
+			</div>
+			<div className="shadow"></div>
+		</div>
+	)
+}
+
+const SparklingCoins = () => {
+	return (
+		<div className="relative inline-block w-20 h-20">
+			{/* Main coin */}
+			<img className="h-10 w-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10" src={coinImg} alt="" />
+
+			{/* Sparkle coins */}
+			<div className="absolute inset-0">
+				{[...Array(6)].map((_, i) => (
+					<img
+						key={i}
+						src={coinImg}
+						alt=""
+						className="absolute h-4 w-4 top-1/2 left-1/2"
+						style={{
+							animation: `sparkle 2s linear infinite ${i * 0.3}s`,
+							left: '50%',
+							top: '50%',
+							transform: `rotate(${i * 60}deg) translate(25px, 0)`,
+						}}
+					/>
+				))}
+			</div>
+		</div>
+	)
+}
+
+const BackgroundDecorations = () => {
+	// Generate random positions for 20 decorative elements
+	const decorations = [...Array(50)].map((_, i) => ({
+		id: i,
+		left: `${Math.random() * 100}%`,
+		top: `${Math.random() * 100}%`,
+		scale: 0.5 + Math.random() * 0.5,
+		delay: Math.random() * 2,
+		isHeart: Math.random() > 0.5, // randomly choose between heart and sparkle
+	}))
+
+	return (
+		<div className="absolute inset-0 overflow-hidden pointer-events-none">
+			{decorations.map((dec) => (
+				<div
+					key={dec.id}
+					className="absolute animate-float"
+					style={{
+						left: dec.left,
+						top: dec.top,
+						transform: `scale(${dec.scale})`,
+						animation: `float 3s ease-in-out infinite ${dec.delay}s`,
+						opacity: '0.1',
+					}}
+				>
+					{dec.isHeart ? <AiFillHeart className="w-5 h-5 text-pink-500" /> : <img src={coinImg} alt="" className="w-4 h-4" />}
+				</div>
+			))}
+		</div>
+	)
+}
+
+const SubscriptionModal = ({ bottomBar = false }) => {
 	const { address, chainId, chain } = useAccount()
 	const { points } = useUser()
 	const { data: hash, error, isPending, sendTransaction } = useSendTransaction({ wagmiAdapter })
@@ -77,69 +180,68 @@ const SubscriptionModal = () => {
 
 	return (
 		<>
-			{' '}
-			<div
-				onClick={handleSubscriptionModal}
-				className="cursor-pointer flex items-center gap-2 text-lg border  font-bold p-1 my-1 rounded-md hover:bg-[#f5f5f5]"
-			>
-				<div className="border rounded-md text-md">
-					{points}
-					<img className="h-4 -mt-1" src={coinImg} alt="" />
+			{!bottomBar ? (
+				<div
+					onClick={handleSubscriptionModal}
+					className="cursor-pointer bg-black flex items-center gap-2 text-lg border-0 font-bold px-3 py-0  my-1 group rounded-md hover:bg-[#efef97]"
+				>
+					<img className="h-5 w-5" src={coinImg} alt="" />
+					<div className="text-md group-hover:text-black text-white">{points}</div>
+					<div className="text-sm font-normal group-hover:text-black text-white">xPosters</div>
 				</div>
-				<div className="text-sm">Buy xPosters</div>
-			</div>
-			<Dialog className="p-4" size="md" open={openedSubscriptionModal} handler={handleSubscriptionModal}>
+			) : (
+				<div onClick={handleSubscriptionModal} className="-mt-36 -mr-20 cursor-pointer">
+					<SparklingCoin />
+				</div>
+			)}
+			<Dialog className="p-4 relative overflow-hidden" size="md" open={openedSubscriptionModal} handler={handleSubscriptionModal}>
+				<BackgroundDecorations />
 				<DialogHeader className="justify-between">
-					<Typography variant="h5" className=" text-gray-600 font-normal">
-						Choose your $POSTER Subscription
+					<Typography variant="h5" className=" text-pink-500 font-bold">
+						Choose your Poster Gold Subscription
 					</Typography>
-					<IconButton color="gray" size="sm" variant="text" onClick={handleSubscriptionModal}>
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
-							<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</IconButton>
+					<div className="flex items-center gap-2">
+						<IosHeartDislike className="w-5 h-5 cursor-pointer hover:animate-pulse text-pink-500" onClick={handleSubscriptionModal} />
+					</div>
 				</DialogHeader>
 				<DialogBody className="overflow-y-scroll">
-					{/* {!isPending && ( */}
-					<div className="flex flex-col mx-4 gap-2">
-						<div
-							onClick={() => setSelectedSubscription('30')}
-							className={`cursor-pointer flex justify-between ${
-								selectedSubscription === '30' ? 'bg-[#f5f5f5]' : 'bg-white'
-							} text-lg font-bold border-2 rounded-lg p-4 py-2`}
-						>
-							<div className=""> 30 Poster</div>
-							<div className="flex gap-2">
-								<div className=""> $3</div>
-								<div className=""> | 0.001 ETH</div>
+					<div className="grid grid-cols-3 gap-6">
+						{Packages.map((pkg) => (
+							<div
+								key={pkg.name}
+								onClick={() => setSelectedSubscription(pkg.amount)}
+								className={`cursor-pointer relative group transition-all duration-300 ${
+									selectedSubscription === pkg.amount ? 'gradient-border-active' : 'gradient-border'
+								} p-[1px] rounded-xl`}
+							>
+								<div className={`h-full w-full rounded-xl p-6 ${selectedSubscription === pkg.amount ? 'bg-pink-50' : 'bg-white hover:bg-pink-50'}`}>
+									<div className="flex flex-col items-center text-center gap-4">
+										<div className="relative">
+											<h3 className="text-xl font-bold text-gray-800">{pkg.name}</h3>
+											{selectedSubscription === pkg.amount && (
+												<FaRegKissWinkHeart className="absolute -right-8 -top-1 text-pink-500 animate-bounce-spin" size={24} />
+											)}
+										</div>
+										<div
+											className={`text-pink-500 group-hover:bg-white bg-pink-50 rounded-full px-3 py-1 font-semibold text-md ${
+												selectedSubscription === pkg.amount ? 'bg-pink-500 text-white group-hover:bg-pink-600 group-hover:text-white' : ''
+											}`}
+										>
+											{pkg.amount} Gold
+										</div>
+										<div className="px-0 py-0 w-full">
+											<div className={`text-xl font-bold ${selectedSubscription === pkg.amount ? 'text-pink-500' : ' text-gray-800'}`}>${pkg.price}.00 USD</div>
+											<div className="text-sm text-pink-500 mt-1">{pkg.priceETH} ETH</div>
+										</div>
+									</div>
+									{/* <div className="absolute -right-2 -top-2 transform rotate-12 opacity-30 group-hover:opacity-20 transition-opacity">
+										<FaHeartbeat className="w-5 h-5 text-pink-500" />
+									</div> */}
+								</div>
 							</div>
-						</div>
-						<div
-							onClick={() => setSelectedSubscription('60')}
-							className={`cursor-pointer flex justify-between ${
-								selectedSubscription === '60' ? 'bg-[#f5f5f5]' : 'bg-white'
-							} text-lg font-bold border-2 rounded-lg p-4 py-2`}
-						>
-							<div className=""> 60 Poster</div>
-							<div className="flex gap-2">
-								<div className=""> $6</div>
-								<div className=""> | 0.002 ETH</div>
-							</div>
-						</div>
-						<div
-							onClick={() => setSelectedSubscription('90')}
-							className={`cursor-pointer flex justify-between ${
-								selectedSubscription === '90' ? 'bg-[#f5f5f5]' : 'bg-white'
-							} text-lg font-bold border-2 rounded-lg p-4 py-2`}
-						>
-							<div className=""> 90 Poster</div>
-							<div className="flex gap-2">
-								<div className=""> $9</div>
-								<div className=""> | 0.003 ETH</div>
-							</div>
-						</div>
+						))}
 					</div>
-					{/* )} */}
+
 					{isPending && (
 						<div className="flex m-4 gap-2">
 							Please confirm the Transaction in your wallet <Spinner />
@@ -160,16 +262,22 @@ const SubscriptionModal = () => {
               Please switch to Base Sepolia to buy $POSTER
             </div>
           )} */}
-					<div className="flex flex-col gap-2 m-4">
-						<Networks chains={supportedChains} isUnsupportedChain={isChainSupported} />
+					<div className="flex flex-col gap-3 m-4 mt-8">
+						{isChainSupported && <Networks chains={supportedChains} isUnsupportedChain={isChainSupported} />}
 						<Button
 							disabled={isPending}
-							// loading={isPending}
 							onClick={fnBuyPoster}
-							color="gray"
-							className="w-full text-center"
+							className="w-full focus:outline-none outline-none bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl transition-colors group"
 						>
-							Buy $POSTER
+							{isPending ? (
+								<div className="flex items-center justify-center gap-2">
+									<Spinner className="h-4 w-4" /> Processing...
+								</div>
+							) : (
+								<div className="flex items-center justify-center gap-2 text-lg font-semibold">
+									Buy with Love <FaHeartbeat className="w-5 h-5 group-hover:animate-pulse text-white" />
+								</div>
+							)}
 						</Button>
 					</div>
 				</DialogBody>

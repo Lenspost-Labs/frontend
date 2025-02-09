@@ -15,7 +15,7 @@ import { useAccount } from "wagmi";
 import BiCopy from "@meronex/icons/bi/BiCopy";
 import { toast } from "react-toastify";
 import { zoraURLErc721 } from "../utils";
-import { FRAME_URL, MINT_URL } from "../../../../../../../data";
+import { FRAME_URL, MINT_URL, X_INTENT_URL } from "../../../../../../../data";
 
 const ZoraDialog = ({
   title,
@@ -37,10 +37,10 @@ const ZoraDialog = ({
   isStoringFrameData,
   isDeployingZoraContract,
   slug,
+  isDeployingContract,
 }) => {
   const [open, setOpen] = useState(false);
   const { resetState } = useReset();
-  const { chain } = useAccount();
   const [isCopy, setIsCopy] = useState({
     id: null,
   });
@@ -88,7 +88,8 @@ const ZoraDialog = ({
                 "Confirm the transaction to create the split..."}
               {isLoading && "Confirm the transaction to create the Edition..."}
               {isPending && "Transaction is pending..."}
-              {isDeployingZoraContract && "Deploying collection..."}
+              {(isDeployingZoraContract || isDeployingContract) &&
+                "Deploying collection..."}
               {isStoringFrameData && "Storing Frame data..."}
               {isOpenAction && isShareLoading && "Creating Lens open action..."}
               {isFarcaster && isShareLoading && "Sharing on Farcaster..."}
@@ -151,31 +152,68 @@ const ZoraDialog = ({
                         </span>
                       )}
                       {slug && (
-                        <span className="flex gap-1 items-center">
-                          Mint your
-                          <a
-                            href={MINT_URL + "/mint/" + slug}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-blue-500"
-                          >
-                            NFT
-                          </a>
-                          <BiCopy
-                            onClick={() => {
-                              navigator.clipboard.writeText(
-                                MINT_URL + "/mint/" + slug
-                              );
-                              setIsCopy({
-                                id: 3,
-                              });
-                            }}
-                            className="cursor-pointer"
-                          />
-                          {isCopy?.id === 3 && (
-                            <span className="text-green-500">Copied</span>
-                          )}
-                        </span>
+                        <>
+                          <span className="flex gap-1 items-center">
+                            Mint your
+                            <a
+                              href={MINT_URL + "/mint/" + slug}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-blue-500"
+                            >
+                              NFT
+                            </a>
+                            <BiCopy
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  MINT_URL + "/mint/" + slug
+                                );
+                                setIsCopy({
+                                  id: 3,
+                                });
+                              }}
+                              className="cursor-pointer"
+                            />
+                            {isCopy?.id === 3 && (
+                              <span className="text-green-500">Copied</span>
+                            )}
+                          </span>
+                          <span className="flex gap-1 items-center">
+                            Share your NFT on
+                            <a
+                              href={
+                                X_INTENT_URL +
+                                "Mint your NFT on " +
+                                MINT_URL +
+                                "/mint/" +
+                                slug
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-blue-500"
+                            >
+                              X
+                            </a>
+                            <BiCopy
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  X_INTENT_URL +
+                                    "Mint your NFT on " +
+                                    MINT_URL +
+                                    "/mint/" +
+                                    slug
+                                );
+                                setIsCopy({
+                                  id: 3,
+                                });
+                              }}
+                              className="cursor-pointer"
+                            />
+                            {isCopy?.id === 3 && (
+                              <span className="text-green-500">Copied</span>
+                            )}
+                          </span>
+                        </>
                       )}
                     </>
                   )
@@ -207,6 +245,41 @@ const ZoraDialog = ({
                           <span className="text-green-500">Copied</span>
                         )}
                       </span>
+                      <span className="text-md flex items-center gap-1">
+                        Share your NFT on{" "}
+                        <a
+                          href={
+                            X_INTENT_URL +
+                            "Mint your NFT on \n" +
+                            MINT_URL +
+                            "/mint/" +
+                            slug
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-500"
+                        >
+                          X
+                        </a>
+                        <BiCopy
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              X_INTENT_URL +
+                                "Mint your NFT on " +
+                                MINT_URL +
+                                "/mint/" +
+                                slug
+                            );
+                            setIsCopy({
+                              id: 4,
+                            });
+                          }}
+                          className="cursor-pointer"
+                        />
+                        {isCopy?.id === 4 && (
+                          <span className="text-green-500">Copied</span>
+                        )}
+                      </span>
                     </>
                   )}
             </Typography>
@@ -216,7 +289,8 @@ const ZoraDialog = ({
               isPending ||
               isShareLoading ||
               isStoringFrameData ||
-              isDeployingZoraContract) && <Spinner color="blue" />}
+              isDeployingZoraContract ||
+              isDeployingContract) && <Spinner color="blue" />}
           </div>
         </DialogBody>
 
@@ -229,7 +303,8 @@ const ZoraDialog = ({
               isPending ||
               isShareLoading ||
               isStoringFrameData ||
-              isDeployingZoraContract
+              isDeployingZoraContract ||
+              isDeployingContract
             }
             // color="teal"
             onClick={() => {

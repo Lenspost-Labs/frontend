@@ -32,8 +32,12 @@ export const DEGEN_CURRENCY_ADDRESS =
 export const STORY_ODYSSEY_ADDRESS =
   "0xBDE2AF89cf844ffDA70885131Da8BA3804bc48Bf";
 
-export const isSponsoredChain = [8453, 42161, 137];
+export const isSponsoredChain = [8453, 42161, 137, 2818, 325000];
 export const posterTokenSymbol = "xPOSTER";
 export const R2_IMAGE_URL =
   "https://pub-2ae8c1134d9a4424b3e00475c4421a7a.r2.dev";
 export const CDN_IMAGE_URL = "https://lenspost-r2.b-cdn.net";
+
+export const X_INTENT_URL = "https://x.com/intent/post?text=";
+
+export const LP721SupportedChains = [2818, 325000];

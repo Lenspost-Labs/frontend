@@ -1,4 +1,3 @@
-import { ham } from "../network/ham";
 import { CDN_IMAGE_URL } from "./constant";
 
 export const TOKEN_LIST = {
@@ -116,6 +115,26 @@ export const TOKEN_LIST = {
       name: "Polygon Token",
       decimals: 18,
       logoURI: "https://polygonscan.com/token/images/polygonmatic_new_32.png",
+    },
+  ],
+  Morph: [
+    {
+      id: 2818,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "ETH",
+      name: "Ether",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+  ],
+  "Camp Network Testnet V2": [
+    {
+      id: 325000,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "ETH",
+      name: "Ether",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
     },
   ],
 };

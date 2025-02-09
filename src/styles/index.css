@@ -359,17 +359,33 @@ img {
 
 .jump {
 	animation: jump 1.5s infinite ease;
+	transform-style: preserve-3d;
 }
 
 @keyframes jump {
 	0% {
 		top: 0;
+		transform: rotateY(0deg);
+		-webkit-transform: rotateY(0deg);
+		-moz-transform: rotateY(0deg);
+		-ms-transform: rotateY(0deg);
+		-o-transform: rotateY(0deg);
 	}
 	50% {
 		top: -40px;
+		transform: rotateY(0deg);
+		-webkit-transform: rotateY(0deg);
+		-moz-transform: rotateY(0deg);
+		-ms-transform: rotateY(0deg);
+		-o-transform: rotateY(0deg);
 	}
 	100% {
 		top: 0;
+		transform: rotateY(-360deg);
+		-webkit-transform: rotateY(-360deg);
+		-moz-transform: rotateY(-360deg);
+		-ms-transform: rotateY(-360deg);
+		-o-transform: rotateY(-360deg);
 	}
 }
 
@@ -431,23 +447,26 @@ img {
 .currency:after {
 	content: '';
 	position: absolute;
-	height: 100px;
+	height: 60px;
 	width: 20px;
-	margin: 20px -65px;
-	box-shadow: 50px -23px 0 -10px rgba(255, 255, 255, 0.22), 85px -10px 0 -16px rgba(255, 255, 255, 0.19);
+	z-index: 500;
+	margin: 0px -20px;
+	box-shadow: 30px -20px 0 0px rgba(255, 255, 255, 0.22), 45px -10px 0 -105px rgba(255, 255, 255, 0.18);
+	top: 0px;
 	transform: rotate(-50deg);
 	animation: shine 1.5s infinite ease;
+	-webkit-animation: shine 1.5s infinite ease;
 }
 
 @keyframes shine {
 	0% {
-		margin: 10px -25px;
+		margin: 0px 0px;
 	}
 	50% {
-		margin: 20px -55px;
+		margin: 20px 0px;
 	}
 	100% {
-		margin: 10px -25px;
+		margin: 10px 0px;
 	}
 }
 

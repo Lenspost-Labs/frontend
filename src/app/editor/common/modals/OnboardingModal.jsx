@@ -20,16 +20,28 @@ const OnboardingModal = () => {
 
 	const handleOpen = () => setIsOnboardingOpen(!isOnboardingOpen)
 
-	const leftFeaturedImages = [
+	const StableDiffusionImages = [
 		'https://lenspost-r2.b-cdn.net/ai_images/1738083494201.png',
 		'https://lenspost-r2.b-cdn.net/ai_images/1738083510203.png',
 		'https://lenspost-r2.b-cdn.net/ai_images/1738083523551.png',
 	]
 
-	const leftFeaturedImages2 = [
+	const MigglesImages = [
 		'https://lenspost-r2.b-cdn.net/ai_images/1738149846318.png',
 		'https://lenspost-r2.b-cdn.net/ai_images/1738149902276.png',
 		'https://lenspost-r2.b-cdn.net/ai_images/1738150069414.png',
+	]
+
+	const FluxImages = [
+		'https://lenspost-r2.b-cdn.net/ai_images/1739109247705.png',
+		'https://lenspost-r2.b-cdn.net/ai_images/1739109365012.png',
+		'https://lenspost-r2.b-cdn.net/ai_images/1739109418632.png',
+	]
+
+	const PepeImages = [
+		'https://pub-2ae8c1134d9a4424b3e00475c4421a7a.r2.dev/Stickers/test/sdk-image-55c015c210-0x03d6519d6b3373eaa1d9e7402846bc9a52b9faee-e4c5aa.png',
+		'https://pub-2ae8c1134d9a4424b3e00475c4421a7a.r2.dev/Stickers/test/sdk-image-123fbf280e-0x03d6519d6b3373eaa1d9e7402846bc9a52b9faee-e4c5aa.png',
+		'https://pub-2ae8c1134d9a4424b3e00475c4421a7a.r2.dev/Stickers/test/sdk-image-e94a3abded-0x03d6519d6b3373eaa1d9e7402846bc9a52b9faee-e4c5aa.png',
 	]
 
 	const steps = [
@@ -87,7 +99,7 @@ const OnboardingModal = () => {
 						</div> */}
 
 						<div className="w-full">
-							<CompSearch featuredImages={leftFeaturedImages} featuredImages2={leftFeaturedImages2} />
+							<CompSearch StableDiffusionImages={StableDiffusionImages} FluxImages={FluxImages} PepeImages={PepeImages} MigglesImages={MigglesImages} />
 						</div>
 					</>
 				</div>

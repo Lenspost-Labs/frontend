@@ -46,22 +46,23 @@ import OnboardingModal from './common/modals/OnboardingModal'
 import { Sparkles } from 'lucide-react'
 import useMobilePanelFunctions from './common/mobileHooks/useMobilePanelFunctions'
 import SignMesasgeModal from './common/modals/SignMesasgeModal'
+import SubscriptionModal from './common/modals/SubscriptionModal'
 
 // enable animations
 unstable_setAnimationsEnabled(true)
 
 const sections = [
-	NFTSection,
+	AIImageSection,
+	StickerSection,
 	TemplateSection,
 	MemeSection,
-	TextSection,
 	DesignSection,
-	StickerSection,
-	BannerSection,
-	AIImageSection,
-	BackgroundSection,
-	ShapeSection,
 	UploadSection,
+	BackgroundSection,
+	TextSection,
+	ShapeSection,
+	BannerSection,
+	NFTSection,
 	LayersSection,
 	ResizeSection,
 ]
@@ -702,6 +703,7 @@ const Editor = () => {
 									<BgRemover />
 									{/* Quick Tour on the main page */}
 									<div className="flex flex-row ">
+										<SubscriptionModal bottomBar={true} />
 										{/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
 										<SpeedDialX />
 										<OnboardingModal />

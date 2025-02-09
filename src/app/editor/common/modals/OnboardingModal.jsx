@@ -100,16 +100,16 @@ const OnboardingModal = () => {
 		const jwtTimestamp = getFromLocalStorage(LOCAL_STORAGE.userAuthTime)
 		const currentTimestamp = new Date().getTime()
 
-		console.log(currentTimestamp)
-		console.log(jwtTimestamp)
+		console.log(displayedSteps)
+		console.log(steps)
 		if (jwtTimestamp && currentTimestamp - jwtTimestamp > oneMinute) {
 			setAuthenticatedBefore(true)
 
 			// Reset the current step to the third step
-			setCurrentStep(2)
+			setCurrentStep(0)
 
 			// Set displayedSteps to show only the third step
-			setDisplayedSteps([steps[2]])
+			setDisplayedSteps([steps[0]])
 		} else {
 			setAuthenticatedBefore(false)
 
@@ -135,16 +135,16 @@ const OnboardingModal = () => {
 					{/* <DialogHeader>Poster AI Magic</DialogHeader> */}
 					{/* <DialogBody> */}
 
-					<div className="bg-white rounded-lg shadow-xl w-full p-6 relative">
-						<div className="absolute top-4 right-4 pr-2 pt-3">
+					<div className="bg-white rounded-lg shadow-xl w-full p-6 pb-0 relative overflow-y-auto max-h-[90vh]">
+						<div className="absolute top-0 right-4 pr-2 pt-3">
 							<div className="flex items-center">
 								<VscVerified className="inline-block w-5 h-5 text-[#E15F77] bg-[#fec6d0] rounded-full" />
 								<span className="ml-1 text-gray-500">{points}</span>
 							</div>
 						</div>
 
-						<h2 className="text-xl font-bold mb-4 text-center pr-14">{steps[currentStep].title}</h2>
-						<div className="text-center mb-6">{steps[currentStep].content}</div>
+						<h2 className="text-xl font-bold -mt-4 mb-4 text-center pr-14">{steps[currentStep]?.title}</h2>
+						<div className="text-center mb-0">{steps[currentStep]?.content}</div>
 						<div className="flex justify-between items-center cursor-pointer">
 							<div className="space-x-1">
 								{displayedSteps.map((_, index) => (

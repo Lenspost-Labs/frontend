@@ -99,6 +99,10 @@ export const CompSearch = ({ featuredImages, isPanel = false, featuredImages2 })
 			try {
 				setIsLoading(true)
 				let finalQuery = query
+				let provider = 'stability'
+				if (model === 'MiggleV3') {
+					provider = 'heurist'
+				}
 				if (model === 'MiggleV3' && !query.toLowerCase().includes('miggles')) {
 					finalQuery = `miggles ${query}`
 				}

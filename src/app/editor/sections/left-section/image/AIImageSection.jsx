@@ -107,7 +107,7 @@ export const CompSearch = ({ featuredImages, isPanel = false, featuredImages2 })
 					finalQuery = `miggles ${query}`
 				}
 				finalQuery = finalQuery.replace('Miggles', 'miggles')
-				const response = await aiMutate({ prompt: finalQuery, model })
+				const response = await aiMutate({ prompt: finalQuery, model, provider })
 				setStStatusCode(response.data.status)
 				if (response.data.status === 'success') {
 					setIsLoading(false)

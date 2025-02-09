@@ -223,8 +223,10 @@ const SubscriptionModal = ({ bottomBar = false }) => {
 											)}
 										</div>
 										<div
-											className={`text-pink-500 group-hover:bg-white bg-pink-50 rounded-full px-3 py-1 font-semibold text-md ${
-												selectedSubscription === pkg.amount ? 'bg-pink-500 text-white group-hover:bg-pink-600 group-hover:text-white' : ''
+											className={`rounded-full px-3 py-1 font-semibold text-md ${
+												selectedSubscription === pkg.amount
+													? 'bg-pink-500 text-white group-hover:bg-pink-600 group-hover:text-white'
+													: 'text-pink-500 group-hover:bg-white bg-pink-50'
 											}`}
 										>
 											{pkg.amount} Gold

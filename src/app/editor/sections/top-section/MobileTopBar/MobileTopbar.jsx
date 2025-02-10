@@ -30,6 +30,7 @@ import { House } from 'lucide-react'
 import { FolderSearch } from 'lucide-react'
 import { FolderSearch2 } from 'lucide-react'
 import useReownAuth from '../../../../../hooks/reown-auth/useReownAuth'
+import { toCapitalize } from '../../../../../utils'
 const MobileTopbar = () => {
 	const { urlQueryActionType } = useAppUrl()
 
@@ -76,6 +77,10 @@ const MobileTopbar = () => {
 	})
 
 	const stickersSections = [
+		{
+			author: 'camp',
+			campaign: 'camp',
+		},
 		{
 			author: '$Pipe',
 			campaign: '$Pipe',
@@ -261,7 +266,7 @@ const MobileTopbar = () => {
 									</div>  */}
 									{stickersSections.map((section) => (
 										<div className="flex flex-col justify-between mt-4">
-											<div className="text-lg p-2 "> {section.author} </div>
+											<div className="text-lg p-2 "> {toCapitalize(section?.author)} </div>
 											<div className="flex w-full overflow-x-auto">
 												<CustomHorizontalScroller type="props" author={section.author} campaign={section.campaign} />
 											</div>

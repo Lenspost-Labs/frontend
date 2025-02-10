@@ -185,9 +185,9 @@ const SubscriptionModal = ({ bottomBar = false }) => {
 					onClick={handleSubscriptionModal}
 					className="cursor-pointer bg-black flex items-center gap-2 text-lg border-0 font-bold px-3 py-0  my-1 group rounded-md hover:bg-[#efef97]"
 				>
-					<img className="h-5 w-5" src={coinImg} alt="" />
+					<img className="h-4 w-4 -mt-1" src={coinImg} alt="" />
 					<div className="text-md group-hover:text-black text-white">{points}</div>
-					<div className="text-sm font-normal group-hover:text-black text-white">xPosters</div>
+					<div className="text-sm font-normal group-hover:text-black text-white">Gold</div>
 				</div>
 			) : (
 				<div onClick={handleSubscriptionModal} className="-mt-36 -mr-20 cursor-pointer">
@@ -257,7 +257,7 @@ const SubscriptionModal = ({ bottomBar = false }) => {
 					)}
 
 					{isConfirming && <div className="m-4">Waiting for Transaction confirmation...</div>}
-					{isConfirmed && <div className="m-4 font-medium text-green-500">We've received your transaction, You'll get xPosters soon</div>}
+					{isConfirmed && <div className="m-4 font-medium text-green-500">We've received your transaction, You'll get Poster Gold soon</div>}
 					{error && <div className="m-4 text-red-500 text-xs">Transaction failed: {error.message}</div>}
 					{/* {chain?.id !== 84532 && (
             <div className="m-4 text-red-500">

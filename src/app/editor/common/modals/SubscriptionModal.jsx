@@ -28,6 +28,8 @@ import FaHeartbeat from "@meronex/icons/fa/FaHeartbeat";
 import AiFillHeart from "@meronex/icons/ai/AiFillHeart";
 import FaRegKissWinkHeart from "@meronex/icons/fa/FaRegKissWinkHeart";
 import IosHeartDislike from "@meronex/icons/ios/IosHeartDislike";
+import { useAppAuth } from "../../../../hooks/app";
+
 const Packages = [
   {
     name: "Sweet Start",
@@ -50,21 +52,26 @@ const Packages = [
 ];
 
 const SparklingCoin = () => {
-  return (
-    <div className="coin">
-      <div className="front jump">
-        <div className="star"></div>
-        <span className="currency">$</span>
-        <div className="shapes">
-          <div className="shape_l"></div>
-          <div className="shape_r"></div>
-          <span className="top">Poster</span>
-          <span className="bottom">Gold</span>
+  const { isAuthenticated } = useAppAuth();
+  if (!isAuthenticated) {
+    return (
+      <div className="coin">
+        <div className="front jump">
+          <div className="star"></div>
+          <span className="currency">$</span>
+          <div className="shapes">
+            <div className="shape_l"></div>
+            <div className="shape_r"></div>
+            <span className="top">Poster</span>
+            <span className="bottom">Gold</span>
+          </div>
         </div>
+        <div className="shadow"></div>
       </div>
-      <div className="shadow"></div>
-    </div>
-  );
+    );
+  } else {
+    return <></>;
+  }
 };
 
 const SparklingCoins = () => {

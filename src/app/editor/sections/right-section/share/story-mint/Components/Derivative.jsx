@@ -3,22 +3,20 @@ import { Context } from '../../../../../../../providers/context'
 import { useAppAuth, useReset } from '../../../../../../../hooks/app'
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { registerIPDerivative, uploadJSONtoIPFS, uploadUserAssetToIPFS } from '../../../../../../../services'
+import { registerIPDerivative, uploadUserAssetToIPFS } from '../../../../../../../services'
 import { toast } from 'react-toastify'
-import useMint721 from '../../../../../../../hooks/mint721/useMint721'
-import { useAccount, useChainId, useSwitchChain } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { useEffect } from 'react'
 import { getFromLocalStorage } from '../../../../../../../utils'
-import { LOCAL_STORAGE, STORY_ODYSSEY_ADDRESS } from '../../../../../../../data'
+import { LOCAL_STORAGE } from '../../../../../../../data'
 import { storyOdysseyTestnet } from '../../../../../../../data/network/storyOdyssey'
-import storyABI from '../../../../../../../data/json/storyABI.json'
 import { InputBox, SelectBox } from '../../../../../common'
 import { EVMWallets } from '../../../../top-section/auth/wallets'
 import { Button, Textarea } from '@material-tailwind/react'
 import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 
 const Derivative = () => {
-	const { postDescription, setMenu, canvasBase64Ref, storyIPDataRef, setPostDescription, contextCanvasIdRef, isMobile } = useContext(Context)
+	const { postDescription, canvasBase64Ref, storyIPDataRef, setPostDescription, contextCanvasIdRef, isMobile } = useContext(Context)
 	const { resetState } = useReset()
 	const { login } = useReownAuth()
 	const { isAuthenticated } = useAppAuth()

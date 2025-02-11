@@ -63,49 +63,49 @@ const OnboardingModal = () => {
     //     </>
     //   ),
     // },
-    {
-      title:
-        "🔥 Unlock Poster Gold – Level Up Your Poster Game!\n✨ Why settle for less when you can go GOLD? ✨",
-      content: (
-        <>
-          <ul className="space-y-2 text-left">
-            {[
-              "Create AI masterpieces – Your imagination, now in HD! 🧁",
-              "Make backgrounds vanish – Like magic, but real. 🐰",
-              "Save designs locally – Your computer will thank you. 💻",
-              "Auto-save your work – No more “oops” moments. 😅",
-              "Remove watermarks – With a snap. ✨",
-              "Join epic campaigns – Exclusive token drops await! 🤑🍄",
-            ].map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <svg
-                  className="w-5 h-5 text-green-500 mr-2 mt-1 flex-shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  ></path>
-                </svg>
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <p className=" pt-5 flex items-start">
-            🚀 Upgrade to Poster Gold now & become the ultimate POSTER! 🚀
-            {/* <br /> [ Get Poster Gold ] */}
-          </p>
-          <div className="w-1/4 mx-auto pt-5">
-            <SubscriptionModal />
-          </div>
-        </>
-      ),
-    },
+    // {
+    //   title:
+    //     "🔥 Unlock Poster Gold – Level Up Your Poster Game!\n✨ Why settle for less when you can go GOLD? ✨",
+    //   content: (
+    //     <>
+    //       <ul className="space-y-2 text-left">
+    //         {[
+    //           "Create AI masterpieces – Your imagination, now in HD! 🧁",
+    //           "Make backgrounds vanish – Like magic, but real. 🐰",
+    //           "Save designs locally – Your computer will thank you. 💻",
+    //           "Auto-save your work – No more “oops” moments. 😅",
+    //           "Remove watermarks – With a snap. ✨",
+    //           "Join epic campaigns – Exclusive token drops await! 🤑🍄",
+    //         ].map((feature, index) => (
+    //           <li key={index} className="flex items-start">
+    //             <svg
+    //               className="w-5 h-5 text-green-500 mr-2 mt-1 flex-shrink-0"
+    //               fill="none"
+    //               stroke="currentColor"
+    //               viewBox="0 0 24 24"
+    //               xmlns="http://www.w3.org/2000/svg"
+    //             >
+    //               <path
+    //                 strokeLinecap="round"
+    //                 strokeLinejoin="round"
+    //                 strokeWidth="2"
+    //                 d="M5 13l4 4L19 7"
+    //               ></path>
+    //             </svg>
+    //             {feature}
+    //           </li>
+    //         ))}
+    //       </ul>
+    //       <p className=" pt-5 flex items-start">
+    //         🚀 Upgrade to Poster Gold now & become the ultimate POSTER! 🚀
+    //         {/* <br /> [ Get Poster Gold ] */}
+    //       </p>
+    //       <div className="w-1/4 mx-auto pt-5">
+    //         <SubscriptionModal />
+    //       </div>
+    //     </>
+    //   ),
+    // },
     {
       title: "Poster AI Magic",
       content: (

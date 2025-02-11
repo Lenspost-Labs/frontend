@@ -104,6 +104,7 @@ const Editor = () => {
 		farcasterStates,
 		setFarcasterStates,
 		setPostName,
+		storyIPDataRef,
 
 		// Mobile UI
 		isMobile,
@@ -235,6 +236,7 @@ const Editor = () => {
 			...assetsRecipientDataRef.current, // recipient data of assets
 			...nftRecipientDataRef.current, // recipient data of solana
 			...bgRemoverRecipientDataRef.current, // recipient data of bg remover
+			...storyIPDataRef.current, // recipient data of story nft
 		]
 
 		const recipientDataRefArr = parentRecipientDataRef.current
@@ -336,6 +338,8 @@ const Editor = () => {
 						assetsRecipientElementData: recipientDataFilter().recipientsData,
 						preview: canvasBase64Ref.current,
 						assetIds: [...new Set(assetsIdListRef.current.map((item) => item?.assetId).filter((id) => id !== undefined))] || [],
+						parentIpIds: [...new Set(storyIPDataRef.current.map((item) => item?.ipID).filter((id) => id !== undefined))] || [],
+						licenseTermsIds: [...new Set(storyIPDataRef.current.map((item) => item?.licenseTermsId).filter((id) => id !== undefined))] || [],
 					}
 					createCanvasAsync(reqbody)
 						.then((res) => {
@@ -362,6 +366,8 @@ const Editor = () => {
 						assetsRecipientElementData: recipientDataFilter().recipientsData,
 						preview: canvasBase64Ref.current,
 						assetIds: [...new Set(assetsIdListRef.current.map((item) => item?.assetId).filter((id) => id !== undefined))] || [],
+						parentIpIds: [...new Set(storyIPDataRef.current.map((item) => item?.ipID).filter((id) => id !== undefined))] || [],
+						licenseTermsIds: [...new Set(storyIPDataRef.current.map((item) => item?.licenseTermsId).filter((id) => id !== undefined))] || [],
 					}
 					updateCanvasAsync(reqbody)
 						.then((res) => {

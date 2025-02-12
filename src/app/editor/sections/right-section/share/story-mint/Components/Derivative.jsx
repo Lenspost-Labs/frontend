@@ -7,17 +7,21 @@ import { registerIPDerivative, uploadUserAssetToIPFS } from '../../../../../../.
 import { toast } from 'react-toastify'
 import { useAccount } from 'wagmi'
 import { useEffect } from 'react'
-import { getFromLocalStorage, saveToLocalStorage } from '../../../../../../../utils'
+import { addressCrop, getFromLocalStorage, saveToLocalStorage } from '../../../../../../../utils'
 import { LOCAL_STORAGE } from '../../../../../../../data'
-import { storyOdysseyTestnet } from '../../../../../../../data/network/storyOdyssey'
 import { InputBox, SelectBox } from '../../../../../common'
 import { EVMWallets } from '../../../../top-section/auth/wallets'
 import { Button, Textarea } from '@material-tailwind/react'
 import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 import { getOrCreateWallet } from '../../../../../../../services/apis/BE-apis'
+import { Topup } from '../../farcaster-share/components'
+import WithdrawFunds from '../../farcaster-share/components/WithdrawFunds'
+import WatermarkRemover from '../../components/WatermarkRemover'
+import { storyAeneidTestnet } from '../../../../../../../data'
 
 const Derivative = () => {
-	const { postDescription, canvasBase64Ref, storyIPDataRef, setPostDescription, contextCanvasIdRef, isMobile } = useContext(Context)
+	const { postDescription, contextCanvasIdRef, actionType, canvasBase64Ref, storyIPDataRef, setPostDescription, isMobile } = useContext(Context)
+
 	const { resetState } = useReset()
 	const { login } = useReownAuth()
 	const { isAuthenticated } = useAppAuth()
@@ -26,11 +30,8 @@ const Derivative = () => {
 	const [creatorDescription, setCreatorDescription] = useState('')
 	const [twitter, setTwitter] = useState('')
 	const [farcaster, setFarcaster] = useState('')
-
 	const [charLimitError, setCharLimitError] = useState('')
-
 	const [collectionName, setCollectionName] = useState('')
-
 	const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth)
 
 	const {
@@ -43,11 +44,9 @@ const Derivative = () => {
 		isRefetching: isWalletRefetching,
 	} = useQuery({
 		queryKey: ['getOrCreateWallet'],
-		queryFn: () => getOrCreateWallet(storyOdysseyTestnet?.id),
+		queryFn: () => getOrCreateWallet(storyAeneidTestnet?.id),
 		refetchOnWindowFocus: false,
 	})
-
-	console.log(walletData)
 
 	// upload to IPFS Mutation
 	const {
@@ -82,9 +81,6 @@ const Derivative = () => {
 			saveToLocalStorage(LOCAL_STORAGE.userLOA, walletData?.publicAddress)
 		}
 	}, [isWalletSuccess])
-	console.log('isWalletSuccess', { isWalletSuccess, walletData })
-
-	console.log({ topUp_balance: walletData?.balance })
 
 	// upload JSON data to IPFS
 	useEffect(() => {
@@ -115,28 +111,24 @@ const Derivative = () => {
 				parentIpIds: [...storyIPDataRef.current.map((item) => item?.ipID)],
 				licenseTermsIds: [...storyIPDataRef.current.map((item) => item?.licenseTermsId)],
 			}
-			console.log(jsonData)
 			registerDerivative(jsonData)
 		}
 	}, [isUploadSuccess])
 
 	useEffect(() => {
 		if (isRegisterDerivativeError) {
-			console.log(registerDerivativeError)
 			toast.error(registerDerivativeError?.message)
 		}
 	}, [isRegisterDerivativeError, registerDerivativeError])
 
 	useEffect(() => {
 		if (isUploadError) {
-			console.log(uploadError)
 			toast.error(uploadError?.message)
 		}
 	}, [isUploadError, uploadError])
 
 	useEffect(() => {
 		if (isRegisterDerivativeSuccess) {
-			console.log('isRegisterDerivativeSuccess', isRegisterDerivativeSuccess)
 			//resetState()
 			toast.success('Derivative registered successfully!')
 		}
@@ -185,7 +177,6 @@ const Derivative = () => {
 	}
 
 	const handleSubmit = () => {
-		console.log('handleSubmit')
 		if (!address) {
 			toast.error('Please connect your wallet')
 			return
@@ -232,8 +223,6 @@ const Derivative = () => {
 			toast.error('Please provide a description')
 			return
 		}
-
-		console.log('handleSubmit', 'mutate')
 
 		// upload to IPFS
 		mutate(canvasBase64Ref.current[0])
@@ -357,7 +346,7 @@ const Derivative = () => {
 				<div className="flex flex-col gap-2 mt-4 justify-center items-center">
 					<p className="text-green-500 font-bold">Derivative registered successfully!</p>
 					<a
-						href={`${storyOdysseyTestnet?.blockExplorers?.default.url}/token/${registerDerivativeData?.data?.collection?.spgNftContract}`}
+						href={`${storyAeneidTestnet?.blockExplorers?.default.url}/token/${registerDerivativeData?.data?.collection?.spgNftContract}`}
 						className="text-purple-500 hover:underline"
 						rel="noreferrer"
 						target="_blank"
@@ -370,6 +359,23 @@ const Derivative = () => {
 			) : (
 				<div className="flex flex-col gap-2">
 					<div className="mt-4">
+						<p className="text-end mt-4">
+							<span>Topup account:</span>
+							{isWalletLoading || isWalletRefetching ? (
+								<span className="text-blue-500"> Loading address... </span>
+							) : (
+								<span
+									className="text-blue-500 cursor-pointer"
+									onClick={() => {
+										navigator.clipboard.writeText(walletData?.publicAddress)
+										toast.success('Copied topup account address')
+									}}
+								>
+									{' '}
+									{addressCrop(walletData?.publicAddress)}
+								</span>
+							)}
+						</p>
 						<p className="text-end">
 							<span>Topup balance:</span>
 							{isWalletLoading || isWalletRefetching ? (
@@ -377,11 +383,21 @@ const Derivative = () => {
 							) : (
 								<span>
 									{' '}
-									{walletData?.balance} {storyOdysseyTestnet?.nativeCurrency?.symbol}{' '}
+									{walletData?.balance} {storyAeneidTestnet?.nativeCurrency?.symbol}{' '}
 								</span>
 							)}
 						</p>
 					</div>
+					{walletData?.publicAddress && (
+						<Topup
+							topUpAccount={walletData?.publicAddress}
+							isIP={true}
+							balance={walletData?.balance}
+							refetchWallet={refetchWallet}
+							sponsored={walletData?.sponsored}
+						/>
+					)}
+					{/* {actionType !== 'composer' && walletData?.balance > 0 && <WithdrawFunds refetchWallet={refetchWallet} />} */}
 					<div className="mt-4">
 						<Button
 							disabled={isPending || isLoading}
@@ -393,6 +409,12 @@ const Derivative = () => {
 							{isLoading ? 'Registering...' : 'Register'}
 						</Button>
 					</div>
+
+					{isMobile && (
+						<div className="mt-4">
+							<WatermarkRemover />
+						</div>
+					)}
 				</div>
 			)}
 		</div>

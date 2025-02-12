@@ -7,12 +7,12 @@ import Derivative from './Components/Derivative'
 const StoryMint = ({ selectedChainId }) => {
 	const { storyIPDataRef } = useContext(Context)
 
-	const isStoryNFT = storyIPDataRef.current.length > 0
+	const isStoryNFT = storyIPDataRef?.current?.length > 0
 	console.log('isStoryNFT', isStoryNFT)
 	console.log('storyIPDataRef', storyIPDataRef)
 	return (
 		<>
-			<SharePanelHeaders menuName={'storyMint'} panelHeader={'Mint Options'} panelContent={isStoryNFT ? <Derivative /> : <Minting />} />
+			<SharePanelHeaders menuName={'storyMint'} panelHeader={'Story IP Options'} panelContent={isStoryNFT ? <Derivative /> : <Minting />} />
 		</>
 	)
 }

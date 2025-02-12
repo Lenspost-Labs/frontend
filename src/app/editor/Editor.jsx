@@ -320,6 +320,7 @@ const Editor = () => {
 				canvasIdRef.current = null
 				contextCanvasIdRef.current = null
 				isPageActive.current = false
+				storyIPDataRef.current = null
 			}
 
 			// save it to the backend
@@ -550,6 +551,7 @@ const Editor = () => {
 			if (canvasChildren?.length === 0) {
 				contextCanvasIdRef.current = null
 				canvasBase64Ref.current = []
+				storyIPDataRef.current = null
 				setFastPreview('')
 			} else {
 				// check if the canvas has more than 1 page

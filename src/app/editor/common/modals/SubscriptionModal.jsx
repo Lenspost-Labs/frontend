@@ -194,12 +194,15 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 					<div className="text-sm font-normal group-hover:text-black text-white">Gold</div>
 				</div>
 			) : (
-				<div onClick={handleSubscriptionModal} className="bottom-24 absolute right-16 cursor-pointer">
+				<div
+					onClick={handleSubscriptionModal}
+					className={`${isMobile ? 'bottom-16 absolute right-24 cursor-pointer' : '"bottom-24 absolute right-16 cursor-pointer"'}`}
+				>
 					<SparklingCoin />
 				</div>
 			)}
 			<Dialog
-				className={`p-4 relative overflow-hidden max-h-[90vh] ${isMobile ? 'h-[90vh]' : ''}`}
+				className={`p-4 relative  max-h-[90vh] ${isMobile ? 'h-[90vh] overflow-hidden' : ''}`}
 				size="md"
 				open={openedSubscriptionModal}
 				handler={handleSubscriptionModal}

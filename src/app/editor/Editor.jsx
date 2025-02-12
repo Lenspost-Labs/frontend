@@ -3,6 +3,7 @@ import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from 'polotno'
 import { Toolbar } from 'polotno/toolbar/toolbar'
 import { ZoomButtons } from 'polotno/toolbar/zoom-buttons'
 import {
+
 	AIImageSection,
 	BannerSection,
 	DesignSection,
@@ -46,25 +47,29 @@ import OnboardingModal from './common/modals/OnboardingModal'
 import { Sparkles } from 'lucide-react'
 import useMobilePanelFunctions from './common/mobileHooks/useMobilePanelFunctions'
 import SignMesasgeModal from './common/modals/SignMesasgeModal'
+import SubscriptionModal from './common/modals/SubscriptionModal'
+
 
 // enable animations
 unstable_setAnimationsEnabled(true)
 
 const sections = [
-	NFTSection,
+
+	AIImageSection,
+	StickerSection,
 	TemplateSection,
 	MemeSection,
-	TextSection,
 	DesignSection,
-	StickerSection,
-	BannerSection,
-	AIImageSection,
-	BackgroundSection,
-	ShapeSection,
 	UploadSection,
+	BackgroundSection,
+	TextSection,
+	ShapeSection,
+	BannerSection,
+	NFTSection,
 	LayersSection,
 	ResizeSection,
 ]
+
 
 const useHeight = () => {
 	const [height, setHeight] = React.useState(window.innerHeight)
@@ -77,6 +82,7 @@ const useHeight = () => {
 }
 
 const Editor = () => {
+
 	const store = useStore()
 	const height = useHeight()
 	const { address, isConnected } = useAccount()
@@ -115,11 +121,15 @@ const Editor = () => {
 		setOpenBottomBar,
 		isOpenBottomBar,
 		setCurOpenedTabLevel1,
+		isLoggedOut,
 
 		setIsOnboardingOpen,
+		isOnboardingOpen,
 	} = useContext(Context)
 
 	const { fnOpenPanel } = useMobilePanelFunctions()
+
+	const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
 
 	const componentMounted = useRef(false)
 	// initialize watermark
@@ -631,6 +641,15 @@ const Editor = () => {
 		}
 	}, [inviteCode, address, solanaAddress])
 
+	useEffect(() => {
+		// Show subscription modal only after onboarding is closed
+		if (!isOnboardingOpen) {
+			setShowSubscriptionModal(true)
+		} else {
+			setShowSubscriptionModal(false)
+		}
+	}, [isOnboardingOpen])
+
 	return (
 		<>
 			<div
@@ -702,6 +721,9 @@ const Editor = () => {
 									<BgRemover />
 									{/* Quick Tour on the main page */}
 									<div className="flex flex-row ">
+										{/* {!isLoggedOut && showSubscriptionModal && <SubscriptionModal defaultOpen={true} bottomBar={true} />} */}
+										{/* {!isLoggedOut && <SubscriptionModal defaultOpen={true} bottomBar={true} />} */}
+										{/* {alert(isOnboardingOpen)} */}
 										{/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
 										<SpeedDialX />
 										<OnboardingModal />
@@ -725,6 +747,9 @@ const Editor = () => {
 									</div>
 								</div>
 							)}
+							<div className="flex flex-row w-full justify-between items-center rounded-lg ">
+								{!isLoggedOut && showSubscriptionModal && <SubscriptionModal defaultOpen={true} bottomBar={true} />}
+							</div>
 						</WorkspaceWrap>
 					</PolotnoContainer>
 				</div>

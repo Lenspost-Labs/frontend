@@ -276,45 +276,43 @@ const ShareSection = () => {
             <hr />
             <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Share on socials</p>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 py-5">
-                <div className="inline-flex flex-col items-center">
+              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                <div className="cursor-pointer flex flex-col items-center gap-2">
                   <img
-                    className="w-10 h-10 cursor-pointer rounded-md"
+                    className="w-10 h-10 rounded-md hover:scale-105 transition-transform duration-200"
                     src={logoFarcaster}
                     alt="Farcaster"
                     onClick={() => setCurrentMenu("farcasterShare")}
                   />
-                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                  <Typography className="text-md font-semibold text-center">
                     Farcaster
                   </Typography>
                 </div>
-                <div className="inline-flex flex-col items-center">
+                <div className="cursor-pointer flex flex-col items-center gap-2">
                   <img
-                    className="w-10 h-10 cursor-pointer rounded-md"
+                    className="w-10 h-10 rounded-md hover:scale-105 transition-transform duration-200"
                     src={logoTwitter}
                     alt="X"
                     onClick={() => setCurrentMenu("xshare")}
                   />
-                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                  <Typography className="text-md font-semibold text-center">
                     X
                   </Typography>
                 </div>
-                <div className="inline-flex flex-col items-center">
+                <div className="cursor-pointer flex flex-col items-center gap-2">
                   <img
-                    className="w-10 h-10 cursor-pointer"
+                    className="w-10 h-10 rounded-md hover:scale-105 transition-transform duration-200"
                     src="/other-icons/share-section/iconLens.png"
                     alt="Lens"
                     onClick={() => setCurrentMenu("lensmonetization")}
                   />
-                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                  <Typography className="text-md font-semibold text-center">
                     Lens
                   </Typography>
                 </div>
               </div>
             </div>
-
             <hr />
-
             <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Mint NFT on Story Protocol</p>
               <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
@@ -331,7 +329,6 @@ const ShareSection = () => {
                 </div>
               </div>
             </div>
-
             <hr />
             <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Mint as an NFT on EVM</p>
@@ -354,9 +351,7 @@ const ShareSection = () => {
                 ))}
               </div>
             </div>
-
             <hr />
-
             <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Mint as an NFT on Solana</p>
               <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
@@ -373,7 +368,6 @@ const ShareSection = () => {
                 </div>
               </div>
             </div>
-
             <hr />
           </>
         )}

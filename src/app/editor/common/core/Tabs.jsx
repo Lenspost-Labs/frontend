@@ -22,6 +22,7 @@ const Tabs = ({
   getAssetsFn,
   type,
   changeCanvasDimension,
+  showOnlyIfIp = false,
 }) => {
   const { isAuthenticated } = useAppAuth();
   const [query, setQuery] = useState("");
@@ -90,23 +91,49 @@ const Tabs = ({
           {data?.pages
             .flatMap((item) => item?.data)
             .map((item, index) => {
-              return (
-                <CustomImageComponent
-                  key={index}
-                  item={item}
-                  assetType={null}
-                  collectionName={null}
-                  preview={item?.image}
-                  dimensions={item?.dimensions != null && item.dimensions}
-                  hasOptionBtn={null}
-                  onDelete={null}
-                  isLensCollect={null}
-                  changeCanvasDimension={changeCanvasDimension}
-                  recipientWallet={item?.wallet}
-                  showAuthor={campaignName === "halloween" ? true : false}
-                  author={item?.author}
-                />
-              );
+              //check for showOnlyIfIp
+              if (showOnlyIfIp) {
+                //check item for ip flag
+                if (item?.isIp) {
+                  return (
+                    <CustomImageComponent
+                      key={index}
+                      item={item}
+                      assetType={null}
+                      collectionName={null}
+                      preview={item?.image}
+                      dimensions={item?.dimensions != null && item.dimensions}
+                      hasOptionBtn={null}
+                      onDelete={null}
+                      isLensCollect={null}
+                      changeCanvasDimension={changeCanvasDimension}
+                      recipientWallet={item?.wallet}
+                      showAuthor={campaignName === "halloween" ? true : false}
+                      author={item?.author}
+                    />
+                  );
+                } else {
+                  return <></>;
+                }
+              } else {
+                return (
+                  <CustomImageComponent
+                    key={index}
+                    item={item}
+                    assetType={null}
+                    collectionName={null}
+                    preview={item?.image}
+                    dimensions={item?.dimensions != null && item.dimensions}
+                    hasOptionBtn={null}
+                    onDelete={null}
+                    isLensCollect={null}
+                    changeCanvasDimension={changeCanvasDimension}
+                    recipientWallet={item?.wallet}
+                    showAuthor={campaignName === "halloween" ? true : false}
+                    author={item?.author}
+                  />
+                );
+              }
             })}
           {/* </div> */}
           <LoadMoreComponent

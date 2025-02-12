@@ -43,7 +43,6 @@ import {
   ENVIRONMENT,
   getENSDomain,
   shareOnSocials,
-  uploadUserAssetToIPFS,
 } from "../../../../../../../services";
 import { zoraNftCreatorV1Config } from "@zoralabs/zora-721-contracts";
 import {
@@ -142,20 +141,6 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     queryKey: ["getOrCreateWallet"],
     queryFn: () => getOrCreateWallet(chainId),
     refetchOnWindowFocus: false,
-  });
-
-  // upload to IPFS Mutation
-  const {
-    mutate,
-    data: uploadData,
-    isError: isUploadError,
-    error: uploadError,
-    isSuccess: isUploadSuccess,
-    isLoading: isUploading,
-    isPending: isUploadPending,
-  } = useMutation({
-    mutationKey: "uploadToIPFS",
-    mutationFn: uploadUserAssetToIPFS,
   });
 
   const { mutateAsync: deployZoraContractMutation } = useMutation({
@@ -600,6 +585,24 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     [chain?.id]: http(),
   };
 
+  // deploy contract
+  const deployZoraContractFn = async (deployArgs) => {
+    setIsDeployingZoraContract(true);
+
+    deployZoraContractMutation(deployArgs)
+      .then((res) => {
+        setRespContractAddress(res?.contract_address || res?.contract);
+        setIsDeployingZoraContractSuccess(true);
+        setIsDeployingZoraContract(false);
+        setSlug(res?.slug);
+      })
+      .catch((err) => {
+        setIsDeployingZoraContractError(true);
+        setIsDeployingZoraContract(false);
+        toast.error(errorMessage(err));
+      });
+  };
+
   // mint on Zora
   const handleSubmit = () => {
     // check if canvasId is provided
@@ -709,30 +712,35 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       });
     }
 
-    // upload to IPFS
-    mutate(canvasBase64Ref.current[0]);
+    const deployArgs = {
+      contract_type: 721,
+      chainId: chainId,
+      canvasId: contextCanvasIdRef.current,
+      currency: zoraErc721Enabled.chargeForMintCurrencyAddress,
+      pricePerToken: priceFormatter(
+        chain?.id,
+        zoraErc721Enabled.chargeForMintPrice
+      ),
+      maxSupply: zoraErc721Enabled.maxSupply,
+      args: [
+        zoraErc721Enabled.contractName,
+        zoraErc721Enabled.contractSymbol,
+        zoraErc721Enabled.royaltyPercent * 100, // Convert to basis points
+      ],
+      description: zoraErc721Enabled.contractDescription,
+      recipients: sortRecipientsByAddress(
+        zoraErc721Enabled.royaltySplitRecipients.map((item) => ({
+          address: item.address,
+          percentAllocation: item.percentAllocation,
+        }))
+      ),
+    };
+
+    deployZoraContractFn(deployArgs);
   };
 
   const isSponsoredChainFn = () => {
     return isSponsoredChain?.includes(chainId);
-  };
-
-  // deploy zora contract
-  const deployZoraContractFn = async (deployArgs) => {
-    setIsDeployingZoraContract(true);
-
-    deployZoraContractMutation(deployArgs)
-      .then((res) => {
-        setRespContractAddress(res?.contract_address || res?.contract);
-        setIsDeployingZoraContractSuccess(true);
-        setIsDeployingZoraContract(false);
-        setSlug(res?.slug);
-      })
-      .catch((err) => {
-        setIsDeployingZoraContractError(true);
-        setIsDeployingZoraContract(false);
-        toast.error(errorMessage(err));
-      });
   };
 
   // add recipient to the split list
@@ -768,45 +776,6 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     }
   }, [isAuthenticated]);
 
-  // create split contract
-  useEffect(() => {
-    if (uploadData?.message) {
-      // Deploy custom currency arguments
-      const deployArgs = {
-        contract_type: 721,
-        chainId: chainId,
-        canvasId: contextCanvasIdRef.current,
-        currency: zoraErc721Enabled.chargeForMintCurrencyAddress,
-        pricePerToken: priceFormatter(
-          chain?.id,
-          zoraErc721Enabled.chargeForMintPrice
-        ),
-        maxSupply: zoraErc721Enabled.maxSupply,
-        args: [
-          zoraErc721Enabled.contractName,
-          zoraErc721Enabled.contractSymbol,
-          zoraErc721Enabled.royaltyPercent,
-        ],
-        description: zoraErc721Enabled.contractDescription,
-        recipients: sortRecipientsByAddress(
-          zoraErc721Enabled.royaltySplitRecipients.map((item) => ({
-            address: item.address,
-            percentAllocation: item.percentAllocation,
-          }))
-        ),
-      };
-
-      deployZoraContractFn(deployArgs);
-    }
-  }, [isUploadSuccess]);
-
-  // error handling for upload to IPFS
-  useEffect(() => {
-    if (isUploadError) {
-      toast.error(errorMessage(uploadError));
-    }
-  }, [isUploadError]);
-
   // error/success handling for network switch
   useEffect(() => {
     if (isErrorSwitchNetwork) {
@@ -823,9 +792,8 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       <ZoraDialog
         title="ERC721 Edition"
         icon={chainLogo(selectedChainId)}
-        isError={isUploadError || isDeployingZoraContractError}
+        isError={isDeployingZoraContractError}
         isDeployingContract={isDeployingZoraContract}
-        isUploadingToIPFS={isUploadPending}
         isSuccess={isDeployingZoraContractSuccess}
         slug={slug}
       />

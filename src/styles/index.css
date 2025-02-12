@@ -565,3 +565,28 @@ img {
 		opacity: 0.8;
 	}
 }
+
+/* Custom scrollbar styles */
+.scrollbar-thin::-webkit-scrollbar {
+	width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+	background: rgb(253 242 248); /* pink-50 */
+	border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+	background: rgb(236 72 153); /* pink-500 */
+	border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+	background: rgb(219 39 119); /* pink-600 */
+}
+
+/* For Firefox */
+.scrollbar-thin {
+	scrollbar-width: thin;
+	scrollbar-color: rgb(236 72 153) rgb(253 242 248);
+}

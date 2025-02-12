@@ -2,18 +2,19 @@ import { useContext } from 'react'
 import { Context } from '../../../../../../../providers/context'
 import { useAppAuth, useReset } from '../../../../../../../hooks/app'
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { registerIPDerivative, uploadUserAssetToIPFS } from '../../../../../../../services'
 import { toast } from 'react-toastify'
 import { useAccount } from 'wagmi'
 import { useEffect } from 'react'
-import { getFromLocalStorage } from '../../../../../../../utils'
+import { getFromLocalStorage, saveToLocalStorage } from '../../../../../../../utils'
 import { LOCAL_STORAGE } from '../../../../../../../data'
 import { storyOdysseyTestnet } from '../../../../../../../data/network/storyOdyssey'
 import { InputBox, SelectBox } from '../../../../../common'
 import { EVMWallets } from '../../../../top-section/auth/wallets'
 import { Button, Textarea } from '@material-tailwind/react'
 import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
+import { getOrCreateWallet } from '../../../../../../../services/apis/BE-apis'
 
 const Derivative = () => {
 	const { postDescription, canvasBase64Ref, storyIPDataRef, setPostDescription, contextCanvasIdRef, isMobile } = useContext(Context)
@@ -31,6 +32,22 @@ const Derivative = () => {
 	const [collectionName, setCollectionName] = useState('')
 
 	const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth)
+
+	const {
+		data: walletData,
+		isError: isWalletError,
+		isLoading: isWalletLoading,
+		error: walletError,
+		isSuccess: isWalletSuccess,
+		refetch: refetchWallet,
+		isRefetching: isWalletRefetching,
+	} = useQuery({
+		queryKey: ['getOrCreateWallet'],
+		queryFn: () => getOrCreateWallet(storyOdysseyTestnet?.id),
+		refetchOnWindowFocus: false,
+	})
+
+	console.log(walletData)
 
 	// upload to IPFS Mutation
 	const {
@@ -59,6 +76,15 @@ const Derivative = () => {
 		mutationKey: 'registerIPDerivative',
 		mutationFn: registerIPDerivative,
 	})
+
+	useEffect(() => {
+		if (isWalletSuccess) {
+			saveToLocalStorage(LOCAL_STORAGE.userLOA, walletData?.publicAddress)
+		}
+	}, [isWalletSuccess])
+	console.log('isWalletSuccess', { isWalletSuccess, walletData })
+
+	console.log({ topUp_balance: walletData?.balance })
 
 	// upload JSON data to IPFS
 	useEffect(() => {
@@ -342,16 +368,31 @@ const Derivative = () => {
 			) : !getEVMAuth ? (
 				<EVMWallets title="Login with EVM" login={login} className="w-[97%]" />
 			) : (
-				<div className="mt-4">
-					<Button
-						disabled={isPending || isLoading}
-						fullWidth
-						loading={isPending || isLoading}
-						// color="yellow"
-						onClick={handleSubmit}
-					>
-						{isLoading ? 'Registering...' : 'Register'}
-					</Button>
+				<div className="flex flex-col gap-2">
+					<div className="mt-4">
+						<p className="text-end">
+							<span>Topup balance:</span>
+							{isWalletLoading || isWalletRefetching ? (
+								<span className="text-blue-500"> Loading balance... </span>
+							) : (
+								<span>
+									{' '}
+									{walletData?.balance} {storyOdysseyTestnet?.nativeCurrency?.symbol}{' '}
+								</span>
+							)}
+						</p>
+					</div>
+					<div className="mt-4">
+						<Button
+							disabled={isPending || isLoading}
+							fullWidth
+							loading={isPending || isLoading}
+							// color="yellow"
+							onClick={handleSubmit}
+						>
+							{isLoading ? 'Registering...' : 'Register'}
+						</Button>
+					</div>
 				</div>
 			)}
 		</div>

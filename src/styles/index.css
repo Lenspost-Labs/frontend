@@ -590,3 +590,57 @@ img {
 	scrollbar-width: thin;
 	scrollbar-color: rgb(236 72 153) rgb(253 242 248);
 }
+
+@media (max-width: 768px) {
+	.coin {
+		height: 50px;
+		width: 50px;
+	}
+
+	.coin .front,
+	.coin .back {
+		height: 50px;
+		width: 50px;
+		border-width: 3px;
+	}
+
+	.coin .front:before,
+	.coin .back:before {
+		margin: 11px 11px;
+		width: 25px;
+		height: 25px;
+		border-width: 2px;
+	}
+
+	.currency {
+		font-size: 14px;
+		line-height: 3.5;
+	}
+
+	.currency:after {
+		height: 40px;
+		width: 15px;
+	}
+
+	.shapes div {
+		width: 6px;
+		height: 1.5px;
+		margin: 22px 3px;
+	}
+
+	.shapes div:before,
+	.shapes div:after {
+		width: 6px;
+		height: 1.5px;
+	}
+
+	.top,
+	.bottom {
+		font-size: 8px;
+	}
+
+	.coin .shadow {
+		height: 10px;
+		bottom: -15px;
+	}
+}

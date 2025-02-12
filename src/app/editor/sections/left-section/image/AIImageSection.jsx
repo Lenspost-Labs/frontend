@@ -111,10 +111,7 @@ export const CompSearch = ({ StableDiffusionImages, isPanel = false, FluxImages,
 			try {
 				setIsLoading(true)
 				let finalQuery = query
-				let provider = 'stability'
-				if (model === 'MiggleV3') {
-					provider = 'heurist'
-				}
+
 				if (model === 'MiggleV3' && !query.toLowerCase().includes('miggles')) {
 					finalQuery = `miggles ${query}`
 				}
@@ -422,7 +419,6 @@ const CompInstructImage = () => {
 					setResponseImage('')
 					setStDisplayMessage("It's not you, it's us. Please try again later.")
 				}
-				setResponseImage(response.data.images[0].url)
 				setResponseImage(response.data.images[0].url)
 				// }
 				// if (response.status === 500) {

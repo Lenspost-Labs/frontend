@@ -3,6 +3,7 @@ import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from 'polotno'
 import { Toolbar } from 'polotno/toolbar/toolbar'
 import { ZoomButtons } from 'polotno/toolbar/zoom-buttons'
 import {
+
 	AIImageSection,
 	BannerSection,
 	DesignSection,
@@ -48,10 +49,12 @@ import useMobilePanelFunctions from './common/mobileHooks/useMobilePanelFunction
 import SignMesasgeModal from './common/modals/SignMesasgeModal'
 import SubscriptionModal from './common/modals/SubscriptionModal'
 
+
 // enable animations
 unstable_setAnimationsEnabled(true)
 
 const sections = [
+
 	AIImageSection,
 	StickerSection,
 	TemplateSection,
@@ -67,6 +70,7 @@ const sections = [
 	ResizeSection,
 ]
 
+
 const useHeight = () => {
 	const [height, setHeight] = React.useState(window.innerHeight)
 	React.useEffect(() => {
@@ -78,6 +82,7 @@ const useHeight = () => {
 }
 
 const Editor = () => {
+
 	const store = useStore()
 	const height = useHeight()
 	const { address, isConnected } = useAccount()

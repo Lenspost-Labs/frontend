@@ -48,6 +48,9 @@ export const BannerPanel = () => {
 
   return (
     <div className="h-full flex flex-col">
+      <div className="flex items-center justify-center space-x-2 my-4 mb-0">
+        <h1 className="text-lg">Backdrops</h1>
+      </div>
       {/* New Material Tailwind Buttons / Tabs : */}
       {/* Reference Link: https://www.material-tailwind.com/docs/react/tabs */}
 
@@ -114,7 +117,7 @@ export const BannerPanel = () => {
 const BannerSection = {
   name: "Backgrounds2",
   Tab: (props) => (
-    <SectionTab name={`NFT ${"\n"} Banners`} {...props}>
+    <SectionTab name={`Backdrops`} {...props}>
       <CgImage size="16" />
     </SectionTab>
   ),

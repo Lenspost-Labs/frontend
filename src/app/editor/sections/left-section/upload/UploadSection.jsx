@@ -96,7 +96,9 @@ export const UploadPanel = () => {
 
   return (
     <div className="h-full flex flex-col">
-      <h1 className="text-lg">Upload Gallery</h1>
+      <div className="flex items-center justify-center space-x-2 my-4 mb-0">
+        <h1 className="text-lg">Upload Gallery</h1>
+      </div>
 
       <div className="m-2 mt-4">
         {/* DropZone component Start*/}

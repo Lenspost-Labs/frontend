@@ -78,14 +78,14 @@ const sections = [
   StickerSection,
   TemplateSection,
   MemeSection,
-  CommunityIPSection,
+  // CommunityIPSection, // Commented out as it is not used right now
   DesignSection,
   UploadSection,
+  BannerSection,
+  NFTSection,
   BackgroundSection,
   TextSection,
   ShapeSection,
-  BannerSection,
-  NFTSection,
   LayersSection,
   ResizeSection,
 ];

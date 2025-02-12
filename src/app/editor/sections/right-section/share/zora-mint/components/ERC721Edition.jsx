@@ -12,6 +12,7 @@ import {
   Select,
   Spinner,
   Typography,
+  Textarea,
 } from "@material-tailwind/react";
 import { DateTimePicker } from "@atlaskit/datetime-picker";
 import BsPlus from "@meronex/icons/bs/BsPlus";
@@ -471,6 +472,28 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       }
     }
 
+    if (name === "contractDescription") {
+      if (!value) {
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
+          isContractDescriptionError: true,
+          contractDescriptionErrorMessage:
+            "Collectible Description is required",
+        }));
+      } else {
+        setZoraErc721StatesError((prev) => ({
+          ...prev,
+          isContractDescriptionError: false,
+          contractDescriptionErrorMessage: "",
+        }));
+
+        setZoraErc721Enabled((prevState) => ({
+          ...prevState,
+          contractDescription: value,
+        }));
+      }
+    }
+
     if (name === "contractSymbol") {
       if (!value) {
         setZoraErc721StatesError({
@@ -818,7 +841,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     }
 
     // check if description is provided
-    if (!postDescription) {
+    if (!zoraErc721Enabled.contractDescription) {
       toast.error("Please provide a description");
       return;
     }
@@ -1170,6 +1193,16 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
             </div>
           )}
         </div>
+        {/* Collectible Description */}
+        <div className="mt-2">
+          <Textarea
+            label="Collectible Description"
+            name="contractDescription"
+            onChange={handleChange}
+            onFocus={handleChange}
+            value={zoraErc721Enabled.contractDescription || ""}
+          />
+        </div>
       </div>
 
       <div className="mb-4 mt-4">
@@ -1516,7 +1549,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       {/* Switch Number 6 End */}
 
       {/* Switch Number 4 Start */}
-      <div className="mb-4 mt-4">
+      {/* <div className="mb-4 mt-4">
         <div className="flex justify-between">
           <h2 className="text-lg mb-2"> Allowlist </h2>
           <Switch
@@ -1544,7 +1577,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
           {" "}
           Allow specific wallet addresses to mint{" "}
         </div>
-      </div>
+      </div> */}
 
       <div className={` ${!zoraErc721Enabled.isAllowlist && "hidden"} `}>
         {zoraErc721Enabled.allowlistAddresses.map((recipient, index) => {
@@ -1611,7 +1644,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
       {/* Switch Number 7 Start */}
       <>
-        <div className="mb-4 mt-4">
+        {/* <div className="mb-4 mt-4">
           <div className="flex justify-between">
             <h2 className="text-lg mb-2"> Pre - Sale Schedule </h2>
             <Switch
@@ -1641,7 +1674,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
             {" "}
             Set a start and end date for your Presale schedule of the mint{" "}
           </div>
-        </div>
+        </div> */}
 
         <div
           className={`flex flex-col ${
@@ -1672,7 +1705,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
       {/* Switch Number 8 Start */}
       <>
-        <div className="mb-4 mt-4">
+        {/* <div className="mb-4 mt-4">
           <div className="flex justify-between">
             <h2 className="text-lg mb-2"> Public - Sale Schedule </h2>
             <Switch
@@ -1702,7 +1735,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
             {" "}
             Set a start and end date for your Public sale schedule of the mint{" "}
           </div>
-        </div>
+        </div> */}
 
         <div
           className={`flex flex-col ${

@@ -3,7 +3,7 @@ import ZoraLogo from "./logos/zora_new.png";
 import BraveLogo from "./logos/logoBrave.png";
 import EthLogo from "./logos/ethLogo.png";
 import BaseLogo from "./logos/baseLogo.png";
-import OpMainnetLogo from "./logos/opMainnetLogo.webp";
+import OpMainnetLogo from "./logos/op_logo.png";
 import EVMLogo from "./logos/evmLogo.png";
 import HamLogo from "./logos/hamLogo.png";
 import X_Logo from "./logos/X_logo.png";

@@ -13,7 +13,9 @@ import {
   TemplateSection,
   UploadSection,
   MemeSection,
+
   CommunityIPSection,
+
 } from "./sections/left-section";
 import { BgRemover } from "./sections/bottom-section";
 import { OnboardingSteps, OnboardingStepsWithShare } from "./common";
@@ -81,7 +83,9 @@ const sections = [
   DesignSection,
   UploadSection,
   BackgroundSection,
+
   CommunityIPSection,
+
   TextSection,
   ShapeSection,
   BannerSection,
@@ -141,9 +145,14 @@ const Editor = () => {
     setCurOpenedTabLevel1,
 
     setIsOnboardingOpen,
+
+    isOnboardingOpen,
+
   } = useContext(Context);
 
   const { fnOpenPanel } = useMobilePanelFunctions();
+
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const componentMounted = useRef(false);
   // initialize watermark
@@ -690,6 +699,16 @@ const Editor = () => {
     }
   }, [inviteCode, address, solanaAddress]);
 
+
+  useEffect(() => {
+    // Show subscription modal only after onboarding is closed
+    if (!isOnboardingOpen) {
+      setShowSubscriptionModal(true);
+    } else {
+      setShowSubscriptionModal(false);
+    }
+  }, [isOnboardingOpen]);
+
   return (
     <>
       <div
@@ -764,7 +783,13 @@ const Editor = () => {
                   <BgRemover />
                   {/* Quick Tour on the main page */}
                   <div className="flex flex-row ">
-                    <SubscriptionModal bottomBar={true} />
+
+                  
+
+                    {showSubscriptionModal && (
+                      <SubscriptionModal defaultOpen={true} bottomBar={true} />
+                    )}
+
                     {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
                     <SpeedDialX />
                     <OnboardingModal />

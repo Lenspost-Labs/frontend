@@ -111,14 +111,20 @@ export const CompSearch = ({ StableDiffusionImages, isPanel = false, FluxImages,
 			try {
 				setIsLoading(true)
 				let finalQuery = query
+				let provider = 'stability'
+				if (model === 'MiggleV3') {
+					provider = 'heurist'
+				}
 				if (model === 'MiggleV3' && !query.toLowerCase().includes('miggles')) {
 					finalQuery = `miggles ${query}`
 				}
 				finalQuery = finalQuery.replace('Miggles', 'miggles')
+
 				let provider = 'stability'
 				if (model !== 'SD3') {
 					provider = 'heurist'
 				}
+
 				const response = await aiMutate({ prompt: finalQuery, model, provider })
 				setStStatusCode(response.data.status)
 				if (response.data.status === 'success') {

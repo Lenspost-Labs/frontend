@@ -189,7 +189,6 @@ const useReset = () => {
 		preStoredRecipientDataRef.current = []
 		parentRecipientDataRef.current = []
 		parentRecipientListRef.current = []
-		console.log('Reset storyIPDataRef', storyIPDataRef.current)
 		storyIPDataRef.current = []
 		setPriceError({
 			isError: false,

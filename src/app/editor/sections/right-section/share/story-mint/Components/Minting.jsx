@@ -2,13 +2,13 @@ import { useContext } from 'react'
 import { Context } from '../../../../../../../providers/context'
 import { useAppAuth, useReset } from '../../../../../../../hooks/app'
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
-import { uploadJSONtoIPFS, uploadUserAssetToIPFS } from '../../../../../../../services'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { uploadAsIP, uploadJSONtoIPFS, uploadUserAssetToIPFS } from '../../../../../../../services'
 import { toast } from 'react-toastify'
 import useMint721 from '../../../../../../../hooks/mint721/useMint721'
 import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 import { useEffect } from 'react'
-import { getFromLocalStorage } from '../../../../../../../utils'
+import { addressCrop, getFromLocalStorage } from '../../../../../../../utils'
 import { LOCAL_STORAGE, STORY_ODYSSEY_ADDRESS } from '../../../../../../../data'
 import { storyAeneidTestnet } from '../../../../../../../data'
 import storyABI from '../../../../../../../data/json/storyABI.json'
@@ -16,6 +16,8 @@ import { InputBox, SelectBox } from '../../../../../common'
 import { EVMWallets } from '../../../../top-section/auth/wallets'
 import { Button, Textarea } from '@material-tailwind/react'
 import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
+import { getOrCreateWallet } from '../../../../../../../services/apis/BE-apis'
+import { Topup } from '../../farcaster-share/components'
 
 const getPILTypeString = (type) => {
 	switch (type) {
@@ -79,20 +81,34 @@ const Minting = () => {
 	const [creatorDescription, setCreatorDescription] = useState('')
 	const [twitter, setTwitter] = useState('')
 	const [farcaster, setFarcaster] = useState('')
+	const [ipResult, setIPResult] = useState(null)
 
 	const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth)
 
-	const mintParams = () => {
-		let params = {
-			address: STORY_ODYSSEY_ADDRESS,
-			chainId: storyAeneidTestnet.id,
-			args: [address, `ipfs://${uploadJSONData?.message}`],
-			abi: storyABI,
-			functionName: 'mint',
-		}
+	const {
+		data: walletData,
+		isError: isWalletError,
+		isLoading: isWalletLoading,
+		error: walletError,
+		isSuccess: isWalletSuccess,
+		refetch: refetchWallet,
+		isRefetching: isWalletRefetching,
+	} = useQuery({
+		queryKey: ['getOrCreateWallet'],
+		queryFn: () => getOrCreateWallet(storyAeneidTestnet?.id),
+		refetchOnWindowFocus: false,
+	})
 
-		return params
-	}
+	const {
+		mutate: uploadIP,
+		isPending: isUploadIPPending,
+		isSuccess: isUploadIPSuccess,
+		isError: isUploadIPError,
+		error: uploadIPError,
+	} = useMutation({
+		mutationKey: 'uploadIP',
+		mutationFn: uploadAsIP,
+	})
 
 	// upload to IPFS Mutation
 	const {
@@ -106,20 +122,6 @@ const Minting = () => {
 	} = useMutation({
 		mutationKey: 'uploadToIPFS',
 		mutationFn: uploadUserAssetToIPFS,
-	})
-
-	// upload JSON to IPFS Mutation
-	const {
-		mutate: uploadJSONtoIPFSMutate,
-		data: uploadJSONData,
-		isError: isUploadJSONError,
-		error: uploadJSONError,
-		isSuccess: isUploadJSONSuccess,
-		isLoading: isUploadingJSON,
-		isPending: isUploadJSONPending,
-	} = useMutation({
-		mutationKey: 'uploadJSONtoIPFS',
-		mutationFn: uploadJSONtoIPFS,
 	})
 
 	// upload JSON data to IPFS
@@ -171,16 +173,19 @@ const Minting = () => {
 			}
 
 			jsonData = { ...jsonData, pilTerms }
-			uploadJSONtoIPFSMutate(jsonData)
+			uploadIP(jsonData).then((res) => {
+				console.log('uploadIP', res)
+				setIPResult(res)
+			})
 		}
 	}, [isUploadSuccess])
 
 	useEffect(() => {
-		if (isUploadJSONError) {
-			console.log(uploadJSONError)
-			toast.error(uploadJSONError?.message)
+		if (isUploadIPError) {
+			console.log(uploadIPError)
+			toast.error(uploadIPError?.message)
 		}
-	}, [isUploadJSONError, uploadJSONError])
+	}, [isUploadIPError, uploadIPError])
 
 	useEffect(() => {
 		if (isUploadError) {
@@ -189,37 +194,12 @@ const Minting = () => {
 		}
 	}, [isUploadError, uploadError])
 
-	const {
-		tx: { isTxConfirming, isTxSuccess, isTxError, txError, txData },
-		write: { isWriteError, writeError, isWriting, mint721 },
-		simulation: { refetchSimulation },
-	} = useMint721(mintParams())
-
 	useEffect(() => {
-		if (isTxSuccess) {
-			console.log('isTxSuccess', txData)
+		if (isUploadIPSuccess) {
 			//resetState()
-			toast.success('NFT minted successfully!')
+			toast.success('IP registered successfully!')
 		}
-	}, [isTxSuccess, txData])
-
-	useEffect(() => {
-		if (isWriteError || isTxError) {
-			const error = writeError || txError
-			const errorMessage = error?.message?.split('\n')[0]
-			if (errorMessage?.includes('connector not connected')) {
-				toast.error('Please connect your wallet')
-			} else {
-				toast.error(errorMessage || 'An error occurred')
-			}
-		}
-	}, [isWriteError, writeError, isTxError, txError])
-
-	useEffect(() => {
-		if (isUploadJSONSuccess) {
-			mint721()
-		}
-	}, [isUploadJSONSuccess])
+	}, [isUploadIPSuccess])
 
 	// Add a new state to track if custom is selected
 	const [isCustomSelected, setIsCustomSelected] = useState(false)
@@ -341,7 +321,7 @@ const Minting = () => {
 		mutate(canvasBase64Ref.current[0])
 	}
 
-	const isLoading = isUploading || isUploadingJSON || isWriting || isTxConfirming || isUploadPending || isUploadJSONPending
+	const isLoading = isUploading || isUploadIPPending || isUploadPending
 
 	return (
 		<div>
@@ -491,7 +471,7 @@ const Minting = () => {
 					</div>
 				</div>
 			</div>
-			{isTxSuccess && txData ? (
+			{isUploadIPSuccess && ipResult ? (
 				<div className="flex flex-col gap-2 mt-4 justify-center items-center">
 					<p className="text-green-500 font-bold">IP registered successfully!</p>
 					<p className="font-bold text-lg mt-3">Share IP on Social Platforms</p>
@@ -504,7 +484,7 @@ const Minting = () => {
 						</Button>
 					</div>
 					<a
-						href={`${storyAeneidTestnet?.blockExplorers?.default.url}/token/${STORY_ODYSSEY_ADDRESS}`}
+						href={`${storyAeneidTestnet?.blockExplorers?.default.url}/tx/${ipResult.txHash}`}
 						className="text-purple-500 hover:underline"
 						rel="noreferrer"
 						target="_blank"
@@ -527,17 +507,58 @@ const Minting = () => {
 					</Button>
 				</div>
 			) : (
-				<div className="mt-4">
-					<Button
-						disabled={isLoading}
-						fullWidth
-						loading={isLoading}
-						// color="yellow"
-						onClick={handleSubmit}
-					>
-						{' '}
-						{isLoading ? 'Registering...' : 'Register IP'}
-					</Button>
+				<div className="flex flex-col gap-2">
+					<div className="mt-4">
+						<p className="text-end mt-4">
+							<span>Topup account:</span>
+							{isWalletLoading || isWalletRefetching ? (
+								<span className="text-blue-500"> Loading address... </span>
+							) : (
+								<span
+									className="text-blue-500 cursor-pointer"
+									onClick={() => {
+										navigator.clipboard.writeText(walletData?.publicAddress)
+										toast.success('Copied topup account address')
+									}}
+								>
+									{' '}
+									{addressCrop(walletData?.publicAddress)}
+								</span>
+							)}
+						</p>
+						<p className="text-end">
+							<span>Topup balance:</span>
+							{isWalletLoading || isWalletRefetching ? (
+								<span className="text-blue-500"> Loading balance... </span>
+							) : (
+								<span>
+									{' '}
+									{walletData?.balance} {storyAeneidTestnet?.nativeCurrency?.symbol}{' '}
+								</span>
+							)}
+						</p>
+					</div>
+					{walletData?.publicAddress && (
+						<Topup
+							topUpAccount={walletData?.publicAddress}
+							isIP={true}
+							balance={walletData?.balance}
+							refetchWallet={refetchWallet}
+							sponsored={walletData?.sponsored}
+						/>
+					)}
+					<div className="mt-4">
+						<Button
+							disabled={isLoading}
+							fullWidth
+							loading={isLoading}
+							// color="yellow"
+							onClick={handleSubmit}
+						>
+							{' '}
+							{isLoading ? 'Registering...' : 'Register IP'}
+						</Button>
+					</div>
 				</div>
 			)}
 		</div>

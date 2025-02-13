@@ -65,8 +65,10 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored, isIP = false, 
 	wagmiAdapter.transports = {
 		[isIP ? storyAeneidTestnet?.id : chain?.id]: http(),
 	}
-	const NumberOfPageMultiplyByTxFeeForDeployment = canvasBase64Ref?.current?.length * TxFeeForDeployment
+	const numberOfPages = canvasBase64Ref?.current?.length
+	const NumberOfPageMultiplyByTxFeeForDeployment = numberOfPages * TxFeeForDeployment * txFeeForMint
 	const payForMints = isIP ? NumberOfPageMultiplyByTxFeeForDeployment : isCustomCurrMint ? payForMintsForCustomCurr : payForMintsForSponsored
+	console.log('payForMints', { payForMints, isIP })
 
 	const { data, isPending, isSuccess, isError, error, sendTransaction } = useSendTransaction({ wagmiAdapter })
 

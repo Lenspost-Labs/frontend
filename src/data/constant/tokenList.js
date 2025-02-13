@@ -51,24 +51,6 @@ export const TOKEN_LIST = {
       logoURI: "https://basescan.org/token/images/mfercoinbase_32.png",
     },
   ],
-  Degen: [
-    {
-      id: 666666666,
-      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-      symbol: "DEGEN",
-      name: "Degen",
-      decimals: 18,
-      logoURI: "https://basescan.org/token/images/degentips_32.png",
-    },
-    {
-      id: 666666666,
-      address: "0xEb54dACB4C2ccb64F8074eceEa33b5eBb38E5387",
-      symbol: "WDEGEN",
-      name: "Wrapped Degen",
-      decimals: 18,
-      logoURI: "https://basescan.org/token/images/degentips_32.png",
-    },
-  ],
   Ham: [
     {
       id: 5112,
@@ -130,6 +112,72 @@ export const TOKEN_LIST = {
   "Camp Network Testnet V2": [
     {
       id: 325000,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "ETH",
+      name: "Ether",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+  ],
+  "Story Aeneid Testnet": [
+    {
+      id: 1315,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "IP",
+      name: "IP",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+  ],
+  Story: [
+    {
+      id: 1514,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "IP",
+      name: "IP",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+    {
+      id: 1514,
+      address: "0x674843C06FF83502ddb4D37c2E09C01cdA38cbc8",
+      symbol: "USDT",
+      name: "Tether USD",
+      decimals: 18,
+      logoURI: "https://arbiscan.io/token/images/tether_32.png",
+    },
+    {
+      id: 1514,
+      address: "0xF1815bd50389c46847f0Bda824eC8da914045D14",
+      symbol: "USDC",
+      name: "USD Coin",
+      decimals: 18,
+      logoURI: "https://arbiscan.io/token/images/centre-usdc_28.png",
+    },
+  ],
+  Ethereum: [
+    {
+      id: 1,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "ETH",
+      name: "Ether",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+  ],
+  "OP Mainnet": [
+    {
+      id: 10,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "ETH",
+      name: "Ether",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+  ],
+  Zora: [
+    {
+      id: 7777777,
       address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       symbol: "ETH",
       name: "Ether",

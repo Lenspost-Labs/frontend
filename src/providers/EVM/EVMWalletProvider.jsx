@@ -11,7 +11,13 @@ import {
   createStorage,
   http,
 } from "wagmi";
-import { campNetworkTestnetV2, ham, og } from "../../data";
+import {
+  campNetworkTestnetV2,
+  storyMainnet,
+  storyAeneidTestnet,
+  ham,
+  og,
+} from "../../data";
 
 import { storyOdysseyTestnet } from "../../data/network/storyOdyssey";
 import { WagmiProvider } from "wagmi";
@@ -26,7 +32,6 @@ import {
   polygonMumbai,
   baseSepolia,
   arbitrum,
-  degen,
   morph,
 } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
@@ -58,13 +63,13 @@ export const wagmiAdapter = new WagmiAdapter({
           optimism,
           arbitrum,
           polygon,
-          degen,
+          storyAeneidTestnet,
+          campNetworkTestnetV2,
+          morph,
           ham,
           og,
-          storyOdysseyTestnet,
-          morph,
           solana,
-          campNetworkTestnetV2,
+          // storyMainnet,
         ]
       : [
           base,
@@ -74,15 +79,15 @@ export const wagmiAdapter = new WagmiAdapter({
           arbitrum,
           polygonMumbai,
           polygon,
-          degen,
+          storyAeneidTestnet,
+          campNetworkTestnetV2,
+          morph,
           ham,
           og,
           solana,
           solanaTestnet,
           solanaDevnet,
-          storyOdysseyTestnet,
-          morph,
-          campNetworkTestnetV2,
+          // storyMainnet,
         ],
 
   transports: {
@@ -91,9 +96,10 @@ export const wagmiAdapter = new WagmiAdapter({
     [zora.id]: http(),
     [optimism.id]: http(),
     [polygon.id]: http(),
-    [degen.id]: http(),
     [ham.id]: http(),
     [og.id]: http(),
+    [storyAeneidTestnet.id]: http(),
+    // [storyMainnet.id]: http(),
     [polygonMumbai.id]: http(),
     [baseSepolia.id]: http(),
     [arbitrum.id]: http(),
@@ -125,9 +131,10 @@ export const appKit = createAppKit({
           optimism,
           arbitrum,
           polygon,
-          degen,
           ham,
           og,
+          storyAeneidTestnet,
+          // storyMainnet,
           solana,
           storyOdysseyTestnet,
           morph,
@@ -141,9 +148,10 @@ export const appKit = createAppKit({
           arbitrum,
           polygonMumbai,
           polygon,
-          degen,
           ham,
           og,
+          storyAeneidTestnet,
+          // storyMainnet,
           solana,
           solanaTestnet,
           solanaDevnet,

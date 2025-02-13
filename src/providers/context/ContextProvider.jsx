@@ -60,7 +60,7 @@ const ContextProvider = ({ children }) => {
   const [farcasterTab, setFarcasterTab] = useState("normalPost");
 
   // Zora Mint Tab
-  const [zoraTab, setZoraTab] = useState("ERC721");
+  const [zoraTab, setZoraTab] = useState("LP721");
 
   // for lens monetization
   const [enabled, setEnabled] = useState({

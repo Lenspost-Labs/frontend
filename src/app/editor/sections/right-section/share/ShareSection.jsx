@@ -80,12 +80,9 @@ const ShareSection = () => {
       name: "Arbitrum One",
     },
     {
-      id: 1155,
-      name: "Story IP",
+      id: 137,
+      name: "Polygon",
     },
-  ];
-
-  const LP721SupportedChainsObj = [
     {
       id: 2818,
       name: "Morph",
@@ -94,11 +91,15 @@ const ShareSection = () => {
       id: 325000,
       name: "Camp Testnet",
     },
+    {
+      id: 1315,
+      name: "Story Aeneid Testnet",
+    },
   ];
 
   const filterChains = () => {
     if (chains?.length > 0) {
-      return [...chains?.slice(0, 5), ...LP721SupportedChainsObj];
+      return chainsArray;
     } else {
       return chainsArray;
     }
@@ -167,14 +168,10 @@ const ShareSection = () => {
   };
 
   const setChainTab = (chainId) => {
+    console.log("setChainTab", chainId);
     switchChain({ chainId });
-    if (LP721SupportedChains.includes(chainId)) {
-      setZoraTab("LP721");
-    } else {
-      setZoraTab("ERC721");
-    }
 
-    setCurrentMenu(chainId);
+    setMenu(chainId);
   };
 
   return (
@@ -314,7 +311,7 @@ const ShareSection = () => {
             </div>
             <hr />
             <div className="relative mt-6 px-4 sm:px-6">
-              <p className="text-lg">Mint NFT on Story Protocol</p>
+              <p className="text-lg">Register IP on Story Protocol</p>
               <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
                 <div className="inline-flex flex-col items-center justify-center">
                   <img
@@ -333,7 +330,7 @@ const ShareSection = () => {
             <div className="relative mt-6 px-4 sm:px-6">
               <p className="text-lg">Mint as an NFT on EVM</p>
               <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                {filterChains().map((item) => (
+                {chains.map((item) => (
                   <div
                     key={item?.id}
                     className="cursor-pointer flex flex-col items-center gap-2"

@@ -81,6 +81,7 @@ import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
 import { Settings } from "lucide-react";
 
 const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
+  console.log("selectedChainId", selectedChainId);
   const { address } = useAccount();
   const { login } = useReownAuth();
 
@@ -154,20 +155,12 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   // checking unsupported chain for individual networks
   const isUnsupportedChain = () => {
     // chains[0] is the polygon network
-    if (
-      chainId === degen?.id ||
-      chainId === polygon?.id ||
-      chainId === ham?.id ||
-      chain?.unsupported ||
-      chain?.id != selectedChainId
-    )
-      return true;
+    if (chain?.unsupported || chain?.id != selectedChainId) return true;
   };
 
-  // networks data for samart posts
+  // networks data for smart posts
   const networksDataSmartPosts = () => {
     const networks = ENVIRONMENT === "production" ? [8453, 7777777] : [5]; // supported chains for Lens samart posts
-    const unsupportedChain = chains.slice(0, -3);
 
     // filter the chains for smart posts
     const filteredChains = isOpenAction
@@ -179,7 +172,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     const isUnsupportedChain = () => {
       if (
         chain?.unsupported ||
-        (isOpenAction && !networks?.includes(chain?.id))
+        isOpenAction
         // chains.map((chain, index) => unsupportedChain.includes(chain))
       ) {
         return true;
@@ -779,6 +772,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   // error/success handling for network switch
   useEffect(() => {
     if (isErrorSwitchNetwork) {
+      console.log("isErrorSwitchNetwork", errorSwitchNetwork);
       toast.error(errorSwitchNetwork?.message.split("\n")[0]);
     }
 
@@ -889,43 +883,43 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
         </div>
 
         <div className="flex flex-col py-2 mx-2">
-          {/* {TOKEN_LIST[chain?.name] && selectedCurrency && ( */}
-          <Select
-            animate={{
-              mount: { y: 0 },
-              unmount: { y: 25 },
-            }}
-            label="Currency"
-            name="chargeForMintCurrency"
-            id="chargeForMintCurrency"
-            value={selectedCurrency?.symbol || ""}
-          >
-            {TOKEN_LIST[chain?.name] &&
-              TOKEN_LIST[chain?.name]?.map((currency) => (
-                <Option
-                  key={currency?.id}
-                  onClick={() => {
-                    setSelectedCurrency(currency);
-                    setZoraErc721Enabled({
-                      ...zoraErc721Enabled,
-                      chargeForMintCurrencySymbol: currency?.symbol,
-                      chargeForMintCurrencyAddress: currency?.address,
-                    });
-                  }}
-                >
-                  <div className="flex items-center gap-1">
-                    <Avatar
-                      variant="circular"
-                      alt={currency?.symbol}
-                      src={currency?.logoURI}
-                      className="w-6 h-6"
-                    />
-                    <Typography variant="small">{currency?.name}</Typography>
-                  </div>
-                </Option>
-              ))}
-          </Select>
-          {/* )} */}
+          {TOKEN_LIST[chain?.name] && (
+            <Select
+              animate={{
+                mount: { y: 0 },
+                unmount: { y: 25 },
+              }}
+              label="Currency"
+              name="chargeForMintCurrency"
+              id="chargeForMintCurrency"
+              value={selectedCurrency?.symbol || ""}
+            >
+              {TOKEN_LIST[chain?.name] &&
+                TOKEN_LIST[chain?.name]?.map((currency) => (
+                  <Option
+                    key={currency?.id}
+                    onClick={() => {
+                      setSelectedCurrency(currency);
+                      setZoraErc721Enabled({
+                        ...zoraErc721Enabled,
+                        chargeForMintCurrencySymbol: currency?.symbol,
+                        chargeForMintCurrencyAddress: currency?.address,
+                      });
+                    }}
+                  >
+                    <div className="flex items-center gap-1">
+                      <Avatar
+                        variant="circular"
+                        alt={currency?.symbol}
+                        src={currency?.logoURI}
+                        className="w-6 h-6"
+                      />
+                      <Typography variant="small">{currency?.name}</Typography>
+                    </div>
+                  </Option>
+                ))}
+            </Select>
+          )}
         </div>
       </div>
 
@@ -1121,48 +1115,47 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
       {/* Topup start */}
       <div className="mb-4 mt-4">
-        {isSponsoredChainFn() ? (
-          <>
-            <p className="text-end mt-4">
-              <span>Topup account:</span>
-              {isWalletLoading || isWalletRefetching ? (
-                <span className="text-blue-500"> Loading address... </span>
-              ) : (
-                <span
-                  className="text-blue-500 cursor-pointer"
-                  onClick={() => {
-                    navigator.clipboard.writeText(walletData?.publicAddress);
-                    toast.success("Copied topup account address");
-                  }}
-                >
-                  {" "}
-                  {addressCrop(walletData?.publicAddress)}
-                </span>
-              )}
-            </p>
-            <p className="text-end">
-              <span>Topup balance:</span>
-              {isWalletLoading || isWalletRefetching ? (
-                <span className="text-blue-500"> Loading balance... </span>
-              ) : (
-                <span>
-                  {" "}
-                  {walletData?.balance} {chain?.nativeCurrency?.symbol}{" "}
-                </span>
-              )}
-            </p>
-          </>
-        ) : null}
-        {zoraErc721Enabled.maxSupply > walletData?.sponsored &&
-          isSponsoredChainFn() && (
-            <Topup
-              topUpAccount={walletData?.publicAddress}
-              balance={walletData?.balance}
-              refetchWallet={refetchWallet}
-              sponsored={walletData?.sponsored}
-              isCustomCurrMintOption={true}
-            />
-          )}
+        {/* {isSponsoredChainFn() ? ( */}
+        <>
+          <p className="text-end mt-4">
+            <span>Topup account:</span>
+            {isWalletLoading || isWalletRefetching ? (
+              <span className="text-blue-500"> Loading address... </span>
+            ) : (
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(walletData?.publicAddress);
+                  toast.success("Copied topup account address");
+                }}
+              >
+                {" "}
+                {addressCrop(walletData?.publicAddress)}
+              </span>
+            )}
+          </p>
+          <p className="text-end">
+            <span>Topup balance:</span>
+            {isWalletLoading || isWalletRefetching ? (
+              <span className="text-blue-500"> Loading balance... </span>
+            ) : (
+              <span>
+                {" "}
+                {walletData?.balance} {chain?.nativeCurrency?.symbol}{" "}
+              </span>
+            )}
+          </p>
+        </>
+        {/* ) : null} */}
+        {zoraErc721Enabled.maxSupply > walletData?.sponsored && (
+          <Topup
+            topUpAccount={walletData?.publicAddress}
+            balance={walletData?.balance}
+            refetchWallet={refetchWallet}
+            sponsored={walletData?.sponsored}
+            isCustomCurrMintOption={true}
+          />
+        )}
       </div>
 
       {/* Topup end */}
@@ -1173,8 +1166,8 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
           <h2 className="text-lg"> Switch Networks </h2>
           <Networks
             className="w-[95%] outline-none mb-2"
-            chains={networksDataSmartPosts()?.chains}
-            isUnsupportedChain={networksDataSmartPosts()?.isUnsupportedChain}
+            chains={chains}
+            isUnsupportedChain={selectedChainId}
           />
         </>
       ) : null}

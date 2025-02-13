@@ -37,18 +37,11 @@ const ZoraMint = ({ selectedChainId }) => {
               </TabsHeader> */}
 
               {/* add components */}
-              {zoraTab === "LP721" && (
+              {typeof menu === "number" && (
                 <LP721Edition
                   isOpenAction={false}
                   isFarcaster={false}
                   selectedChainId={selectedChainId}
-                />
-              )}
-              {zoraTab === "ERC721" && (
-                <ERC721Edition
-                  isOpenAction={false}
-                  selectedChainId={selectedChainId}
-                  isFarcaster={false}
                 />
               )}
 

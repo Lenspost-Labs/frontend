@@ -15,6 +15,7 @@ const polygonLogo = "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg";
 const MorphLogo = "https://icons.llamao.fi/icons/chains/rsz_morph.jpg";
 const campNetworkTestnetV2Logo =
   "https://camp-network-testnet.blockscout.com/assets/configs/network_icon_dark.svg";
+const StoryLogo = "https://icons.llamao.fi/icons/chains/rsz_story.jpg";
 
 export {
   SolanaLogo,

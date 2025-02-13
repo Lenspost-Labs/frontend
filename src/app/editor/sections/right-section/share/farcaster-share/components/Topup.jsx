@@ -283,9 +283,7 @@ const Topup = ({
 
               <Typography variant="h6" color="blue-gray">
                 {extraPayForMints ? extraPayForMints : payForMints}{" "}
-                <>
-                  {chain?.name} {chain?.nativeCurrency?.symbol}
-                </>
+                <>{chain?.nativeCurrency?.symbol}</>
               </Typography>
 
               <div className="w-full flex justify-between items-center">

@@ -29,6 +29,10 @@ const chainLogos = {
   1155: StoryIPLogo, // Story IP
   2818: MorphLogo,
   325000: campNetworkTestnetV2Logo,
+  1516: StoryIPLogo,
+  1315: StoryIPLogo,
+  1514: StoryIPLogo,
+  80001: polygonLogo,
 };
 
 export const chainLogo = (chainId) => {

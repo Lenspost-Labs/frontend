@@ -61,7 +61,7 @@ export const gasFeeForDeployment = {
   325000: 0.00009, // camp network testnet
   1516: 0.00009, // story odyssey testnet
   1315: 0.00009, // story aeneid testnet
-  1514: 0.0005, // story mainnet
+  1514: 0.05, // story mainnet
   80001: 0.00009, // polygon mumbai
 };
 
@@ -84,7 +84,7 @@ export const gasFeeForMint = {
   325000: 0.00009, // camp network testnet
   1516: 0.00009, // story odyssey testnet
   1315: 0.00009, // story aeneid testnet
-  1514: 0.0005, // story mainnet
+  1514: 0.05, // story mainnet
   80001: 0.00009, // polygon mumbai
 };
 
@@ -107,6 +107,6 @@ export const gasFeeForOxSplitCreate = {
   325000: 0.00009, // camp network testnet
   1516: 0.00009, // story odyssey testnet
   1315: 0.00009, // story aeneid testnet
-  1514: 0.0005, // story mainnet
+  1514: 0.05, // story mainnet
   80001: 0.00009, // polygon mumbai
 };

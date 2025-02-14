@@ -18,6 +18,11 @@ import { wagmiAdapter } from "../../../../../../../providers/EVM/EVMWalletProvid
 import { ENVIRONMENT } from "../../../../../../../services";
 import { useAppAuth } from "../../../../../../../hooks/app";
 import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
+import {
+  gasFeeForDeployment,
+  gasFeeForMint,
+  gasFeeForOxSplitCreate,
+} from "../../../../../../../data";
 
 const Topup = ({
   topUpAccount,
@@ -55,11 +60,9 @@ const Topup = ({
   const selectedNetwork = farcasterStates?.frameData?.selectedNetwork;
   const isCustomCurrMint =
     isCustomCurrMintOption || farcasterStates?.frameData?.isCustomCurrMint;
-  const TxFeeForDeployment =
-    chain?.id === 137 ? 0.7 : chainId === morph?.id ? 0.0002 : 0.00009;
-  const txFeeForMint = isCustomCurrMint ? 0.00005 : 0.00009;
-  const txFeeForOxSplitCreate =
-    chain?.id === 137 ? 0.7 : chainId === morph?.id ? 0.0002 : 0.00009;
+  const TxFeeForDeployment = gasFeeForDeployment[chain?.id];
+  const txFeeForMint = gasFeeForMint[chain?.id];
+  const txFeeForOxSplitCreate = gasFeeForOxSplitCreate[chain?.id];
   const isCreatorSponsored = farcasterStates.frameData.isCreatorSponsored;
 
   const numberOfExtraMints = allowedMints;

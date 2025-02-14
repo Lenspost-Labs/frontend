@@ -194,16 +194,13 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 					<div className="text-sm font-normal group-hover:text-black text-white">Gold</div>
 				</div>
 			) : (
-				<div
-					onClick={handleSubscriptionModal}
-					className={`${isMobile ? 'bottom-16 absolute right-24 cursor-pointer' : '"bottom-24 absolute right-16 cursor-pointer"'}`}
-				>
+				<div onClick={handleSubscriptionModal} className={`absolute cursor-pointer ${isMobile ? 'bottom-16 right-24' : 'bottom-24 right-16'}`}>
 					<SparklingCoin />
 				</div>
 			)}
 			<Dialog
 				className={`p-4 relative  max-h-[90vh] ${isMobile ? 'h-[90vh] overflow-hidden' : ''}`}
-				size="md"
+				size="lg"
 				open={openedSubscriptionModal}
 				handler={handleSubscriptionModal}
 			>
@@ -305,23 +302,29 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
               Please switch to Base Sepolia to buy $POSTER
             </div>
           )} */}
-					<div className="flex flex-col gap-3 m-4 mt-8">
-						{isChainSupported && <Networks chains={supportedChains} isUnsupportedChain={isChainSupported} />}
-						<Button
-							disabled={isPending}
-							onClick={fnBuyPoster}
-							className="w-full focus:outline-none outline-none bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl transition-colors group"
-						>
-							{isPending ? (
-								<div className="flex items-center justify-center gap-2">
-									<Spinner className="h-4 w-4" /> Processing...
-								</div>
-							) : (
-								<div className="flex items-center justify-center gap-2 text-lg font-semibold">
-									Get Poster Gold <FaHeartbeat className="w-5 h-5 group-hover:animate-pulse text-white" />
-								</div>
-							)}
-						</Button>
+					<div className="flex flex-row justify-between gap-3 m-4 mt-8">
+						<div className="flex justify-center items-center gap-2">
+							<span className="text-sm font-bold text-pink-500">Current Network</span>
+							<Networks chains={supportedChains} isUnsupportedChain={isChainSupported} />
+						</div>
+						<div className="flex justify-center">
+							<Button
+								disabled={isPending}
+								onClick={fnBuyPoster}
+								size="lg"
+								className="w-auto focus:outline-none outline-none bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl transition-colors group"
+							>
+								{isPending ? (
+									<div className="flex items-center justify-center gap-2">
+										<Spinner className="h-4 w-4" /> Processing...
+									</div>
+								) : (
+									<div className="flex items-center justify-center gap-2 text-lg font-semibold">
+										Get Poster Gold <FaHeartbeat className="w-5 h-5 group-hover:animate-pulse text-white" />
+									</div>
+								)}
+							</Button>
+						</div>
 					</div>
 				</DialogBody>
 			</Dialog>

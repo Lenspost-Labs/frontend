@@ -165,6 +165,9 @@ export const DesignPanel = () => {
 
   return (
     <div className="h-full flex flex-col">
+      <div className="flex items-center justify-center space-x-2 my-4 mb-0">
+        <h1 className="text-lg">My Canvases</h1>
+      </div>
       {/* <h1 className="text-lg">My Files</h1> */}
       {!isMobile && (
         <>
@@ -298,7 +301,7 @@ export const DesignPanel = () => {
 const DesignSection = {
   name: "My Designs",
   Tab: (props) => (
-    <SectionTab name="My Files" {...props}>
+    <SectionTab name="My Canvases" {...props}>
       <MyDesignIcon />
     </SectionTab>
   ),

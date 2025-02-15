@@ -91,6 +91,9 @@ const ResizePanel = () => {
 
   return (
     <div className="flex flex-col overflow-y-scroll overflow-x-hidden h-full">
+      <div className="flex items-center justify-center space-x-2 my-4 mb-0">
+        <h1 className="text-lg">Sizes</h1>
+      </div>
       {/* <label htmlFor="width">Width (px)</label> */}
       <div className="sticky top-0 bg-white">
         <div className="m-2 p-1">Set custom size</div>
@@ -104,7 +107,7 @@ const ResizePanel = () => {
             value={width}
             onChange={(e) => setWidth(Number(e.target.value))}
           />
-          {/* <br /> */} 
+          {/* <br /> */}
           <div className="m-2 mt-4 mb-4">X</div>
           {/* <label htmlFor="height">Height (px)</label> */}
           <input
@@ -136,7 +139,7 @@ const ResizePanel = () => {
   );
 };
 
- const ResizeSection = {
+const ResizeSection = {
   name: "sizes",
   Tab: (props) => (
     <SectionTab name="Sizes" {...props}>

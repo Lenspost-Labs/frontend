@@ -184,6 +184,9 @@ export const CommunityIPPanel = () => {
   return (
     <>
       <div className="flex flex-col h-full">
+        <div className="flex items-center justify-center space-x-2 my-4 mb-0">
+          <h1 className="text-lg">Community IPs</h1>
+        </div>
         {/* New Material Tailwind Buttons / Tabs : */}
         {/* Reference Link: https://www.material-tailwind.com/docs/react/tabs */}
         <Tabs

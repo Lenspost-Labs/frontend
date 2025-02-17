@@ -66,8 +66,6 @@ export const wagmiAdapter = new WagmiAdapter({
           storyMainnet,
           campNetworkTestnetV2,
           morph,
-          ham,
-          og,
           solana,
         ]
       : [
@@ -81,8 +79,6 @@ export const wagmiAdapter = new WagmiAdapter({
           storyAeneidTestnet,
           campNetworkTestnetV2,
           morph,
-          ham,
-          og,
           solana,
           solanaTestnet,
           solanaDevnet,
@@ -94,10 +90,8 @@ export const wagmiAdapter = new WagmiAdapter({
     [zora.id]: http(),
     [optimism.id]: http(),
     [polygon.id]: http(),
-    [ham.id]: http(),
-    [og.id]: http(),
     [storyAeneidTestnet.id]: http(),
-    // [storyMainnet.id]: http(),
+    [storyMainnet.id]: http(),
     [polygonMumbai.id]: http(),
     [baseSepolia.id]: http(),
     [arbitrum.id]: http(),
@@ -132,8 +126,6 @@ export const appKit = createAppKit({
           storyMainnet,
           campNetworkTestnetV2,
           morph,
-          ham,
-          og,
           solana,
         ]
       : [
@@ -147,8 +139,6 @@ export const appKit = createAppKit({
           storyAeneidTestnet,
           campNetworkTestnetV2,
           morph,
-          ham,
-          og,
           solana,
           solanaTestnet,
           solanaDevnet,

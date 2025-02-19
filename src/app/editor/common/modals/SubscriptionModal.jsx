@@ -285,9 +285,9 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 				handler={handleSubscriptionModal}
 			>
 				<BackgroundDecorations />
-				<DialogHeader className="justify-between">
+				<DialogHeader className="md:flex-row flex-col gap-5 justify-between">
 					<div className="flex items-center gap-2">
-						<Typography variant="h5" className="text-black font-bold">
+						<Typography variant="h5" className="text-black md:text-xl text-base font-bold">
 							Choose your Poster Gold Subscription
 						</Typography>
 					</div>
@@ -299,7 +299,7 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 								<span className="text-[#b9cd1e]">Gold</span>
 							</span>
 						</div>
-						<button className="text-red-500 hover:text-black" onClick={handleSubscriptionModal}>
+						<button className="text-red-500 absolute right-4 top-2 hover:text-black" onClick={handleSubscriptionModal}>
 							<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
 							</svg>
@@ -393,8 +393,8 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 					{isFetchedBalance && (
 						<>
 							{balance?.value < usdcValue ? (
-								<div className="mt-4 flex items-center justify-center gap-2 text-red-500">
-									<span>You don't have enough balance to buy Poster Gold </span>
+								<div className="mt-4 md:flex-row flex-col flex items-center justify-center gap-2 text-red-500">
+									<span className="md:text-left text-center text-sm">You don't have enough balance to buy Poster Gold </span>
 									<Button
 										className=" bg-[#e1f16b] hover:bg-[#e1f16b]/90  flex items-center gap-1 text-black px-2 py-1 rounded-md"
 										disabled={isLoadingBalance || isRefetchingBalance}
@@ -434,7 +434,7 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
               Please switch to Base Sepolia to buy $POSTER
             </div>
           )} */}
-					<div className="flex flex-row justify-between gap-3 mt-4">
+					<div className="flex flex-col md:flex-row justify-between gap-3 md:mb-0 mb-8 mt-4">
 						<div className="flex justify-center items-center gap-2">
 							<span className="text-sm font-bold text-red-500">Current Network</span>
 							<Networks chains={supportedChains} isUnsupportedChain={!isChainSupported} />
@@ -452,7 +452,7 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 									</div>
 								) : (
 									<div className="flex items-center justify-center gap-2 text-black text-lg font-semibold">
-										Get Poster Gold <img src={coinImg} alt="" className="w-5 h-5" />
+										Get Gold <img src={coinImg} alt="" className="w-5 h-5" />
 									</div>
 								)}
 							</Button>

@@ -22,6 +22,7 @@ import {
   gasFeeForDeployment,
   gasFeeForMint,
   gasFeeForOxSplitCreate,
+  storyAeneidTestnet,
 } from "../../../../../../../data";
 
 const Topup = ({
@@ -29,9 +30,15 @@ const Topup = ({
   refetchWallet,
   balance,
   sponsored,
+  isIP = false,
   isCustomCurrMintOption,
 }) => {
-  const { farcasterStates, setFarcasterStates, chainId } = useContext(Context);
+  const { canvasBase64Ref, farcasterStates, setFarcasterStates, chainId } =
+    useContext(Context);
+  let chain_id = isIP ? storyAeneidTestnet?.id : chainId;
+
+  console.log("canvasBase64Ref", canvasBase64Ref?.current);
+
   const [extraPayForMints, setExtraPayForMints] = useState(null);
   const { chain } = useAccount();
   const { openReown } = useReownAuth();
@@ -82,12 +89,20 @@ const Topup = ({
     .toFixed(18)
     .toString();
 
+  const numberOfPages = canvasBase64Ref?.current?.length;
+  const NumberOfPageMultiplyByTxFeeForDeployment =
+    TxFeeForDeployment + txFeeForMint * numberOfPages;
+
   wagmiAdapter.transports = {
-    [chain?.id]: http(),
+    [isIP ? storyAeneidTestnet?.id : chain?.id]: http(),
   };
-  const payForMints = isCustomCurrMint
+
+  const payForMints = isIP
+    ? NumberOfPageMultiplyByTxFeeForDeployment
+    : isCustomCurrMint
     ? payForMintsForCustomCurr
     : payForMintsForSponsored;
+  console.log("payForMints", { payForMints, isIP });
 
   const { data, isPending, isSuccess, isError, error, sendTransaction } =
     useSendTransaction({ wagmiAdapter });
@@ -261,17 +276,15 @@ const Topup = ({
               </Typography>
               <Button onClick={() => openReown("AllWallets")}>Connect</Button>
             </>
-          ) : isCreatorSponsored && chain?.id !== chainId ? (
+          ) : isCreatorSponsored && chain?.id !== chain_id ? (
             <>
               <Typography variant="h6" color="blue-gray">
-                Switch chain to{" "}
-                {ENVIRONMENT === "production" ? "Base" : "BaseSepolia"} for
-                Topup
+                Switch chain to {selectedNetwork?.name} for Topup
               </Typography>
               <Button
                 onClick={() =>
                   switchChain({
-                    chainId: chainId,
+                    chainId: chain_id,
                   })
                 }
               >
@@ -286,7 +299,12 @@ const Topup = ({
 
               <Typography variant="h6" color="blue-gray">
                 {extraPayForMints ? extraPayForMints : payForMints}{" "}
-                <>{chain?.nativeCurrency?.symbol}</>
+                <>
+                  {isIP ? storyAeneidTestnet?.name : chain?.name}{" "}
+                  {isIP
+                    ? storyAeneidTestnet?.nativeCurrency?.symbol
+                    : chain?.nativeCurrency?.symbol}
+                </>
               </Typography>
 
               <div className="w-full flex justify-between items-center">

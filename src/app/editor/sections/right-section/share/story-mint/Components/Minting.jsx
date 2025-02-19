@@ -2,8 +2,9 @@ import { useContext } from "react";
 import { Context } from "../../../../../../../providers/context";
 import { useAppAuth, useReset } from "../../../../../../../hooks/app";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  uploadAsIP,
   uploadJSONtoIPFS,
   uploadUserAssetToIPFS,
 } from "../../../../../../../services";
@@ -11,17 +12,19 @@ import { toast } from "react-toastify";
 import useMint721 from "../../../../../../../hooks/mint721/useMint721";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { useEffect } from "react";
-import { getFromLocalStorage } from "../../../../../../../utils";
+import { addressCrop, getFromLocalStorage } from "../../../../../../../utils";
 import {
   LOCAL_STORAGE,
   STORY_ODYSSEY_ADDRESS,
 } from "../../../../../../../data";
-import { storyOdysseyTestnet } from "../../../../../../../data/network/storyOdyssey";
+import { storyAeneidTestnet } from "../../../../../../../data";
 import storyABI from "../../../../../../../data/json/storyABI.json";
 import { InputBox, SelectBox } from "../../../../../common";
 import { EVMWallets } from "../../../../top-section/auth/wallets";
 import { Button, Textarea } from "@material-tailwind/react";
 import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
+import { getOrCreateWallet } from "../../../../../../../services/apis/BE-apis";
+import { Topup } from "../../farcaster-share/components";
 
 const getPILTypeString = (type) => {
   switch (type) {
@@ -84,24 +87,42 @@ const Minting = () => {
   const chainId = useChainId();
 
   const [collectionName, setCollectionName] = useState("");
-  const [collectionSymbol, setCollectionSymbol] = useState("");
   const [revShare, setRevShare] = useState(0);
   const [license, setLicense] = useState("");
   const [customRevShare, setCustomRevShare] = useState("");
 
+  const [creatorName, setCreatorName] = useState("");
+  const [creatorDescription, setCreatorDescription] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [farcaster, setFarcaster] = useState("");
+  const [ipResult, setIPResult] = useState(null);
+
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
 
-  const mintParams = () => {
-    let params = {
-      address: STORY_ODYSSEY_ADDRESS,
-      chainId: storyOdysseyTestnet.id,
-      args: [address, `ipfs://${uploadJSONData?.message}`],
-      abi: storyABI,
-      functionName: "mint",
-    };
+  const {
+    data: walletData,
+    isError: isWalletError,
+    isLoading: isWalletLoading,
+    error: walletError,
+    isSuccess: isWalletSuccess,
+    refetch: refetchWallet,
+    isRefetching: isWalletRefetching,
+  } = useQuery({
+    queryKey: ["getOrCreateWallet"],
+    queryFn: () => getOrCreateWallet(storyAeneidTestnet?.id),
+    refetchOnWindowFocus: false,
+  });
 
-    return params;
-  };
+  const {
+    mutate: uploadIP,
+    isPending: isUploadIPPending,
+    isSuccess: isUploadIPSuccess,
+    isError: isUploadIPError,
+    error: uploadIPError,
+  } = useMutation({
+    mutationKey: "uploadIP",
+    mutationFn: uploadAsIP,
+  });
 
   // upload to IPFS Mutation
   const {
@@ -117,30 +138,42 @@ const Minting = () => {
     mutationFn: uploadUserAssetToIPFS,
   });
 
-  // upload JSON to IPFS Mutation
-  const {
-    mutate: uploadJSONtoIPFSMutate,
-    data: uploadJSONData,
-    isError: isUploadJSONError,
-    error: uploadJSONError,
-    isSuccess: isUploadJSONSuccess,
-    isLoading: isUploadingJSON,
-    isPending: isUploadJSONPending,
-  } = useMutation({
-    mutationKey: "uploadJSONtoIPFS",
-    mutationFn: uploadJSONtoIPFS,
-  });
-
   // upload JSON data to IPFS
   useEffect(() => {
     if (uploadData?.message) {
+      const collectionSymbol =
+        collectionName.split(" ").length === 1
+          ? collectionName.slice(0, 3).toUpperCase()
+          : collectionName
+              .split(" ")
+              .map((word) => word.charAt(0).toUpperCase())
+              .join("");
       let jsonData = {
-        name: collectionName,
-        symbol: collectionSymbol,
-        description: postDescription,
-        image: `ipfs://${uploadData?.message}`,
+        brandName: collectionName,
+        brandSymbol: collectionSymbol,
+        brandDescription: postDescription,
+        images: [`ipfs://${uploadData?.message}`],
+        mintFeeRecipient: address,
         pilType: license,
         pilTerms: {},
+        metadata: {
+          title: collectionName,
+          description: postDescription,
+          creators: {
+            name: creatorName,
+            bio: creatorDescription,
+            socialMedia: [
+              {
+                platform: "twitter",
+                url: twitter,
+              },
+              {
+                platform: "farcaster",
+                url: farcaster,
+              },
+            ],
+          },
+        },
       };
 
       let pilTerms = {};
@@ -154,16 +187,19 @@ const Minting = () => {
       }
 
       jsonData = { ...jsonData, pilTerms };
-      uploadJSONtoIPFSMutate(jsonData);
+      uploadIP(jsonData).then((res) => {
+        console.log("uploadIP", res);
+        setIPResult(res);
+      });
     }
   }, [isUploadSuccess]);
 
   useEffect(() => {
-    if (isUploadJSONError) {
-      console.log(uploadJSONError);
-      toast.error(uploadJSONError?.message);
+    if (isUploadIPError) {
+      console.log(uploadIPError);
+      toast.error(uploadIPError?.message);
     }
-  }, [isUploadJSONError, uploadJSONError]);
+  }, [isUploadIPError, uploadIPError]);
 
   useEffect(() => {
     if (isUploadError) {
@@ -172,37 +208,12 @@ const Minting = () => {
     }
   }, [isUploadError, uploadError]);
 
-  const {
-    tx: { isTxConfirming, isTxSuccess, isTxError, txError, txData },
-    write: { isWriteError, writeError, isWriting, mint721 },
-    simulation: { refetchSimulation },
-  } = useMint721(mintParams());
-
   useEffect(() => {
-    if (isTxSuccess) {
-      console.log("isTxSuccess", txData);
+    if (isUploadIPSuccess) {
       //resetState()
-      toast.success("NFT minted successfully!");
+      toast.success("IP registered successfully!");
     }
-  }, [isTxSuccess, txData]);
-
-  useEffect(() => {
-    if (isWriteError || isTxError) {
-      const error = writeError || txError;
-      const errorMessage = error?.message?.split("\n")[0];
-      if (errorMessage?.includes("connector not connected")) {
-        toast.error("Please connect your wallet");
-      } else {
-        toast.error(errorMessage || "An error occurred");
-      }
-    }
-  }, [isWriteError, writeError, isTxError, txError]);
-
-  useEffect(() => {
-    if (isUploadJSONSuccess) {
-      mint721();
-    }
-  }, [isUploadJSONSuccess]);
+  }, [isUploadIPSuccess]);
 
   // Add a new state to track if custom is selected
   const [isCustomSelected, setIsCustomSelected] = useState(false);
@@ -218,10 +229,25 @@ const Minting = () => {
       if (isMobile) {
         setCollectionName("Default Title");
       }
-    } else if (name === "symbol") {
-      setCollectionSymbol(value);
+    } else if (name === "creatorName") {
+      setCreatorName(value);
       if (isMobile) {
-        setCollectionSymbol("Default Symbol");
+        setCreatorName("Default Creator Name");
+      }
+    } else if (name === "creatorDescription") {
+      setCreatorDescription(value);
+      if (isMobile) {
+        setCreatorDescription("Default Creator Description");
+      }
+    } else if (name === "twitter") {
+      setTwitter(value);
+      if (isMobile) {
+        setTwitter("Default Twitter");
+      }
+    } else if (name === "farcaster") {
+      setFarcaster(value);
+      if (isMobile) {
+        setFarcaster("Default Farcaster");
       }
     } else if (name === "revenueShare") {
       if (value === "custom") {
@@ -256,7 +282,7 @@ const Minting = () => {
 
   // checking unsupported chain for individual networks
   const isUnsupportedChain = () => {
-    if (chainId !== storyOdysseyTestnet.id && !isSuccessSwitchNetwork)
+    if (chainId !== storyAeneidTestnet.id && !isSuccessSwitchNetwork)
       return true;
   };
 
@@ -288,9 +314,15 @@ const Minting = () => {
       return;
     }
 
-    // check if collection symbol is provided
-    if (!collectionSymbol) {
-      toast.error("Please provide a collection symbol");
+    // check if creator name is provided
+    if (!creatorName) {
+      toast.error("Please provide a creator name");
+      return;
+    }
+
+    // check if creator description is provided
+    if (!creatorDescription) {
+      toast.error("Please provide a creator description");
       return;
     }
 
@@ -306,114 +338,166 @@ const Minting = () => {
     mutate(canvasBase64Ref.current[0]);
   };
 
-  const isPending = isUploadPending || isUploadJSONPending;
-
-  const isLoading =
-    isUploading || isUploadingJSON || isWriting || isTxConfirming;
+  const isLoading = isUploading || isUploadIPPending || isUploadPending;
 
   return (
     <div>
       <div className=" mt-1 pt-2 pb-4">
         <div className="flex justify-between">
-          <h2 className="text-lg"> NFT Details </h2>
+          <h2 className="text-lg">IP Registration Details </h2>
         </div>
       </div>
 
-      <div className={` `}>
-        <div className="flex flex-col w-full py-2">
-          <InputBox
-            label="Name"
-            name="title"
-            disabled={isLoading}
-            onChange={(e) => handleInputChange(e)}
-            onFocus={(e) => handleInputChange(e)}
-            value={collectionName}
-          />
-
-          <div className="mt-4">
+      <div className="flex flex-col w-full gap-3">
+        <div className="flex flex-col gap-2">
+          <h3 className="text-md">IP Details</h3>
+          <div className="flex flex-col w-full">
             <InputBox
-              label="Symbol"
-              name="symbol"
+              label="Name"
+              name="title"
               disabled={isLoading}
               onChange={(e) => handleInputChange(e)}
               onFocus={(e) => handleInputChange(e)}
-              value={collectionSymbol}
+              value={collectionName}
             />
+            <div className="mt-4">
+              {!isMobile ? (
+                <Textarea
+                  label="Description"
+                  name="description"
+                  disabled={isLoading}
+                  onChange={(e) => handleInputChange(e)}
+                  onFocus={(e) => handleInputChange(e)}
+                  value={postDescription}
+                />
+              ) : (
+                <textarea
+                  cols={30}
+                  type="text"
+                  className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+                  label="Description"
+                  name="description"
+                  onChange={(e) => handleInputChange(e)}
+                  onFocus={(e) => handleInputChange(e)}
+                  value={postDescription}
+                  placeholder="Write a description..."
+                  // className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+                />
+              )}
+              {charLimitError && (
+                <div className="text-red-500 text-sm">{charLimitError}</div>
+              )}
+            </div>
+
+            <div className="mt-4">
+              <SelectBox
+                options={licenseOptions.map((option) => ({
+                  ...option,
+                  value: option.value.toString(),
+                }))}
+                onChange={(e) => handleInputChange(e)}
+                name="license"
+                label="License"
+              />
+            </div>
+
+            {license === getPILTypeString(2) && (
+              <div className="mt-4">
+                <SelectBox
+                  options={revenueShareOptions}
+                  onChange={(e) => handleInputChange(e)}
+                  name="revenueShare"
+                  label="Remix Royalties"
+                  value={isCustomSelected ? "custom" : revShare.toString()}
+                />
+                {isCustomSelected && (
+                  <div className="mt-2">
+                    <InputBox
+                      label="Custom Remix Royalties (%)"
+                      name="customRevShare"
+                      type="text"
+                      min="0"
+                      max="100"
+                      disabled={isLoading}
+                      onChange={(e) => handleInputChange(e)}
+                      value={customRevShare}
+                      placeholder="Enter value between 0-100"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-          <div className="mt-4">
-            {!isMobile ? (
-              <Textarea
-                label="Description"
-                name="description"
+        </div>
+        <div className="flex flex-col mt-2 gap-2">
+          <h3 className="text-md">Creator Details</h3>
+          <div className="flex flex-col w-full">
+            <InputBox
+              label="Creator Name"
+              name="creatorName"
+              disabled={isLoading}
+              onChange={(e) => handleInputChange(e)}
+              onFocus={(e) => handleInputChange(e)}
+              value={creatorName}
+            />
+            <div className="mt-4">
+              {!isMobile ? (
+                <Textarea
+                  label="Creator Description"
+                  name="creatorDescription"
+                  disabled={isLoading}
+                  onChange={(e) => handleInputChange(e)}
+                  onFocus={(e) => handleInputChange(e)}
+                  value={creatorDescription}
+                />
+              ) : (
+                <textarea
+                  cols={30}
+                  type="text"
+                  className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+                  label="Creator Description"
+                  name="creatorDescription"
+                  onChange={(e) => handleInputChange(e)}
+                  onFocus={(e) => handleInputChange(e)}
+                  value={creatorDescription}
+                  disabled={isLoading}
+                  placeholder="Write a description..."
+                  // className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+                />
+              )}
+              {charLimitError && (
+                <div className="text-red-500 text-sm">{charLimitError}</div>
+              )}
+            </div>
+            <div className="flex mt-2s">
+              <InputBox
+                label="Twitter"
+                name="twitter"
                 disabled={isLoading}
                 onChange={(e) => handleInputChange(e)}
                 onFocus={(e) => handleInputChange(e)}
-                value={postDescription}
+                value={twitter}
               />
-            ) : (
-              <textarea
-                cols={30}
-                type="text"
-                className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
-                label="Description"
-                name="description"
+            </div>
+            <div className="flex mt-4">
+              <InputBox
+                label="Farcaster"
+                name="farcaster"
+                disabled={isLoading}
                 onChange={(e) => handleInputChange(e)}
                 onFocus={(e) => handleInputChange(e)}
-                value={postDescription}
-                placeholder="Write a description..."
-                // className="border border-b-4 w-full h-40 mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
+                value={farcaster}
               />
-            )}
-            {charLimitError && (
-              <div className="text-red-500 text-sm">{charLimitError}</div>
-            )}
-          </div>
-          <div className="mt-4">
-            <SelectBox
-              options={licenseOptions.map((option) => ({
-                ...option,
-                value: option.value.toString(),
-              }))}
-              onChange={(e) => handleInputChange(e)}
-              name="license"
-              label="License"
-            />
-          </div>
-
-          {license === getPILTypeString(2) && (
-            <div className="mt-4">
-              <SelectBox
-                options={revenueShareOptions}
-                onChange={(e) => handleInputChange(e)}
-                name="revenueShare"
-                label="Revenue Share"
-                value={isCustomSelected ? "custom" : revShare.toString()}
-              />
-              {isCustomSelected && (
-                <div className="mt-2">
-                  <InputBox
-                    label="Custom Revenue Share (%)"
-                    name="customRevShare"
-                    type="text"
-                    min="0"
-                    max="100"
-                    disabled={isLoading}
-                    onChange={(e) => handleInputChange(e)}
-                    value={customRevShare}
-                    placeholder="Enter value between 0-100"
-                  />
-                </div>
-              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
-      {isTxSuccess && txData ? (
+      {isUploadIPSuccess && ipResult ? (
         <div className="flex flex-col gap-2 mt-4 justify-center items-center">
-          <p className="text-green-500 font-bold">NFT minted successfully!</p>
-          <p className="font-bold text-lg mt-3">
-            Share NFT on Social Platforms
+          <p className="text-green-500 font-bold">
+            IP registered successfully!
           </p>
+          <p className="font-bold text-lg mt-3">Share IP on Social Platforms</p>
           <div className="flex items-center gap-5">
             <Button className="font-medium" onClick={() => setMenu("xshare")}>
               Share on X
@@ -426,7 +510,7 @@ const Minting = () => {
             </Button>
           </div>
           <a
-            href={`${storyOdysseyTestnet?.blockExplorers?.default.url}/token/${STORY_ODYSSEY_ADDRESS}`}
+            href={`${storyAeneidTestnet?.blockExplorers?.default.url}/tx/${ipResult.txHash}`}
             className="text-purple-500 hover:underline"
             rel="noreferrer"
             target="_blank"
@@ -442,26 +526,68 @@ const Minting = () => {
             className="w-full outline-none flex justify-center items-center gap-2"
             disabled={isLoadingSwitchNetwork}
             loading={isLoadingSwitchNetwork}
-            onClick={() => switchChain({ chainId: storyOdysseyTestnet.id })}
+            onClick={() => switchChain({ chainId: storyAeneidTestnet.id })}
             color="red"
           >
             {isLoadingSwitchNetwork ? "Switching" : "Switch"} to{" "}
-            {storyOdysseyTestnet.name} Network{" "}
+            {storyAeneidTestnet.name} Network{" "}
             {isLoadingSwitchNetwork && <Spinner />}
           </Button>
         </div>
       ) : (
-        <div className="mt-4">
-          <Button
-            disabled={isPending || isUnsupportedChain() || isLoading}
-            fullWidth
-            loading={isLoading}
-            // color="yellow"
-            onClick={handleSubmit}
-          >
-            {" "}
-            {isLoading ? "Minting..." : "Mint NFT"}
-          </Button>
+        <div className="flex flex-col gap-2">
+          <div className="mt-4">
+            <p className="text-end mt-4">
+              <span>Topup account:</span>
+              {isWalletLoading || isWalletRefetching ? (
+                <span className="text-blue-500"> Loading address... </span>
+              ) : (
+                <span
+                  className="text-blue-500 cursor-pointer"
+                  onClick={() => {
+                    navigator.clipboard.writeText(walletData?.publicAddress);
+                    toast.success("Copied topup account address");
+                  }}
+                >
+                  {" "}
+                  {addressCrop(walletData?.publicAddress)}
+                </span>
+              )}
+            </p>
+            <p className="text-end">
+              <span>Topup balance:</span>
+              {isWalletLoading || isWalletRefetching ? (
+                <span className="text-blue-500"> Loading balance... </span>
+              ) : (
+                <span>
+                  {" "}
+                  {walletData?.balance}{" "}
+                  {storyAeneidTestnet?.nativeCurrency?.symbol}{" "}
+                </span>
+              )}
+            </p>
+          </div>
+          {walletData?.publicAddress && (
+            <Topup
+              topUpAccount={walletData?.publicAddress}
+              isIP={true}
+              balance={walletData?.balance}
+              refetchWallet={refetchWallet}
+              sponsored={walletData?.sponsored}
+            />
+          )}
+          <div className="mt-4">
+            <Button
+              disabled={isLoading}
+              fullWidth
+              loading={isLoading}
+              // color="yellow"
+              onClick={handleSubmit}
+            >
+              {" "}
+              {isLoading ? "Registering..." : "Register IP"}
+            </Button>
+          </div>
         </div>
       )}
     </div>

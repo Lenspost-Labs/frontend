@@ -454,6 +454,9 @@ const ContextProvider = ({ children }) => {
   // elementId and handle data getting from BE
   const preStoredRecipientDataRef = useRef([]);
 
+  // elementId and handle data for story nft
+  const storyIPDataRef = useRef([]);
+
   // It has all the DataRefs data
   const parentRecipientDataRef = useRef([]);
 
@@ -607,6 +610,9 @@ const ContextProvider = ({ children }) => {
 
         // elementId and handle data for solana nfts nft
         nftRecipientDataRef,
+
+        // elementId and handle data for story nft
+        storyIPDataRef,
 
         // elementId and handle data for BG remover nft
         bgRemoverRecipientDataRef,

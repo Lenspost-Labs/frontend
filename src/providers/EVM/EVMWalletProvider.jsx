@@ -19,7 +19,6 @@ import {
   og,
 } from "../../data";
 
-import { storyOdysseyTestnet } from "../../data/network/storyOdyssey";
 import { WagmiProvider } from "wagmi";
 
 import { createAppKit } from "@reown/appkit/react";
@@ -95,7 +94,6 @@ export const wagmiAdapter = new WagmiAdapter({
     [polygonMumbai.id]: http(),
     [baseSepolia.id]: http(),
     [arbitrum.id]: http(),
-    [storyOdysseyTestnet.id]: http(),
     [morph.id]: http(),
     [campNetworkTestnetV2.id]: http(),
     [solana.id]: http(),

@@ -654,6 +654,18 @@ export const uploadUserAssetToIPFS = async (image) => {
   return result?.data;
 };
 
+export const registerIPDerivative = async (data) => {
+	const result = await api.post(`${API}/story/register-ip-derivatives`, data)
+
+	return result?.data
+}
+
+export const uploadAsIP = async (json) => {
+	const result = await api.post(`${API}/user/upload/uploadAsIP`, json)
+
+	return result?.data
+}
+
 export const uploadJSONtoIPFS = async (json) => {
   const result = await api.post(`${API}/util/upload-json-ipfs`, {
     json,

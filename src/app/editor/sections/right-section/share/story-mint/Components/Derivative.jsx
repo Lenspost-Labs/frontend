@@ -3,86 +3,35 @@ import { Context } from '../../../../../../../providers/context'
 import { useAppAuth, useReset } from '../../../../../../../hooks/app'
 import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { uploadAsIP, uploadJSONtoIPFS, uploadUserAssetToIPFS } from '../../../../../../../services'
+import { registerIPDerivative, uploadUserAssetToIPFS } from '../../../../../../../services'
 import { toast } from 'react-toastify'
-import useMint721 from '../../../../../../../hooks/mint721/useMint721'
-import { useAccount, useChainId, useSwitchChain } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { useEffect } from 'react'
-import { addressCrop, getFromLocalStorage } from '../../../../../../../utils'
-import { LOCAL_STORAGE, STORY_ODYSSEY_ADDRESS } from '../../../../../../../data'
-import { storyMainnet } from '../../../../../../../data'
-import storyABI from '../../../../../../../data/json/storyABI.json'
+import { addressCrop, getFromLocalStorage, saveToLocalStorage } from '../../../../../../../utils'
+import { LOCAL_STORAGE } from '../../../../../../../data'
 import { InputBox, SelectBox } from '../../../../../common'
 import { EVMWallets } from '../../../../top-section/auth/wallets'
 import { Button, Textarea } from '@material-tailwind/react'
 import useReownAuth from '../../../../../../../hooks/reown-auth/useReownAuth'
 import { getOrCreateWallet } from '../../../../../../../services/apis/BE-apis'
 import { Topup } from '../../farcaster-share/components'
+import WithdrawFunds from '../../farcaster-share/components/WithdrawFunds'
+import WatermarkRemover from '../../components/WatermarkRemover'
+import { storyMainnet } from '../../../../../../../data'
 
-const getPILTypeString = (type) => {
-	switch (type) {
-		case 0:
-			return 'NON_COMMERCIAL_REMIX'
-		case 2:
-			return 'COMMERCIAL_REMIX'
-		case 1:
-			return 'COMMERCIAL_USE'
-		default:
-			return ''
-	}
-}
+const Derivative = () => {
+	const { postDescription, contextCanvasIdRef, actionType, canvasBase64Ref, storyIPDataRef, setPostDescription, isMobile } = useContext(Context)
 
-const licenseOptions = [
-	{
-		label: 'Non-Commercial Remix',
-		value: getPILTypeString(0),
-	},
-	{
-		label: 'Commercial Remix',
-		value: getPILTypeString(2),
-	},
-]
-
-const revenueShareOptions = [
-	{ label: '0', value: '0' },
-	{ label: '10', value: '10' },
-	{ label: '20', value: '20' },
-	{ label: '30', value: '30' },
-	{ label: '40', value: '40' },
-	{ label: '50', value: '50' },
-	{ label: 'Custom', value: 'custom' },
-]
-
-const Minting = () => {
-	const { postDescription, setMenu, canvasBase64Ref, setPostDescription, contextCanvasIdRef, isMobile } = useContext(Context)
 	const { resetState } = useReset()
 	const { login } = useReownAuth()
 	const { isAuthenticated } = useAppAuth()
 	const { address, isConnected } = useAccount()
-
-	const [charLimitError, setCharLimitError] = useState('')
-
-	const {
-		error: errorSwitchNetwork,
-		isError: isErrorSwitchNetwork,
-		isLoading: isLoadingSwitchNetwork,
-		isSuccess: isSuccessSwitchNetwork,
-		switchChain,
-	} = useSwitchChain()
-
-	const chainId = useChainId()
-
-	const [collectionName, setCollectionName] = useState('')
-	const [revShare, setRevShare] = useState(0)
-	const [license, setLicense] = useState('')
-	const [customRevShare, setCustomRevShare] = useState('')
-
 	const [creatorName, setCreatorName] = useState('')
 	const [creatorDescription, setCreatorDescription] = useState('')
 	const [twitter, setTwitter] = useState('')
 	const [farcaster, setFarcaster] = useState('')
-	const [ipResult, setIPResult] = useState(null)
-
+	const [charLimitError, setCharLimitError] = useState('')
+	const [collectionName, setCollectionName] = useState('')
 	const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth)
 
 	const {
@@ -99,17 +48,6 @@ const Minting = () => {
 		refetchOnWindowFocus: false,
 	})
 
-	const {
-		mutate: uploadIP,
-		isPending: isUploadIPPending,
-		isSuccess: isUploadIPSuccess,
-		isError: isUploadIPError,
-		error: uploadIPError,
-	} = useMutation({
-		mutationKey: 'uploadIP',
-		mutationFn: uploadAsIP,
-	})
-
 	// upload to IPFS Mutation
 	const {
 		mutate,
@@ -124,24 +62,34 @@ const Minting = () => {
 		mutationFn: uploadUserAssetToIPFS,
 	})
 
+	// upload JSON to IPFS Mutation
+	const {
+		mutate: registerDerivative,
+		data: registerDerivativeData,
+		isError: isRegisterDerivativeError,
+		error: registerDerivativeError,
+		isSuccess: isRegisterDerivativeSuccess,
+		isLoading: isRegisterDerivativeLoading,
+		isPending: isRegisterDerivativePending,
+	} = useMutation({
+		mutationKey: 'registerIPDerivative',
+		mutationFn: registerIPDerivative,
+	})
+
+	useEffect(() => {
+		if (isWalletSuccess) {
+			saveToLocalStorage(LOCAL_STORAGE.userLOA, walletData?.publicAddress)
+		}
+	}, [isWalletSuccess])
+
 	// upload JSON data to IPFS
 	useEffect(() => {
 		if (uploadData?.message) {
-			const collectionSymbol =
-				collectionName.split(' ').length === 1
-					? collectionName.slice(0, 3).toUpperCase()
-					: collectionName
-							.split(' ')
-							.map((word) => word.charAt(0).toUpperCase())
-							.join('')
 			let jsonData = {
-				brandName: collectionName,
-				brandSymbol: collectionSymbol,
-				brandDescription: postDescription,
-				images: [`ipfs://${uploadData?.message}`],
+				title: collectionName,
+				description: postDescription,
 				mintFeeRecipient: address,
-				pilType: license,
-				pilTerms: {},
+				images: [`ipfs://${uploadData?.message}`],
 				metadata: {
 					title: collectionName,
 					description: postDescription,
@@ -160,30 +108,18 @@ const Minting = () => {
 						],
 					},
 				},
+				parentIpIds: [...storyIPDataRef.current.map((item) => item?.ipID)],
+				licenseTermsIds: [...storyIPDataRef.current.map((item) => item?.licenseTermsId)],
 			}
-
-			let pilTerms = {}
-
-			if (license === getPILTypeString(2)) {
-				pilTerms = {
-					mintingFee: 0,
-					currency: '0xC0F6E387aC0B324Ec18EAcf22EE7271207dCE3d5',
-					commercialRevShare: revShare,
-				}
-			}
-
-			jsonData = { ...jsonData, pilTerms }
-			uploadIP(jsonData).then((res) => {
-				setIPResult(res)
-			})
+			registerDerivative(jsonData)
 		}
 	}, [isUploadSuccess])
 
 	useEffect(() => {
-		if (isUploadIPError) {
-			toast.error(uploadIPError?.message)
+		if (isRegisterDerivativeError) {
+			toast.error(registerDerivativeError?.message)
 		}
-	}, [isUploadIPError, uploadIPError])
+	}, [isRegisterDerivativeError, registerDerivativeError])
 
 	useEffect(() => {
 		if (isUploadError) {
@@ -192,14 +128,11 @@ const Minting = () => {
 	}, [isUploadError, uploadError])
 
 	useEffect(() => {
-		if (isUploadIPSuccess) {
+		if (isRegisterDerivativeSuccess) {
 			//resetState()
-			toast.success('IP registered successfully!')
+			toast.success('Derivative registered successfully!')
 		}
-	}, [isUploadIPSuccess])
-
-	// Add a new state to track if custom is selected
-	const [isCustomSelected, setIsCustomSelected] = useState(false)
+	}, [isRegisterDerivativeSuccess])
 
 	const handleInputChange = (e) => {
 		const value = e.target.value
@@ -232,24 +165,6 @@ const Minting = () => {
 			if (isMobile) {
 				setFarcaster('Default Farcaster')
 			}
-		} else if (name === 'revenueShare') {
-			if (value === 'custom') {
-				setRevShare('')
-				setIsCustomSelected(true)
-			} else {
-				setRevShare(value)
-				setIsCustomSelected(false)
-			}
-		} else if (name === 'customRevShare') {
-			if (value === '' || /^\d+$/.test(value)) {
-				const numValue = parseInt(value)
-				if (value === '' || (numValue >= 0 && numValue <= 100)) {
-					setCustomRevShare(value)
-					setRevShare(value === '' ? '' : numValue)
-				}
-			}
-		} else if (name === 'license') {
-			setLicense(value)
 		} else if (name === 'description') {
 			if (byteLength > maxByteLimit) {
 				setCharLimitError('Maximun character limit exceeded')
@@ -261,12 +176,6 @@ const Minting = () => {
 		}
 	}
 
-	// checking unsupported chain for individual networks
-	const isUnsupportedChain = () => {
-		if (chainId !== storyMainnet.id && !isSuccessSwitchNetwork) return true
-	}
-
-	// mint on Zora
 	const handleSubmit = () => {
 		if (!address) {
 			toast.error('Please connect your wallet')
@@ -287,13 +196,17 @@ const Minting = () => {
 			return
 		}
 
-		// check if collection name is provided
+		if (storyIPDataRef.current.length === 0) {
+			toast.error('Please add asset to the design')
+			return
+		}
 		if (!collectionName) {
+			// check if collection name is provided
 			toast.error('Please provide a collection name')
 			return
 		}
 
-		// check if creator name is provided
+		// check if collection symbol is provided
 		if (!creatorName) {
 			toast.error('Please provide a creator name')
 			return
@@ -315,19 +228,21 @@ const Minting = () => {
 		mutate(canvasBase64Ref.current[0])
 	}
 
-	const isLoading = isUploading || isUploadIPPending || isUploadPending
+	const isPending = isUploadPending || isRegisterDerivativePending
+
+	const isLoading = isUploading || isRegisterDerivativeLoading || isPending
 
 	return (
 		<div>
 			<div className=" mt-1 pt-2 pb-4">
 				<div className="flex justify-between">
-					<h2 className="text-lg">IP Registration Details </h2>
+					<h2 className="text-lg"> Register as Derivative </h2>
 				</div>
 			</div>
 
 			<div className="flex flex-col w-full gap-3">
 				<div className="flex flex-col gap-2">
-					<h3 className="text-md">IP Details</h3>
+					<h3 className="text-md">Derivative Details</h3>
 					<div className="flex flex-col w-full">
 						<InputBox
 							label="Name"
@@ -351,6 +266,7 @@ const Minting = () => {
 								<textarea
 									cols={30}
 									type="text"
+									disabled={isLoading}
 									className="border border-b-2 border-blue-gray-700 w-full mb-2 text-lg outline-none p-2 ring-0 focus:ring-2 rounded-lg"
 									label="Description"
 									name="description"
@@ -363,48 +279,9 @@ const Minting = () => {
 							)}
 							{charLimitError && <div className="text-red-500 text-sm">{charLimitError}</div>}
 						</div>
-
-						<div className="mt-4">
-							<SelectBox
-								options={licenseOptions.map((option) => ({
-									...option,
-									value: option.value.toString(),
-								}))}
-								onChange={(e) => handleInputChange(e)}
-								name="license"
-								label="License"
-							/>
-						</div>
-
-						{license === getPILTypeString(2) && (
-							<div className="mt-4">
-								<SelectBox
-									options={revenueShareOptions}
-									onChange={(e) => handleInputChange(e)}
-									name="revenueShare"
-									label="Remix Royalties"
-									value={isCustomSelected ? 'custom' : revShare.toString()}
-								/>
-								{isCustomSelected && (
-									<div className="mt-2">
-										<InputBox
-											label="Custom Remix Royalties (%)"
-											name="customRevShare"
-											type="text"
-											min="0"
-											max="100"
-											disabled={isLoading}
-											onChange={(e) => handleInputChange(e)}
-											value={customRevShare}
-											placeholder="Enter value between 0-100"
-										/>
-									</div>
-								)}
-							</div>
-						)}
 					</div>
 				</div>
-				<div className="flex flex-col mt-2 gap-2">
+				<div className="flex flex-col gap-2">
 					<h3 className="text-md">Creator Details</h3>
 					<div className="flex flex-col w-full">
 						<InputBox
@@ -465,20 +342,11 @@ const Minting = () => {
 					</div>
 				</div>
 			</div>
-			{isUploadIPSuccess && ipResult ? (
+			{isRegisterDerivativeSuccess && registerDerivativeData?.data?.collection ? (
 				<div className="flex flex-col gap-2 mt-4 justify-center items-center">
-					<p className="text-green-500 font-bold">IP registered successfully!</p>
-					<p className="font-bold text-lg mt-3">Share IP on Social Platforms</p>
-					<div className="flex items-center gap-5">
-						<Button className="font-medium" onClick={() => setMenu('xshare')}>
-							Share on X
-						</Button>
-						<Button className="font-medium" onClick={() => setMenu('farcasterShare')}>
-							Share on Farcaster
-						</Button>
-					</div>
+					<p className="text-green-500 font-bold">Derivative registered successfully!</p>
 					<a
-						href={`${storyMainnet?.blockExplorers?.default.url}/tx/${ipResult.txHash}`}
+						href={`${storyMainnet?.blockExplorers?.default.url}/token/${registerDerivativeData?.data?.collection?.spgNftContract}`}
 						className="text-purple-500 hover:underline"
 						rel="noreferrer"
 						target="_blank"
@@ -488,18 +356,6 @@ const Minting = () => {
 				</div>
 			) : !getEVMAuth ? (
 				<EVMWallets title="Login with EVM" login={login} className="w-[97%]" />
-			) : isUnsupportedChain() ? (
-				<div className="outline-none mt-4">
-					<Button
-						className="w-full outline-none flex justify-center items-center gap-2"
-						disabled={isLoadingSwitchNetwork}
-						loading={isLoadingSwitchNetwork}
-						onClick={() => switchChain({ chainId: storyMainnet.id })}
-						color="red"
-					>
-						{isLoadingSwitchNetwork ? 'Switching' : 'Switch'} to {storyMainnet.name} Network {isLoadingSwitchNetwork && <Spinner />}
-					</Button>
-				</div>
 			) : (
 				<div className="flex flex-col gap-2">
 					<div className="mt-4">
@@ -541,22 +397,28 @@ const Minting = () => {
 							sponsored={walletData?.sponsored}
 						/>
 					)}
+					{/* {actionType !== 'composer' && walletData?.balance > 0 && <WithdrawFunds refetchWallet={refetchWallet} />} */}
 					<div className="mt-4">
 						<Button
-							disabled={isLoading}
+							disabled={isPending || isLoading}
 							fullWidth
-							loading={isLoading}
+							loading={isPending || isLoading}
 							// color="yellow"
 							onClick={handleSubmit}
 						>
-							{' '}
-							{isLoading ? 'Registering...' : 'Register IP'}
+							{isLoading ? 'Registering...' : 'Register'}
 						</Button>
 					</div>
+
+					{isMobile && (
+						<div className="mt-4">
+							<WatermarkRemover />
+						</div>
+					)}
 				</div>
 			)}
 		</div>
 	)
 }
 
-export default Minting
+export default Derivative

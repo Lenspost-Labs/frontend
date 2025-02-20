@@ -174,7 +174,6 @@ const Minting = () => {
 
 			jsonData = { ...jsonData, pilTerms }
 			uploadIP(jsonData).then((res) => {
-				console.log('uploadIP', res)
 				setIPResult(res)
 			})
 		}
@@ -182,14 +181,12 @@ const Minting = () => {
 
 	useEffect(() => {
 		if (isUploadIPError) {
-			console.log(uploadIPError)
 			toast.error(uploadIPError?.message)
 		}
 	}, [isUploadIPError, uploadIPError])
 
 	useEffect(() => {
 		if (isUploadError) {
-			console.log(uploadError)
 			toast.error(uploadError?.message)
 		}
 	}, [isUploadError, uploadError])
@@ -271,7 +268,6 @@ const Minting = () => {
 
 	// mint on Zora
 	const handleSubmit = () => {
-		console.log('handleSubmit')
 		if (!address) {
 			toast.error('Please connect your wallet')
 			return
@@ -314,8 +310,6 @@ const Minting = () => {
 			toast.error('Please provide a description')
 			return
 		}
-
-		console.log('handleSubmit', 'mutate')
 
 		// upload to IPFS
 		mutate(canvasBase64Ref.current[0])

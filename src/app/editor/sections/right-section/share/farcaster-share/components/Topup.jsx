@@ -17,8 +17,6 @@ const Topup = ({ topUpAccount, refetchWallet, balance, sponsored, isIP = false, 
 	const { canvasBase64Ref, farcasterStates, setFarcasterStates, chainId } = useContext(Context)
 	let chain_id = isIP ? storyMainnet?.id : chainId
 
-	console.log('canvasBase64Ref', canvasBase64Ref?.current)
-
 	const [extraPayForMints, setExtraPayForMints] = useState(null)
 	const { chain } = useAccount()
 	const { openReown } = useReownAuth()

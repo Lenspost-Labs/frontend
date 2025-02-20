@@ -17,7 +17,7 @@ import { getOrCreateWallet } from '../../../../../../../services/apis/BE-apis'
 import { Topup } from '../../farcaster-share/components'
 import WithdrawFunds from '../../farcaster-share/components/WithdrawFunds'
 import WatermarkRemover from '../../components/WatermarkRemover'
-import { storyAeneidTestnet } from '../../../../../../../data'
+import { storyMainnet } from '../../../../../../../data'
 
 const Derivative = () => {
 	const { postDescription, contextCanvasIdRef, actionType, canvasBase64Ref, storyIPDataRef, setPostDescription, isMobile } = useContext(Context)
@@ -44,7 +44,7 @@ const Derivative = () => {
 		isRefetching: isWalletRefetching,
 	} = useQuery({
 		queryKey: ['getOrCreateWallet'],
-		queryFn: () => getOrCreateWallet(storyAeneidTestnet?.id),
+		queryFn: () => getOrCreateWallet(storyMainnet?.id),
 		refetchOnWindowFocus: false,
 	})
 
@@ -346,7 +346,7 @@ const Derivative = () => {
 				<div className="flex flex-col gap-2 mt-4 justify-center items-center">
 					<p className="text-green-500 font-bold">Derivative registered successfully!</p>
 					<a
-						href={`${storyAeneidTestnet?.blockExplorers?.default.url}/token/${registerDerivativeData?.data?.collection?.spgNftContract}`}
+						href={`${storyMainnet?.blockExplorers?.default.url}/token/${registerDerivativeData?.data?.collection?.spgNftContract}`}
 						className="text-purple-500 hover:underline"
 						rel="noreferrer"
 						target="_blank"
@@ -383,7 +383,7 @@ const Derivative = () => {
 							) : (
 								<span>
 									{' '}
-									{walletData?.balance} {storyAeneidTestnet?.nativeCurrency?.symbol}{' '}
+									{walletData?.balance} {storyMainnet?.nativeCurrency?.symbol}{' '}
 								</span>
 							)}
 						</p>

@@ -120,8 +120,10 @@ const CustomImageComponent = ({
 			})
 		}
 
+		console.log('item', item)
+
 		// if it is a story nft, add it to the storyIPDataRef
-		if (item?.ip?.ipID) {
+		if (item?.ip?.ipID && storyIPDataRef?.current) {
 			storyIPDataRef.current.push({
 				elementId: store.selectedElements[0]?.id,
 				assetId: item?.id,

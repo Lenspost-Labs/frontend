@@ -706,7 +706,7 @@ const Editor = () => {
 										</Button>
 									</div>
 									<div className="flex flex-row w-full justify-between items-center rounded-lg ">
-										{!isLoggedOut && <SubscriptionModal defaultOpen={true} bottomBar={true} />}
+										{!isLoggedOut && <SubscriptionModal defaultOpen={false} bottomBar={true} />}
 									</div>
 									<MobileBottombar />
 								</div>

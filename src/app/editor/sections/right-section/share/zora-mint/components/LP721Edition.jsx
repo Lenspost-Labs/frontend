@@ -81,7 +81,6 @@ import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
 import { Settings } from "lucide-react";
 
 const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
-  console.log("selectedChainId", selectedChainId);
   const { address } = useAccount();
   const { login } = useReownAuth();
 
@@ -769,17 +768,28 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     }
   }, [isAuthenticated]);
 
-  // error/success handling for network switch
+  // switch chain
   useEffect(() => {
-    if (isErrorSwitchNetwork) {
-      console.log("isErrorSwitchNetwork", errorSwitchNetwork);
-      toast.error(errorSwitchNetwork?.message.split("\n")[0]);
+    if (selectedChainId) {
+      setTimeout(() => {
+        switchChain({ chainId: selectedChainId });
+      }, 1000);
     }
+  }, [selectedChainId]);
 
-    if (isSuccessSwitchNetwork) {
-      toast.success(`Network switched to ${chain?.name}`);
-    }
-  }, [isErrorSwitchNetwork, isSuccessSwitchNetwork]);
+  // error/success handling for network switch
+  // useEffect(() => {
+  //   if (isErrorSwitchNetwork) {
+  //     console.log("isErrorSwitchNetwork", errorSwitchNetwork);
+  //     toast.error(errorSwitchNetwork?.message.split("\n")[0]);
+  //   }
+
+  // if (isSuccessSwitchNetwork) {
+  //   toast.success(`Network switched to ${chain?.name}`);
+  // }
+  // }, [isErrorSwitchNetwork]);
+
+  console.log({ selectedChainId, chainId });
 
   return (
     <>

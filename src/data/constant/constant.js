@@ -59,9 +59,9 @@ export const gasFeeForDeployment = {
   1155: 0.00009, // story testnet
   2818: 0.0002, // morph mainnet
   325000: 0.00009, // camp network testnet
-  1516: 0.00009, // story odyssey testnet
-  1315: 0.00009, // story aeneid testnet
-  1514: 0.05, // story mainnet
+  1516: 0.08, // story odyssey testnet
+  1315: 0.08, // story aeneid testnet
+  1514: 0.08, // story mainnet
   80001: 0.00009, // polygon mumbai
 };
 
@@ -82,9 +82,9 @@ export const gasFeeForMint = {
   1155: 0.00009, // story testnet
   2818: 0.00009, // morph mainnet
   325000: 0.00009, // camp network testnet
-  1516: 0.00009, // story odyssey testnet
-  1315: 0.00009, // story aeneid testnet
-  1514: 0.05, // story mainnet
+  1516: 0.08, // story odyssey testnet
+  1315: 0.08, // story aeneid testnet
+  1514: 0.08, // story mainnet
   80001: 0.00009, // polygon mumbai
 };
 
@@ -105,8 +105,8 @@ export const gasFeeForOxSplitCreate = {
   1155: 0.00009, // story testnet
   2818: 0.0002, // morph mainnet
   325000: 0.00009, // camp network testnet
-  1516: 0.00009, // story odyssey testnet
-  1315: 0.00009, // story aeneid testnet
-  1514: 0.05, // story mainnet
+  1516: 0.08, // story odyssey testnet
+  1315: 0.08, // story aeneid testnet
+  1514: 0.08, // story mainnet
   80001: 0.00009, // polygon mumbai
 };

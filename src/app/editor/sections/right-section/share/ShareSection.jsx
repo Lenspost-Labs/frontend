@@ -19,7 +19,11 @@ import WatermarkRemover from "./components/WatermarkRemover";
 import { baseSepolia } from "viem/chains";
 import { toast } from "react-toastify";
 import useReownAuth from "../../../../../hooks/reown-auth/useReownAuth";
-import { LP721SupportedChains } from "../../../../../data";
+import {
+  LP721SupportedChains,
+  storyAeneidTestnet,
+  storyMainnet,
+} from "../../../../../data";
 
 const ShareSection = () => {
   const chains = useChains();
@@ -58,52 +62,11 @@ const ShareSection = () => {
     switchChain,
   } = useSwitchChain();
 
-  const chainsArray = [
-    {
-      id: 1,
-      name: "Ethereum",
-    },
-    {
-      id: 8453,
-      name: "Base",
-    },
-    {
-      id: 7777777,
-      name: "Zora",
-    },
-    {
-      id: 10,
-      name: "OP Mainnet",
-    },
-    {
-      id: 42161,
-      name: "Arbitrum One",
-    },
-    {
-      id: 137,
-      name: "Polygon",
-    },
-    {
-      id: 2818,
-      name: "Morph",
-    },
-    {
-      id: 325000,
-      name: "Camp Testnet",
-    },
-    {
-      id: 1315,
-      name: "Story Aeneid Testnet",
-    },
-  ];
+  const excludedChains = [storyAeneidTestnet?.id, storyMainnet?.id];
 
-  const filterChains = () => {
-    if (chains?.length > 0) {
-      return chainsArray;
-    } else {
-      return chainsArray;
-    }
-  };
+  const filteredChains = chains.filter(
+    (chain) => !excludedChains.includes(chain?.id)
+  );
 
   // Calendar Functions:
   const onCalChange = (value, dateString) => {
@@ -168,9 +131,6 @@ const ShareSection = () => {
   };
 
   const setChainTab = (chainId) => {
-    console.log("setChainTab", chainId);
-    switchChain({ chainId });
-
     setMenu(chainId);
   };
 
@@ -271,95 +231,110 @@ const ShareSection = () => {
         {!isMobile && (
           <>
             <hr />
-            <div className="relative mt-6 px-4 sm:px-6">
+            <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Share on socials</p>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                <div className="cursor-pointer flex flex-col items-center gap-2">
-                  <img
-                    className="w-10 h-10 rounded-md hover:scale-105 transition-transform duration-200"
-                    src={logoFarcaster}
-                    alt="Farcaster"
-                    onClick={() => setCurrentMenu("farcasterShare")}
-                  />
-                  <Typography className="text-md font-semibold text-center">
-                    Farcaster
-                  </Typography>
-                </div>
-                <div className="cursor-pointer flex flex-col items-center gap-2">
-                  <img
-                    className="w-10 h-10 rounded-md hover:scale-105 transition-transform duration-200"
-                    src={logoTwitter}
-                    alt="X"
-                    onClick={() => setCurrentMenu("xshare")}
-                  />
-                  <Typography className="text-md font-semibold text-center">
-                    X
-                  </Typography>
-                </div>
-                <div className="cursor-pointer flex flex-col items-center gap-2">
-                  <img
-                    className="w-10 h-10 rounded-md hover:scale-105 transition-transform duration-200"
-                    src="/other-icons/share-section/iconLens.png"
-                    alt="Lens"
-                    onClick={() => setCurrentMenu("lensmonetization")}
-                  />
-                  <Typography className="text-md font-semibold text-center">
-                    Lens
-                  </Typography>
-                </div>
+              <div className="flex ">
+                <>
+                  <div className="flex items-center space-x-12 py-5">
+                    <div onClick={() => setCurrentMenu("farcasterShare")}>
+                      {" "}
+                      <img
+                        className="w-10 cursor-pointer rounded-md"
+                        src={logoFarcaster}
+                        alt="Farcaster"
+                      />{" "}
+                    </div>
+                  </div>
+                  <div
+                    className={`flex items-center py-5 space-x-12 ${
+                      !isMobile ? "ml-8" : " "
+                    }`}
+                  >
+                    <div onClick={() => setCurrentMenu("xshare")}>
+                      {" "}
+                      <img
+                        className="w-10 cursor-pointer rounded-md"
+                        src={logoTwitter}
+                        alt="X"
+                      />{" "}
+                    </div>
+                  </div>
+                  <div
+                    className={`flex items-center py-5 space-x-12 ${
+                      !isMobile ? "ml-8" : " "
+                    }`}
+                  >
+                    <div onClick={() => setCurrentMenu("lensmonetization")}>
+                      {" "}
+                      <img
+                        className="w-10 cursor-pointer"
+                        src="/other-icons/share-section/iconLens.png"
+                        alt="Lens"
+                      />{" "}
+                    </div>
+                  </div>
+                </>
               </div>
             </div>
             <hr />
-            <div className="relative mt-6 px-4 sm:px-6">
+
+            <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Register IP on Story Protocol</p>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                <div className="inline-flex flex-col items-center justify-center">
+              <div className="flex flex-wrap items-center gap-10 my-3">
+                <div
+                  className="cursor-pointer flex flex-col items-center"
+                  onClick={() => setCurrentMenu("storyMint")}
+                >
                   <img
                     className="w-10 h-10"
                     src={chainLogo(1155)}
                     alt="Story Protocol"
-                    onClick={() => setCurrentMenu("storyMint")}
-                  />
-                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+                  />{" "}
+                  <Typography className="text-md font-semibold">
                     Story Protocol
                   </Typography>
                 </div>
               </div>
             </div>
             <hr />
-            <div className="relative mt-6 px-4 sm:px-6">
+            <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Mint as an NFT on EVM</p>
               <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                {chains.map((item) => (
-                  <div
-                    key={item?.id}
-                    className="cursor-pointer flex flex-col items-center gap-2"
-                    onClick={() => setChainTab(item?.id)}
-                  >
-                    <img
-                      className="w-10 h-10"
-                      src={chainLogo(item?.id)}
-                      alt={`${item?.name} blockchain logo`}
-                    />
-                    <Typography className="text-md font-semibold text-center">
-                      {item?.name}
-                    </Typography>
-                  </div>
-                ))}
+                {filteredChains.map((item) => {
+                  return (
+                    <div
+                      key={item?.id}
+                      className="cursor-pointer flex flex-col items-center gap-2"
+                      onClick={() => {
+                        setChainTab(item?.id);
+                      }}
+                    >
+                      {" "}
+                      <img
+                        className="w-10 h-10"
+                        src={chainLogo(item?.id)}
+                        alt={`${item?.name} blockchain logo`}
+                      />{" "}
+                      <Typography className="text-md font-semibold text-center">
+                        {item?.name}
+                      </Typography>
+                    </div>
+                  );
+                })}
               </div>
             </div>
             <hr />
-            <div className="relative mt-6 px-4 sm:px-6">
+
+            <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Mint as an NFT on Solana</p>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                <div className="inline-flex flex-col items-center justify-center">
-                  <img
-                    className="w-10 h-10"
-                    src={logoSolana}
-                    alt="Solana"
-                    onClick={() => setCurrentMenu("solanaMint")}
-                  />
-                  <Typography className="text-md font-semibold whitespace-nowrap text-center max-w-fit">
+              <div className="flex flex-wrap items-center gap-10 my-3">
+                <div
+                  className="cursor-pointer flex flex-col items-center"
+                  onClick={() => setCurrentMenu("solanaMint")}
+                >
+                  {" "}
+                  <img className="w-10" src={logoSolana} alt="Solana" />{" "}
+                  <Typography className="text-md font-semibold">
                     Solana
                   </Typography>
                 </div>

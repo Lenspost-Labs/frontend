@@ -25,7 +25,7 @@ import { useAppAuth } from '../../../../../hooks/app'
 import { Tab, Tabs, TabsHeader, TabsBody, Typography } from '@material-tailwind/react'
 import { LOCAL_STORAGE } from '../../../../../data'
 import { EVMWallets, SolanaWallets } from '../../top-section/auth/wallets'
-import { storyOdysseyTestnet } from '../../../../../data/network/storyOdyssey'
+import { storyAeneidTestnet } from '../../../../../data'
 
 const NFTPanel = () => {
 	const [tab, setTab] = useState('wallet')
@@ -375,7 +375,7 @@ const WalletNFT = () => {
 		zora: 7777777,
 		base: 8453,
 		OP: 10,
-		story: storyOdysseyTestnet.id,
+		story: storyAeneidTestnet.id,
 	}
 
 	const getChainId = () => {

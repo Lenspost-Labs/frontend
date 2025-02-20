@@ -280,7 +280,7 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 			)}
 			<Dialog
 				className={`p-4 relative  max-h-[90vh] ${isMobile ? 'h-[90vh] overflow-hidden' : ''}`}
-				size="md"
+				size="lg"
 				open={openedSubscriptionModal}
 				handler={handleSubscriptionModal}
 			>
@@ -434,6 +434,7 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
               Please switch to Base Sepolia to buy $POSTER
             </div>
           )} */}
+
 					<div className="flex flex-col md:flex-row justify-between gap-3 md:mb-0 mb-8 mt-4">
 						<div className="flex justify-center items-center gap-2">
 							<span className="text-sm font-bold text-red-500">Current Network</span>
@@ -453,6 +454,7 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 								) : (
 									<div className="flex items-center justify-center gap-2 text-black text-lg font-semibold">
 										Get Gold <img src={coinImg} alt="" className="w-5 h-5" />
+
 									</div>
 								)}
 							</Button>

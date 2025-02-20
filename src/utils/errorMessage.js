@@ -22,9 +22,9 @@ export const errorMessage = (error) => {
 			return error?.response?.data?.message
 		} else if (error?.response?.status === 503) {
 			console.log({
-				503: error?.response?.data?.message,
+				503: error?.response?.data?.message || error?.response?.data?.error,
 			})
-			return error?.response?.data?.message
+			return error?.response?.data?.error || error?.response?.data?.message
 		} else if (error?.response?.status === 429) {
 			console.log({
 				429: error?.response?.data?.error || error?.response?.data?.message,

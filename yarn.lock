@@ -257,9 +257,9 @@
     "@emotion/react" "^11.7.1"
 
 "@atlaskit/icon@^23.9.0":
-  version "23.10.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-23.10.0.tgz#18fc06c22283907eba87da64e73922fa9cb96162"
-  integrity sha512-xJzgUqHocc11IlKx8ox9RxPDA78xmVAd1HWmVm2ulTsDn6OFnsMg3LaFA4BTgFC1zUcoE5TjBO8aH1O3AdDxaw==
+  version "23.10.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-23.10.1.tgz#b49291640b85439074bfad94d208fdc97e2079b2"
+  integrity sha512-lt94F32qrJ9F7LyUcBwFYcuLjT59RAf28EpCHgmxK9vgIueDmbN5vu5C3mZ40aSm9kN73s95XEFrNWqreg8qFQ==
   dependencies:
     "@atlaskit/platform-feature-flags" "^1.1.0"
     "@atlaskit/tokens" "^3.3.0"

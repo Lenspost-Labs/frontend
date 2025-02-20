@@ -19,7 +19,11 @@ import WatermarkRemover from "./components/WatermarkRemover";
 import { baseSepolia } from "viem/chains";
 import { toast } from "react-toastify";
 import useReownAuth from "../../../../../hooks/reown-auth/useReownAuth";
-import { LP721SupportedChains } from "../../../../../data";
+import {
+  LP721SupportedChains,
+  storyAeneidTestnet,
+  storyMainnet,
+} from "../../../../../data";
 
 const ShareSection = () => {
   const chains = useChains();
@@ -57,6 +61,12 @@ const ShareSection = () => {
     isSuccess: isSuccessSwitchNetwork,
     switchChain,
   } = useSwitchChain();
+
+  const excludedChains = [storyAeneidTestnet?.id, storyMainnet?.id];
+
+  const filteredChains = chains.filter(
+    (chain) => !excludedChains.includes(chain?.id)
+  );
 
   // Calendar Functions:
   const onCalChange = (value, dateString) => {
@@ -121,9 +131,6 @@ const ShareSection = () => {
   };
 
   const setChainTab = (chainId) => {
-    console.log("setChainTab", chainId);
-    switchChain({ chainId });
-
     setMenu(chainId);
   };
 
@@ -293,7 +300,7 @@ const ShareSection = () => {
             <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Mint as an NFT on EVM</p>
               <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                {chains.map((item) => {
+                {filteredChains.map((item) => {
                   return (
                     <div
                       key={item?.id}

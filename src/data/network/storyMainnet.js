@@ -1,4 +1,4 @@
-import { defineChain } from "@reown/appkit/networks";
+import { defineChain } from "viem";
 
 export const storyMainnet = defineChain({
   nativeCurrency: {

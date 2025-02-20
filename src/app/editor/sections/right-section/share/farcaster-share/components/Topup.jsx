@@ -17,13 +17,13 @@ import { toast } from "react-toastify";
 import { wagmiAdapter } from "../../../../../../../providers/EVM/EVMWalletProvider";
 import { ENVIRONMENT } from "../../../../../../../services";
 import { useAppAuth } from "../../../../../../../hooks/app";
-import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
 import {
   gasFeeForDeployment,
   gasFeeForMint,
   gasFeeForOxSplitCreate,
   storyAeneidTestnet,
 } from "../../../../../../../data";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const Topup = ({
   topUpAccount,
@@ -41,7 +41,7 @@ const Topup = ({
 
   const [extraPayForMints, setExtraPayForMints] = useState(null);
   const { chain } = useAccount();
-  const { openReown } = useReownAuth();
+  const { login } = usePrivyAuth();
   const { isAuthenticated } = useAppAuth();
   const {
     data: switchData,
@@ -274,7 +274,7 @@ const Topup = ({
               <Typography variant="h6" color="blue-gray">
                 Please connect your wallet to topup
               </Typography>
-              <Button onClick={() => openReown("AllWallets")}>Connect</Button>
+              <Button onClick={() => login()}>Connect</Button>
             </>
           ) : isCreatorSponsored && chain?.id !== chain_id ? (
             <>

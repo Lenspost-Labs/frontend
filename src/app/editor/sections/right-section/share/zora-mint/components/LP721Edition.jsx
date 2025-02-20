@@ -76,14 +76,13 @@ import { ZoraLogo } from "../../../../../../../assets";
 import { wagmiAdapter } from "../../../../../../../providers/EVM/EVMWalletProvider";
 import { http } from "viem";
 import { degen, polygon } from "viem/chains";
-import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
 
 import { Settings } from "lucide-react";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
-  console.log("selectedChainId", selectedChainId);
   const { address } = useAccount();
-  const { login } = useReownAuth();
+  const { login } = usePrivyAuth();
 
   const { isAuthenticated } = useAppAuth();
   const { isFarcasterAuth, lensAuth, dispatcher } = useLocalStorage();

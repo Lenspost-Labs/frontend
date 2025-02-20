@@ -22,9 +22,9 @@ import storyABI from "../../../../../../../data/json/storyABI.json";
 import { InputBox, SelectBox } from "../../../../../common";
 import { EVMWallets } from "../../../../top-section/auth/wallets";
 import { Button, Textarea } from "@material-tailwind/react";
-import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
 import { getOrCreateWallet } from "../../../../../../../services/apis/BE-apis";
 import { Topup } from "../../farcaster-share/components";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const getPILTypeString = (type) => {
   switch (type) {
@@ -70,7 +70,7 @@ const Minting = () => {
     isMobile,
   } = useContext(Context);
   const { resetState } = useReset();
-  const { login } = useReownAuth();
+  const { login } = usePrivyAuth();
   const { isAuthenticated } = useAppAuth();
   const { address, isConnected } = useAccount();
 

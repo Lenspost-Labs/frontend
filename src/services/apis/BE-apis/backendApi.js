@@ -28,18 +28,19 @@ const limit = 10;
 // evm auth apis start
 export const evmAuth = async ({ walletAddress, signature }) => {
   const jwtToken = getFromLocalStorage(LOCAL_STORAGE.privy);
+  console.log({ jwtToken, walletAddress, signature });
 
   const result = await axios.post(
     `${API}/auth/evm`,
     {
       evm_address: walletAddress,
       signature: signature,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
     }
-    // {
-    // 	headers: {
-    // 		Authorization: `Bearer ${jwtToken}`,
-    // 	},
-    // }
   );
 
   return result?.data;
@@ -655,16 +656,16 @@ export const uploadUserAssetToIPFS = async (image) => {
 };
 
 export const registerIPDerivative = async (data) => {
-	const result = await api.post(`${API}/story/register-ip-derivatives`, data)
+  const result = await api.post(`${API}/story/register-ip-derivatives`, data);
 
-	return result?.data
-}
+  return result?.data;
+};
 
 export const uploadAsIP = async (json) => {
-	const result = await api.post(`${API}/user/upload/uploadAsIP`, json)
+  const result = await api.post(`${API}/user/upload/uploadAsIP`, json);
 
-	return result?.data
-}
+  return result?.data;
+};
 
 export const uploadJSONtoIPFS = async (json) => {
   const result = await api.post(`${API}/util/upload-json-ipfs`, {

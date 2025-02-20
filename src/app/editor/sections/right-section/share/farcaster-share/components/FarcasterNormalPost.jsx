@@ -62,7 +62,7 @@ import BsPlus from "@meronex/icons/bs/BsPlus";
 import { XCircleIcon } from "@heroicons/react/24/outline";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
 import WatermarkRemover from "../../components/WatermarkRemover";
-import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const FarcasterNormalPost = () => {
   const { address } = useAccount();
@@ -70,7 +70,7 @@ const FarcasterNormalPost = () => {
   const { userLOA, userAddress } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
   const { switchChain, isLoading: isLoadingSwitchNetwork } = useSwitchChain();
-  const { login } = useReownAuth();
+  const { login } = usePrivyAuth();
 
   // farcaster states
   const [isShareLoading, setIsShareLoading] = useState(false);

@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import useMint721 from '../../../../../../../hooks/mint721/useMint721'
 import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 import { useEffect } from 'react'
-import { addressCrop, getFromLocalStorage } from '../../../../../../../utils'
+import { addressCrop, errorMessage, getFromLocalStorage } from '../../../../../../../utils'
 import { LOCAL_STORAGE, STORY_ODYSSEY_ADDRESS } from '../../../../../../../data'
 import { storyMainnet } from '../../../../../../../data'
 import storyABI from '../../../../../../../data/json/storyABI.json'
@@ -100,7 +100,7 @@ const Minting = () => {
 	})
 
 	const {
-		mutate: uploadIP,
+		mutateAsync: registerAsIP,
 		isPending: isUploadIPPending,
 		isSuccess: isUploadIPSuccess,
 		isError: isUploadIPError,
@@ -173,9 +173,7 @@ const Minting = () => {
 			}
 
 			jsonData = { ...jsonData, pilTerms }
-			uploadIP(jsonData).then((res) => {
-				setIPResult(res)
-			})
+			registerIP(jsonData)
 		}
 	}, [isUploadSuccess])
 
@@ -200,6 +198,18 @@ const Minting = () => {
 
 	// Add a new state to track if custom is selected
 	const [isCustomSelected, setIsCustomSelected] = useState(false)
+
+	const registerIP = async (jsonData) => {
+		try {
+			const res = await registerAsIP(jsonData)
+			console.log(res)
+			setIPResult(res)
+			toast.success('IP registered successfully!')
+		} catch (error) {
+			console.log(error)
+			toast.error(errorMessage(error))
+		}
+	}
 
 	const handleInputChange = (e) => {
 		const value = e.target.value

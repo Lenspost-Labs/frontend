@@ -129,6 +129,7 @@ const USDC_ABI = [
 
 const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 	const { address, chainId, chain, isConnected } = useAccount()
+	const { isAuthenticated } = useAppAuth()
 	const { points } = useUser()
 	const { isMobile } = useContext(Context)
 	const { data: hash, error, isPending, sendTransaction } = useSendTransaction({ wagmiAdapter })
@@ -223,19 +224,14 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 	})
 
 	const fnCallBuyApi = async ({ txHash }) => {
-		console.log(`Txdata `)
 		// console.log(txData);
 		const buyRes = await apiBuySubscription({
 			txHash: txHash,
 			chainId: chainId,
 			evm_address: address,
 		})
-
-		console.log(buyRes)
 	}
 	const fnBuyPoster = async () => {
-		console.log(`in switch chain chain ${chain}`)
-
 		try {
 			// First, approve the contract to spend USDC
 			writeContractTransfer()
@@ -259,7 +255,7 @@ const SubscriptionModal = ({ bottomBar = false, defaultOpen = false }) => {
 			? 'https://polygonscan.com'
 			: 'https://polygonscan.com'
 
-	if (!isConnected) {
+	if (isAuthenticated === null) {
 		return null
 	}
 	return (

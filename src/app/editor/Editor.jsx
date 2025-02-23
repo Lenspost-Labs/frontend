@@ -47,6 +47,7 @@ import { Sparkles } from 'lucide-react'
 import useMobilePanelFunctions from './common/mobileHooks/useMobilePanelFunctions'
 import SignMesasgeModal from './common/modals/SignMesasgeModal'
 import SubscriptionModal from './common/modals/SubscriptionModal'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 // enable animations
 unstable_setAnimationsEnabled(true)
@@ -80,7 +81,7 @@ const useHeight = () => {
 const Editor = () => {
 	const store = useStore()
 	const height = useHeight()
-	const { address, isConnected } = useAccount()
+	const { address, isConnected } = useAppKitAccount()
 	const { solanaAddress } = useSolanaWallet()
 	const { isAuthenticated } = useAppAuth()
 	const canvasIdRef = useRef(null)
@@ -88,6 +89,7 @@ const Editor = () => {
 	const isPageActive = useRef(false)
 	const isWatermark = useRef(false)
 	const { setSteps, setIsOpen, setCurrentStep } = useTour()
+
 	const {
 		contextCanvasIdRef,
 		setEnabled,
@@ -276,7 +278,9 @@ const Editor = () => {
 
 	// function to add the all recipient handles / address
 	const recipientDataCombiner = () => {
+		// on refresh of the page, it's getting null
 		const { userAddress } = useLocalStorage()
+
 		// From Slug data
 		referredFromRef.current = arrSlugReferredFrom || []
 		// Get unique recipients by creating a Set
@@ -331,8 +335,8 @@ const Editor = () => {
 			// save it to the backend
 			if (canvasChildren?.length > 0) {
 				isPageActive.current = true
-				// console.log("parentRecipientObj", recipientDataFilter().recipientsData);
-				// console.log("parentRecipientRef", recipientDataCombiner().recipients);
+				// console.log('parentRecipientObj', recipientDataFilter().recipientsData)
+				// console.log('parentRecipientRef', recipientDataCombiner().recipients)
 
 				// return;
 

@@ -24,7 +24,7 @@ const usePrivyAuth = () => {
     onComplete: (user) => {
       console.log("user", user);
       evmAuthAsync({
-        walletAddress: user?.loginAccount?.address,
+        walletAddress: user?.user?.wallet?.address,
         signature: "",
       })
         .then((res) => {
@@ -34,7 +34,7 @@ const usePrivyAuth = () => {
           saveToLocalStorage(LOCAL_STORAGE.userAuthTime, new Date().getTime());
           saveToLocalStorage(
             LOCAL_STORAGE.userAddress,
-            user?.loginAccount?.address
+            user?.user?.wallet?.address
           );
           saveToLocalStorage(LOCAL_STORAGE.lensAuth, {
             profileId: res?.profileId,
@@ -48,7 +48,7 @@ const usePrivyAuth = () => {
           setOpenedLoginModal(false);
 
           posthog.identify(res?.userId, {
-            evm_address: user?.loginAccount?.address,
+            evm_address: user?.user?.wallet?.address,
           });
         })
         .catch((error) => {

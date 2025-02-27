@@ -18,12 +18,12 @@ import { claimReward } from "../../../../../services";
 import WatermarkRemover from "./components/WatermarkRemover";
 import { baseSepolia } from "viem/chains";
 import { toast } from "react-toastify";
-import useReownAuth from "../../../../../hooks/reown-auth/useReownAuth";
 import {
   LP721SupportedChains,
   storyAeneidTestnet,
   storyMainnet,
 } from "../../../../../data";
+import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 
 const ShareSection = () => {
   const chains = useChains();
@@ -52,7 +52,7 @@ const ShareSection = () => {
   const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState("");
   const [charLimitError, setCharLimitError] = useState("");
   const { evmAuth } = useLocalStorage();
-  const { login } = useReownAuth();
+  const { login } = usePrivyAuth();
 
   const {
     error: errorSwitchNetwork,

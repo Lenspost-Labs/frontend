@@ -47,40 +47,37 @@ const Networks = ({ className, chains, isUnsupportedChain }) => {
 				</DialogHeader>
 				<DialogBody>
 					{chains?.map((network, index) => (
-						<>
-							<List key={index} className="border rounded-lg my-2 p-0">
-								<ListItem
-									onClick={() => {
-										console.log(`chain ${chain?.id} network ${network?.id}`)
-										network?.id !== chain?.id &&
-											switchChain({
-												chainId: network?.id,
-											})
-									}}
-									className="p-2 hover:shadow-lg"
-								>
-									<div className="w-full flex justify-between items-center">
-										<div className="flex items-center">
-											<ListItemPrefix>
-												<Avatar variant="circular" alt={network?.name} src={chainLogo(network?.id)} className="w-10 h-10" />
-											</ListItemPrefix>
-											<Typography variant="h6" color="blue-gray">
-												{network?.name}
-											</Typography>
-										</div>
-										{isLoading && variables?.chainId === network?.id && <Spinner color="red" />}
-										{!isLoading && network?.id === chain?.id && (
-											<div className="flex items-center gap-2">
-												<Typography variant="h6" color="blue-gray">
-													Connected
-												</Typography>
-												<FaRegDotCircle className="text-green-500" />
-											</div>
-										)}
+						<List key={network?.id + index} className="border rounded-lg my-2 p-0">
+							<ListItem
+								onClick={() => {
+									network?.id !== chain?.id &&
+										switchChain({
+											chainId: network?.id,
+										})
+								}}
+								className="p-2 hover:shadow-lg"
+							>
+								<div className="w-full flex justify-between items-center">
+									<div className="flex items-center">
+										<ListItemPrefix>
+											<Avatar variant="circular" alt={network?.name} src={chainLogo(network?.id)} className="w-10 h-10" />
+										</ListItemPrefix>
+										<Typography variant="h6" color="blue-gray">
+											{network?.name}
+										</Typography>
 									</div>
-								</ListItem>
-							</List>
-						</>
+									{isLoading && variables?.chainId === network?.id && <Spinner color="red" />}
+									{!isLoading && network?.id === chain?.id && (
+										<div className="flex items-center gap-2">
+											<Typography variant="h6" color="blue-gray">
+												Connected
+											</Typography>
+											<FaRegDotCircle className="text-green-500" />
+										</div>
+									)}
+								</div>
+							</ListItem>
+						</List>
 					))}
 				</DialogBody>
 			</Dialog>

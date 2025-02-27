@@ -32,7 +32,7 @@ import { chainLogo, errorMessage } from "../../../../../../../utils";
 import { mintToXchain } from "../../../../../../../services/apis/BE-apis";
 import ZoraDialog from "./ZoraDialog";
 import { base, baseSepolia } from "viem/chains";
-import useReownAuth from "../../../../../../../hooks/reown-auth/useReownAuth";
+import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const ERC1155Edition = () => {
   const {
@@ -57,7 +57,7 @@ const ERC1155Edition = () => {
   const chainId = useChainId();
   const publicClient = usePublicClient();
   const walletClient = useWalletClient();
-  const { openReown } = useReownAuth();
+  const { login } = usePrivyAuth();
 
   const { address } = useAccount();
   const { writeContract } = useWriteContract();
@@ -1045,7 +1045,7 @@ const ERC1155Edition = () => {
       )}
       <div className="mx-0 my-4">
         {actionType === "composer" && !isAuthenticated ? (
-          <Button fullWidth onClick={() => openReown("AllWallets")}>
+          <Button fullWidth onClick={() => login()}>
             {" "}
             Connect wallet{" "}
           </Button>

@@ -96,12 +96,13 @@ const useReownAuth = () => {
 			if (!evmConnected) {
 				saveToLocalStorage(LOCAL_STORAGE.evmConnected, true)
 			}
+			saveToLocalStorage(LOCAL_STORAGE.userAddress, address)
 		} else {
 			setSignature('')
 			setIsSolana(false)
 			saveToLocalStorage(LOCAL_STORAGE.evmConnected, false)
 		}
-	}, [address, isConnected, isLoggedOut])
+	}, [address, isConnected])
 
 	useEffect(() => {
 		const initializeSignature = async () => {

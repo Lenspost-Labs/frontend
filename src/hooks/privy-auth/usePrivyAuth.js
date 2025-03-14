@@ -64,7 +64,7 @@ const usePrivyAuth = () => {
     onError: (error) => {
       console.log("error by privy");
       console.log(error);
-      toast.error("Something went wrong");
+      toast.error("Something went wrong", { toastId: "error2" });
       logout();
       disconnect();
       setIsLoading(false);

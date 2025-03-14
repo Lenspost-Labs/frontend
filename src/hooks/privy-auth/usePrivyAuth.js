@@ -27,7 +27,7 @@ const usePrivyAuth = () => {
         signature: "",
       })
         .then((res) => {
-          toast.success("Login successful");
+          toast.success("Login successful", { toastId: "success1" });
           saveToLocalStorage(LOCAL_STORAGE.evmAuth, true);
           saveToLocalStorage(LOCAL_STORAGE.userAuthToken, res.jwt);
           saveToLocalStorage(LOCAL_STORAGE.userAuthTime, new Date().getTime());
@@ -53,7 +53,7 @@ const usePrivyAuth = () => {
         .catch((error) => {
           console.log("error by auth endpoint");
           console.log(error);
-          toast.error("Something went wrong");
+          toast.error("Something went wrong", { toastId: "error1" });
           logout();
           disconnect();
           setIsLoading(false);

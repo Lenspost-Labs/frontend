@@ -29,10 +29,9 @@ import { useQuery } from "@tanstack/react-query";
 import { apiGetAllMemes } from "../../../../../services";
 import useMobilePanelFunctions from "../../../common/mobileHooks/useMobilePanelFunctions";
 import coinImg from "../../../../../assets/svgs/Coin.svg";
-import { WandSparkles } from "lucide-react";
-import { House } from "lucide-react";
-import { FolderSearch } from "lucide-react";
-import { FolderSearch2 } from "lucide-react";
+import BisMagicWand from "@meronex/icons/bi/BisMagicWand";
+import BiHomeAlt from "@meronex/icons/bi/BiHomeAlt";
+import MdcFolderSearchOutline from "@meronex/icons/mdc/MdcFolderSearchOutline";
 import { toCapitalize } from "../../../../../utils";
 import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 const MobileTopbar = () => {
@@ -350,7 +349,7 @@ const MobileTopbar = () => {
                 }  p-2 rounded-full -mb-8 shadow-xl ease-in-out duration-300`}
               >
                 {" "}
-                <WandSparkles />
+                <BisMagicWand size={24} />
                 {/* <EditIconAI needAnimation={true} /> */}
                 {/* <div className="text-lg w-8 h-8 rounded-full flex items-center">AI</div> */}
               </div>
@@ -368,7 +367,7 @@ const MobileTopbar = () => {
                   } p-1 rounded-lg ease-in-out duration-300`}
                 >
                   {/* <EditIconHome /> */}
-                  <House size={24} />
+                  <BiHomeAlt size={24} />
                 </div>
 
                 <div
@@ -380,7 +379,7 @@ const MobileTopbar = () => {
                     curOpenedPanel === "mobPanelMyFiles" ? "bg-[#e1f16b]" : ""
                   } p-1 rounded-lg ease-in-out duration-300`}
                 >
-                  <FolderSearch2 size={24} />
+                  <MdcFolderSearchOutline size={24} />
                   {/* <EditIconMyFIles /> */}
                 </div>
               </div>

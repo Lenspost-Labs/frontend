@@ -64,7 +64,7 @@ import { TopbarSection } from "./sections/top-section";
 import MobileTopbar from "./sections/top-section/MobileTopBar/MobileTopbar";
 import MobileBottombar from "./sections/bottom-section/bottomBar/MobileBottombar";
 import OnboardingModal from "./common/modals/OnboardingModal";
-import { Sparkles } from "lucide-react";
+import HiOutlineSparkles from "@meronex/icons/hi/HiOutlineSparkles";
 import useMobilePanelFunctions from "./common/mobileHooks/useMobilePanelFunctions";
 import SignMesasgeModal from "./common/modals/SignMesasgeModal";
 import SubscriptionModal from "./common/modals/SubscriptionModal";
@@ -800,7 +800,7 @@ const Editor = () => {
                       }}
                       className="p-2 !py-0 mr-4 mb-2 text-black leading-0 bg-[#e1f16b] rounded-lg"
                     >
-                      <Sparkles size={20} />
+                      <HiOutlineSparkles size={20} />
                     </Button>
                   </div>
                   <div className="flex flex-row w-full justify-between items-center rounded-lg ">

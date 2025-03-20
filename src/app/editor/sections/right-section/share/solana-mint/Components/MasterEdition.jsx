@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import { shareOnSocials } from "../../../../../../../services";
 import { useMutation } from "@tanstack/react-query";
 import TiDelete from "@meronex/icons/ti/TiDelete";
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import FiXCircle from "@meronex/icons/fi/FiXCircle";
 import { useSolanaWallet } from "../../../../../../../hooks/solana";
 import { useAppAuth, useReset } from "../../../../../../../hooks/app";
 import {
@@ -749,7 +749,7 @@ const MasterEdition = () => {
                       index,
                       recipient.address
                     ) && (
-                      <XCircleIcon
+                      <FiXCircle
                         className="h-6 w-6 cursor-pointer"
                         color="red"
                         onClick={() => removeRecipientInputBox(index)}

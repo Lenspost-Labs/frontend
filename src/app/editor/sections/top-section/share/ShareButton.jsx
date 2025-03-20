@@ -14,8 +14,7 @@ import { Context } from "../../../../../providers/context";
 import EditIconShare from "../../../../../assets/EditIconsMobile/EditIconShare";
 import { ERC1155Edition } from "../../right-section/share/zora-mint/components";
 import { useAppUrl } from "../../../../../hooks/app";
-import { Share2 } from "lucide-react";
-
+import BiShareAlt from "@meronex/icons/bi/BiShareAlt";
 const ShareButton = () => {
   const [transitionRtoL, setTransitionRtoL] = useState(false);
   const { urlQueryActionType } = useAppUrl();
@@ -64,7 +63,7 @@ const ShareButton = () => {
             curOpenedPanel === "mobPanelShare" ? "bg-[#e1f16b]" : ""
           } p-1 rounded-lg`}
         >
-          <Share2 size={24} />
+          <BiShareAlt size={24} />
         </div>
       )}
       <Drawer

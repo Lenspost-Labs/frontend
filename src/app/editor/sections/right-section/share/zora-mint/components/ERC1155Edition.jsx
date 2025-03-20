@@ -26,7 +26,7 @@ import {
 import { APP_ETH_ADDRESS } from "../../../../../../../data";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import FiXCircle from "@meronex/icons/fi/FiXCircle";
 import { useAppAuth, useLocalStorage } from "../../../../../../../hooks/app";
 import { chainLogo, errorMessage } from "../../../../../../../utils";
 import { mintToXchain } from "../../../../../../../services/apis/BE-apis";
@@ -960,7 +960,7 @@ const ERC1155Edition = () => {
                         index,
                         recipient.address
                       ) && (
-                        <XCircleIcon
+                        <FiXCircle
                           className="h-6 w-6 cursor-pointer"
                           color="red"
                           onClick={() =>

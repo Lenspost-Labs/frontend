@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@blueprintjs/core";
 import InputBox from "./InputBox";
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import FiXCircle from "@meronex/icons/fi/FiXCircle";
 
 const SearchComponent = ({
   query,
@@ -23,7 +23,7 @@ const SearchComponent = ({
             value={query}
             funtion={funtion}
           />
-          <XCircleIcon
+          <FiXCircle
             className="h-6 w-6 cursor-pointer absolute right-2 top-2"
             color="red"
             onClick={() => setQuery("")}

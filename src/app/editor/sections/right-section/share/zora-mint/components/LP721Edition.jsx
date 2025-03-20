@@ -17,7 +17,7 @@ import {
 } from "@material-tailwind/react";
 import { DateTimePicker } from "@atlaskit/datetime-picker";
 import BsPlus from "@meronex/icons/bs/BsPlus";
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import FiXCircle from "@meronex/icons/fi/FiXCircle";
 import { Context } from "../../../../../../../providers/context";
 import { toast } from "react-toastify";
 import {
@@ -77,7 +77,7 @@ import { wagmiAdapter } from "../../../../../../../providers/EVM/EVMWalletProvid
 import { http } from "viem";
 import { degen, polygon } from "viem/chains";
 
-import { Settings } from "lucide-react";
+import FiSettings from "@meronex/icons/fi/FiSettings";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
@@ -823,7 +823,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
               onFocus={handleChange}
               value={zoraErc721Enabled.contractName}
             />
-            <Settings
+            <FiSettings
               className="cursor-pointer text-gray-500 hover:text-gray-700"
               size={20}
               onClick={() => setShowSymbol((prev) => !prev)}
@@ -998,7 +998,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
                 </div>
                 {!restrictRemoveRecipientInputBox(index, recipient.address) && (
                   <span>
-                    <XCircleIcon
+                    <FiXCircle
                       className="h-6 w-6 cursor-pointer"
                       color="red"
                       onClick={() =>

@@ -59,7 +59,7 @@ import { zoraNftCreatorV1Config } from "@zoralabs/zora-721-contracts";
 import { http } from "viem";
 import { wagmiAdapter } from "../../../../../../../providers/EVM/EVMWalletProvider";
 import BsPlus from "@meronex/icons/bs/BsPlus";
-import { XCircleIcon } from "@heroicons/react/24/outline";
+import FiXCircle from "@meronex/icons/fi/FiXCircle";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
 import WatermarkRemover from "../../components/WatermarkRemover";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
@@ -1749,7 +1749,7 @@ const FarcasterNormalPost = () => {
                         recipient.address
                       ) && (
                         <span>
-                          <XCircleIcon
+                          <FiXCircle
                             className="h-6 w-6 cursor-pointer"
                             color="red"
                             onClick={() =>

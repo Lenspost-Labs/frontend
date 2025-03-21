@@ -55,7 +55,7 @@ export const privyConfig = {
     "wallet",
     "google",
     // "twitter",
-    "farcaster",
+    //"farcaster",
     // "telegram",
     // "discord",
   ],

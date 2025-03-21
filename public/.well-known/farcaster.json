@@ -1,0 +1,18 @@
+{
+    "accountAssociation": {
+        "header": "eyJmaWQiOjEyNzg0LCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4ODU1YzRlOTMxMDlGRUNBZjBCQzEzOUFhNkQ0MzI4QjQ4NWNBY2EwOSJ9",
+        "payload": "eyJkb21haW4iOiJwb3N0ZXIuZnVuIn0",
+        "signature": "MHhlZmQ0MWNiOWRjYmUxM2NjOGM4YjhjYjY1M2FiMjI2ZWM1YzhkMmUzZTFjZjE4MGQyZTFjYTZiMTMzY2E2MjY2MzM5N2ZjMGY5MjI4MzdmMjJkZmE2ZWVhYzgxZjI5NzZlNzA1YWU3YjZmZGVkZjg2NjNlOGViNGZhN2E4NGU0MzFi"
+    },
+    "frame": {
+        "version": "1",
+        "name": "Example Frame",
+        "iconUrl": "https://poster.fun/icon.png",
+        "homeUrl": "https://poster.fun",
+        "imageUrl": "https://poster.fun/image.png",
+        "buttonTitle": "Check this out",
+        "splashImageUrl": "https://poster.fun/splash.png",
+        "splashBackgroundColor": "#eeccff",
+        "webhookUrl": "https://poster.fun/api/webhook"
+    }
+}

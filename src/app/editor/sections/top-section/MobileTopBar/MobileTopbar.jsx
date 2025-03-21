@@ -259,9 +259,33 @@ const MobileTopbar = () => {
                     </div>
                   ))}
                 </div>
+                {/* stickers */}
                 <h1 className=" text-center text-wrap text-lg font-bold py-4">
                   Trending Stickers
                 </h1>
+                {/* memes */}
+                <h1 className=" text-center text-wrap text-lg font-bold py-4">
+                  See what others are posting
+                </h1>
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg p-2 "> </div>
+                    <div
+                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2 flex items-center text-nowrap text-xs"
+                      onClick={() => {
+                        fnCloseLeftOpenEditorPanel("mobPanelStickers");
+                        setCurOpenedTabLevel1("memes");
+                      }}
+                    >
+                      See More
+                      <EditIconRightArrow />{" "}
+                    </div>
+                  </div>
+
+                  <div className="flex w-full overflow-x-auto">
+                    <ImagesWithArrows imagesArr={MemesMob} />
+                  </div>
+                </div>
               </div>
             )}
             {curOpenedPanel === "mobPanelAI" && (

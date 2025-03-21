@@ -35,6 +35,10 @@ import MdcFolderSearchOutline from "@meronex/icons/mdc/MdcFolderSearchOutline";
 import { toCapitalize } from "../../../../../utils";
 import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
 import GiFairyWand from "@meronex/icons/gi/GiFairyWand";
+import FaLaughSquint from "@meronex/icons/fa/FaLaughSquint";
+import FaRobot from "@meronex/icons/fa/FaRobot";
+import ZoCloudUpload from "@meronex/icons/zo/ZoCloudUpload";
+import FaMehBlank from "@meronex/icons/fa/FaMehBlank";
 
 const MobileTopbar = () => {
   const { urlQueryActionType } = useAppUrl();
@@ -86,22 +90,22 @@ const MobileTopbar = () => {
       author: "camp",
       campaign: "camp",
     },
-    {
-      author: "$Pipe",
-      campaign: "$Pipe",
-    },
+    // {
+    //   author: "$Pipe",
+    //   campaign: "$Pipe",
+    // },
     {
       author: "OwnTheDoge",
       campaign: "OwnTheDoge",
     },
-    {
-      author: "MrMiggles",
-      campaign: "MrMiggles",
-    },
-    {
-      author: "BizarreBeasts",
-      campaign: "BizarreBeasts",
-    },
+    // {
+    //   author: "MrMiggles",
+    //   campaign: "MrMiggles",
+    // },
+    // {
+    //   author: "BizarreBeasts",
+    //   campaign: "BizarreBeasts",
+    // },
     {
       author: "degen",
       campaign: "degen",
@@ -129,24 +133,29 @@ const MobileTopbar = () => {
   const actionBtns = [
     {
       name: "MEMES",
+      icon: <FaLaughSquint size={20} />,
       action: () => {
-        setOpenLeftBar(!openLeftBar);
-        fnOpenPanel("mobPanelStickers");
+        fnCloseLeftOpenEditorPanel("mobPanelStickers");
+        setCurOpenedTabLevel1("memes");
       },
     },
     {
       name: "AI POSTER",
+      icon: <FaRobot size={25} />,
       action: () => setCurOpenedPanel("mobPanelAI"),
     },
     {
       name: "UPLOAD MEDIA",
+      icon: <ZoCloudUpload size={35} />,
       action: () => {
         setOpenLeftBar(!openLeftBar);
-        fnOpenPanel("mobPanelUpload");
+        fnCloseLeftOpenEditorPanel("mobPanelUpload");
+        // fnOpenPanel("mobPanelUpload");
       },
     },
     {
       name: "BLANK CANVAS",
+      icon: <FaMehBlank size={30} />,
       action: () => setOpenLeftBar(!openLeftBar),
     },
   ];
@@ -240,13 +249,13 @@ const MobileTopbar = () => {
           <div className="h-full overflow-y-auto overflow-x-auto">
             {/* Categories */}
             {curOpenedPanel === "mobPanelHome" && (
-              <div className="flex flex-col mx-4 gap-4 overflow-x-auto mt-8">
+              <div className="flex flex-col mx-4 gap-4 overflow-x-auto">
                 <div>
                   <h1 className=" text-center text-wrap text-2xl font-bold py-4">
                     What will you post today?
                   </h1>
                 </div>
-                <div class="flex flex-wrap">
+                <div className="flex flex-wrap">
                   {actionBtns.map((btn, index) => (
                     <div
                       key={index}
@@ -254,20 +263,36 @@ const MobileTopbar = () => {
                       onClick={btn.action}
                     >
                       <div className="h-24 p-8 bg-[#e2f74d] text-center border rounded-lg shadow-md flex items-center justify-center">
-                        <p>{btn.name}</p>
+                        <p className="flex items-center gap-2">
+                          {btn.icon}
+                          {btn.name}
+                        </p>
                       </div>
                     </div>
                   ))}
                 </div>
+
                 {/* stickers */}
-                <h1 className=" text-center text-wrap text-lg font-bold py-4">
+                <h1 className=" text-center text-wrap text-lg font-bold pt-4">
                   Trending Stickers
                 </h1>
+                {stickersSections.map((section) => (
+                  <div className="flex flex-col justify-between mt-4">
+                    <div className="text-lg p-2 ">{section.author}</div>
+                    <div className="flex w-full overflow-x-auto">
+                      <CustomHorizontalScroller
+                        type="props"
+                        author={section.author}
+                        campaign={section.campaign}
+                      />
+                    </div>
+                  </div>
+                ))}
                 {/* memes */}
-                <h1 className=" text-center text-wrap text-lg font-bold py-4">
+                {/* <h1 className=" text-center text-wrap text-lg font-bold py-4">
                   See what others are posting
-                </h1>
-                <div className="flex flex-col">
+                </h1> */}
+                {/* <div className="flex flex-col">
                   <div className="flex justify-between items-center">
                     <div className="text-lg p-2 "> </div>
                     <div
@@ -282,10 +307,10 @@ const MobileTopbar = () => {
                     </div>
                   </div>
 
-                  <div className="flex w-full overflow-x-auto">
+                  <div className="flex w-full overflow-x-auto pb-4">
                     <ImagesWithArrows imagesArr={MemesMob} />
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
             {curOpenedPanel === "mobPanelAI" && (

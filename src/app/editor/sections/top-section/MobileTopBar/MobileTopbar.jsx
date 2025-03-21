@@ -34,6 +34,8 @@ import BiHomeAlt from "@meronex/icons/bi/BiHomeAlt";
 import MdcFolderSearchOutline from "@meronex/icons/mdc/MdcFolderSearchOutline";
 import { toCapitalize } from "../../../../../utils";
 import usePrivyAuth from "../../../../../hooks/privy-auth/usePrivyAuth";
+import GiFairyWand from "@meronex/icons/gi/GiFairyWand";
+
 const MobileTopbar = () => {
   const { urlQueryActionType } = useAppUrl();
 
@@ -124,6 +126,31 @@ const MobileTopbar = () => {
   //   "https://lenspost.s3.ap-south-1.amazonaws.com/Stickers/phi/phi-252.png",
   // ];
 
+  const actionBtns = [
+    {
+      name: "MEMES",
+      action: () => {
+        setOpenLeftBar(!openLeftBar);
+        fnOpenPanel("mobPanelStickers");
+      },
+    },
+    {
+      name: "AI POSTER",
+      action: () => setCurOpenedPanel("mobPanelAI"),
+    },
+    {
+      name: "UPLOAD MEDIA",
+      action: () => {
+        setOpenLeftBar(!openLeftBar);
+        fnOpenPanel("mobPanelUpload");
+      },
+    },
+    {
+      name: "BLANK CANVAS",
+      action: () => setOpenLeftBar(!openLeftBar),
+    },
+  ];
+
   // To open Home on Panel Open
   useEffect(() => {
     if (!openLeftBar && !openBottomBar) {
@@ -136,6 +163,9 @@ const MobileTopbar = () => {
       setCurOpenedPanel("mobPanelHome");
     }
   }, [openLeftBar, openBottomBar]);
+
+  const { fnOpenPanel } = useMobilePanelFunctions();
+
   return (
     <>
       <div className="flex items-center gap-2 overflow-x-scroll">
@@ -210,114 +240,28 @@ const MobileTopbar = () => {
           <div className="h-full overflow-y-auto overflow-x-auto">
             {/* Categories */}
             {curOpenedPanel === "mobPanelHome" && (
-              <div className="flex flex-col mx-4 gap-4 overflow-x-auto">
-                <div className="flex flex-col">
-                  <div className="flex justify-between items-center">
-                    {/* <div onClick={() => setOpenLeftBar(!openLeftBar)}>
-                      {" "}
-                      <EditIconRightArrow />{" "}
-                    </div> */}
-                  </div>
+              <div className="flex flex-col mx-4 gap-4 overflow-x-auto mt-8">
+                <div>
+                  <h1 className=" text-center text-wrap text-2xl font-bold py-4">
+                    What will you post today?
+                  </h1>
                 </div>
-                <div className="flex flex-col">
-                  <div className="flex justify-between items-center">
-                    <div className="text-lg p-2 "> Memes </div>
+                <div class="flex flex-wrap">
+                  {actionBtns.map((btn, index) => (
                     <div
-                      className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2 flex items-center text-nowrap text-xs"
-                      onClick={() => {
-                        fnCloseLeftOpenEditorPanel("mobPanelStickers");
-                        setCurOpenedTabLevel1("memes");
-                      }}
+                      key={index}
+                      className="w-1/2 px-2 mb-4"
+                      onClick={btn.action}
                     >
-                      See More
-                      <EditIconRightArrow />{" "}
-                    </div>
-                  </div>
-
-                  <div className="flex w-full overflow-x-auto">
-                    <ImagesWithArrows imagesArr={MemesMob} />
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  {/* <div className="flex justify-between items-center">
-										<div className="text-lg p-2 ">
-											Trending Artist
-										</div>
-										<div
-											className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2 flex items-center text-nowrap text-xs"
-											onClick={() => {
-												fnCloseLeftOpenEditorPanel('mobPanelStickers')
-												setCurOpenedTabLevel1('stickers')
-											}}
-										>
-											See More
-											<EditIconRightArrow />{' '}
-										</div>
-									</div>
-
-									<div className="flex w-full overflow-x-auto">
-										<CustomHorizontalScroller type="props" author="BizarreBeasts" campaign={'BizarreBeasts'} />
-									</div> */}
-
-                  {/* <div className="flex justify-between items-center mt-4">
-										 <div className="text-lg p-2 ">
-											{' '}
-											Featured campaign{' '}
-											{/* <span className="text-[#2C346B] italic bg-[#ecff5f] py-0.5 px-4 rounded-full border">
-                        {" "}
-                        #SummerOfPhi{" "}
-                      </span> */}
-                  {/* </div> 
-										<div
-											className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2 flex items-center text-nowrap text-xs"
-											onClick={() => {
-												fnCloseLeftOpenEditorPanel('mobPanelStickers')
-												setCurOpenedTabLevel1('stickers')
-											}}
-										>
-											See More
-											<EditIconRightArrow />{' '}
-										</div>
-									</div>  */}
-                  {stickersSections.map((section) => (
-                    <div className="flex flex-col justify-between mt-4">
-                      <div className="text-lg p-2 ">
-                        {" "}
-                        {toCapitalize(section?.author)}{" "}
-                      </div>
-                      <div className="flex w-full overflow-x-auto">
-                        <CustomHorizontalScroller
-                          type="props"
-                          author={section.author}
-                          campaign={section.campaign}
-                        />
+                      <div className="h-24 p-8 bg-[#e2f74d] text-center border rounded-lg shadow-md flex items-center justify-center">
+                        <p>{btn.name}</p>
                       </div>
                     </div>
                   ))}
                 </div>
-
-                {/* {urlQueryActionType != 'composer' && (
-									<div className="flex flex-col">
-										<div className="flex justify-between items-center">
-											<div className="text-lg p-2 "> Featured backgrounds </div>
-											{/* <div
-                        className="hover:bg-[#f3f2f2] cursor-pointer rounded-full p-2"
-                        onClick={() =>
-                          fnCloseLeftOpenEditorPanel("mobPanelStickers")
-                        }
-                      >
-                        {" "}
-                        <EditIconRightArrow />{" "}
-                      </div> */}
-                {/*</div>
-										<CompCarousel type="background" campaign={'halloween'} />
-									</div>
-								)} */}
-                {/* <div className="text-lg p-2 "> Gen AI </div>
-
-								<div className="flex overflow-x-auto whitespace-nowrap">
-									<ImagesWithArrows imagesArr={AIImagesMob} />
-								</div> */}
+                <h1 className=" text-center text-wrap text-lg font-bold py-4">
+                  Trending Stickers
+                </h1>
               </div>
             )}
             {curOpenedPanel === "mobPanelAI" && (
@@ -335,56 +279,6 @@ const MobileTopbar = () => {
             )}
           </div>
           {/* Bottom bar for Home page  */}
-          <div className="">
-            <div className="flex flex-col items-center  mx-2 my-1 ">
-              <div
-                onClick={() => {
-                  console.log("mobPanelAI");
-                  setCurOpenedPanel("mobPanelAI");
-                }}
-                className={` ${
-                  curOpenedPanel === "mobPanelAI"
-                    ? "bg-[#e1f16b]"
-                    : "bg-[#F8F8F8]"
-                }  p-2 rounded-full -mb-8 shadow-xl ease-in-out duration-300`}
-              >
-                {" "}
-                <BisMagicWand size={24} />
-                {/* <EditIconAI needAnimation={true} /> */}
-                {/* <div className="text-lg w-8 h-8 rounded-full flex items-center">AI</div> */}
-              </div>
-            </div>
-
-            <div className="bg-[#F8F8F8] p-2 mx-2 my-1 rounded-lg">
-              <div className="flex justify-between items-center">
-                <div
-                  onClick={() => {
-                    console.log("mobPanelHome");
-                    setCurOpenedPanel("mobPanelHome");
-                  }}
-                  className={`${
-                    curOpenedPanel === "mobPanelHome" ? "bg-[#e1f16b]" : ""
-                  } p-1 rounded-lg ease-in-out duration-300`}
-                >
-                  {/* <EditIconHome /> */}
-                  <BiHomeAlt size={24} />
-                </div>
-
-                <div
-                  onClick={() => {
-                    console.log("mobPanelMyFiles");
-                    setCurOpenedPanel("mobPanelMyFiles");
-                  }}
-                  className={`${
-                    curOpenedPanel === "mobPanelMyFiles" ? "bg-[#e1f16b]" : ""
-                  } p-1 rounded-lg ease-in-out duration-300`}
-                >
-                  <MdcFolderSearchOutline size={24} />
-                  {/* <EditIconMyFIles /> */}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </Drawer>
     </>

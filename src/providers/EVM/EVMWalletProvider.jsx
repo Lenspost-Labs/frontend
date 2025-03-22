@@ -92,6 +92,7 @@ export const config = createConfig({
     [optimism.id]: http(),
     [polygon.id]: http(),
     [storyMainnet.id]: http(),
+    [storyAeneidTestnet.id]: http(),
     [basecampTestnet.id]: http(),
     [morph.id]: http(),
     [polygonMumbai.id]: http(),

@@ -13,7 +13,7 @@ export const storyAeneidTestnet = defineChain({
     },
   },
   blockExplorers: {
-    default: { url: "https://aeneid.storyscan.xyz", name: "Explorer" },
+    default: { url: "https://aeneid.storyscan.io", name: "Explorer" },
   },
   name: "Story Aeneid Testnet",
   network: "story-aeneid-testnet",

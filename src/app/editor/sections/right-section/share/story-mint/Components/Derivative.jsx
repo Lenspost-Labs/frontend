@@ -59,7 +59,10 @@ const Derivative = () => {
     isRefetching: isWalletRefetching,
   } = useQuery({
     queryKey: ["getOrCreateWallet"],
-    queryFn: () => getOrCreateWallet(storyMainnet?.id),
+    queryFn: () =>
+      getOrCreateWallet(
+        ENVIRONMENT === "production" ? storyMainnet?.id : storyAeneid?.id
+      ),
     refetchOnWindowFocus: false,
   });
 

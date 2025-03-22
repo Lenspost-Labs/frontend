@@ -16,11 +16,7 @@ import {
   WALLETCONNECT_PROJECT_ID,
 } from "../../services";
 import { http } from "wagmi";
-import {
-  campNetworkTestnetV2,
-  storyMainnet,
-  storyAeneidTestnet,
-} from "../../data";
+import { basecampTestnet, storyMainnet, storyAeneidTestnet } from "../../data";
 
 import { PrivyProvider } from "@privy-io/react-auth";
 import { WagmiProvider, createConfig } from "@privy-io/wagmi";
@@ -74,7 +70,7 @@ export const config = createConfig({
           arbitrum,
           polygon,
           storyMainnet,
-          campNetworkTestnetV2,
+          basecampTestnet,
           morph,
         ]
       : [
@@ -86,7 +82,7 @@ export const config = createConfig({
           polygonMumbai,
           polygon,
           storyAeneidTestnet,
-          campNetworkTestnetV2,
+          basecampTestnet,
           morph,
         ],
   transports: {
@@ -96,7 +92,7 @@ export const config = createConfig({
     [optimism.id]: http(),
     [polygon.id]: http(),
     [storyMainnet.id]: http(),
-    [campNetworkTestnetV2.id]: http(),
+    [basecampTestnet.id]: http(),
     [morph.id]: http(),
     [polygonMumbai.id]: http(),
     [baseSepolia.id]: http(),

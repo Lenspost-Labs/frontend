@@ -13,7 +13,7 @@ export const storyMainnet = defineChain({
     },
   },
   blockExplorers: {
-    default: { url: "https://dev-mainnet.storyscan.xyz", name: "Explorer" },
+    default: { url: "https://www.storyscan.io", name: "Explorer" },
   },
   name: "Story",
   network: "story",

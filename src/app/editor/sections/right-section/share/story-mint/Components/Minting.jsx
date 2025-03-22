@@ -225,7 +225,7 @@ const Minting = () => {
   const registerIP = async (jsonData) => {
     try {
       const res = await registerAsIP(jsonData);
-      console.log(res);
+      console.log("registerIp", res);
       setIPResult(res);
       toast.success("IP registered successfully!");
     } catch (error) {
@@ -528,7 +528,13 @@ const Minting = () => {
             </Button>
           </div>
           <a
-            href={`${storyMainnet?.blockExplorers?.default.url}/tx/${ipResult.txHash}`}
+            href={
+              `${
+                ENVIRONMENT === "production"
+                  ? storyMainnet?.blockExplorers?.default.url
+                  : storyAeneid?.blockExplorers?.default?.url
+              }` + `/tx/${ipResult.collection?.txHash}`
+            }
             className="text-purple-500 hover:underline"
             rel="noreferrer"
             target="_blank"

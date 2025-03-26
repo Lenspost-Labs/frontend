@@ -8,7 +8,7 @@
         "version": "1",
         "name": "Poster.fun",
         "iconUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",
-        "homeUrl": "https://poster-framesv2.vercel.app",
+        "homeUrl": "https://poster-framesv2.vercel.app?actionType=composer",
         "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",
         "buttonTitle": "Check this out",
         "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",

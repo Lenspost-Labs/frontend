@@ -52,7 +52,7 @@ export default defineConfig({
 
   server: {
     allowedHosts: [
-      "33a0-49-36-139-60.ngrok-free.app",
+      "093c-49-36-144-97.ngrok-free.app",
       // ... existing hosts ...
     ],
     // ... existing code ...

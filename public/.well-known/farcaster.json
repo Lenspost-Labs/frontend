@@ -1,18 +1,18 @@
 {
     "accountAssociation": {
         "header": "eyJmaWQiOjEyNzg0LCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4ODU1YzRlOTMxMDlGRUNBZjBCQzEzOUFhNkQ0MzI4QjQ4NWNBY2EwOSJ9",
-        "payload": "eyJkb21haW4iOiJwb3N0ZXIuZnVuIn0",
-        "signature": "MHhlZmQ0MWNiOWRjYmUxM2NjOGM4YjhjYjY1M2FiMjI2ZWM1YzhkMmUzZTFjZjE4MGQyZTFjYTZiMTMzY2E2MjY2MzM5N2ZjMGY5MjI4MzdmMjJkZmE2ZWVhYzgxZjI5NzZlNzA1YWU3YjZmZGVkZjg2NjNlOGViNGZhN2E4NGU0MzFi"
+        "payload": "eyJkb21haW4iOiJwb3N0ZXItZnJhbWVzdjIudmVyY2VsLmFwcCJ9",
+        "signature": "MHg0ZWNjYzU0ZTJkNWQyZjhkYWJhMTk4NzRlM2UyYjAwMWVlY2YyZTdiMDRjNjZkOWEyMmM4YjI3M2ZmMzlmNDZjMjEzNDVlODQwY2VmYWZkOWY1NzQ3ZTU4NTE3OGExZDY2Mzg1NGQ1ODFjOWI2ZTYyMGY2N2QyYmMyNGMzMDdhNDFj"
     },
     "frame": {
         "version": "1",
-        "name": "Example Frame",
-        "iconUrl": "https://poster.fun/icon.png",
-        "homeUrl": "https://poster.fun",
-        "imageUrl": "https://poster.fun/image.png",
+        "name": "Poster.fun",
+        "iconUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",
+        "homeUrl": "https://poster-framesv2.vercel.app",
+        "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",
         "buttonTitle": "Check this out",
-        "splashImageUrl": "https://poster.fun/splash.png",
+        "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",
         "splashBackgroundColor": "#eeccff",
-        "webhookUrl": "https://poster.fun/api/webhook"
+        "webhookUrl": "https://poster-framesv2.vercel.app/api/webhook"
     }
 }

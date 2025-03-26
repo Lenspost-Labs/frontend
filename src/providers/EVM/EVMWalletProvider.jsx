@@ -24,6 +24,7 @@ import {
 
 import { PrivyProvider } from "@privy-io/react-auth";
 import { WagmiProvider, createConfig } from "@privy-io/wagmi";
+import { frameConnector } from "../../lib/connector";
 
 // Replace this with your Privy config
 export const privyConfig = {
@@ -64,6 +65,7 @@ export const privyConfig = {
 export const config = createConfig({
   appName: "Poster.fun",
   projectId: WALLETCONNECT_PROJECT_ID,
+  connectors: [frameConnector()],
   chains:
     ENVIRONMENT === "production"
       ? [

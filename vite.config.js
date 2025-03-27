@@ -33,17 +33,28 @@
 // });
 
 import { sentryVitePlugin } from "@sentry/vite-plugin";
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), sentryVitePlugin({
-    org: "lenspost-labs",
-    project: "lenspost-main-app"
-  })],
+  plugins: [
+    react(),
+    sentryVitePlugin({
+      org: "lenspost-labs",
+      project: "lenspost-main-app",
+    }),
+  ],
 
   build: {
-    sourcemap: true
-  }
-})
+    sourcemap: true,
+  },
+
+  server: {
+    allowedHosts: [
+      "093c-49-36-144-97.ngrok-free.app",
+      // ... existing hosts ...
+    ],
+    // ... existing code ...
+  },
+});

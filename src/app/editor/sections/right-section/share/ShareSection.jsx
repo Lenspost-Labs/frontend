@@ -195,7 +195,7 @@ const ShareSection = () => {
         {isMobile &&
           (!evmAuth && actionType !== "composer" ? (
             <EVMWallets
-              title={"Login with EVM"}
+              title={"Connect Wallet"}
               className="mx-2"
               login={login}
             />
@@ -211,7 +211,7 @@ const ShareSection = () => {
                 Share on Farcaster
               </Button>
 
-              {actionType !== "composer" && (
+              {actionType !== "composer" && actionType !== "framev2" && (
                 <Button
                   className="mx-6"
                   onClick={() => {

@@ -20,6 +20,8 @@ import { basecampTestnet, storyMainnet, storyAeneidTestnet } from "../../data";
 
 import { PrivyProvider } from "@privy-io/react-auth";
 import { WagmiProvider, createConfig } from "@privy-io/wagmi";
+import { frameConnector } from "../../lib/connector";
+import { useEffect } from "react";
 
 // Replace this with your Privy config
 export const privyConfig = {
@@ -49,17 +51,29 @@ export const privyConfig = {
   },
   loginMethods: [
     "wallet",
-    "google",
+    // "google",
     // "twitter",
-    "farcaster",
+    // "farcaster",
     // "telegram",
     // "discord",
   ],
 };
 
+// if url params does not have actionType === "framev2" then add google and farcaster login methods
+// useEffect(() => {
+// }, []);
+const url = new URL(window.location.href);
+const params = new URLSearchParams(url.search);
+const actionType = params.get("actionType");
+if (actionType !== "framev2") {
+  privyConfig.loginMethods.push("google");
+  privyConfig.loginMethods.push("farcaster");
+}
+
 export const config = createConfig({
   appName: "Poster.fun",
   projectId: WALLETCONNECT_PROJECT_ID,
+  connectors: [frameConnector()],
   chains:
     ENVIRONMENT === "production"
       ? [

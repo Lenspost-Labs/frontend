@@ -1,0 +1,18 @@
+{
+    "accountAssociation": {
+        "header": "eyJmaWQiOjEyNzg0LCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4ODU1YzRlOTMxMDlGRUNBZjBCQzEzOUFhNkQ0MzI4QjQ4NWNBY2EwOSJ9",
+        "payload": "eyJkb21haW4iOiJwb3N0ZXItZnJhbWVzdjIudmVyY2VsLmFwcCJ9",
+        "signature": "MHg0ZWNjYzU0ZTJkNWQyZjhkYWJhMTk4NzRlM2UyYjAwMWVlY2YyZTdiMDRjNjZkOWEyMmM4YjI3M2ZmMzlmNDZjMjEzNDVlODQwY2VmYWZkOWY1NzQ3ZTU4NTE3OGExZDY2Mzg1NGQ1ODFjOWI2ZTYyMGY2N2QyYmMyNGMzMDdhNDFj"
+    },
+    "frame": {
+        "version": "1",
+        "name": "Poster.fun",
+        "iconUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "homeUrl": "https://poster-framesv2.vercel.app?actionType=composer",
+        "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "buttonTitle": "Check this out",
+        "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "splashBackgroundColor": "#eeccff",
+        "webhookUrl": "https://poster-framesv2.vercel.app/api/webhook"
+    }
+}

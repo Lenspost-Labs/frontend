@@ -1,121 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-		<!-- Icons -->
-		<link rel="icon" type="image/svg+xml" href="/favicon_io/favicon.ico" />
-		<link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png" />
-		<link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png" />
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon_io/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon_io/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon_io/favicon-16x16.png"
+    />
 
-		<!-- PWA -->
-		<link rel="manifest" href="/manifest.json" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-		<meta name="apple-mobile-web-app-title" content="Poster" />
-		<link rel="icon" href="/favicon_io/favicon-32x32.png" />
-		<meta name="theme-color" content="#ffffff" />
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Poster" />
+    <link rel="icon" href="/favicon_io/favicon-32x32.png" />
+    <meta name="theme-color" content="#ffffff" />
 
-		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1"
+    />
 
-		<link href="https://unpkg.com/@blueprintjs/core@5/lib/css/blueprint.css" rel="stylesheet" />
+    <link
+      href="https://unpkg.com/@blueprintjs/core@5/lib/css/blueprint.css"
+      rel="stylesheet"
+    />
 
-		<!-- Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-		<title>Poster</title>
+    <title>Poster</title>
 
-		<!-- OG metadata -->
-		<meta property="og:title" content="Poster" />
-		<meta property="og:description" content="A web3 onchain canvas" />
-		<meta property="og:image" content="/OG_logo_1200x630.png" />
-		<meta property="og:url" content="https://app.poster.fun" />
-		<meta property="og:type" content="website" />
-		<!-- End OG metadata -->
+    <!-- OG metadata -->
+    <meta property="og:title" content="Poster" />
+    <meta property="og:description" content="A web3 onchain canvas" />
+    <meta property="og:image" content="/OG_logo_1200x630.png" />
+    <meta property="og:url" content="https://app.poster.fun" />
+    <meta property="og:type" content="website" />
+    <!-- End OG metadata -->
 
-		<!-- // Fix: DSCVR rollback -->
-		<!-- dscvr meta tag -->
-		<!-- <meta name="dscvr:canvas:version" content="vNext"> -->
-		<!-- end of dscvr meta tag -->
+    <!-- // Fix: DSCVR rollback -->
+    <!-- dscvr meta tag -->
+    <!-- <meta name="dscvr:canvas:version" content="vNext"> -->
+    <!-- end of dscvr meta tag -->
 
-		<!-- Facebook Meta Tags -->
-		<meta property="og:url" content="https://app.poster.fun" />
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content="Poster" />
-		<meta property="og:description" content="A web3 onchain canvas" />
-		<meta property="og:image" content="https://app.poster.fun/OG_logo_1200x630.png" />
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://app.poster.fun" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Poster" />
+    <meta property="og:description" content="A web3 onchain canvas" />
+    <meta
+      property="og:image"
+      content="https://app.poster.fun/OG_logo_1200x630.png"
+    />
 
-		<!-- Twitter Meta Tags -->
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta property="twitter:domain" content="app.poster.fun" />
-		<meta property="twitter:url" content="https://app.poster.fun" />
-		<meta name="twitter:title" content="Poster" />
-		<meta name="twitter:description" content="A web3 onchain canvas" />
-		<meta name="twitter:image" content="https://app.poster.fun/OG_logo_1200x630.png" />
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="app.poster.fun" />
+    <meta property="twitter:url" content="https://app.poster.fun" />
+    <meta name="twitter:title" content="Poster" />
+    <meta name="twitter:description" content="A web3 onchain canvas" />
+    <meta
+      name="twitter:image"
+      content="https://app.poster.fun/OG_logo_1200x630.png"
+    />
 
-		<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net" />
-	</head>
-	<body>
-		<div id="root"></div>
-		<script type="module" src="/src/main.jsx"></script>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net"
+    />
 
-		<!-- analitycs script start -->
-		<script>
-			!(function (t, e) {
-				var o, n, p, r
-				e.__SV ||
-					((window.posthog = e),
-					(e._i = []),
-					(e.init = function (i, s, a) {
-						function g(t, e) {
-							var o = e.split('.')
-							2 == o.length && ((t = t[o[0]]), (e = o[1])),
-								(t[e] = function () {
-									t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
-								})
-						}
-						;((p = t.createElement('script')).type = 'text/javascript'),
-							(p.async = !0),
-							(p.src = s.api_host + '/static/array.js'),
-							(r = t.getElementsByTagName('script')[0]).parentNode.insertBefore(p, r)
-						var u = e
-						for (
-							void 0 !== a ? (u = e[a] = []) : (a = 'posthog'),
-								u.people = u.people || [],
-								u.toString = function (t) {
-									var e = 'posthog'
-									return 'posthog' !== a && (e += '.' + a), t || (e += ' (stub)'), e
-								},
-								u.people.toString = function () {
-									return u.toString(1) + '.people (stub)'
-								},
-								o =
-									'capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys'.split(
-										' '
-									),
-								n = 0;
-							n < o.length;
-							n++
-						)
-							g(u, o[n])
-						e._i.push([i, s, a])
-					}),
-					(e.__SV = 1))
-			})(document, window.posthog || [])
+    <!-- frame v2 -->
 
-			posthog.init('phc_CvXLACFkyLdhJjiGLxlix6ihbGjumRvGjUFSinPWJYD', {
-				api_host: 'https://eu.posthog.com',
-			})
-		</script>
-		<!-- analitycs script end -->
+    <meta
+      name="fc:frame"
+      content='{
+      "version": "next",
+      "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+      "button":{
+        "title": "Open Poster",
+        "action": {
+          "type": "launch_frame",
+          "name": "Poster.fun",
+          "url": "https://093c-49-36-144-97.ngrok-free.app?actionType=framev2",
+          "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+          "splashBackgroundColor": "#ffffff"
+        }
+      }
+    }'
+      data-rh="true"
+    />
+    <!-- frame v2 -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 
-		<!-- conffeti CDN script -->
-		<script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
-		<!-- conffeti CDN script end -->
-	</body>
+    <!-- analitycs script start -->
+    <script>
+      !(function (t, e) {
+        var o, n, p, r;
+        e.__SV ||
+          ((window.posthog = e),
+          (e._i = []),
+          (e.init = function (i, s, a) {
+            function g(t, e) {
+              var o = e.split(".");
+              2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                (t[e] = function () {
+                  t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+                });
+            }
+            ((p = t.createElement("script")).type = "text/javascript"),
+              (p.async = !0),
+              (p.src = s.api_host + "/static/array.js"),
+              (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(
+                p,
+                r
+              );
+            var u = e;
+            for (
+              void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
+                u.people = u.people || [],
+                u.toString = function (t) {
+                  var e = "posthog";
+                  return (
+                    "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e
+                  );
+                },
+                u.people.toString = function () {
+                  return u.toString(1) + ".people (stub)";
+                },
+                o =
+                  "capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(
+                    " "
+                  ),
+                n = 0;
+              n < o.length;
+              n++
+            )
+              g(u, o[n]);
+            e._i.push([i, s, a]);
+          }),
+          (e.__SV = 1));
+      })(document, window.posthog || []);
+
+      posthog.init("phc_CvXLACFkyLdhJjiGLxlix6ihbGjumRvGjUFSinPWJYD", {
+        api_host: "https://eu.posthog.com",
+      });
+    </script>
+    <!-- analitycs script end -->
+
+    <!-- conffeti CDN script -->
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+    <!-- conffeti CDN script end -->
+  </body>
 </html>

@@ -29,6 +29,7 @@ const chainLogos = {
   1155: StoryIPLogo, // story testnet
   2818: MorphLogo, // morph mainnet
   325000: campNetworkTestnetV2Logo, // camp network testnet
+  123420001114: campNetworkTestnetV2Logo, // basecamp testnet
   1516: StoryIPLogo, // story odyssey testnet
   1315: StoryIPLogo, // story aeneid testnet
   1514: StoryIPLogo, // story mainnet

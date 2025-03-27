@@ -109,6 +109,16 @@ export const TOKEN_LIST = {
       logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
     },
   ],
+  "Basecamp Testnet": [
+    {
+      id: 325000,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "CAMP",
+      name: "Camp",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
+    },
+  ],
   "Camp Network Testnet V2": [
     {
       id: 325000,

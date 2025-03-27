@@ -4,6 +4,7 @@ import { useAppAuth, useReset } from "../../../../../../../hooks/app";
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  ENVIRONMENT,
   uploadAsIP,
   uploadJSONtoIPFS,
   uploadUserAssetToIPFS,
@@ -29,6 +30,7 @@ import { Button, Textarea } from "@material-tailwind/react";
 import { getOrCreateWallet } from "../../../../../../../services/apis/BE-apis";
 import { Topup } from "../../farcaster-share/components";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
+import { storyAeneid } from "viem/chains";
 
 const getPILTypeString = (type) => {
   switch (type) {
@@ -113,7 +115,10 @@ const Minting = () => {
     isRefetching: isWalletRefetching,
   } = useQuery({
     queryKey: ["getOrCreateWallet"],
-    queryFn: () => getOrCreateWallet(storyMainnet?.id),
+    queryFn: () =>
+      getOrCreateWallet(
+        ENVIRONMENT === "production" ? storyMainnet?.id : storyAeneid?.id
+      ),
     refetchOnWindowFocus: false,
   });
 
@@ -220,7 +225,7 @@ const Minting = () => {
   const registerIP = async (jsonData) => {
     try {
       const res = await registerAsIP(jsonData);
-      console.log(res);
+      console.log("registerIp", res);
       setIPResult(res);
       toast.success("IP registered successfully!");
     } catch (error) {
@@ -293,7 +298,13 @@ const Minting = () => {
 
   // checking unsupported chain for individual networks
   const isUnsupportedChain = () => {
-    if (chainId !== storyMainnet.id && !isSuccessSwitchNetwork) return true;
+    if (
+      (ENVIRONMENT === "production"
+        ? chainId !== storyMainnet.id
+        : chainId !== storyAeneid?.id) &&
+      !isSuccessSwitchNetwork
+    )
+      return true;
   };
 
   // mint on Zora
@@ -517,7 +528,13 @@ const Minting = () => {
             </Button>
           </div>
           <a
-            href={`${storyMainnet?.blockExplorers?.default.url}/tx/${ipResult.txHash}`}
+            href={
+              `${
+                ENVIRONMENT === "production"
+                  ? storyMainnet?.blockExplorers?.default.url
+                  : storyAeneid?.blockExplorers?.default?.url
+              }` + `/tx/${ipResult.collection?.txHash}`
+            }
             className="text-purple-500 hover:underline"
             rel="noreferrer"
             target="_blank"
@@ -533,11 +550,21 @@ const Minting = () => {
             className="w-full outline-none flex justify-center items-center gap-2"
             disabled={isLoadingSwitchNetwork}
             loading={isLoadingSwitchNetwork}
-            onClick={() => switchChain({ chainId: storyMainnet.id })}
+            onClick={() =>
+              switchChain({
+                chainId:
+                  ENVIRONMENT === "production"
+                    ? storyMainnet.id
+                    : storyAeneid.id,
+              })
+            }
             color="red"
           >
             {isLoadingSwitchNetwork ? "Switching" : "Switch"} to{" "}
-            {storyMainnet.name} Network {isLoadingSwitchNetwork && <Spinner />}
+            {ENVIRONMENT === "production"
+              ? storyMainnet.name
+              : storyAeneid?.name}{" "}
+            Network {isLoadingSwitchNetwork && <Spinner />}
           </Button>
         </div>
       ) : (

@@ -34,7 +34,7 @@ const usePrivyAuth = () => {
       })
         .then((res) => {
           toast.success(
-            actionType === "framev2" ? "Wallet conneted" : "Login successful",
+            actionType === "framev2" ? "Wallet connected" : "Login successful",
             { toastId: "success1" }
           );
           saveToLocalStorage(LOCAL_STORAGE.evmAuth, true);

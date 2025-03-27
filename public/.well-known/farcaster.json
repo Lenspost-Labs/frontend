@@ -7,11 +7,11 @@
     "frame": {
         "version": "1",
         "name": "Poster.fun",
-        "iconUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",
+        "iconUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
         "homeUrl": "https://poster-framesv2.vercel.app?actionType=composer",
-        "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",
+        "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
         "buttonTitle": "Check this out",
-        "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/Poster_logo.png",
+        "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
         "splashBackgroundColor": "#eeccff",
         "webhookUrl": "https://poster-framesv2.vercel.app/api/webhook"
     }

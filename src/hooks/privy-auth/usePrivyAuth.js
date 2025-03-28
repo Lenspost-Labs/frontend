@@ -10,8 +10,14 @@ import { LOCAL_STORAGE } from "../../data";
 import * as Sentry from "@sentry/react";
 
 const usePrivyAuth = () => {
-  const { posthog, setText, setIsLoading, setSession, setOpenedLoginModal } =
-    useContext(Context);
+  const {
+    posthog,
+    setText,
+    setIsLoading,
+    setSession,
+    setOpenedLoginModal,
+    actionType,
+  } = useContext(Context);
   const { logout } = usePrivy();
   const { disconnect } = useDisconnect();
 
@@ -27,7 +33,10 @@ const usePrivyAuth = () => {
         signature: "",
       })
         .then((res) => {
-          toast.success("Login successful", { toastId: "success1" });
+          toast.success(
+            actionType === "framev2" ? "Wallet connected" : "Login successful",
+            { toastId: "success1" }
+          );
           saveToLocalStorage(LOCAL_STORAGE.evmAuth, true);
           saveToLocalStorage(LOCAL_STORAGE.userAuthToken, res.jwt);
           saveToLocalStorage(LOCAL_STORAGE.userAuthTime, new Date().getTime());

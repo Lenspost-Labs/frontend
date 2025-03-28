@@ -1401,104 +1401,103 @@ const FarcasterNormalPost = () => {
             </div>
           </div>
         </div>
-
-        {!isMobile && (
-          <>
-            <div className="mb-4">
-              <div className="flex justify-between">
-                <h2 className="text-lg mb-2"> External Link </h2>
-                <Switch
-                  checked={farcasterStates.frameData?.isExternalLink}
-                  onChange={() =>
-                    setFarcasterStates({
-                      ...farcasterStates,
-                      frameData: {
-                        ...farcasterStates.frameData,
-                        isExternalLink:
-                          !farcasterStates.frameData?.isExternalLink,
-                      },
-                    })
-                  }
+        {/* {!isMobile && ( */}
+        <>
+          <div className="mb-4">
+            <div className="flex justify-between">
+              <h2 className="text-lg mb-2"> External Link </h2>
+              <Switch
+                checked={farcasterStates.frameData?.isExternalLink}
+                onChange={() =>
+                  setFarcasterStates({
+                    ...farcasterStates,
+                    frameData: {
+                      ...farcasterStates.frameData,
+                      isExternalLink:
+                        !farcasterStates.frameData?.isExternalLink,
+                    },
+                  })
+                }
+                className={`${
+                  farcasterStates.frameData?.isExternalLink
+                    ? "bg-[#e1f16b]"
+                    : "bg-gray-200"
+                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+              >
+                <span
                   className={`${
                     farcasterStates.frameData?.isExternalLink
-                      ? "bg-[#e1f16b]"
-                      : "bg-gray-200"
-                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-                >
-                  <span
-                    className={`${
-                      farcasterStates.frameData?.isExternalLink
-                        ? "translate-x-6"
-                        : "translate-x-1"
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                  />{" "}
-                </Switch>
-              </div>
-              <div className="w-4/5 opacity-75">
-                {" "}
-                Let user know more about your frame.{" "}
-              </div>
-
-              <div
-                className={`${
-                  !farcasterStates.frameData?.isExternalLink && "hidden"
-                } mt-2`}
-              >
-                <InputBox
-                  label="External Link"
-                  name="externalLink"
-                  onChange={(e) => handleChange(e, "externalLink")}
-                  onFocus={(e) => handleChange(e, "externalLink")}
-                />
-              </div>
-
-              {farcasterStates.frameData?.isExternalLinkError && (
-                <InputErrorMsg
-                  message={farcasterStates.frameData?.isExternalLinkError}
-                />
-              )}
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                />{" "}
+              </Switch>
+            </div>
+            <div className="w-4/5 opacity-75">
+              {" "}
+              Let user know more about your frame.{" "}
             </div>
 
-            {/* Start  */}
-            {/* Start Degen-L3 Mint */}
-            <div className="mb-4">
-              <div className="flex justify-between">
-                <h2 className="text-lg mb-2"> Custom currency Mint </h2>
-                <Switch
-                  checked={farcasterStates.frameData?.isCustomCurrMint}
-                  onChange={() =>
-                    setFarcasterStates({
-                      ...farcasterStates,
-                      frameData: {
-                        ...farcasterStates.frameData,
-                        isCustomCurrMint:
-                          !farcasterStates.frameData?.isCustomCurrMint,
-                        isCreatorSponsored: false,
-                      },
-                    })
-                  }
+            <div
+              className={`${
+                !farcasterStates.frameData?.isExternalLink && "hidden"
+              } mt-2`}
+            >
+              <InputBox
+                label="External Link"
+                name="externalLink"
+                onChange={(e) => handleChange(e, "externalLink")}
+                onFocus={(e) => handleChange(e, "externalLink")}
+              />
+            </div>
+
+            {farcasterStates.frameData?.isExternalLinkError && (
+              <InputErrorMsg
+                message={farcasterStates.frameData?.isExternalLinkError}
+              />
+            )}
+          </div>
+
+          {/* Start  */}
+          {/* Start Degen-L3 Mint */}
+          <div className="mb-4">
+            <div className="flex justify-between">
+              <h2 className="text-lg mb-2"> Custom currency Mint </h2>
+              <Switch
+                checked={farcasterStates.frameData?.isCustomCurrMint}
+                onChange={() =>
+                  setFarcasterStates({
+                    ...farcasterStates,
+                    frameData: {
+                      ...farcasterStates.frameData,
+                      isCustomCurrMint:
+                        !farcasterStates.frameData?.isCustomCurrMint,
+                      isCreatorSponsored: false,
+                    },
+                  })
+                }
+                className={`${
+                  farcasterStates.frameData?.isCustomCurrMint
+                    ? "bg-[#e1f16b]"
+                    : "bg-gray-200"
+                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+              >
+                <span
                   className={`${
                     farcasterStates.frameData?.isCustomCurrMint
-                      ? "bg-[#e1f16b]"
-                      : "bg-gray-200"
-                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-                >
-                  <span
-                    className={`${
-                      farcasterStates.frameData?.isCustomCurrMint
-                        ? "translate-x-6"
-                        : "translate-x-1"
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                  />{" "}
-                </Switch>
-              </div>
-              <div className="w-4/5 opacity-75">
-                {" "}
-                Mint NFTs with custom currencies like $DEGEN{" "}
-              </div>
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                />{" "}
+              </Switch>
             </div>
-          </>
-        )}
+            <div className="w-4/5 opacity-75">
+              {" "}
+              Mint NFTs with custom currencies like $DEGEN{" "}
+            </div>
+          </div>
+        </>
+        {/* // )} */}
         <div
           className={`${
             !farcasterStates.frameData?.isCustomCurrMint && "hidden"

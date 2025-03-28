@@ -1,0 +1,18 @@
+{
+    "accountAssociation": {
+        "header": "eyJmaWQiOjEyNzg0LCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4ODU1YzRlOTMxMDlGRUNBZjBCQzEzOUFhNkQ0MzI4QjQ4NWNBY2EwOSJ9",
+        "payload": "eyJkb21haW4iOiJhcHAucG9zdGVyLmZ1biJ9",
+        "signature": "MHgxNWQ4YzM0YTM3ZDk0MDkwMDNmM2IzNTBhZDNkNjUxMTBhNTk2NDBiYTdiNzUxY2ZkMDlmNWNkMGQyMjM0NTc2MmIzMjE1MjUxMjRmYWIwM2NiNWYyZjI1ZTViYjVhNzQ5MjdjNTdiZTYzY2Y4MDJkMTZkNTQ2MWFiYTVhY2Y0ZjFj"
+    },
+    "frame": {
+        "version": "1",
+        "name": "Poster.fun",
+        "iconUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "homeUrl": "https://app.poster.fun?actionType=composer",
+        "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "buttonTitle": "Check this out",
+        "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "splashBackgroundColor": "#eeccff",
+        "webhookUrl": "https://app.poster.fun/api/webhook"
+    }
+}

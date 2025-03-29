@@ -10,6 +10,7 @@ import {
   StoryIPLogo,
   MorphLogo,
   campNetworkTestnetV2Logo,
+  monadTestnetLogo,
 } from "../assets";
 
 const chainLogos = {
@@ -34,6 +35,7 @@ const chainLogos = {
   1315: StoryIPLogo, // story aeneid testnet
   1514: StoryIPLogo, // story mainnet
   80001: polygonLogo, // polygon mumbai
+  10143: monadTestnetLogo, // monad testnet
 };
 
 export const chainLogo = (chainId) => {

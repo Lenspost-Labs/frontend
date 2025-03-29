@@ -9,6 +9,7 @@ import {
   baseSepolia,
   arbitrum,
   morph,
+  monadTestnet,
 } from "wagmi/chains";
 import {
   ENVIRONMENT,
@@ -86,6 +87,7 @@ export const config = createConfig({
           storyMainnet,
           basecampTestnet,
           morph,
+          monadTestnet,
         ]
       : [
           base,
@@ -98,6 +100,7 @@ export const config = createConfig({
           storyAeneidTestnet,
           basecampTestnet,
           morph,
+          monadTestnet,
         ],
   transports: {
     [base.id]: http(),
@@ -112,6 +115,7 @@ export const config = createConfig({
     [polygonMumbai.id]: http(),
     [baseSepolia.id]: http(),
     [arbitrum.id]: http(),
+    [monadTestnet.id]: http(),
   },
 });
 

@@ -8,11 +8,11 @@
         "version": "1",
         "name": "Poster.fun",
         "iconUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
-        "homeUrl": "https://app.poster.fun?actionType=framev2",
+        "homeUrl": "https://dev-poster.vercel.app?actionType=framev2",
         "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
         "buttonTitle": "Launch Poster",
         "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
         "splashBackgroundColor": "#eeccff",
-        "webhookUrl": "https://app.poster.fun/api/webhook"
+        "webhookUrl": "https://dev-poster.vercel.app/api/webhook"
     }
 }

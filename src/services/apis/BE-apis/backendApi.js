@@ -28,6 +28,7 @@ const limit = 10;
 // evm auth apis start
 export const evmAuth = async ({ walletAddress, signature }) => {
   const jwtToken = getFromLocalStorage(LOCAL_STORAGE.privy);
+  console.log({ jwtToken });
 
   const result = await axios.post(
     `${API}/auth/evm`,

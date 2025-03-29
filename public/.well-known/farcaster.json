@@ -1,0 +1,18 @@
+{
+    "accountAssociation": {
+        "header": "eyJmaWQiOjIwMTExLCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4ZDQxNGQ5NEQ0YTI5OTA1NmQ2MEVhYTA1YTFEMjc5NjQyMjI1QjgzYiJ9",
+        "payload": "eyJkb21haW4iOiJhcHAucG9zdGVyLmZ1biJ9",
+        "signature": "MHg5YjljYzJmZjY4NjRmMjU5ZDQyODczMTcyZDFmODA3MTYyOWY2NWQwZTRhMTVhYTU1ZjJmOGU0NDVkMTc1Njk5NTAxNGZiNmI1ZmRiZWQxNmViNmQyYzEwMjc5NWRmYmMyMmI3ZDhjYjVjYTczMmE5ZmMzYTlhZjg4YmFhNGQ4ZjFi"
+    },
+    "frame": {
+        "version": "1",
+        "name": "Poster.fun",
+        "iconUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "homeUrl": "https://dev-poster.vercel.app?actionType=framev2",
+        "imageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "buttonTitle": "Launch Poster",
+        "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
+        "splashBackgroundColor": "#eeccff",
+        "webhookUrl": "https://dev-poster.vercel.app/api/webhook"
+    }
+}

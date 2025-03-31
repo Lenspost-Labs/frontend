@@ -319,15 +319,13 @@ function FarcasterFrameProvider({ children }) {
       );
       saveToLocalStorage(LOCAL_STORAGE.userAddress, connectedAddress[0]);
       saveToLocalStorage(LOCAL_STORAGE.fid, context?.user?.fid);
+      saveToLocalStorage(LOCAL_STORAGE.username, context?.user?.username);
+      saveToLocalStorage(LOCAL_STORAGE.userProfileImage, context?.user?.pfpUrl);
 
-      // Hide splash screen after UI renders.
+      // Hide splash screen and initialize frame after UI renders
       setTimeout(() => {
         FrameSDK.actions.ready();
-
-        // add frame
         FrameSDK.actions?.addFrame();
-
-        // FrameSDK?.actions?.signIn({ nouns: "sdfkjhesuic" });
       }, 500);
     };
     init();

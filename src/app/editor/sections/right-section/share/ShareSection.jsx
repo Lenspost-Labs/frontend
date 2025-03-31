@@ -193,7 +193,7 @@ const ShareSection = () => {
         </Button> */}
         {/* Share - Icons - 18Jun2023 */}
         {isMobile &&
-          (!evmAuth && actionType !== "composer" ? (
+          (!evmAuth && actionType !== "composer" && actionType !== "framev2" ? (
             <EVMWallets
               title={"Connect Wallet"}
               className="mx-2"

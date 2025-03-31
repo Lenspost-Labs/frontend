@@ -2000,7 +2000,9 @@ const FarcasterNormalPost = () => {
         </div>
       )} */}
       <div className="flex flex-col bg-white shadow-2xl rounded-lg rounded-r-none">
-        {!getEVMAuth && actionType !== "composer" ? (
+        {!getEVMAuth &&
+        actionType !== "composer" &&
+        actionType !== "framev2" ? (
           <EVMWallets title={"Login with EVM"} login={login} />
         ) : !isFarcasterAuth && (!isMobile || actionType !== "composer") ? (
           <FarcasterAuth />

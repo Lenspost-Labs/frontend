@@ -13,6 +13,6 @@
         "buttonTitle": "Launch Poster",
         "splashImageUrl": "https://lenspost-r2.b-cdn.net/web-assets/poster_logo_trans_greenBG.png",
         "splashBackgroundColor": "#eeccff",
-        "webhookUrl": "https://app.poster.fun/api/webhook"
+        "webhookUrl": "https://dev-poster.vercel.app/api/webhook"
     }
 }

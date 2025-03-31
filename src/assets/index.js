@@ -8,6 +8,7 @@ import EVMLogo from "./logos/evmLogo.png";
 import HamLogo from "./logos/hamLogo.png";
 import X_Logo from "./logos/X_logo.png";
 import StoryIPLogo from "./logos/storyIPLogo.jpg";
+import monadTestnetLogo from "./logos/monadTestnetLogo.png";
 
 const arbitrumLogo = "https://icons.llamao.fi/icons/chains/rsz_arbitrum.jpg";
 const degenLogo = "https://basescan.org/token/images/degentips_32.png";
@@ -33,4 +34,5 @@ export {
   StoryIPLogo,
   MorphLogo,
   campNetworkTestnetV2Logo,
+  monadTestnetLogo,
 };

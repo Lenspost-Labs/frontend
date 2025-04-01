@@ -33,6 +33,7 @@ import { mintToXchain } from "../../../../../../../services/apis/BE-apis";
 import ZoraDialog from "./ZoraDialog";
 import { base, baseSepolia } from "viem/chains";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
+import { connectFCWallet } from "../../../../../../../lib/FCWallet";
 
 const ERC1155Edition = () => {
   const {
@@ -59,7 +60,7 @@ const ERC1155Edition = () => {
   const walletClient = useWalletClient();
   const { login } = usePrivyAuth();
 
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { writeContract } = useWriteContract();
   const { isAuthenticated } = useAppAuth();
   const [recipientsEns, setRecipientsEns] = useState([]);
@@ -1059,6 +1060,18 @@ const ERC1155Edition = () => {
             {" "}
             Switch to Base network{" "}
           </Button>
+        ) : actionType === "framev2" && !isConnected ? (
+          // connect FC wallet
+          <div className="my-2 outline-none">
+            <Button
+              className="w-full outline-none"
+              onClick={connectFCWallet}
+              // color="yellow"
+            >
+              {/* Share */}
+              Connect wallet
+            </Button>
+          </div>
         ) : (
           <Button
             className="bg-[#e1f16b] text-black"

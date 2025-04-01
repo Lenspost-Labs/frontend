@@ -66,8 +66,7 @@ import FiXCircle from "@meronex/icons/fi/FiXCircle";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
 import WatermarkRemover from "../../components/WatermarkRemover";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
-import { connect } from "wagmi/actions";
-import farcasterFrame from "@farcaster/frame-wagmi-connector";
+import { connectFCWallet } from "../../../../../../../lib/FCWallet";
 
 const FarcasterNormalPost = () => {
   const { address, isConnected } = useAccount();
@@ -1030,11 +1029,6 @@ const FarcasterNormalPost = () => {
       });
     }
   }, []);
-
-  // connect FC wallet
-  const connectFCWallet = () => {
-    connect(config, { connector: farcasterFrame() });
-  };
 
   // Don't remove it
   console.log({ topUp_balance: walletData?.balance });

@@ -57,12 +57,17 @@ import {
 import WithdrawFunds from "./WithdrawFunds";
 import { zoraNftCreatorV1Config } from "@zoralabs/zora-721-contracts";
 import { http } from "viem";
-import { wagmiAdapter } from "../../../../../../../providers/EVM/EVMWalletProvider";
+import {
+  config,
+  wagmiAdapter,
+} from "../../../../../../../providers/EVM/EVMWalletProvider";
 import BsPlus from "@meronex/icons/bs/BsPlus";
 import FiXCircle from "@meronex/icons/fi/FiXCircle";
 import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/enabledChain";
 import WatermarkRemover from "../../components/WatermarkRemover";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
+import { connect } from "wagmi/actions";
+import farcasterFrame from "@farcaster/frame-wagmi-connector";
 
 const FarcasterNormalPost = () => {
   const { address, isConnected } = useAccount();
@@ -1025,6 +1030,11 @@ const FarcasterNormalPost = () => {
       });
     }
   }, []);
+
+  // connect FC wallet
+  const connectFCWallet = () => {
+    connect(config, { connector: farcasterFrame() });
+  };
 
   // Don't remove it
   console.log({ topUp_balance: walletData?.balance });
@@ -2028,6 +2038,18 @@ const FarcasterNormalPost = () => {
               {isLoadingSwitchNetwork ? "Switching" : "Switch"} to
               {chain?.id != chainId ? " base" : "a suported"} Network{" "}
               {isLoadingSwitchNetwork && <Spinner />}
+            </Button>
+          </div>
+        ) : actionType === "framev2" && !isConnected ? (
+          // connect FC wallet
+          <div className="my-2 outline-none">
+            <Button
+              className="w-full outline-none"
+              onClick={connectFCWallet}
+              // color="yellow"
+            >
+              {/* Share */}
+              Connect wallet
             </Button>
           </div>
         ) : (

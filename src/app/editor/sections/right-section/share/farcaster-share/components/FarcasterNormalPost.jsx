@@ -1040,9 +1040,6 @@ const FarcasterNormalPost = () => {
   console.log({ topUp_balance: walletData?.balance });
   console.log(chain?.id, chain?.name);
 
-  // remove it later
-  console.log({ address, isConnected });
-
   return (
     <>
       <ZoraDialog

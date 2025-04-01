@@ -65,7 +65,7 @@ import WatermarkRemover from "../../components/WatermarkRemover";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
 const FarcasterNormalPost = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { chain } = useAccount();
   const { userLOA, userAddress } = useLocalStorage();
   const getEVMAuth = getFromLocalStorage(LOCAL_STORAGE.evmAuth);
@@ -1029,6 +1029,9 @@ const FarcasterNormalPost = () => {
   // Don't remove it
   console.log({ topUp_balance: walletData?.balance });
   console.log(chain?.id, chain?.name);
+
+  // remove it later
+  console.log({ address, isConnected });
 
   return (
     <>

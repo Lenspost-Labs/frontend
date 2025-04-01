@@ -308,7 +308,7 @@ function FarcasterFrameProvider({ children }) {
         connect(config, { connector: farcasterFrame() });
       }
 
-      // acount address
+      // wallet connect and acount address
       const connectedAddress = await FrameSDK.wallet.ethProvider.request({
         method: "eth_requestAccounts",
       });

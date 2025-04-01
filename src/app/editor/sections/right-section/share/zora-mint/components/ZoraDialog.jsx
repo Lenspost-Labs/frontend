@@ -6,16 +6,18 @@ import {
   DialogBody,
   DialogFooter,
   Typography,
-  IconButton,
   Spinner,
-  Checkbox,
 } from "@material-tailwind/react";
 import { useReset } from "../../../../../../../hooks/app";
-import { useAccount } from "wagmi";
 import BiCopy from "@meronex/icons/bi/BiCopy";
-import { toast } from "react-toastify";
-import { zoraURLErc721 } from "../utils";
-import { FRAME_URL, MINT_URL, X_INTENT_URL } from "../../../../../../../data";
+import {
+  FRAME_URL,
+  MINT_URL,
+  WARPCAST_EMBED_INTENT_URL,
+  X_INTENT_URL,
+} from "../../../../../../../data";
+import { useContext } from "react";
+import { Context } from "../../../../../../../providers/context";
 
 const ZoraDialog = ({
   title,
@@ -44,6 +46,7 @@ const ZoraDialog = ({
   const [isCopy, setIsCopy] = useState({
     id: null,
   });
+  const { actionType } = useContext(Context);
 
   const handleOpen = () => setOpen(!open);
 
@@ -153,6 +156,7 @@ const ZoraDialog = ({
                       )}
                       {slug && (
                         <>
+                          {/* mint URL */}
                           <span className="flex gap-1 items-center">
                             Mint your
                             <a
@@ -178,6 +182,8 @@ const ZoraDialog = ({
                               <span className="text-green-500">Copied</span>
                             )}
                           </span>
+
+                          {/* Share on X */}
                           <span className="flex gap-1 items-center">
                             Share your NFT on
                             <a
@@ -213,6 +219,43 @@ const ZoraDialog = ({
                               <span className="text-green-500">Copied</span>
                             )}
                           </span>
+
+                          {/* Share on warpcast */}
+                          {actionType === "framev2" && (
+                            <span className="flex gap-1 items-center">
+                              Share your NFT on
+                              <a
+                                href={
+                                  WARPCAST_EMBED_INTENT_URL +
+                                  MINT_URL +
+                                  "/mint/" +
+                                  slug
+                                }
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-blue-500"
+                              >
+                                Warpcast
+                              </a>
+                              <BiCopy
+                                onClick={() => {
+                                  navigator.clipboard.writeText(
+                                    WARPCAST_EMBED_INTENT_URL +
+                                      MINT_URL +
+                                      "/mint/" +
+                                      slug
+                                  );
+                                  setIsCopy({
+                                    id: 3,
+                                  });
+                                }}
+                                className="cursor-pointer"
+                              />
+                              {isCopy?.id === 3 && (
+                                <span className="text-green-500">Copied</span>
+                              )}
+                            </span>
+                          )}
                         </>
                       )}
                     </>

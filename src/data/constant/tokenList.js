@@ -195,4 +195,14 @@ export const TOKEN_LIST = {
       logoURI: "https://icons.llamao.fi/icons/chains/rsz_ethereum.jpg",
     },
   ],
+  "Monad Testnet": [
+    {
+      id: 10143,
+      address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      symbol: "MON",
+      name: "Monad",
+      decimals: 18,
+      logoURI: "https://icons.llamao.fi/icons/chains/rsz_monad.jpg",
+    },
+  ],
 };

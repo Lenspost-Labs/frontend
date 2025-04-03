@@ -19,7 +19,12 @@ import { OnboardingSteps, OnboardingStepsWithShare } from "./common";
 import { SpeedDialX } from "./common/elements/SpeedDial";
 import { Tooltip } from "polotno/canvas/tooltip";
 import { useSolanaWallet } from "../../hooks/solana";
-import { APP_ETH_ADDRESS, LOCAL_STORAGE } from "../../data";
+import {
+  APP_ETH_ADDRESS,
+  LOCAL_STORAGE,
+  STORY_BASE_URL,
+  STORY_KNOWN_APP_IDS,
+} from "../../data";
 import { Button } from "@material-tailwind/react";
 import { useAppAuth, useLocalStorage } from "../../hooks/app";
 import { getFarUserDetails, redeemCode } from "../../services/apis/BE-apis";
@@ -682,40 +687,6 @@ const Editor = () => {
     };
   }, []);
 
-  // watermark
-  // useEffect(() => {
-  //   console.log("isPageActive", store?.pages.length);
-  //   if (isPageActive.current && !isWatermark.current) {
-  // waterMark(store);
-  //     isWatermark.current = true;
-  //   } else {
-  //     isWatermark.current = false;
-  //   }
-  // }, [isPageActive.current]);
-
-  // const [initialHeight] = useState(window?.innerHeight);
-
-  // useEffect(() => {
-  //   if (actionType === "composer") {
-  //     const handleResize = () => {
-  //       document.body.style.height = `${initialHeight}px`;
-  //     };
-
-  //     window.addEventListener("resize", handleResize);
-  //     return () => window.removeEventListener("resize", handleResize);
-  //   }
-  // }, [initialHeight]);
-
-  // useEffect(() => {
-  //   console.log(`openedSidepanel in Editor.jsx`, store?.openedSidePanel);
-
-  //   if (store?.openedSidePanel === "effects" && !isOpenBottomBar) {
-  //     console.log(`openedSidepanel in IF`, store?.openedSidePanel);
-  //     setCurOpenedPanel("mobPanelEffects");
-  //     setOpenBottomBar(true);
-  //   }
-  // }, [store?.openedSidePanel, isOpenBottomBar]);
-
   // invite code mutuation
   const { mutateAsync: apiRedeemCode } = useMutation({
     mutationKey: "inviteCode",
@@ -739,6 +710,51 @@ const Editor = () => {
       setShowSubscriptionModal(false);
     }
   }, [isOnboardingOpen]);
+
+  // IP portal start
+  useEffect(() => {
+    // Utility functions
+    const parseUrlParams = () => {
+      const params = new URLSearchParams(window.location.search);
+      return Object.fromEntries(params.entries());
+    };
+
+    console.log("Story IP portal", parseUrlParams());
+
+    // if no sp_ipid params are found, end the function
+    if (!parseUrlParams()?.sp_ipid) {
+      console.log("No sp_ipid found in the URL");
+      return;
+    }
+
+    // TODO: check if user is logged in, if not, show a message to log in
+
+    const splitAndFilter = (str) => str?.split(",").filter(Boolean) || [];
+
+    const validateParams = (params) => {
+      if (!params.sp_ipid) {
+        throw new Error("Missing required parameter: sp_ipid");
+      }
+
+      if (params.sp_source) {
+        const sources = splitAndFilter(params.sp_source);
+        if (
+          !sources.every(
+            (s) => /^[a-zA-Z0-9]+$/.test(s) && STORY_KNOWN_APP_IDS.has(s)
+          )
+        ) {
+          throw new Error("Invalid or unknown sp_source value");
+        }
+      }
+    };
+
+    if (validateParams()) {
+      // TODO: call the backend API and get the IP assets data. (Endpoint: /story/ip-assets-metadata?sp_ipid=&sp_source=&chainId=)
+      // TODO: set the ipIds of the assets in the storyIPDataRef array from context
+      // TODO: add the image on the canvas. if 2 images then add on 2 pages
+    }
+  }, []);
+  // IP portal end
 
   return (
     <>

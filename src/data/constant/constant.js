@@ -44,6 +44,20 @@ export const WARPCAST_EMBED_INTENT_URL =
 
 export const LP721SupportedChains = [2818, 325000];
 
+export const STORY_KNOWN_APP_IDS = new Set([
+  "Portal",
+  "IPViewer",
+  "Magma",
+  "Hub",
+]);
+export const STORY_SUPPORTED_PARAMS = [
+  { name: "sp_ipid", required: true },
+  { name: "sp_source", required: false },
+  { name: "type", required: false },
+  { name: "context", required: false },
+];
+export const STORY_BASE_URL = "https://api.storyapis.com/api/v3/assets";
+
 export const gasFeeForDeployment = {
   1: 0.00009, // eth mainnet
   5: 0.00009, // eth Goerli

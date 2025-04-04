@@ -1183,38 +1183,42 @@ const FarcasterNormalPost = () => {
 
       <div className={`${!farcasterStates.frameData?.isFrame && "hidden"} `}>
         <div className="mb-4">
-          <div className="flex justify-between">
-            <h2 className="text-lg mb-2"> Gate with </h2>
-            <Switch
-              checked={farcasterStates.frameData?.isGateWith}
-              onChange={() =>
-                setFarcasterStates({
-                  ...farcasterStates,
-                  frameData: {
-                    ...farcasterStates.frameData,
-                    isGateWith: !farcasterStates.frameData?.isGateWith,
-                  },
-                })
-              }
-              className={`${
-                farcasterStates.frameData?.isGateWith
-                  ? "bg-[#e1f16b]"
-                  : "bg-gray-200"
-              } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-            >
-              <span
-                className={`${
-                  farcasterStates.frameData?.isGateWith
-                    ? "translate-x-6"
-                    : "translate-x-1"
-                } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-              />{" "}
-            </Switch>
-          </div>
-          <div className="w-4/5 opacity-75">
-            {" "}
-            Control content access based on engagement.{" "}
-          </div>
+          {actionType !== "composer" && (
+            <>
+              <div className="flex justify-between">
+                <h2 className="text-lg mb-2"> Gate with </h2>
+                <Switch
+                  checked={farcasterStates.frameData?.isGateWith}
+                  onChange={() =>
+                    setFarcasterStates({
+                      ...farcasterStates,
+                      frameData: {
+                        ...farcasterStates.frameData,
+                        isGateWith: !farcasterStates.frameData?.isGateWith,
+                      },
+                    })
+                  }
+                  className={`${
+                    farcasterStates.frameData?.isGateWith
+                      ? "bg-[#e1f16b]"
+                      : "bg-gray-200"
+                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                >
+                  <span
+                    className={`${
+                      farcasterStates.frameData?.isGateWith
+                        ? "translate-x-6"
+                        : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  />{" "}
+                </Switch>
+              </div>
+              <div className="w-4/5 opacity-75">
+                {" "}
+                Control content access based on engagement.{" "}
+              </div>
+            </>
+          )}
 
           <div
             className={`${!farcasterStates.frameData?.isGateWith && "hidden"}`}
@@ -1408,39 +1412,43 @@ const FarcasterNormalPost = () => {
         {/* {!isMobile && ( */}
         <>
           <div className="mb-4">
-            <div className="flex justify-between">
-              <h2 className="text-lg mb-2"> External Link </h2>
-              <Switch
-                checked={farcasterStates.frameData?.isExternalLink}
-                onChange={() =>
-                  setFarcasterStates({
-                    ...farcasterStates,
-                    frameData: {
-                      ...farcasterStates.frameData,
-                      isExternalLink:
-                        !farcasterStates.frameData?.isExternalLink,
-                    },
-                  })
-                }
-                className={`${
-                  farcasterStates.frameData?.isExternalLink
-                    ? "bg-[#e1f16b]"
-                    : "bg-gray-200"
-                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-              >
-                <span
-                  className={`${
-                    farcasterStates.frameData?.isExternalLink
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                />{" "}
-              </Switch>
-            </div>
-            <div className="w-4/5 opacity-75">
-              {" "}
-              Let user know more about your frame.{" "}
-            </div>
+            {actionType !== "composer" && (
+              <>
+                <div className="flex justify-between">
+                  <h2 className="text-lg mb-2"> External Link </h2>
+                  <Switch
+                    checked={farcasterStates.frameData?.isExternalLink}
+                    onChange={() =>
+                      setFarcasterStates({
+                        ...farcasterStates,
+                        frameData: {
+                          ...farcasterStates.frameData,
+                          isExternalLink:
+                            !farcasterStates.frameData?.isExternalLink,
+                        },
+                      })
+                    }
+                    className={`${
+                      farcasterStates.frameData?.isExternalLink
+                        ? "bg-[#e1f16b]"
+                        : "bg-gray-200"
+                    } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                  >
+                    <span
+                      className={`${
+                        farcasterStates.frameData?.isExternalLink
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                    />{" "}
+                  </Switch>
+                </div>
+                <div className="w-4/5 opacity-75">
+                  {" "}
+                  Let user know more about your frame.{" "}
+                </div>
+              </>
+            )}
 
             <div
               className={`${

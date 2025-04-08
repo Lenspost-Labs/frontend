@@ -2008,7 +2008,10 @@ const FarcasterNormalPost = () => {
         {!getEVMAuth &&
         actionType !== "composer" &&
         actionType !== "framev2" ? (
-          <EVMWallets title={"Login with EVM"} login={login} />
+          <EVMWallets
+            title={actionType === "composer" ? "Connect Wallet" : "Login"}
+            login={login}
+          />
         ) : !isFarcasterAuth && (!isMobile || actionType !== "composer") ? (
           <FarcasterAuth />
         ) : farcasterStates?.frameData?.isFrame &&
@@ -2044,6 +2047,11 @@ const FarcasterNormalPost = () => {
               Connect wallet
             </Button>
           </div>
+        ) : actionType === "composer" && isCreatorSponsored && !isConnected ? (
+          <EVMWallets
+            title={actionType === "composer" ? "Connect Wallet" : "Login"}
+            login={login}
+          />
         ) : (
           <div className="my-2 outline-none">
             <Button

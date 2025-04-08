@@ -4,7 +4,7 @@ import { EVMLogo } from "../../../../../../assets";
 import usePrivyAuth from "../../../../../../hooks/privy-auth/usePrivyAuth";
 import { Context } from "../../../../../../providers/context";
 
-const EVMWallets = ({ className }) => {
+const EVMWallets = ({ className, title = "Login" }) => {
   const { login } = usePrivyAuth();
   const { actionType } = useContext(Context);
 
@@ -15,7 +15,7 @@ const EVMWallets = ({ className }) => {
       className={`flex items-center justify-center gap-3 outline-none my-2 ${className}`}
       onClick={() => login()}
     >
-      {actionType === "framev2" ? "Connect Wallet" : "Login"}
+      {title}
     </Button>
   );
 };

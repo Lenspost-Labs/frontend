@@ -1472,42 +1472,44 @@ const FarcasterNormalPost = () => {
 
           {/* Start  */}
           {/* Start Degen-L3 Mint */}
-          <div className="mb-4">
-            <div className="flex justify-between">
-              <h2 className="text-lg mb-2"> Custom currency Mint </h2>
-              <Switch
-                checked={farcasterStates.frameData?.isCustomCurrMint}
-                onChange={() =>
-                  setFarcasterStates({
-                    ...farcasterStates,
-                    frameData: {
-                      ...farcasterStates.frameData,
-                      isCustomCurrMint:
-                        !farcasterStates.frameData?.isCustomCurrMint,
-                      isCreatorSponsored: false,
-                    },
-                  })
-                }
-                className={`${
-                  farcasterStates.frameData?.isCustomCurrMint
-                    ? "bg-[#e1f16b]"
-                    : "bg-gray-200"
-                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-              >
-                <span
+          {actionType !== "composer" && (
+            <div className="mb-4">
+              <div className="flex justify-between">
+                <h2 className="text-lg mb-2"> Custom currency Mint </h2>
+                <Switch
+                  checked={farcasterStates.frameData?.isCustomCurrMint}
+                  onChange={() =>
+                    setFarcasterStates({
+                      ...farcasterStates,
+                      frameData: {
+                        ...farcasterStates.frameData,
+                        isCustomCurrMint:
+                          !farcasterStates.frameData?.isCustomCurrMint,
+                        isCreatorSponsored: false,
+                      },
+                    })
+                  }
                   className={`${
                     farcasterStates.frameData?.isCustomCurrMint
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                />{" "}
-              </Switch>
+                      ? "bg-[#e1f16b]"
+                      : "bg-gray-200"
+                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+                >
+                  <span
+                    className={`${
+                      farcasterStates.frameData?.isCustomCurrMint
+                        ? "translate-x-6"
+                        : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                  />{" "}
+                </Switch>
+              </div>
+              <div className="w-4/5 opacity-75">
+                {" "}
+                Mint NFTs with custom currencies like $DEGEN{" "}
+              </div>
             </div>
-            <div className="w-4/5 opacity-75">
-              {" "}
-              Mint NFTs with custom currencies like $DEGEN{" "}
-            </div>
-          </div>
+          )}
         </>
         {/* // )} */}
         <div
@@ -1815,45 +1817,44 @@ const FarcasterNormalPost = () => {
         {/* End Degen-L3 Mint */}
         {/* {!farcasterStates.frameData?.isCustomCurrMint && ( */}
         <>
-          {actionType !== "composer" && (
-            <div className="mb-4">
-              <div className="flex justify-between">
-                <h2 className="text-lg mb-2"> Sponsor Mints </h2>
-                <Switch
-                  checked={farcasterStates.frameData?.isCreatorSponsored}
-                  disabled={actionType === "composer"}
-                  onChange={() =>
-                    setFarcasterStates({
-                      ...farcasterStates,
-                      frameData: {
-                        ...farcasterStates.frameData,
-                        isCreatorSponsored:
-                          !farcasterStates.frameData?.isCreatorSponsored,
-                        isCustomCurrMint: false,
-                      },
-                    })
-                  }
+          <div className="mb-4">
+            <div className="flex justify-between">
+              <h2 className="text-lg mb-2"> Sponsor Mints </h2>
+              <Switch
+                checked={farcasterStates.frameData?.isCreatorSponsored}
+                disabled={actionType === "composer"}
+                onChange={() =>
+                  setFarcasterStates({
+                    ...farcasterStates,
+                    frameData: {
+                      ...farcasterStates.frameData,
+                      isCreatorSponsored:
+                        !farcasterStates.frameData?.isCreatorSponsored,
+                      isCustomCurrMint: false,
+                    },
+                  })
+                }
+                className={`${
+                  farcasterStates.frameData?.isCreatorSponsored
+                    ? "bg-[#e1f16b]"
+                    : "bg-gray-200"
+                } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
+              >
+                <span
                   className={`${
                     farcasterStates.frameData?.isCreatorSponsored
-                      ? "bg-[#e1f16b]"
-                      : "bg-gray-200"
-                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-                >
-                  <span
-                    className={`${
-                      farcasterStates.frameData?.isCreatorSponsored
-                        ? "translate-x-6"
-                        : "translate-x-1"
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                  />{" "}
-                </Switch>
-              </div>
-              <div className="w-4/5 opacity-75">
-                {" "}
-                Let your audience mint your frame for free.{" "}
-              </div>
+                      ? "translate-x-6"
+                      : "translate-x-1"
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                />{" "}
+              </Switch>
             </div>
-          )}
+            <div className="w-4/5 opacity-75">
+              {" "}
+              Let your audience mint your frame for free.{" "}
+            </div>
+          </div>
+
           {/* {actionType !== "composer" && ( */}
           <div
             className={`${

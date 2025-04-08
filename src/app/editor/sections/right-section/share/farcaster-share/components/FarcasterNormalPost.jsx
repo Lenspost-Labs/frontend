@@ -1023,7 +1023,7 @@ const FarcasterNormalPost = () => {
         ...farcasterStates,
         frameData: {
           ...farcasterStates.frameData,
-          isCreatorSponsored: true,
+          // isCreatorSponsored: true,
           isCustomCurrMint: false,
         },
       });
@@ -1872,44 +1872,36 @@ const FarcasterNormalPost = () => {
                   : "Please Topup with Base ETH to sponsor the gas."}{" "}
               </p>
 
-              {actionType !== "composer" ? (
-                <>
-                  <p className="text-end mt-4">
-                    <span>Topup account:</span>
-                    {isWalletLoading || isWalletRefetching ? (
-                      <span className="text-blue-500">
-                        {" "}
-                        Loading address...{" "}
-                      </span>
-                    ) : (
-                      <span
-                        className="text-blue-500 cursor-pointer"
-                        onClick={() => {
-                          navigator.clipboard.writeText(
-                            walletData?.publicAddress
-                          );
-                          toast.success("Copied topup account address");
-                        }}
-                      >
-                        {" "}
-                        {addressCrop(walletData?.publicAddress)}
-                      </span>
-                    )}
-                  </p>
+              <>
+                <p className="text-end mt-4">
+                  <span>Topup account:</span>
+                  {isWalletLoading || isWalletRefetching ? (
+                    <span className="text-blue-500"> Loading address... </span>
+                  ) : (
+                    <span
+                      className="text-blue-500 cursor-pointer"
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          walletData?.publicAddress
+                        );
+                        toast.success("Copied topup account address");
+                      }}
+                    >
+                      {" "}
+                      {addressCrop(walletData?.publicAddress)}
+                    </span>
+                  )}
+                </p>
 
-                  <p className="text-end">
-                    <span>Topup balance:</span>
-                    {isWalletLoading || isWalletRefetching ? (
-                      <span className="text-blue-500">
-                        {" "}
-                        Loading balance...{" "}
-                      </span>
-                    ) : (
-                      <span> {walletData?.balance} Base ETH</span>
-                    )}
-                  </p>
-                </>
-              ) : null}
+                <p className="text-end">
+                  <span>Topup balance:</span>
+                  {isWalletLoading || isWalletRefetching ? (
+                    <span className="text-blue-500"> Loading balance... </span>
+                  ) : (
+                    <span> {walletData?.balance} Base ETH</span>
+                  )}
+                </p>
+              </>
 
               <div className="flex flex-col w-full py-2">
                 <NumberInputBox

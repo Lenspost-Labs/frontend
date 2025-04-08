@@ -50,6 +50,7 @@ import {
   updateCanvas,
   apiGetOgImageForSlug,
   apiGetJSONDataForSlug,
+  apiGetIPAssetsMetadata,
 } from "../../services";
 import { Workspace } from "polotno/canvas/workspace";
 import {
@@ -565,6 +566,37 @@ const Editor = () => {
     });
   };
 
+  const addIpToCanvas = (imageUrl) => {
+    if (isMobile) {
+      setOpenBottomBar(false);
+      setCurOpenedPanel(null);
+    }
+
+    if (changeCanvasDimension) {
+      store.setSize(dimensions[0] || 800, dimensions[1] || 800);
+    }
+
+    const width = changeCanvasDimension
+      ? store.width
+      : (dimensions?.[0] || 1600) / 4;
+    const height = changeCanvasDimension
+      ? store.height
+      : (dimensions?.[1] || 1600) / 4;
+    const x = changeCanvasDimension ? 0 : store.width / 4;
+    const y = changeCanvasDimension ? 0 : store.height / 4;
+
+    store.activePage?.addElement({
+      type: "image",
+      src: imageUrl,
+      width,
+      height,
+      x,
+      y,
+    });
+
+    setIsOnboardingOpen(false);
+  };
+
   // useEffect(() => {
   //   fnLoadWatermark();
   // }, []);
@@ -727,7 +759,8 @@ const Editor = () => {
       return;
     }
 
-    // TODO: check if user is logged in, if not, show a message to log in
+    //check if user is logged in, if not, show a message to log in
+    if (!isAuthenticated) toast.error("Please login to continue");
 
     const splitAndFilter = (str) => str?.split(",").filter(Boolean) || [];
 
@@ -750,8 +783,22 @@ const Editor = () => {
 
     if (validateParams()) {
       // TODO: call the backend API and get the IP assets data. (Endpoint: /story/ip-assets-metadata?sp_ipid=&sp_source=&chainId=)
+      const { data: resData } = useQuery({
+        queryKey: ["ipAssetsMetadata", { sp_ipid, sp_source, chainId }],
+        queryFn: apiGetIPAssetsMetadata,
+        enabled: isAuthenticated,
+      });
+
+      console.log("res data", resData);
+
       // TODO: set the ipIds of the assets in the storyIPDataRef array from context
+      storyIPDataRef.current = resData?.data?.data?.ipIds;
+
       // TODO: add the image on the canvas. if 2 images then add on 2 pages
+
+      resData?.data?.data?.data.forEach((item, idx) => {
+        addIpToCanvas(item?.nftMetadata?.imageUrl);
+      });
     }
   }, []);
   // IP portal end

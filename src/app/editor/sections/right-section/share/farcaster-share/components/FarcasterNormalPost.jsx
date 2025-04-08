@@ -1822,7 +1822,7 @@ const FarcasterNormalPost = () => {
               <h2 className="text-lg mb-2"> Sponsor Mints </h2>
               <Switch
                 checked={farcasterStates.frameData?.isCreatorSponsored}
-                disabled={actionType === "composer"}
+                // disabled={actionType === "composer"}
                 onChange={() =>
                   setFarcasterStates({
                     ...farcasterStates,

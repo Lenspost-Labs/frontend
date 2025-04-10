@@ -134,6 +134,7 @@ const Editor = () => {
     setFarcasterStates,
     setPostName,
     storyIPDataRef,
+    chainId,
 
     // Mobile UI
     isMobile,
@@ -567,13 +568,19 @@ const Editor = () => {
   };
 
   const addIpToCanvas = (imageUrl) => {
+    const changeCanvasDimension = true;
+    const dimensions = null;
     if (isMobile) {
       setOpenBottomBar(false);
       setCurOpenedPanel(null);
     }
 
     if (changeCanvasDimension) {
-      store.setSize(dimensions[0] || 800, dimensions[1] || 800);
+      if (dimensions) {
+        store.setSize(dimensions[0], dimensions[1]);
+      } else {
+        store.setSize(800, 800);
+      }
     }
 
     const width = changeCanvasDimension
@@ -744,15 +751,20 @@ const Editor = () => {
   }, [isOnboardingOpen]);
 
   // IP portal start
+  const parseUrlParams = () => {
+    const params = new URLSearchParams(window.location.search);
+    return Object.fromEntries(params.entries());
+  };
+
+  const { sp_ipid, sp_source } = parseUrlParams();
+
+  const { data: ipAssetsData } = useQuery({
+    queryKey: ["ipAssetsMetadata", { sp_ipid, sp_source, chainId: 1514 }],
+    queryFn: apiGetIPAssetsMetadata,
+    enabled: isAuthenticated && !!sp_ipid,
+  });
+
   useEffect(() => {
-    // Utility functions
-    const parseUrlParams = () => {
-      const params = new URLSearchParams(window.location.search);
-      return Object.fromEntries(params.entries());
-    };
-
-    console.log("Story IP portal", parseUrlParams());
-
     // if no sp_ipid params are found, end the function
     if (!parseUrlParams()?.sp_ipid) {
       console.log("No sp_ipid found in the URL");
@@ -766,7 +778,8 @@ const Editor = () => {
 
     const validateParams = (params) => {
       if (!params.sp_ipid) {
-        throw new Error("Missing required parameter: sp_ipid");
+        console.error("Missing required parameter: sp_ipid");
+        return false;
       }
 
       if (params.sp_source) {
@@ -776,31 +789,21 @@ const Editor = () => {
             (s) => /^[a-zA-Z0-9]+$/.test(s) && STORY_KNOWN_APP_IDS.has(s)
           )
         ) {
-          throw new Error("Invalid or unknown sp_source value");
+          console.error("Invalid or unknown sp_source value");
+          return false;
         }
       }
+      return true;
     };
 
-    if (validateParams()) {
-      // TODO: call the backend API and get the IP assets data. (Endpoint: /story/ip-assets-metadata?sp_ipid=&sp_source=&chainId=)
-      const { data: resData } = useQuery({
-        queryKey: ["ipAssetsMetadata", { sp_ipid, sp_source, chainId }],
-        queryFn: apiGetIPAssetsMetadata,
-        enabled: isAuthenticated,
-      });
+    if (validateParams(parseUrlParams())) {
+      storyIPDataRef.current = ipAssetsData?.data?.data?.ipIds;
 
-      console.log("res data", resData);
-
-      // TODO: set the ipIds of the assets in the storyIPDataRef array from context
-      storyIPDataRef.current = resData?.data?.data?.ipIds;
-
-      // TODO: add the image on the canvas. if 2 images then add on 2 pages
-
-      resData?.data?.data?.data.forEach((item, idx) => {
-        addIpToCanvas(item?.nftMetadata?.imageUrl);
-      });
+      ipAssetsData?.data?.data?.data.forEach((item, idx) =>
+        addIpToCanvas(item?.data?.nftMetadata?.imageUrl)
+      );
     }
-  }, []);
+  }, [ipAssetsData, isAuthenticated, chainId]);
   // IP portal end
 
   return (

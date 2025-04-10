@@ -799,9 +799,13 @@ const Editor = () => {
     if (validateParams(parseUrlParams())) {
       storyIPDataRef.current = ipAssetsData?.data?.data?.ipIds;
 
-      ipAssetsData?.data?.data?.data.forEach((item, idx) =>
-        addIpToCanvas(item?.data?.nftMetadata?.imageUrl)
-      );
+      ipAssetsData?.data?.data?.data.forEach((item, idx) => {
+        if (item?.data?.nftMetadata?.imageUrl) {
+          addIpToCanvas(item?.data?.nftMetadata?.imageUrl);
+        } else {
+          toast.error(item?.error);
+        }
+      });
     }
   }, [ipAssetsData, isAuthenticated, chainId]);
   // IP portal end

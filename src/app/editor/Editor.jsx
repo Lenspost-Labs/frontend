@@ -75,6 +75,8 @@ import useMobilePanelFunctions from "./common/mobileHooks/useMobilePanelFunction
 import SignMesasgeModal from "./common/modals/SignMesasgeModal";
 import SubscriptionModal from "./common/modals/SubscriptionModal";
 
+import usePrivyAuth from "../../hooks/privy-auth/usePrivyAuth";
+
 // enable animations
 unstable_setAnimationsEnabled(true);
 
@@ -758,10 +760,12 @@ const Editor = () => {
 
   const { sp_ipid, sp_source } = parseUrlParams();
 
+  const { authenticated } = usePrivyAuth();
+
   const { data: ipAssetsData } = useQuery({
     queryKey: ["ipAssetsMetadata", { sp_ipid, sp_source, chainId: 1514 }],
     queryFn: apiGetIPAssetsMetadata,
-    enabled: isAuthenticated && !!sp_ipid,
+    enabled: authenticated && !!sp_ipid,
   });
 
   useEffect(() => {
@@ -807,7 +811,7 @@ const Editor = () => {
         }
       });
     }
-  }, [ipAssetsData, isAuthenticated, chainId]);
+  }, [ipAssetsData, authenticated, chainId]);
   // IP portal end
 
   return (

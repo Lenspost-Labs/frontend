@@ -104,6 +104,7 @@ const Derivative = () => {
   useEffect(() => {
     if (uploadData?.message) {
       let jsonData = {
+        canvasId: contextCanvasIdRef,
         title: collectionName,
         description: postDescription,
         mintFeeRecipient: address,

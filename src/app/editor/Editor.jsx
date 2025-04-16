@@ -19,7 +19,12 @@ import { OnboardingSteps, OnboardingStepsWithShare } from "./common";
 import { SpeedDialX } from "./common/elements/SpeedDial";
 import { Tooltip } from "polotno/canvas/tooltip";
 import { useSolanaWallet } from "../../hooks/solana";
-import { APP_ETH_ADDRESS, LOCAL_STORAGE } from "../../data";
+import {
+  APP_ETH_ADDRESS,
+  LOCAL_STORAGE,
+  STORY_BASE_URL,
+  STORY_KNOWN_APP_IDS,
+} from "../../data";
 import { Button } from "@material-tailwind/react";
 import { useAppAuth, useLocalStorage } from "../../hooks/app";
 import { getFarUserDetails, redeemCode } from "../../services/apis/BE-apis";
@@ -45,6 +50,7 @@ import {
   updateCanvas,
   apiGetOgImageForSlug,
   apiGetJSONDataForSlug,
+  apiGetIPAssetsMetadata,
 } from "../../services";
 import { Workspace } from "polotno/canvas/workspace";
 import {
@@ -68,6 +74,8 @@ import HiOutlineSparkles from "@meronex/icons/hi/HiOutlineSparkles";
 import useMobilePanelFunctions from "./common/mobileHooks/useMobilePanelFunctions";
 import SignMesasgeModal from "./common/modals/SignMesasgeModal";
 import SubscriptionModal from "./common/modals/SubscriptionModal";
+
+import usePrivyAuth from "../../hooks/privy-auth/usePrivyAuth";
 
 // enable animations
 unstable_setAnimationsEnabled(true);
@@ -128,6 +136,7 @@ const Editor = () => {
     setFarcasterStates,
     setPostName,
     storyIPDataRef,
+    chainId,
 
     // Mobile UI
     isMobile,
@@ -560,6 +569,43 @@ const Editor = () => {
     });
   };
 
+  const addIpToCanvas = (imageUrl) => {
+    const changeCanvasDimension = true;
+    const dimensions = null;
+    if (isMobile) {
+      setOpenBottomBar(false);
+      setCurOpenedPanel(null);
+    }
+
+    if (changeCanvasDimension) {
+      if (dimensions) {
+        store.setSize(dimensions[0], dimensions[1]);
+      } else {
+        store.setSize(800, 800);
+      }
+    }
+
+    const width = changeCanvasDimension
+      ? store.width
+      : (dimensions?.[0] || 1600) / 4;
+    const height = changeCanvasDimension
+      ? store.height
+      : (dimensions?.[1] || 1600) / 4;
+    const x = changeCanvasDimension ? 0 : store.width / 4;
+    const y = changeCanvasDimension ? 0 : store.height / 4;
+
+    store.activePage?.addElement({
+      type: "image",
+      src: imageUrl,
+      width,
+      height,
+      x,
+      y,
+    });
+
+    setIsOnboardingOpen(false);
+  };
+
   // useEffect(() => {
   //   fnLoadWatermark();
   // }, []);
@@ -682,40 +728,6 @@ const Editor = () => {
     };
   }, []);
 
-  // watermark
-  // useEffect(() => {
-  //   console.log("isPageActive", store?.pages.length);
-  //   if (isPageActive.current && !isWatermark.current) {
-  // waterMark(store);
-  //     isWatermark.current = true;
-  //   } else {
-  //     isWatermark.current = false;
-  //   }
-  // }, [isPageActive.current]);
-
-  // const [initialHeight] = useState(window?.innerHeight);
-
-  // useEffect(() => {
-  //   if (actionType === "composer") {
-  //     const handleResize = () => {
-  //       document.body.style.height = `${initialHeight}px`;
-  //     };
-
-  //     window.addEventListener("resize", handleResize);
-  //     return () => window.removeEventListener("resize", handleResize);
-  //   }
-  // }, [initialHeight]);
-
-  // useEffect(() => {
-  //   console.log(`openedSidepanel in Editor.jsx`, store?.openedSidePanel);
-
-  //   if (store?.openedSidePanel === "effects" && !isOpenBottomBar) {
-  //     console.log(`openedSidepanel in IF`, store?.openedSidePanel);
-  //     setCurOpenedPanel("mobPanelEffects");
-  //     setOpenBottomBar(true);
-  //   }
-  // }, [store?.openedSidePanel, isOpenBottomBar]);
-
   // invite code mutuation
   const { mutateAsync: apiRedeemCode } = useMutation({
     mutationKey: "inviteCode",
@@ -739,6 +751,68 @@ const Editor = () => {
       setShowSubscriptionModal(false);
     }
   }, [isOnboardingOpen]);
+
+  // IP portal start
+  const parseUrlParams = () => {
+    const params = new URLSearchParams(window.location.search);
+    return Object.fromEntries(params.entries());
+  };
+
+  const { sp_ipid, sp_source } = parseUrlParams();
+
+  const { authenticated } = usePrivyAuth();
+
+  const { data: ipAssetsData } = useQuery({
+    queryKey: ["ipAssetsMetadata", { sp_ipid, sp_source, chainId: 1514 }],
+    queryFn: apiGetIPAssetsMetadata,
+    enabled: authenticated && !!sp_ipid,
+  });
+
+  useEffect(() => {
+    // if no sp_ipid params are found, end the function
+    if (!parseUrlParams()?.sp_ipid) {
+      console.log("No sp_ipid found in the URL");
+      return;
+    }
+
+    //check if user is logged in, if not, show a message to log in
+    if (!isAuthenticated) toast.error("Please login to continue");
+
+    const splitAndFilter = (str) => str?.split(",").filter(Boolean) || [];
+
+    const validateParams = (params) => {
+      if (!params.sp_ipid) {
+        console.error("Missing required parameter: sp_ipid");
+        return false;
+      }
+
+      if (params.sp_source) {
+        const sources = splitAndFilter(params.sp_source);
+        if (
+          !sources.every(
+            (s) => /^[a-zA-Z0-9]+$/.test(s) && STORY_KNOWN_APP_IDS.has(s)
+          )
+        ) {
+          console.error("Invalid or unknown sp_source value");
+          return false;
+        }
+      }
+      return true;
+    };
+
+    if (validateParams(parseUrlParams())) {
+      storyIPDataRef.current = ipAssetsData?.data?.data?.ipIds;
+
+      ipAssetsData?.data?.data?.data.forEach((item, idx) => {
+        if (item?.data?.nftMetadata?.imageUrl) {
+          addIpToCanvas(item?.data?.nftMetadata?.imageUrl);
+        } else {
+          toast.error(item?.error);
+        }
+      });
+    }
+  }, [ipAssetsData, authenticated, chainId]);
+  // IP portal end
 
   return (
     <>

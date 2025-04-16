@@ -783,3 +783,15 @@ export const apiGetPolotnoTexts = async () => {
     data: result?.data,
   };
 };
+
+export const apiGetIPAssetsMetadata = async ({ queryKey }) => {
+  const [_key, data] = queryKey;
+
+  const result = await api.get(
+    `${API}/story/ip-assets-metadata?sp_ipid=${data.sp_ipid}&sp_source=${data.sp_source}&chainId=${data.chainId}`
+  );
+
+  return {
+    data: result?.data,
+  };
+};

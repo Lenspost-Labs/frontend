@@ -224,6 +224,7 @@ const Minting = () => {
 
   const registerIP = async (jsonData) => {
     try {
+      jsonData.canvasId = contextCanvasIdRef;
       const res = await registerAsIP(jsonData);
       console.log("registerIp", res);
       setIPResult(res);

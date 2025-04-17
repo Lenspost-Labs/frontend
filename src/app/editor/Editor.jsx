@@ -753,6 +753,59 @@ const Editor = () => {
   }, [isOnboardingOpen]);
 
   // IP portal start
+  useEffect(() => {
+    if (isAuthenticated && parseUrlParams()?.sp_ipid) {
+      const createInitialCanvas = async () => {
+        try {
+          const json = store.toJSON();
+          const reqbody = {
+            data: json,
+            referredFrom: recipientDataCombiner().recipients,
+            assetsRecipientElementData: recipientDataFilter().recipientsData,
+            preview: canvasBase64Ref.current,
+            assetIds:
+              [
+                ...new Set(
+                  assetsIdListRef.current
+                    .map((item) => item?.assetId)
+                    .filter((id) => id !== undefined)
+                ),
+              ] || [],
+            parentIpIds:
+              [
+                ...new Set(
+                  storyIPDataRef.current
+                    .map((item) => item?.ipID)
+                    .filter((id) => id !== undefined)
+                ),
+              ] || [],
+            licenseTermsIds:
+              [
+                ...new Set(
+                  storyIPDataRef.current
+                    .map((item) => item?.licenseTermsId)
+                    .filter((id) => id !== undefined)
+                ),
+              ] || [],
+          };
+
+          const res = await createCanvasAsync(reqbody);
+          if (res?.status === "success") {
+            canvasIdRef.current = res?.id;
+            contextCanvasIdRef.current = res?.id;
+            console.log(res?.message);
+          }
+        } catch (err) {
+          console.log("Canvas creation error", {
+            error: errorMessage(err),
+          });
+        }
+      };
+
+      createInitialCanvas();
+    }
+  }, [isAuthenticated]);
+
   const parseUrlParams = () => {
     const params = new URLSearchParams(window.location.search);
     return Object.fromEntries(params.entries());

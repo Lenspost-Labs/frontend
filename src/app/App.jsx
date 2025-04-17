@@ -4,6 +4,7 @@ import {
   refreshNFT,
   solanaAuth,
   evmAuth,
+  frameNotifyToken,
 } from "../services/apis/BE-apis/backendApi";
 import { getFromLocalStorage, saveToLocalStorage } from "../utils/localStorage";
 import { ToastContainer, toast } from "react-toastify";
@@ -299,6 +300,12 @@ const App = () => {
 export default App;
 
 function FarcasterFrameProvider({ children }) {
+  // Store frame notify token mutation
+  const { mutateAsync: frameNotifyTokenAsync } = useMutation({
+    mutationKey: "frameNotifyToken",
+    mutationFn: frameNotifyToken,
+  });
+
   useEffect(() => {
     const init = async () => {
       const context = await FrameSDK.context;
@@ -323,9 +330,23 @@ function FarcasterFrameProvider({ children }) {
       saveToLocalStorage(LOCAL_STORAGE.userProfileImage, context?.user?.pfpUrl);
 
       // Hide splash screen and initialize frame after UI renders
-      setTimeout(() => {
+      setTimeout(async () => {
         FrameSDK.actions.ready();
-        FrameSDK.actions?.addFrame();
+        // FrameSDK.actions?.addFrame();
+        const addFrame = await FrameSDK.actions?.addFrame();
+        console.log({ addFrame });
+
+        // store the frame notify token
+        await frameNotifyTokenAsync({
+          token: addFrame?.notificationDetails?.token,
+          fid: context?.user?.fid,
+        }).then((res) => {
+          if (res?.status === "success") {
+            console.log("Frame notify token stored successfully");
+          } else {
+            console.log("Error storing frame notify token");
+          }
+        });
       }, 500);
     };
     init();

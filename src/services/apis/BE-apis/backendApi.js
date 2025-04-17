@@ -783,3 +783,11 @@ export const apiGetPolotnoTexts = async () => {
     data: result?.data,
   };
 };
+
+// store frame notification token
+export const frameNotifyToken = async (data) => {
+  const result = await api.post(`${API}/farcaster/notification-token`, data);
+  return {
+    data: result?.data,
+  };
+};

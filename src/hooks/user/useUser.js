@@ -58,7 +58,7 @@ const useUser = () => {
     email: data?.mail,
     lensHandle: data?.lens_handle,
     farcasterHandle: farcasterData?.Social?.[0]?.profileHandle,
-    points: pointsData?.data?.totalPoints,
+    points: data?.points,
     profileImage:
       farcasterData?.Social?.[0]?.profileImage ||
       getFromLocalStorage(LOCAL_STORAGE.userProfileImage),

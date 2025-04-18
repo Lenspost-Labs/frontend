@@ -5424,7 +5424,7 @@
     "@zoralabs/protocol-deployments" "^0.3.2"
     abitype "^1.0.2"
 
-"@zoralabs/shared-contracts@0.0.2":
+"@zoralabs/shared-contracts@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@zoralabs/shared-contracts/-/shared-contracts-0.0.1.tgz#a1ca9cb71b021d4d958ce4d46b42cbc14fd6eaca"
   integrity sha512-l6AmlwLnBp1g4hMDZkeB4QDUHolremfseOkukcBo56DiPj+EgkMdrU7aoW+/QovFiYUE3wFy1sBlBo0O/1JtaQ==
@@ -6659,9 +6659,9 @@ draggabilly@^3.0.0:
     get-size "^3.0.0"
     unidragger "^3.0.0"
 
-"ds-test@git+https://github.com/dapphub/ds-test.git#cd98eff28324bfac652e63a239a60632a761790b":
+"ds-test@https://github.com/dapphub/ds-test#cd98eff28324bfac652e63a239a60632a761790b":
   version "1.0.0"
-  resolved "git+https://github.com/dapphub/ds-test.git#cd98eff28324bfac652e63a239a60632a761790b"
+  resolved "https://github.com/dapphub/ds-test#cd98eff28324bfac652e63a239a60632a761790b"
 
 dunder-proto@^1.0.1:
   version "1.0.1"
@@ -7211,13 +7211,13 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.6"
     signal-exit "^4.0.1"
 
-"forge-std@git+https://github.com/foundry-rs/forge-std.git#705263c95892a906d7af65f0f73ce8a4a0c80b80":
+"forge-std@https://github.com/foundry-rs/forge-std#705263c95892a906d7af65f0f73ce8a4a0c80b80":
   version "1.6.0"
-  resolved "git+https://github.com/foundry-rs/forge-std.git#705263c95892a906d7af65f0f73ce8a4a0c80b80"
+  resolved "https://github.com/foundry-rs/forge-std#705263c95892a906d7af65f0f73ce8a4a0c80b80"
 
-"forge-std@git+https://github.com/foundry-rs/forge-std.git#cd7d533f9a0ee0ec02ad81e0a8f262bc4203c653":
+"forge-std@https://github.com/foundry-rs/forge-std#cd7d533f9a0ee0ec02ad81e0a8f262bc4203c653":
   version "1.1.1"
-  resolved "git+https://github.com/foundry-rs/forge-std.git#cd7d533f9a0ee0ec02ad81e0a8f262bc4203c653"
+  resolved "https://github.com/foundry-rs/forge-std#cd7d533f9a0ee0ec02ad81e0a8f262bc4203c653"
 
 form-data@^4.0.0:
   version "4.0.2"

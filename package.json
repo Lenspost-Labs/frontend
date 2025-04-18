@@ -30,7 +30,6 @@
     "@tanstack/react-query": "^5.63.0",
     "@tanstack/react-query-devtools": "^5.25.0",
     "@zoralabs/protocol-sdk": "^0.9.1",
-    "@zoralabs/shared-contracts": "0.0.1",
     "@zoralabs/zora-721-contracts": "^1.15.4",
     "axios": "^1.4.0",
     "bs58": "^5.0.0",

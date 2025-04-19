@@ -23,8 +23,9 @@ import { getOrCreateWallet } from "../../../../../../../services/apis/BE-apis";
 import { Topup } from "../../farcaster-share/components";
 import WithdrawFunds from "../../farcaster-share/components/WithdrawFunds";
 import WatermarkRemover from "../../components/WatermarkRemover";
-import { storyMainnet } from "../../../../../../../data";
+import { storyMainnet, storyAeneidTestnet } from "../../../../../../../data";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
+import { ENVIRONMENT } from "../../../../../../../services";
 
 const Derivative = () => {
   const {
@@ -61,7 +62,7 @@ const Derivative = () => {
     queryKey: ["getOrCreateWallet"],
     queryFn: () =>
       getOrCreateWallet(
-        ENVIRONMENT === "production" ? storyMainnet?.id : storyAeneid?.id
+        ENVIRONMENT === "production" ? storyMainnet?.id : storyAeneidTestnet?.id
       ),
     refetchOnWindowFocus: false,
   });

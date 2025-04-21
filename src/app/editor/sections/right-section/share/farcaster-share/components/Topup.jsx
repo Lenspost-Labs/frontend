@@ -86,9 +86,10 @@ const Topup = ({
     .toFixed(18)
     .toString();
 
+  // story tx fee
   const numberOfPages = canvasBase64Ref?.current?.length;
   const NumberOfPageMultiplyByTxFeeForDeployment =
-    TxFeeForDeployment + txFeeForMint * numberOfPages;
+    (TxFeeForDeployment + txFeeForMint * numberOfPages) * 2;
 
   wagmiAdapter.transports = {
     [isIP ? storyMainnet?.id : chain?.id]: http(),

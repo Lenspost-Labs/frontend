@@ -854,15 +854,20 @@ const Editor = () => {
     };
 
     if (validateParams(parseUrlParams())) {
+      console.log("DATA", ipAssetsData);
       storyIPDataRef.current = ipAssetsData?.data?.data?.ipIds;
 
-      ipAssetsData?.data?.data?.data.forEach((item, idx) => {
-        if (item?.data?.nftMetadata?.imageUrl) {
-          addIpToCanvas(item?.data?.nftMetadata?.imageUrl);
-        } else {
-          toast.error(item?.error);
-        }
-      });
+      try {
+        ipAssetsData?.data?.data?.IpData.forEach((item, idx) => {
+          if (item?.ipMetadata?.mediaUrl) {
+            addIpToCanvas(item?.ipMetadata?.mediaUrl);
+          } else {
+            toast.error(item?.error);
+          }
+        });
+      } catch (e) {
+        toast.error(e);
+      }
     }
   }, [ipAssetsData, authenticated, chainId]);
   // IP portal end

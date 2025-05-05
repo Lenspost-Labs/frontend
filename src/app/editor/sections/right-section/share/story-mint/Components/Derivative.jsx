@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   registerIPDerivative,
   uploadUserAssetToIPFS,
+  getIPLicenseTerms,
 } from "../../../../../../../services";
 import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
@@ -67,6 +68,12 @@ const Derivative = () => {
     refetchOnWindowFocus: false,
   });
 
+  const { data: ipLicenseTerms, isSuccess: ipLicenseTermsSuccess } = useQuery({
+    queryKey: ["getIPLicenseTerms"],
+    queryFn: () => getIPLicenseTerms({ sp_ipid: storyIPDataRef.current }),
+    enabled: storyIPDataRef.current.length > 0,
+  });
+
   // upload to IPFS Mutation
   const {
     mutate,
@@ -79,6 +86,7 @@ const Derivative = () => {
   } = useMutation({
     mutationKey: "uploadToIPFS",
     mutationFn: uploadUserAssetToIPFS,
+    enabled: ipLicenseTermsSuccess,
   });
 
   // upload JSON to IPFS Mutation
@@ -101,11 +109,16 @@ const Derivative = () => {
     }
   }, [isWalletSuccess]);
 
+  // const licenseTermsData = await ipLicenseTerms()
+
   // upload JSON data to IPFS
   useEffect(() => {
-    if (uploadData?.message) {
+    if (uploadData?.message && ipLicenseTermsSuccess) {
+      const licenseTermsIds = ipLicenseTerms.data.licenseTerms[0].data.map(
+        (item) => item.licenseTermsId
+      );
       let jsonData = {
-        canvasId: contextCanvasIdRef,
+        canvasId: contextCanvasIdRef.current,
         title: collectionName,
         description: postDescription,
         mintFeeRecipient: address,
@@ -128,14 +141,13 @@ const Derivative = () => {
             ],
           },
         },
-        parentIpIds: [...storyIPDataRef.current.map((item) => item?.ipID)],
-        licenseTermsIds: [
-          ...storyIPDataRef.current.map((item) => item?.licenseTermsId),
-        ],
+        parentIpIds: storyIPDataRef.current,
+        licenseTermsIds: licenseTermsIds,
       };
+      console.log(ipLicenseTerms);
       registerDerivative(jsonData);
     }
-  }, [isUploadSuccess]);
+  }, [isUploadSuccess, ipLicenseTermsSuccess]);
 
   useEffect(() => {
     if (isRegisterDerivativeError) {
@@ -249,6 +261,7 @@ const Derivative = () => {
     }
 
     // upload to IPFS
+    console.log(storyIPDataRef.current);
     mutate(canvasBase64Ref.current[0]);
   };
 

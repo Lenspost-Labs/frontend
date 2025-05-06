@@ -181,14 +181,14 @@ export const CompSearch = ({
           setStStatusCode(200);
           setData(response.data.data);
 
-          try {
-            await mutClaimReward({
-              taskId: 5,
-            });
-          } catch (claimErr) {
-            console.error("mutClaimReward failed:", errorMessage(claimErr));
-            setError("Reward claim failed. Please try again later.");
-          }
+          // try {
+          //   await mutClaimReward({
+          //     taskId: 5,
+          //   });
+          // } catch (claimErr) {
+          //   console.error("mutClaimReward failed:", errorMessage(claimErr));
+          //   setError("Reward claim failed. Please try again later.");
+          // }
         } else if (response.data.status === 429) {
           setIsLoading(false);
           setStStatusCode(429);

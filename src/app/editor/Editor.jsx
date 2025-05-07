@@ -818,7 +818,7 @@ const Editor = () => {
   const { data: ipAssetsData } = useQuery({
     queryKey: ["ipAssetsMetadata", { sp_ipid, sp_source, chainId: 1514 }],
     queryFn: apiGetIPAssetsMetadata,
-    enabled: authenticated && !!sp_ipid,
+    enabled: !!sp_ipid,
   });
 
   useEffect(() => {

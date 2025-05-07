@@ -48,6 +48,13 @@ export default defineConfig({
 
   build: {
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "privy-vendor": ["@privy-io/react-auth", "@privy-io/wagmi"],
+        },
+      },
+    },
   },
 
   server: {

@@ -674,14 +674,6 @@ export const uploadJSONtoIPFS = async (json) => {
   return result?.data;
 };
 
-export const getIPLicenseTerms = async (data) => {
-  const res = await api.get(
-    `${API}/story/ip-license-terms?sp_ipid=${data.sp_ipid}&chainId=1514`
-  );
-
-  return res.data;
-};
-
 // get user assets endpoint
 export const getUserAssets = async (page) => {
   const result = await api.get(`${API}/user/upload`, {

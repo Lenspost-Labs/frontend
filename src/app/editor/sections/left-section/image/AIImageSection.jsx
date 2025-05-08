@@ -69,6 +69,11 @@ const MIGGLES_QUERIES = [
   "Miggles as Batman",
 ];
 
+const GLITCH_QUERIES = [
+  "A cathedral in the glitch style",
+  "A glitched out selfie sent back from the year 3025",
+];
+
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = [
   "Trump",
@@ -158,7 +163,10 @@ export const CompSearch = ({
         finalQuery = finalQuery.replace("Miggles", "miggles");
 
         let provider = "stability";
-        if (model !== "SD3") {
+
+        if (model === "glitch") {
+          provider = "fal";
+        } else {
           provider = "heurist";
         }
 
@@ -173,9 +181,14 @@ export const CompSearch = ({
           setStStatusCode(200);
           setData(response.data.data);
 
-          await mutClaimReward({
-            taskId: 5,
-          });
+          // try {
+          //   await mutClaimReward({
+          //     taskId: 5,
+          //   });
+          // } catch (claimErr) {
+          //   console.error("mutClaimReward failed:", errorMessage(claimErr));
+          //   setError("Reward claim failed. Please try again later.");
+          // }
         } else if (response.data.status === 429) {
           setIsLoading(false);
           setStStatusCode(429);
@@ -235,7 +248,7 @@ export const CompSearch = ({
     <>
       <div className="">
         <div className="flex flex-col gap-2">
-          {model !== "MiggleV3" && (
+          {/*  {model !== "MiggleV3" && (
             <div className="flex flex-col gap-2 mb-5 border border-yellow-900 bg-yellow-50 p-2 rounded-md">
               <p className="text-sm text-yellow-900 font-medium">
                 🔥 New AI Model: Mr. Miggles! 🔥
@@ -245,7 +258,7 @@ export const CompSearch = ({
                 with the world! Select Miggles AI below to start. 🚀
               </p>
             </div>
-          )}
+          )} */}
           <div>
             <Select
               value={model}
@@ -253,8 +266,9 @@ export const CompSearch = ({
               onChange={(val) => setModel(val)}
             >
               <Option value="SD3">Stable Diffusion</Option>
-              <Option value="MiggleV3">Miggles</Option>
-              <Option value="PepeXL">Pepe</Option>
+              {/*  <Option value="MiggleV3">Miggles</Option> */}
+              {/*  <Option value="PepeXL">Pepe</Option> */}
+              <Option value="glitch">Glitch</Option>
               <Option value="FLUX.1-dev">Flux</Option>
             </Select>
           </div>
@@ -293,6 +307,8 @@ export const CompSearch = ({
               ? PEPE_QUERIES
               : model === "FLUX.1-dev"
               ? FLUX_QUERIES
+              : model === "glitch"
+              ? GLITCH_QUERIES
               : RANDOM_QUERIES2
             ).map((val, key) => {
               return (

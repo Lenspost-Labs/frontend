@@ -267,7 +267,7 @@ export const CompSearch = ({
             >
               <Option value="SD3">Stable Diffusion</Option>
               {/*  <Option value="MiggleV3">Miggles</Option> */}
-              <Option value="PepeXL">Pepe</Option>
+              {/*  <Option value="PepeXL">Pepe</Option> */}
               <Option value="glitch">Glitch</Option>
               <Option value="FLUX.1-dev">Flux</Option>
             </Select>

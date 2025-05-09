@@ -114,43 +114,38 @@ const Derivative = () => {
   // upload JSON data to IPFS
   useEffect(() => {
     if (uploadData?.message && ipLicenseTermsSuccess) {
-      try {
-        const licenseTermsIds = ipLicenseTerms.data.licenseTerms[0].data.map(
-          (item) => item.licenseTermsId
-        );
-        let jsonData = {
-          canvasId: contextCanvasIdRef.current,
+      const licenseTermsIds = ipLicenseTerms.data.licenseTerms[0].data.map(
+        (item) => item.licenseTermsId
+      );
+      let jsonData = {
+        canvasId: contextCanvasIdRef.current,
+        title: collectionName,
+        description: postDescription,
+        mintFeeRecipient: address,
+        images: [`ipfs://${uploadData?.message}`],
+        metadata: {
           title: collectionName,
           description: postDescription,
-          mintFeeRecipient: address,
-          images: [`ipfs://${uploadData?.message}`],
-          metadata: {
-            title: collectionName,
-            description: postDescription,
-            creators: {
-              name: creatorName,
-              bio: creatorDescription,
-              socialMedia: [
-                {
-                  platform: "twitter",
-                  url: twitter,
-                },
-                {
-                  platform: "farcaster",
-                  url: farcaster,
-                },
-              ],
-            },
+          creators: {
+            name: creatorName,
+            bio: creatorDescription,
+            socialMedia: [
+              {
+                platform: "twitter",
+                url: twitter,
+              },
+              {
+                platform: "farcaster",
+                url: farcaster,
+              },
+            ],
           },
-          parentIpIds: storyIPDataRef.current,
-          licenseTermsIds: licenseTermsIds,
-        };
-        console.log(ipLicenseTerms);
-        registerDerivative(jsonData);
-      } catch (e) {
-        toast.error(ipLicenseTerms.data.licenseTerms[0].error);
-        console.log(e);
-      }
+        },
+        parentIpIds: storyIPDataRef.current,
+        licenseTermsIds: licenseTermsIds,
+      };
+      console.log(ipLicenseTerms);
+      registerDerivative(jsonData);
     }
   }, [isUploadSuccess, ipLicenseTermsSuccess]);
 

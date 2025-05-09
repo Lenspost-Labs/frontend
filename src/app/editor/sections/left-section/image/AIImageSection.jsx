@@ -100,6 +100,8 @@ export const CompSearch = ({
     openBottomBar,
     setOpenBottomBar,
     isMobile,
+    assetsRecipientDataRef,
+    parentRecipientListRef,
   } = useContext(Context);
   const store = useStore();
   const { points } = useUser();
@@ -223,6 +225,42 @@ export const CompSearch = ({
   }, [query]);
 
   const { zoraErc721Enabled, setZoraErc721Enabled } = useContext(Context);
+
+  const addModelAttribution = (walletAddress) => {
+    // Wait for the image to be added to the canvas and get its ID
+    setTimeout(() => {
+      const elementId = store.selectedElements[0]?.id;
+      if (elementId) {
+        // Add to assetsRecipientDataRef
+        assetsRecipientDataRef.current.push({
+          elementId,
+          recipient: walletAddress,
+        });
+
+        // Add to parentRecipientListRef
+        if (!parentRecipientListRef.current.includes(walletAddress)) {
+          parentRecipientListRef.current.push(walletAddress);
+        }
+
+        // Add to zoraErc721Enabled for royalty information
+        try {
+          const key = "royaltySplitRecipients";
+          setZoraErc721Enabled({
+            ...zoraErc721Enabled,
+            [key]: [
+              ...zoraErc721Enabled[key],
+              {
+                address: walletAddress,
+                percentAllocation: 10,
+              },
+            ],
+          });
+        } catch (e) {
+          console.log("Error adding model attribution:", e);
+        }
+      }
+    }, 100); // Small delay to ensure the element is added to the canvas
+  };
 
   const addMiggleAdd = () => {
     try {
@@ -390,6 +428,11 @@ export const CompSearch = ({
                 }
 
                 if (model === "MiggleV3") addMiggleAdd();
+                if (model === "glitch") {
+                  addModelAttribution(
+                    "0x22ec7a4429c381f5c382ac7ea624cc05d37ffdde"
+                  );
+                }
               }}
               className="max-w-md w-full"
             >

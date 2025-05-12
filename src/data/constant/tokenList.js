@@ -50,6 +50,14 @@ export const TOKEN_LIST = {
       decimals: 18,
       logoURI: "https://basescan.org/token/images/mfercoinbase_32.png",
     },
+    {
+      id: 8453,
+      address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      symbol: "USDC",
+      name: "USDC",
+      decimals: 18,
+      logoURI: "https://basescan.org/token/images/centre-usdc_28.png",
+    },
   ],
   Ham: [
     {

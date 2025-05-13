@@ -72,6 +72,7 @@ const MIGGLES_QUERIES = [
 const GLITCH_QUERIES = [
   "A cathedral in the glitch style",
   "A glitched out selfie sent back from the year 3025",
+  "Doge overlord glitching across infinite chains",
 ];
 
 // This array is to display short words as prompts on the frontend - 22Jul2023
@@ -168,6 +169,7 @@ export const CompSearch = ({
 
         if (model === "glitch") {
           provider = "fal";
+          finalQuery = `${query} in a glitched out and circuitbent style`;
         } else {
           provider = "heurist";
         }

@@ -872,123 +872,123 @@ const Editor = () => {
   }, [ipAssetsData, authenticated, chainId]);
   // IP portal end
 
+  console.log(actionType);
+
   return (
-    <>
+    <div
+      className=""
+      style={{
+        width: "100vw",
+        height: height + "px",
+        display: "flex",
+        flexDirection: "column",
+      }}
+      onDrop={handleDrop}
+    >
       <div
-        className=""
         style={{
-          width: "100vw",
-          height: height + "px",
-          display: "flex",
-          flexDirection: "column",
+          height: isMobile ? "calc(100% - 8px)" : "calc(100% - 75px)",
         }}
-        onDrop={handleDrop}
       >
-        <div
-          style={{
-            height: isMobile ? "calc(100% - 8px)" : "calc(100% - 75px)",
-          }}
-        >
-          {!isMobile && (
-            <div className="">
-              <TopbarSection />
+        {!isMobile && (
+          <div className="">
+            <TopbarSection />
+          </div>
+        )}
+        <PolotnoContainer className="min-h-400 md:min-h-full">
+          <div
+            id="second-step"
+            className={`${isMobile ? "hidden" : ""} md:block mx-0 md:mx-2`}
+          >
+            <SidePanelWrap>
+              <SidePanel store={store} sections={sections} />
+            </SidePanelWrap>
+          </div>
+          <WorkspaceWrap>
+            <div className="mb-2 md:ml-0 mx-2 my-2">
+              {!isMobile && <Toolbar store={store} />}
+              {isMobile && <MobileTopbar />}
             </div>
-          )}
-          <PolotnoContainer className="min-h-400 md:min-h-full">
-            <div
-              id="second-step"
-              className={`${isMobile ? "hidden" : ""} md:block mx-0 md:mx-2`}
-            >
-              <SidePanelWrap>
-                <SidePanel store={store} sections={sections} />
-              </SidePanelWrap>
-            </div>
-            <WorkspaceWrap>
-              <div className="mb-2 md:ml-0 mx-2 my-2">
-                {!isMobile && <Toolbar store={store} />}
-                {isMobile && <MobileTopbar />}
-              </div>
-              <Workspace
-                store={store}
-                components={{
-                  Tooltip,
-                }}
-                backgroundColor="#e8e8ec"
-              />
+            <Workspace
+              store={store}
+              components={{
+                Tooltip,
+              }}
+              backgroundColor="#e8e8ec"
+            />
 
-              {/* Bottom section */}
-              {!isMobile && <ZoomButtons store={store} />}
-              {!isMobile && <PagesTimeline store={store} />}
-              {isMobile && (
-                <div className="flex flex-col">
-                  {/* <SpeedDialX /> */}
-                  <div className="flex justify-between">
-                    <BgRemover />
+            {/* Bottom section */}
+            {!isMobile && <ZoomButtons store={store} />}
+            {!isMobile && <PagesTimeline store={store} />}
+            {isMobile && (
+              <div className="flex flex-col">
+                {/* <SpeedDialX /> */}
+                <div className="flex justify-between">
+                  <BgRemover />
 
-                    <Button
-                      onClick={() => {
-                        fnOpenPanel("mobPanelUpload");
-                        setCurOpenedTabLevel1("ai");
-                      }}
-                      className="p-2 !py-0 mr-4 mb-2 text-black leading-0 bg-[#e1f16b] rounded-lg"
-                    >
-                      <HiOutlineSparkles size={20} />
-                    </Button>
-                  </div>
-                  <div className="flex flex-row w-full justify-between items-center rounded-lg ">
-                    {!isLoggedOut && (
-                      <SubscriptionModal defaultOpen={false} bottomBar={true} />
-                    )}
-                  </div>
-                  <MobileBottombar />
+                  <Button
+                    onClick={() => {
+                      fnOpenPanel("mobPanelUpload");
+                      setCurOpenedTabLevel1("ai");
+                    }}
+                    className="p-2 !py-0 mr-4 mb-2 text-black leading-0 bg-[#e1f16b] rounded-lg"
+                  >
+                    <HiOutlineSparkles size={20} />
+                  </Button>
                 </div>
-              )}
+                <div className="flex flex-row w-full justify-between items-center rounded-lg ">
+                  {!isLoggedOut && (
+                    <SubscriptionModal defaultOpen={false} bottomBar={true} />
+                  )}
+                </div>
+                <MobileBottombar />
+              </div>
+            )}
 
-              <SignMesasgeModal />
+            <SignMesasgeModal />
 
-              {!isMobile && (
-                <div>
-                  <div className="flex flex-row justify-between items-center rounded-lg ">
-                    <BgRemover />
-                    {/* Quick Tour on the main page */}
-                    <div className="flex flex-row ">
-                      {/* {!isLoggedOut && showSubscriptionModal && <SubscriptionModal defaultOpen={true} bottomBar={true} />} */}
-                      {/* {!isLoggedOut && <SubscriptionModal defaultOpen={true} bottomBar={true} />} */}
-                      {/* {alert(isOnboardingOpen)} */}
-                      {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
-                      <SpeedDialX />
-                      <OnboardingModal />
+            {!isMobile && (
+              <div>
+                <div className="flex flex-row justify-between items-center rounded-lg ">
+                  <BgRemover />
+                  {/* Quick Tour on the main page */}
+                  <div className="flex flex-row ">
+                    {/* {!isLoggedOut && showSubscriptionModal && <SubscriptionModal defaultOpen={true} bottomBar={true} />} */}
+                    {/* {!isLoggedOut && <SubscriptionModal defaultOpen={true} bottomBar={true} />} */}
+                    {/* {alert(isOnboardingOpen)} */}
+                    {/* Speed Dial - Clear Canvas, etc.. Utility Fns */}
+                    <SpeedDialX />
+                    <OnboardingModal />
 
-                      <div
-                        className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
-                        onClick={async () => {
-                          setCurrentStep(0);
-                          if (isConnected) {
-                            setIsOpen(true);
-                            setSteps(OnboardingStepsWithShare);
-                          } else {
-                            setIsOpen(true);
-                            setSteps(OnboardingSteps);
-                          }
-                        }}
-                      >
-                        <FcIdea className="m-2" size="16" />
-                        {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
-                      </div>
+                    <div
+                      className="m-1 ml-2 flex flex-row justify-end align-middle cursor-pointer"
+                      onClick={async () => {
+                        setCurrentStep(0);
+                        if (isConnected) {
+                          setIsOpen(true);
+                          setSteps(OnboardingStepsWithShare);
+                        } else {
+                          setIsOpen(true);
+                          setSteps(OnboardingSteps);
+                        }
+                      }}
+                    >
+                      <FcIdea className="m-2" size="16" />
+                      {/* <div className="hidden md:block w-full m-2 ml-0 text-sm text-yellow-600">Need an intro?</div> */}
                     </div>
                   </div>
-                  <div className="flex flex-row w-full justify-between items-center rounded-lg ">
-                    {!isLoggedOut && showSubscriptionModal && (
-                      <SubscriptionModal defaultOpen={true} bottomBar={true} />
-                    )}
-                  </div>
                 </div>
-              )}
-            </WorkspaceWrap>
-          </PolotnoContainer>
-        </div>
+                <div className="flex flex-row w-full justify-between items-center rounded-lg ">
+                  {!isLoggedOut && showSubscriptionModal && (
+                    <SubscriptionModal defaultOpen={true} bottomBar={true} />
+                  )}
+                </div>
+              </div>
+            )}
+          </WorkspaceWrap>
+        </PolotnoContainer>
       </div>
-    </>
+    </div>
   );
 };
 

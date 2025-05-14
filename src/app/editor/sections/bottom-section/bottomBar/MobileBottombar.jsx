@@ -38,6 +38,7 @@ import MdcImagePlus from "@meronex/icons/mdc/MdcImagePlus";
 import FiType from "@meronex/icons/fi/FiType";
 import MdcStickerEmoji from "@meronex/icons/mdc/MdcStickerEmoji";
 import { ShareSection } from "../../right-section";
+import { DesignPanel } from "../../left-section/design/DesignSection";
 
 const MobileBottombar = () => {
   const {
@@ -96,6 +97,14 @@ const MobileBottombar = () => {
       label: "CC0",
       value: "cc0",
       desc: <LenspostNFT />,
+    },
+  ];
+
+  const myFilesTabsData = [
+    {
+      label: "My Files",
+      value: "my files",
+      desc: <DesignPanel />,
     },
   ];
 
@@ -247,6 +256,41 @@ const MobileBottombar = () => {
                     </div>
                     <TabsBody>
                       {stickersTabsData.map(({ value, desc }) => (
+                        <TabPanel key={value} value={value}>
+                          {desc}
+                        </TabPanel>
+                      ))}
+                    </TabsBody>
+                  </Tabs>
+                </>
+              )}
+
+              {curOpenedPanel == "mobPanelMyFiles" && (
+                <>
+                  <Tabs value={curOpenedTabLevel1 || "my files"}>
+                    <div className="flex gap-2 items-center">
+                      <div className="w-full">
+                        <TabsHeader>
+                          {myFilesTabsData.map(({ label, value }) => (
+                            <Tab key={value} value={value}>
+                              {label}
+                            </Tab>
+                          ))}
+                        </TabsHeader>
+                      </div>
+                      <div className="bg-[#f8f8f8] rounded-full p-1">
+                        <BsX
+                          className="cursor-pointer text-blue-gray-600"
+                          size={32}
+                          onClick={() => {
+                            setOpenBottomBar(false);
+                            setCurOpenedPanel(null);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <TabsBody>
+                      {myFilesTabsData.map(({ value, desc }) => (
                         <TabPanel key={value} value={value}>
                           {desc}
                         </TabPanel>

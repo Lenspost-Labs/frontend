@@ -39,6 +39,7 @@ import FaLaughSquint from "@meronex/icons/fa/FaLaughSquint";
 import FaRobot from "@meronex/icons/fa/FaRobot";
 import ZoCloudUpload from "@meronex/icons/zo/ZoCloudUpload";
 import FaMehBlank from "@meronex/icons/fa/FaMehBlank";
+import { MyDesignIcon } from "../../../../../assets/assets";
 
 const MobileTopbar = () => {
   const { urlQueryActionType } = useAppUrl();
@@ -175,6 +176,8 @@ const MobileTopbar = () => {
 
   const { fnOpenPanel } = useMobilePanelFunctions();
 
+  console.log(urlQueryActionType);
+
   return (
     <>
       <div className="flex items-center gap-2 overflow-x-scroll">
@@ -185,9 +188,18 @@ const MobileTopbar = () => {
           <EditIconLeft />
         </div>
         <Toolbar store={store} />
-        {urlQueryActionType !== "composer" && (
-          <div className="bg-white rounded-lg p-3">
-            <DownloadBtn />
+        {urlQueryActionType !== "composer" &&
+          urlQueryActionType !== "framev2" && (
+            <div className="bg-white rounded-lg p-3">
+              <DownloadBtn />
+            </div>
+          )}
+        {urlQueryActionType === "framev2" && (
+          <div
+            className="bg-white rounded-lg p-3"
+            onClick={() => fnOpenPanel("mobPanelMyFiles")}
+          >
+            <MyDesignIcon />
           </div>
         )}
       </div>

@@ -223,9 +223,32 @@ const ShareSection = () => {
                 </Button>
               )}
 
-              <Button className="mx-6" onClick={setState}>
-                Create 1155 edition
-              </Button>
+              <div className={`relative mt-6 px-4 sm:px-6`}>
+              <p className="text-lg">Mint as an NFT on EVM</p>
+              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                {filteredChains.map((item) => {
+                  return (
+                    <div
+                      key={item?.id}
+                      className="cursor-pointer flex flex-col items-center gap-2"
+                      onClick={() => {
+                        setChainTab(item?.id);
+                      }}
+                    >
+                      {" "}
+                      <img
+                        className="w-10 h-10"
+                        src={chainLogo(item?.id)}
+                        alt={`${item?.name} blockchain logo`}
+                      />{" "}
+                      <Typography className="text-md font-semibold text-center">
+                        {item?.name}
+                      </Typography>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
             </div>
           ))}
         {!isMobile && (

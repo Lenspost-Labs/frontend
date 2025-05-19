@@ -127,6 +127,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     setFarcasterStates,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
+    actionType,
   } = useContext(Context);
 
   const {
@@ -1182,7 +1183,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
         </>
       ) : null}
 
-      {!getEVMAuth ? (
+      {actionType != "framev2" && !getEVMAuth ? (
         <EVMWallets title="Login with EVM" login={login} className="w-[97%]" />
       ) : isFarcaster && !isFarcasterAuth ? (
         <FarcasterAuth />

@@ -9,7 +9,7 @@ import {
   getIPLicenseTerms,
 } from "../../../../../../../services";
 import { toast } from "react-toastify";
-import { useAccount } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { useEffect } from "react";
 import {
   addressCrop,
@@ -102,6 +102,14 @@ const Derivative = () => {
     mutationKey: "registerIPDerivative",
     mutationFn: registerIPDerivative,
   });
+
+  const {
+    error: errorSwitchNetwork,
+    isError: isErrorSwitchNetwork,
+    isLoading: isLoadingSwitchNetwork,
+    isSuccess: isSuccessSwitchNetwork,
+    switchChain,
+  } = useSwitchChain();
 
   useEffect(() => {
     if (isWalletSuccess) {
@@ -274,6 +282,18 @@ const Derivative = () => {
 
   const isLoading = isUploading || isRegisterDerivativeLoading || isPending;
 
+  const storyChainId =
+    ENVIRONMENT == "development" ? storyAeneidTestnet?.id : storyMainnet?.id;
+
+  useEffect(() => {
+    switchChain({ chainId: storyChainId });
+  }, [isSuccessSwitchNetwork]);
+
+  if (isErrorSwitchNetwork)
+    toast.error("Unable to switch to Story network.", {
+      toastId: "isErrorSwitchNetwork_STORY",
+    });
+
   return (
     <div>
       <div className=" mt-1 pt-2 pb-4">
@@ -437,7 +457,7 @@ const Derivative = () => {
               )}
             </p>
           </div>
-          {walletData?.publicAddress && (
+          {walletData?.publicAddress && !isErrorSwitchNetwork && (
             <Topup
               topUpAccount={walletData?.publicAddress}
               isIP={true}
@@ -447,17 +467,32 @@ const Derivative = () => {
             />
           )}
           {/* {actionType !== 'composer' && walletData?.balance > 0 && <WithdrawFunds refetchWallet={refetchWallet} />} */}
-          <div className="mt-4">
-            <Button
-              disabled={isPending || isLoading}
-              fullWidth
-              loading={isPending || isLoading}
-              // color="yellow"
-              onClick={handleSubmit}
-            >
-              {isLoading ? "Registering..." : "Register"}
-            </Button>
-          </div>
+
+          {!isErrorSwitchNetwork ? (
+            <div className="mt-4">
+              <Button
+                disabled={isPending || isLoading}
+                fullWidth
+                loading={isPending || isLoading}
+                // color="yellow"
+                onClick={handleSubmit}
+              >
+                {isLoading ? "Registering..." : "Register"}
+              </Button>
+            </div>
+          ) : (
+            <div className="outline-none">
+              <Button
+                className="w-full outline-none flex justify-center items-center gap-2"
+                disabled={isLoadingSwitchNetwork}
+                onClick={() => switchChain({ chainId: storyChainId })}
+                color="red"
+              >
+                {isLoadingSwitchNetwork ? "Switching" : "Switch"} to Story{" "}
+                Network {isLoadingSwitchNetwork && <Spinner />}
+              </Button>
+            </div>
+          )}
 
           {isMobile && (
             <div className="mt-4">

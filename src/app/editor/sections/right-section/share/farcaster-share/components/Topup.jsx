@@ -22,6 +22,7 @@ import {
   gasFeeForMint,
   gasFeeForOxSplitCreate,
   storyMainnet,
+  storyAeneidTestnet,
 } from "../../../../../../../data";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 
@@ -35,7 +36,11 @@ const Topup = ({
 }) => {
   const { canvasBase64Ref, farcasterStates, setFarcasterStates, chainId } =
     useContext(Context);
-  let chain_id = isIP ? storyMainnet?.id : chainId;
+  let chain_id = isIP
+    ? ENVIRONMENT === "development"
+      ? storyAeneidTestnet?.id
+      : storyMainnet?.id
+    : chainId;
 
   const [extraPayForMints, setExtraPayForMints] = useState(null);
   const { chain } = useAccount();

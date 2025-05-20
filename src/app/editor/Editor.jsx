@@ -936,11 +936,11 @@ const Editor = () => {
                     <HiOutlineSparkles size={20} />
                   </Button>
                 </div>
-                <div className="flex flex-row w-full justify-between items-center rounded-lg ">
+                {/* <div className="flex flex-row w-full justify-between items-center rounded-lg ">
                   {!isLoggedOut && (
                     <SubscriptionModal defaultOpen={false} bottomBar={true} />
                   )}
-                </div>
+                </div> */}
                 <MobileBottombar />
               </div>
             )}
@@ -978,11 +978,11 @@ const Editor = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-row w-full justify-between items-center rounded-lg ">
+                {/* <div className="flex flex-row w-full justify-between items-center rounded-lg ">
                   {!isLoggedOut && showSubscriptionModal && (
                     <SubscriptionModal defaultOpen={true} bottomBar={true} />
                   )}
-                </div>
+                </div> */}
               </div>
             )}
           </WorkspaceWrap>

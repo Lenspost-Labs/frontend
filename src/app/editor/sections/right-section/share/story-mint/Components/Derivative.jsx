@@ -131,7 +131,7 @@ const Derivative = () => {
           title: collectionName,
           description: postDescription,
           mintFeeRecipient: address,
-          images: [`ipfs://${uploadData?.message}`],
+          images: [`https://ipfs.io/ipfs/${uploadData?.message}`],
           metadata: {
             title: collectionName,
             description: postDescription,

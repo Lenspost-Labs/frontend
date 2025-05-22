@@ -170,6 +170,8 @@ export const CompSearch = ({
         if (model === "glitch") {
           provider = "fal";
           finalQuery = `${query} in a glitched out and circuitbent style`;
+        } else if (model === "SD3") {
+          provider = "stability";
         } else {
           provider = "heurist";
         }

@@ -161,41 +161,31 @@ const Minting = () => {
         brandName: collectionName,
         brandSymbol: collectionSymbol,
         brandDescription: postDescription,
-        images: [`ipfs://${uploadData?.message}`],
+        images: [`https://ipfs.io/ipfs/${uploadData?.message}`],
         mintFeeRecipient: address,
-        pilType: license,
-        pilTerms: {},
         metadata: {
           title: collectionName,
           description: postDescription,
-          creators: {
-            name: creatorName,
-            bio: creatorDescription,
-            socialMedia: [
-              {
-                platform: "twitter",
-                url: twitter,
-              },
-              {
-                platform: "farcaster",
-                url: farcaster,
-              },
-            ],
-          },
+          mediaType: "image/png",
+          creators: [
+            {
+              name: creatorName,
+              address: address,
+              description: creatorDescription,
+              socialMedia: [
+                {
+                  platform: "twitter",
+                  url: twitter,
+                },
+                {
+                  platform: "farcaster",
+                  url: farcaster,
+                },
+              ],
+            },
+          ],
         },
       };
-
-      let pilTerms = {};
-
-      if (license === getPILTypeString(2)) {
-        pilTerms = {
-          mintingFee: 0,
-          currency: "0xC0F6E387aC0B324Ec18EAcf22EE7271207dCE3d5",
-          commercialRevShare: revShare,
-        };
-      }
-
-      jsonData = { ...jsonData, pilTerms };
       registerIP(jsonData);
     }
   }, [isUploadSuccess]);

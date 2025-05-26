@@ -67,6 +67,7 @@ import { LENSPOST_721_ENALBED_CHAINS } from "../../../../../../../data/constant/
 import WatermarkRemover from "../../components/WatermarkRemover";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
 import { connectFCWallet } from "../../../../../../../lib/FCWallet";
+import AddressInputWithENS from "../../components/AddressInputWithENS";
 
 const FarcasterNormalPost = () => {
   const { address, isConnected } = useAccount();
@@ -1723,7 +1724,7 @@ const FarcasterNormalPost = () => {
                       className="flex justify-between gap-2 items-center w-full py-2"
                     >
                       <div className="flex-1">
-                        <InputBox
+                        <AddressInputWithENS
                           label="Wallet Address"
                           value={recipientsEns[index] || recipient.address}
                           onFocus={(e) =>

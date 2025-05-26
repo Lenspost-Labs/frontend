@@ -79,6 +79,7 @@ import { degen, polygon } from "viem/chains";
 
 import FiSettings from "@meronex/icons/fi/FiSettings";
 import usePrivyAuth from "../../../../../../../hooks/privy-auth/usePrivyAuth";
+import AddressInputWithENS from "../../components/AddressInputWithENS";
 
 const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   const { address } = useAccount();
@@ -127,7 +128,6 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     setFarcasterStates,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
-    actionType,
   } = useContext(Context);
 
   const {
@@ -718,7 +718,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       args: [
         zoraErc721Enabled.contractName,
         zoraErc721Enabled.contractSymbol,
-        zoraErc721Enabled.royaltyPercent * 100, // Convert to basis points
+        zoraErc721Enabled.royaltyPercent * 100,
       ],
       description: zoraErc721Enabled.contractDescription,
       recipients: sortRecipientsByAddress(
@@ -963,7 +963,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
                 className="flex justify-between gap-2 items-center w-full py-2"
               >
                 <div className="flex-1">
-                  <InputBox
+                  <AddressInputWithENS
                     label="Wallet Address"
                     value={recipientsEns[index] || recipient.address}
                     onFocus={(e) =>
@@ -1183,7 +1183,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
         </>
       ) : null}
 
-      {actionType != "framev2" && !getEVMAuth ? (
+      {!getEVMAuth ? (
         <EVMWallets title="Login with EVM" login={login} className="w-[97%]" />
       ) : isFarcaster && !isFarcasterAuth ? (
         <FarcasterAuth />

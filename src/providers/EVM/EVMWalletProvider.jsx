@@ -101,10 +101,11 @@ export const config = createConfig({
           basecampTestnet,
           morph,
           monadTestnet,
+          mainnet,
         ],
   transports: {
     [base.id]: http(),
-    [mainnet.id]: http(),
+    [mainnet.id]: http("https://eth-mainnet.public.blastapi.io"),
     [zora.id]: http(),
     [optimism.id]: http(),
     [polygon.id]: http(),

@@ -23,7 +23,7 @@ const LeaderboardCard = ({
                   <div
                     onClick={() =>
                       window.open(
-                        "https://warpcast.com/~/profiles/" + lbfarcsterId,
+                        "https://farcaster.xyz/~/profiles/" + lbfarcsterId,
                         "_blank"
                       )
                     }

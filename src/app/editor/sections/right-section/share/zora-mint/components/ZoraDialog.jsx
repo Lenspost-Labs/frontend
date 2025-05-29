@@ -50,7 +50,7 @@ const ZoraDialog = ({
 
   const handleOpen = () => setOpen(!open);
 
-  const farConversationUrl = `https://warpcast.com/~/conversations/`;
+  const farConversationUrl = `https://farcaster.xyz/~/conversations/`;
 
   // if loading show the dialog
   useEffect(() => {

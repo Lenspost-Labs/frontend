@@ -40,7 +40,7 @@ export const CDN_IMAGE_URL = "https://lenspost-r2.b-cdn.net";
 
 export const X_INTENT_URL = "https://x.com/intent/post?text=";
 export const WARPCAST_EMBED_INTENT_URL =
-  "https://warpcast.com/~/compose?text=Mint your NFT on &embeds[]=";
+  "https://farcaster.xyz/~/compose?text=Mint your NFT on &embeds[]=";
 
 export const LP721SupportedChains = [2818, 325000];
 

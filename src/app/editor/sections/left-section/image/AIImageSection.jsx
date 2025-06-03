@@ -75,6 +75,11 @@ const GLITCH_QUERIES = [
   "Doge overlord glitching across infinite chains",
 ];
 
+const LABUBU_QUERIES = [
+  "A labubu doll in spiderman suit",
+  "Three labubus playing in a garden",
+];
+
 // This array is to display short words as prompts on the frontend - 22Jul2023
 const RANDOM_QUERIES3 = [
   "Trump",
@@ -168,8 +173,11 @@ export const CompSearch = ({
         let provider = "stability";
 
         if (model === "glitch") {
-          provider = "fal";
+          provider = "fal/glitch";
           finalQuery = `${query} in a glitched out and circuitbent style`;
+        } else if (model === "labubu") {
+          provider = "fal/labubu";
+          finalQuery = `In labubu style , ${query}`;
         } else if (model === "SD3") {
           provider = "stability";
         } else {
@@ -310,8 +318,8 @@ export const CompSearch = ({
               <Option value="SD3">Stable Diffusion</Option>
               {/*  <Option value="MiggleV3">Miggles</Option> */}
               {/*  <Option value="PepeXL">Pepe</Option> */}
+              <Option value="labubu">Labubu</Option>
               <Option value="glitch">Glitch</Option>
-              <Option value="FLUX.1-dev">Flux</Option>
             </Select>
           </div>
           <Textarea
@@ -351,6 +359,8 @@ export const CompSearch = ({
               ? FLUX_QUERIES
               : model === "glitch"
               ? GLITCH_QUERIES
+              : model === "labubu"
+              ? LABUBU_QUERIES
               : RANDOM_QUERIES2
             ).map((val, key) => {
               return (

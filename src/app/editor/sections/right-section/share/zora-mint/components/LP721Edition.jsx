@@ -128,6 +128,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     setFarcasterStates,
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
+    actionType,
   } = useContext(Context);
 
   const {

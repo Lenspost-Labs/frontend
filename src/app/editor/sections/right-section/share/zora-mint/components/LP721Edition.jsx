@@ -1184,7 +1184,13 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       ) : null}
 
       {!getEVMAuth ? (
-        <EVMWallets title="Login with EVM" login={login} className="w-[97%]" />
+        actionType != "framev2" && (
+          <EVMWallets
+            title="Login with EVM"
+            login={login}
+            className="w-[97%]"
+          />
+        )
       ) : isFarcaster && !isFarcasterAuth ? (
         <FarcasterAuth />
       ) : isOpenAction && !lensAuth?.profileHandle ? (

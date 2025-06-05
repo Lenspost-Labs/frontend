@@ -161,7 +161,7 @@ export const TOKEN_LIST = {
       address: "0x674843C06FF83502ddb4D37c2E09C01cdA38cbc8",
       symbol: "USDT",
       name: "Tether USD",
-      decimals: 18,
+      decimals: 6,
       logoURI: "https://arbiscan.io/token/images/tether_32.png",
     },
     {
@@ -169,7 +169,7 @@ export const TOKEN_LIST = {
       address: "0xF1815bd50389c46847f0Bda824eC8da914045D14",
       symbol: "USDC",
       name: "USD Coin",
-      decimals: 18,
+      decimals: 6,
       logoURI: "https://arbiscan.io/token/images/centre-usdc_28.png",
     },
   ],

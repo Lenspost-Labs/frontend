@@ -323,6 +323,39 @@ const ZoraDialog = ({
                           <span className="text-green-500">Copied</span>
                         )}
                       </span>
+                      <span className="flex gap-1 items-center">
+                        Share your NFT on
+                        <a
+                          href={
+                            WARPCAST_EMBED_INTENT_URL +
+                            MINT_URL +
+                            "/mint/" +
+                            slug
+                          }
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-500"
+                        >
+                          Warpcast
+                        </a>
+                        <BiCopy
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              WARPCAST_EMBED_INTENT_URL +
+                                MINT_URL +
+                                "/mint/" +
+                                slug
+                            );
+                            setIsCopy({
+                              id: 3,
+                            });
+                          }}
+                          className="cursor-pointer"
+                        />
+                        {isCopy?.id === 3 && (
+                          <span className="text-green-500">Copied</span>
+                        )}
+                      </span>
                     </>
                   )}
             </Typography>

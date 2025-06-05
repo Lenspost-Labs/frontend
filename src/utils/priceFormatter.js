@@ -1,12 +1,7 @@
-const MULTIPLIER_DEFAULT = 10 ** 18;
+import { TOKEN_LIST } from "../data";
 
-const MULTIPLIER_MAP = {
-  USDC: 10 ** 6,
-  USDT: 10 ** 6,
-};
+export const priceFormatter = (tokenAddress, price) => {
+  const decimals = TOKEN_LIST[tokenAddress]?.decimals || 18;
 
-export const priceFormatter = (tokenSymbol, price) => {
-  const multiplier = MULTIPLIER_MAP[tokenSymbol] || MULTIPLIER_DEFAULT;
-
-  return Number(price) * multiplier;
+  return Number(price) * 10 ** decimals;
 };

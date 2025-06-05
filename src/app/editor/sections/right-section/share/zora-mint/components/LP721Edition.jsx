@@ -712,6 +712,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       canvasId: contextCanvasIdRef.current,
       currency: zoraErc721Enabled.chargeForMintCurrencyAddress,
       pricePerToken: priceFormatter(
+        chain?.name,
         zoraErc721Enabled.chargeForMintCurrencyAddress,
         zoraErc721Enabled.chargeForMintPrice
       ),

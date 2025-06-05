@@ -99,6 +99,8 @@ export const CompSearch = ({
   FluxImages,
   PepeImages,
   MigglesImages,
+  LabubuImages,
+  GlitchImages,
 }) => {
   const {
     setOpenLeftBar,
@@ -118,7 +120,7 @@ export const CompSearch = ({
   const [stStatusCode, setStStatusCode] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [model, setModel] = useState("SD3");
+  const [model, setModel] = useState("labubu");
 
   const [query, setQuery] = useState();
   // RANDOM_QUERIES[(RANDOM_QUERIES.length * Math.random()) | 0]
@@ -226,6 +228,10 @@ export const CompSearch = ({
     featuredImagesToUse = PepeImages;
   } else if (model === "FLUX.1-dev") {
     featuredImagesToUse = FluxImages;
+  } else if (model === "labubu") {
+    featuredImagesToUse = LabubuImages;
+  } else if (model === "glitch") {
+    featuredImagesToUse = GlitchImages;
   }
 
   useEffect(() => {
@@ -298,29 +304,35 @@ export const CompSearch = ({
     <>
       <div className="">
         <div className="flex flex-col gap-2">
-          {/*  {model !== "MiggleV3" && (
-            <div className="flex flex-col gap-2 mb-5 border border-yellow-900 bg-yellow-50 p-2 rounded-md">
-              <p className="text-sm text-yellow-900 font-medium">
-                🔥 New AI Model: Mr. Miggles! 🔥
-              </p>
-              <p className="text-sm text-yellow-900 font-medium">
-                Generate official Mr. Miggles AI posters 😻✨ and share them
-                with the world! Select Miggles AI below to start. 🚀
-              </p>
-            </div>
-          )} */}
           <div>
             <Select
               value={model}
               label="Select AI Model"
               onChange={(val) => setModel(val)}
             >
-              <Option value="SD3">Stable Diffusion</Option>
               {/*  <Option value="MiggleV3">Miggles</Option> */}
               {/*  <Option value="PepeXL">Pepe</Option> */}
-              <Option value="labubu">Labubu</Option>
-              <Option value="glitch">Glitch</Option>
+              <Option value="labubu">Labubu 💎 </Option>
+              <Option value="glitch">GLITCH 🌈 by LetsGlitchIt </Option>
+              <Option value="SD3"> Stable Diffusion ⚙️</Option>
             </Select>
+            <div className="mt-2 text-sm font-medium">
+              {model === "labubu" && (
+                <p className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 p-2 rounded-lg text-purple-700">
+                  TikTok $419B IP | Exclusively on Poster.fun
+                </p>
+              )}
+              {model === "glitch" && (
+                <p className="bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 p-2 rounded-lg text-purple-800 font-semibold">
+                  Pride Month Special | Mint Yours Now on Poster.fun
+                </p>
+              )}
+              {model === "SD3" && (
+                <p className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 p-2 rounded-lg text-blue-700">
+                  High-End, All-Purpose AI Powerhouse
+                </p>
+              )}
+            </div>
           </div>
           <Textarea
             leftIcon="search"

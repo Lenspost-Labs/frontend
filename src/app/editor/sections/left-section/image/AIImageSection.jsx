@@ -318,7 +318,7 @@ export const CompSearch = ({
             </Select>
             <div className="mt-2 text-sm font-medium">
               {model === "labubu" && (
-                <p className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 p-2 rounded-lg text-purple-700">
+                <p className="font-semibold bg-gradient-to-r from-purple-500/10 to-pink-500/10 p-2 rounded-lg text-purple-700">
                   TikTok $419B IP | Exclusively on Poster.fun
                 </p>
               )}
@@ -328,7 +328,7 @@ export const CompSearch = ({
                 </p>
               )}
               {model === "SD3" && (
-                <p className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 p-2 rounded-lg text-blue-700">
+                <p className="font-semibold bg-gradient-to-r from-blue-500/10 to-indigo-500/10 p-2 rounded-lg text-blue-700">
                   High-End, All-Purpose AI Powerhouse
                 </p>
               )}

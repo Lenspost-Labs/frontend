@@ -28,10 +28,22 @@ const OnboardingModal = () => {
     "https://lenspost-r2.b-cdn.net/ai_images/1738083523551.png",
   ];
 
+  const LabubuImages = [
+    "https://lenspost-r2.b-cdn.net/ai_images/1749118187763.png",
+    "https://lenspost-r2.b-cdn.net/ai_images/1749118253313.png",
+    "https://lenspost-r2.b-cdn.net/ai_images/1749118286214.png",
+  ];
+
+  const GlitchImages = [
+    "https://lenspost-r2.b-cdn.net/ai_images/1749118935822.png",
+    "https://lenspost-r2.b-cdn.net/ai_images/1749118974910.png",
+    "https://lenspost-r2.b-cdn.net/ai_images/1749119022187.png",
+  ];
+
   const MigglesImages = [
     "https://lenspost-r2.b-cdn.net/ai_images/1738149846318.png",
     "https://lenspost-r2.b-cdn.net/ai_images/1738149902276.png",
-    "https://lenspost-r2.b-cdn.net/ai_images/1738150069414.png",
+    "https://lenspost-r2.b-cdn.net/ai_images/1749119022187.png",
   ];
 
   const FluxImages = [
@@ -73,7 +85,7 @@ const OnboardingModal = () => {
     //           "Create AI masterpieces – Your imagination, now in HD! 🧁",
     //           "Make backgrounds vanish – Like magic, but real. 🐰",
     //           "Save designs locally – Your computer will thank you. 💻",
-    //           "Auto-save your work – No more “oops” moments. 😅",
+    //           "Auto-save your work – No more "oops" moments. 😅",
     //           "Remove watermarks – With a snap. ✨",
     //           "Join epic campaigns – Exclusive token drops await! 🤑🍄",
     //         ].map((feature, index) => (
@@ -123,6 +135,8 @@ const OnboardingModal = () => {
                 FluxImages={FluxImages}
                 PepeImages={PepeImages}
                 MigglesImages={MigglesImages}
+                LabubuImages={LabubuImages}
+                GlitchImages={GlitchImages}
               />
             </div>
           </>

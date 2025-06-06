@@ -37,8 +37,10 @@ import BgRemover from "../bg-remover/BgRemover";
 import MdcImagePlus from "@meronex/icons/mdc/MdcImagePlus";
 import FiType from "@meronex/icons/fi/FiType";
 import MdcStickerEmoji from "@meronex/icons/mdc/MdcStickerEmoji";
+import MdcPencil from "@meronex/icons/mdc/MdcPencil";
 import { ShareSection } from "../../right-section";
 import { DesignPanel } from "../../left-section/design/DesignSection";
+import clsx from "clsx";
 
 const MobileBottombar = () => {
   const {
@@ -47,8 +49,11 @@ const MobileBottombar = () => {
     openBottomBar,
     setOpenBottomBar,
     curOpenedTabLevel1,
+    setMenu,
+    setIsShareOpen,
   } = useContext(Context);
   const store = useStore();
+  const [showOptions, setShowOptions] = useState(false);
 
   const { fnOpenPanel } = useMobilePanelFunctions();
 
@@ -119,45 +124,65 @@ const MobileBottombar = () => {
 
   return (
     <>
-      <div className="bg-[#F8F8F8]">
+      <div className={clsx(showOptions ? "bg-[#F8F8F8]" : "")}>
         <div className="flex justify-between align-middle mx-6 my-2 z-[999999]">
-          <div
-            onClick={() => {
-              // setOpenBottomBar(!openBottomBar);
-              // setCurOpenedPanel("mobPanelUpload");
-              fnOpenPanel("mobPanelUpload");
-            }}
-            className={`${
-              curOpenedPanel === "mobPanelUpload" ? "bg-[#e1f16b]" : ""
-            } p-1 rounded-lg`}
-          >
-            <MdcImagePlus size={24} />
-          </div>
-          <div
-            onClick={() => {
-              // setCurOpenedPanel("mobPanelText");
-              // setOpenBottomBar(!openBottomBar);
-              fnOpenPanel("mobPanelText");
-            }}
-            className={`${
-              curOpenedPanel === "mobPanelText" ? "bg-[#e1f16b]" : ""
-            } p-1 rounded-lg`}
-          >
-            <FiType size={24} />
-          </div>
-          <div
-            onClick={() => {
-              // setCurOpenedPanel("mobPanelStickers");
-              // setOpenBottomBar(!openBottomBar);
-              fnOpenPanel("mobPanelStickers");
-            }}
-            className={`${
-              curOpenedPanel === "mobPanelStickers" ? "bg-[#e1f16b]" : ""
-            } p-1 rounded-lg`}
-          >
-            <MdcStickerEmoji size={24} />
-          </div>
-          <ShareButton />
+          {!showOptions ? (
+            <div className="flex justify-end w-full">
+              <div
+                onClick={() => setShowOptions(true)}
+                className="p-3 rounded-full bg-[#e1f16b] hover:bg-[#c7d36a] cursor-pointer transition-colors shadow-lg"
+              >
+                <MdcPencil size={20} className="text-black" />
+              </div>
+            </div>
+          ) : (
+            <>
+              <div
+                onClick={() => {
+                  // setOpenBottomBar(!openBottomBar);
+                  // setCurOpenedPanel("mobPanelUpload");
+                  fnOpenPanel("mobPanelUpload");
+                }}
+                className={`${
+                  curOpenedPanel === "mobPanelUpload" ? "bg-[#e1f16b]" : ""
+                } p-1 rounded-lg`}
+              >
+                <MdcImagePlus size={24} />
+              </div>
+              <div
+                onClick={() => {
+                  // setCurOpenedPanel("mobPanelText");
+                  // setOpenBottomBar(!openBottomBar);
+                  fnOpenPanel("mobPanelText");
+                }}
+                className={`${
+                  curOpenedPanel === "mobPanelText" ? "bg-[#e1f16b]" : ""
+                } p-1 rounded-lg`}
+              >
+                <FiType size={24} />
+              </div>
+              <div
+                onClick={() => {
+                  // setCurOpenedPanel("mobPanelStickers");
+                  // setOpenBottomBar(!openBottomBar);
+                  fnOpenPanel("mobPanelStickers");
+                }}
+                className={`${
+                  curOpenedPanel === "mobPanelStickers" ? "bg-[#e1f16b]" : ""
+                } p-1 rounded-lg`}
+              >
+                <MdcStickerEmoji size={24} />
+              </div>
+              <ShareButton />
+
+              <div
+                onClick={() => setShowOptions(false)}
+                className="p-1 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+              >
+                <BsX size={24} />
+              </div>
+            </>
+          )}
           {/* <div
 						onClick={() => {
 							//  	setOpenBottomBar(false)
@@ -173,6 +198,23 @@ const MobileBottombar = () => {
 					>
 						<Share2 size={24} />
 					</div> */}
+        </div>
+
+        <div className="mx-6 mb-4">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsShareOpen(true);
+              setMenu("farcasterShare");
+            }}
+            className="w-full bg-[#e1f16b] hover:bg-[#c7d36a] text-black font-semibold py-4 px-6 rounded-xl transition-colors duration-200 shadow-lg"
+          >
+            Cast
+          </button>
+          <span className="hidden">
+            <ShareButton />
+          </span>
         </div>
 
         {/* Custom Drawer for Bottom Bar - Pure tailwind CSS only */}

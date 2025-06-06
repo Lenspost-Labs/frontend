@@ -110,7 +110,7 @@ const ZoraDialog = ({
                           rel="noreferrer"
                           className="text-blue-500"
                         >
-                          Warpcast
+                          Farcaster
                         </a>
                         <BiCopy
                           onClick={() => {
@@ -235,7 +235,7 @@ const ZoraDialog = ({
                                 rel="noreferrer"
                                 className="text-blue-500"
                               >
-                                Warpcast
+                                Farcaster
                               </a>
                               <BiCopy
                                 onClick={() => {
@@ -336,7 +336,7 @@ const ZoraDialog = ({
                           rel="noreferrer"
                           className="text-blue-500"
                         >
-                          Warpcast
+                          Farcaster
                         </a>
                         <BiCopy
                           onClick={() => {

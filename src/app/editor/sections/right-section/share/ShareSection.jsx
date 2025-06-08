@@ -5,6 +5,8 @@ import { DateTimePicker } from "@atlaskit/datetime-picker";
 import { chainLogo, getFromLocalStorage } from "../../../../../utils";
 import { Context } from "../../../../../providers/context/ContextProvider";
 import BsX from "@meronex/icons/bs/BsX";
+import BsChevronDown from "@meronex/icons/bs/BsChevronDown";
+import { motion, AnimatePresence } from "motion/react";
 import { Button, Textarea, Typography } from "@material-tailwind/react";
 import logoSolana from "../../../../../assets/logos/logoSolana.png";
 import logoFarcaster from "../../../../../assets/logos/logoFarcaster.jpg";
@@ -51,6 +53,7 @@ const ShareSection = () => {
   } = useContext(Context);
   const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState("");
   const [charLimitError, setCharLimitError] = useState("");
+  const [isEvmExpanded, setIsEvmExpanded] = useState(true);
   const { evmAuth } = useLocalStorage();
   const { login } = usePrivyAuth();
 
@@ -224,31 +227,54 @@ const ShareSection = () => {
               )}
 
               <div className={`relative mt-6 px-4 sm:px-6`}>
-              <p className="text-lg">Mint as an NFT on EVM</p>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                {filteredChains.map((item) => {
-                  return (
-                    <div
-                      key={item?.id}
-                      className="cursor-pointer flex flex-col items-center gap-2"
-                      onClick={() => {
-                        setChainTab(item?.id);
-                      }}
+                <div
+                  className="flex items-center justify-between cursor-pointer py-2"
+                  onClick={() => setIsEvmExpanded(!isEvmExpanded)}
+                >
+                  <p className="text-lg">Choose a Blockchain Network to Mint Your NFT</p>
+                  <motion.div
+                    animate={{ rotate: isEvmExpanded ? 180 : 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    <BsChevronDown size={20} className="text-gray-600 font-bold" />
+                  </motion.div>
+                </div>
+                <AnimatePresence>
+                  {isEvmExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
                     >
-                      {" "}
-                      <img
-                        className="w-10 h-10"
-                        src={chainLogo(item?.id)}
-                        alt={`${item?.name} blockchain logo`}
-                      />{" "}
-                      <Typography className="text-md font-semibold text-center">
-                        {item?.name}
-                      </Typography>
-                    </div>
-                  );
-                })}
+                      <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                        {filteredChains.map((item) => {
+                          return (
+                            <div
+                              key={item?.id}
+                              className="cursor-pointer flex flex-col items-center gap-2"
+                              onClick={() => {
+                                setChainTab(item?.id);
+                              }}
+                            >
+                              {" "}
+                              <img
+                                className="w-10 h-10"
+                                src={chainLogo(item?.id)}
+                                alt={`${item?.name} blockchain logo`}
+                              />{" "}
+                              <Typography className="text-md font-semibold text-center">
+                                {item?.name}
+                              </Typography>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
             </div>
           ))}
         {!isMobile && (
@@ -321,30 +347,53 @@ const ShareSection = () => {
             </div>
             <hr />
             <div className={`relative mt-6 px-4 sm:px-6`}>
-              <p className="text-lg">Mint as an NFT on EVM</p>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                {filteredChains.map((item) => {
-                  return (
-                    <div
-                      key={item?.id}
-                      className="cursor-pointer flex flex-col items-center gap-2"
-                      onClick={() => {
-                        setChainTab(item?.id);
-                      }}
-                    >
-                      {" "}
-                      <img
-                        className="w-10 h-10"
-                        src={chainLogo(item?.id)}
-                        alt={`${item?.name} blockchain logo`}
-                      />{" "}
-                      <Typography className="text-md font-semibold text-center">
-                        {item?.name}
-                      </Typography>
-                    </div>
-                  );
-                })}
+              <div
+                className="flex items-center justify-between cursor-pointer py-2"
+                onClick={() => setIsEvmExpanded(!isEvmExpanded)}
+              >
+                <p className="text-lg">Mint as an NFT on EVM</p>
+                <motion.div
+                  animate={{ rotate: isEvmExpanded ? 180 : 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <BsChevronDown size={20} className="text-gray-600 font-bold" />
+                </motion.div>
               </div>
+              <AnimatePresence>
+                {isEvmExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                      {filteredChains.map((item) => {
+                        return (
+                          <div
+                            key={item?.id}
+                            className="cursor-pointer flex flex-col items-center gap-2"
+                            onClick={() => {
+                              setChainTab(item?.id);
+                            }}
+                          >
+                            {" "}
+                            <img
+                              className="w-10 h-10"
+                              src={chainLogo(item?.id)}
+                              alt={`${item?.name} blockchain logo`}
+                            />{" "}
+                            <Typography className="text-md font-semibold text-center">
+                              {item?.name}
+                            </Typography>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <hr />
 

@@ -222,7 +222,7 @@ const FarcasterShareWrapper = () => {
                       Smart Post{" "}
                     </Tab>
                   )}
-                  {isMobile && (
+                  {/* {isMobile && (
                     <Tab
                       value={"erc1155"}
                       className="appFont"
@@ -231,7 +231,7 @@ const FarcasterShareWrapper = () => {
                       {" "}
                       Open Edition{" "}
                     </Tab>
-                  )}
+                  )} */}
                 </TabsHeader>
               </>
               {/* add components */}

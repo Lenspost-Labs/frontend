@@ -1051,7 +1051,7 @@ const ERC721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       const canvasParams = {
         zoraMintLink: "",
         channelId: farcasterStates.channel?.id || "",
-        frameLink: FRAME_URL + "/frame/" + frameId,
+        frameLink: FRAME_URL + "/mint/" + slug,
         isTransactional: true,
       };
 

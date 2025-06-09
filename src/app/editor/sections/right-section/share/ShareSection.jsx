@@ -53,7 +53,7 @@ const ShareSection = () => {
   } = useContext(Context);
   const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState("");
   const [charLimitError, setCharLimitError] = useState("");
-  const [isEvmExpanded, setIsEvmExpanded] = useState(true);
+  const [isEvmExpanded, setIsEvmExpanded] = useState(false);
   const { evmAuth } = useLocalStorage();
   const { login } = usePrivyAuth();
 
@@ -168,7 +168,7 @@ const ShareSection = () => {
             className={`
           ml-6 mr-6 mb-4`}
           >
-            <div className="m-1">Choose schedule time and date</div>
+            <div className="m-1">Mint as collectible</div>
             <DateTimePicker className="m-4" onChange={onCalChange} />
           </div>
 
@@ -211,7 +211,7 @@ const ShareSection = () => {
                   setOpenBottomBar(false);
                 }}
               >
-                Share on Farcaster
+                Cast on Farcaster
               </Button>
 
               {actionType !== "composer" && actionType !== "framev2" && (
@@ -228,15 +228,16 @@ const ShareSection = () => {
 
               <div className={`relative mt-6 px-4 sm:px-6`}>
                 <div
-                  className="flex items-center justify-between cursor-pointer py-2"
+                  className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
                   onClick={() => setIsEvmExpanded(!isEvmExpanded)}
                 >
-                  <p className="text-lg">Choose a Blockchain Network to Mint Your NFT</p>
+                  <p className="text-lg font-medium text-gray-800">Mint as collectible</p>
                   <motion.div
                     animate={{ rotate: isEvmExpanded ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm"
                   >
-                    <BsChevronDown size={20} className="text-gray-600 font-bold" />
+                    <BsChevronDown size={16} className="text-gray-600" />
                   </motion.div>
                 </div>
                 <AnimatePresence>
@@ -348,15 +349,16 @@ const ShareSection = () => {
             <hr />
             <div className={`relative mt-6 px-4 sm:px-6`}>
               <div
-                className="flex items-center justify-between cursor-pointer py-2"
+                className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mb-4"
                 onClick={() => setIsEvmExpanded(!isEvmExpanded)}
               >
-                <p className="text-lg">Mint as an NFT on EVM</p>
+                <p className="text-lg font-medium text-gray-800">Mint as Collectible</p>
                 <motion.div
                   animate={{ rotate: isEvmExpanded ? 180 : 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm"
                 >
-                  <BsChevronDown size={20} className="text-gray-600 font-bold" />
+                  <BsChevronDown size={16} className="text-gray-600" />
                 </motion.div>
               </div>
               <AnimatePresence>
@@ -397,7 +399,7 @@ const ShareSection = () => {
             </div>
             <hr />
 
-            <div className={`relative mt-6 px-4 sm:px-6`}>
+            {/* <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Mint as an NFT on Solana</p>
               <div className="flex flex-wrap items-center gap-10 my-3">
                 <div
@@ -411,7 +413,7 @@ const ShareSection = () => {
                   </Typography>
                 </div>
               </div>
-            </div>
+            </div> */}
             <hr />
           </>
         )}

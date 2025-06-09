@@ -487,7 +487,7 @@ const FarcasterNormalPost = () => {
     if (farcasterStates.frameData?.isFrame) {
       canvasParams = {
         ...canvasParams,
-        frameLink: FRAME_URL + "/frame/" + frameId,
+        frameLink: FRAME_URL + "/mint/" + slug,
       };
       if (
         !farcasterStates?.frameData?.isCreatorSponsored &&
@@ -524,7 +524,7 @@ const FarcasterNormalPost = () => {
 
       const imageUrl = getImageByCanvasIdData[0];
       const embeds = farcasterStates?.frameData?.isFrame
-        ? FRAME_URL + "/frame/" + frameId
+        ? FRAME_URL + "/mint/" + slug
         : imageUrl;
       console.log(embeds);
       window.parent.postMessage(
@@ -599,7 +599,7 @@ const FarcasterNormalPost = () => {
         ...prevState,
         frameData: {
           ...prevState.frameData,
-          allowedMints: prevState.frameData?.allowedMints || 100,
+          allowedMints: prevState.frameData?.allowedMints || 214748364,
           externalLink: "",
           collectionAddress: "",
           customCurrAmount: 0.0001,
@@ -1540,44 +1540,17 @@ const FarcasterNormalPost = () => {
 
           {/* Start  */}
           {/* Start Degen-L3 Mint */}
-          {!isMobile && actionType !== "composer" && (
+          {
             <div className="mb-4">
               <div className="flex justify-between">
                 <h2 className="text-lg mb-2"> Custom currency Mint </h2>
-                <Switch
-                  checked={farcasterStates.frameData?.isCustomCurrMint}
-                  onChange={() =>
-                    setFarcasterStates({
-                      ...farcasterStates,
-                      frameData: {
-                        ...farcasterStates.frameData,
-                        isCustomCurrMint:
-                          !farcasterStates.frameData?.isCustomCurrMint,
-                        isCreatorSponsored: false,
-                      },
-                    })
-                  }
-                  className={`${
-                    farcasterStates.frameData?.isCustomCurrMint
-                      ? "bg-[#e1f16b]"
-                      : "bg-gray-200"
-                  } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#e1f16b] focus:ring-offset-2`}
-                >
-                  <span
-                    className={`${
-                      farcasterStates.frameData?.isCustomCurrMint
-                        ? "translate-x-6"
-                        : "translate-x-1"
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                  />{" "}
-                </Switch>
               </div>
               <div className="w-4/5 opacity-75">
                 {" "}
                 Mint NFTs with custom currencies like $DEGEN{" "}
               </div>
             </div>
-          )}
+          }
         </>
         {/* // )} */}
         <div
@@ -1733,7 +1706,7 @@ const FarcasterNormalPost = () => {
               )}
             </div>
 
-            <div
+            {/* <div
               className={`flex flex-col w-full py-2 ${
                 !farcasterStates.frameData?.isCustomCurrMint && "hidden"
               }`}
@@ -1747,7 +1720,7 @@ const FarcasterNormalPost = () => {
                 onFocus={(e) => handleChange(e, "allowedMints")}
                 value={farcasterStates.frameData.allowedMints}
               />
-            </div>
+            </div> */}
 
             {farcasterStates.frameData?.allowedMintsIsError && (
               <InputErrorMsg
@@ -1885,7 +1858,7 @@ const FarcasterNormalPost = () => {
         {/* End Degen-L3 Mint */}
         {/* {!farcasterStates.frameData?.isCustomCurrMint && ( */}
         <>
-          {!isMobile && (
+          {false && (
             <div className="mb-4">
               <div className="flex justify-between">
                 <h2 className="text-lg mb-2"> Sponsor Mints </h2>
@@ -2057,9 +2030,9 @@ const FarcasterNormalPost = () => {
           )}
         </>
         {/* // )} */}
-        {actionType !== "composer" && walletData?.balance > 0 && !isMobile && (
+        {/* {actionType !== "composer" && walletData?.balance > 0 && !isMobile && (
           <WithdrawFunds refetchWallet={refetchWallet} />
-        )}
+        )} */}
       </div>
       {/* {isMobile && (
         <div className="mx-4">

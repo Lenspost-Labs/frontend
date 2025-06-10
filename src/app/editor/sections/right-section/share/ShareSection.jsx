@@ -228,10 +228,12 @@ const ShareSection = () => {
 
               <div className={`relative mt-6 px-4 sm:px-6`}>
                 <div
-                  className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+                  className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-900 text-white hover:bg-gray-800 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mx-[6px]"
                   onClick={() => setIsEvmExpanded(!isEvmExpanded)}
                 >
-                  <p className="text-lg font-medium text-gray-800">Mint as collectible</p>
+                  <p className="text-lg font-medium">
+                    Mint as collectible
+                  </p>
                   <motion.div
                     animate={{ rotate: isEvmExpanded ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -309,7 +311,7 @@ const ShareSection = () => {
                       />{" "}
                     </div>
                   </div>
-                  <div
+                  {/* <div
                     className={`flex items-center py-5 space-x-12 ${
                       !isMobile ? "ml-8" : " "
                     }`}
@@ -322,7 +324,7 @@ const ShareSection = () => {
                         alt="Lens"
                       />{" "}
                     </div>
-                  </div>
+                  </div> */}
                 </>
               </div>
             </div>
@@ -349,10 +351,12 @@ const ShareSection = () => {
             <hr />
             <div className={`relative mt-6 px-4 sm:px-6`}>
               <div
-                className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mb-4"
+                className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-900 text-white hover:bg-gray-800 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mb-4 mx-1"
                 onClick={() => setIsEvmExpanded(!isEvmExpanded)}
               >
-                <p className="text-lg font-medium text-gray-800">Mint as Collectible</p>
+                <p className="text-lg font-medium">
+                  Mint as Collectible
+                </p>
                 <motion.div
                   animate={{ rotate: isEvmExpanded ? 180 : 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}

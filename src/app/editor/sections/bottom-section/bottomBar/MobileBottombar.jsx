@@ -42,6 +42,8 @@ import { ShareSection } from "../../right-section";
 import { DesignPanel } from "../../left-section/design/DesignSection";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "motion/react";
+import HiOutlineSparkles from "@meronex/icons/hi/HiOutlineSparkles";
+import { Button } from "@material-tailwind/react";
 
 const MobileBottombar = () => {
   const {
@@ -52,6 +54,7 @@ const MobileBottombar = () => {
     curOpenedTabLevel1,
     setMenu,
     setIsShareOpen,
+    setCurOpenedTabLevel1,
   } = useContext(Context);
   const store = useStore();
   const [showOptions, setShowOptions] = useState(false);
@@ -125,6 +128,21 @@ const MobileBottombar = () => {
 
   return (
     <>
+      {showOptions && (
+        <motion.div layoutId="tools" className="flex justify-between w-full">
+          <BgRemover />
+
+          <Button
+            onClick={() => {
+              fnOpenPanel("mobPanelUpload");
+              setCurOpenedTabLevel1("ai");
+            }}
+            className="p-2 !py-0 mr-4 text-black leading-0 bg-[#e1f16b] rounded-lg"
+          >
+            <HiOutlineSparkles size={20} />
+          </Button>
+        </motion.div>
+      )}
       <div className={clsx(showOptions ? "bg-[#F8F8F8]" : "")}>
         <div className="flex justify-between align-middle mx-6 my-2 z-[999999]">
           <AnimatePresence mode="wait">
@@ -137,6 +155,19 @@ const MobileBottombar = () => {
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="flex justify-end w-full"
               >
+                <motion.div layoutId="tools" className="flex justify-between w-full">
+                  <BgRemover />
+
+                  <Button
+                    onClick={() => {
+                      fnOpenPanel("mobPanelUpload");
+                      setCurOpenedTabLevel1("ai");
+                    }}
+                    className="p-2 !py-0 mr-4 text-black leading-0 bg-[#e1f16b] rounded-lg"
+                  >
+                    <HiOutlineSparkles size={20} />
+                  </Button>
+                </motion.div>
                 <div
                   onClick={() => setShowOptions(true)}
                   className="p-3 rounded-full bg-[#e1f16b] hover:bg-[#c7d36a] cursor-pointer transition-colors shadow-lg"

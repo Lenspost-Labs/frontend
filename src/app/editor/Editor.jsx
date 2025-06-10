@@ -824,7 +824,7 @@ const Editor = () => {
     enabled: !!sp_ipid,
   });
 
-  // Add a ref to track if images have been loaded
+  // Add ref to track if images have been loaded
   const imagesLoadedRef = useRef(false);
 
   useEffect(() => {
@@ -839,8 +839,12 @@ const Editor = () => {
       return;
     }
 
-    //check if user is logged in, if not, show a message to log in
-    if (!isAuthenticated) toast.error("Please login to continue");
+    // Show login message if not authenticated
+    if (!isAuthenticated) {
+      toast.error("Please login to continue", {
+        toastId: "login-required-toast",
+      });
+    }
 
     const splitAndFilter = (str) => str?.split(",").filter(Boolean) || [];
 
@@ -882,7 +886,7 @@ const Editor = () => {
         toast.error(e);
       }
     }
-  }, [ipAssetsData, isAuthenticated]); // Remove chainId from dependencies
+  }, [ipAssetsData, isAuthenticated]);
   // IP portal end
 
   console.log(actionType);

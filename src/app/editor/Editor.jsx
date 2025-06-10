@@ -756,49 +756,52 @@ const Editor = () => {
   useEffect(() => {
     if (isAuthenticated && parseUrlParams()?.sp_ipid) {
       const createInitialCanvas = async () => {
-        try {
-          const json = store.toJSON();
-          const reqbody = {
-            data: json,
-            referredFrom: recipientDataCombiner().recipients,
-            assetsRecipientElementData: recipientDataFilter().recipientsData,
-            preview: canvasBase64Ref.current,
-            assetIds:
-              [
-                ...new Set(
-                  assetsIdListRef.current
-                    .map((item) => item?.assetId)
-                    .filter((id) => id !== undefined)
-                ),
-              ] || [],
-            parentIpIds:
-              [
-                ...new Set(
-                  storyIPDataRef.current
-                    .map((item) => item?.ipID)
-                    .filter((id) => id !== undefined)
-                ),
-              ] || [],
-            licenseTermsIds:
-              [
-                ...new Set(
-                  storyIPDataRef.current
-                    .map((item) => item?.licenseTermsId)
-                    .filter((id) => id !== undefined)
-                ),
-              ] || [],
-          };
+        // Only create a new canvas if one doesn't exist
+        if (!canvasIdRef.current) {
+          try {
+            const json = store.toJSON();
+            const reqbody = {
+              data: json,
+              referredFrom: recipientDataCombiner().recipients,
+              assetsRecipientElementData: recipientDataFilter().recipientsData,
+              preview: canvasBase64Ref.current,
+              assetIds:
+                [
+                  ...new Set(
+                    assetsIdListRef.current
+                      .map((item) => item?.assetId)
+                      .filter((id) => id !== undefined)
+                  ),
+                ] || [],
+              parentIpIds:
+                [
+                  ...new Set(
+                    storyIPDataRef.current
+                      .map((item) => item?.ipID)
+                      .filter((id) => id !== undefined)
+                  ),
+                ] || [],
+              licenseTermsIds:
+                [
+                  ...new Set(
+                    storyIPDataRef.current
+                      .map((item) => item?.licenseTermsId)
+                      .filter((id) => id !== undefined)
+                  ),
+                ] || [],
+            };
 
-          const res = await createCanvasAsync(reqbody);
-          if (res?.status === "success") {
-            canvasIdRef.current = res?.id;
-            contextCanvasIdRef.current = res?.id;
-            console.log(res?.message);
+            const res = await createCanvasAsync(reqbody);
+            if (res?.status === "success") {
+              canvasIdRef.current = res?.id;
+              contextCanvasIdRef.current = res?.id;
+              console.log(res?.message);
+            }
+          } catch (err) {
+            console.log("Canvas creation error", {
+              error: errorMessage(err),
+            });
           }
-        } catch (err) {
-          console.log("Canvas creation error", {
-            error: errorMessage(err),
-          });
         }
       };
 
@@ -821,6 +824,9 @@ const Editor = () => {
     enabled: !!sp_ipid,
   });
 
+  // Add ref to track if images have been loaded
+  const imagesLoadedRef = useRef(false);
+
   useEffect(() => {
     // if no sp_ipid params are found, end the function
     if (!parseUrlParams()?.sp_ipid) {
@@ -828,8 +834,17 @@ const Editor = () => {
       return;
     }
 
-    //check if user is logged in, if not, show a message to log in
-    if (!isAuthenticated) toast.error("Please login to continue");
+    // If images are already loaded, don't load them again
+    if (imagesLoadedRef.current) {
+      return;
+    }
+
+    // Show login message if not authenticated
+    if (!isAuthenticated) {
+      toast.error("Please login to continue", {
+        toastId: "login-required-toast",
+      });
+    }
 
     const splitAndFilter = (str) => str?.split(",").filter(Boolean) || [];
 
@@ -853,7 +868,7 @@ const Editor = () => {
       return true;
     };
 
-    if (validateParams(parseUrlParams())) {
+    if (validateParams(parseUrlParams()) && ipAssetsData?.data?.data?.IpData) {
       console.log("DATA", ipAssetsData);
       storyIPDataRef.current = ipAssetsData?.data?.data?.ipIds;
 
@@ -865,11 +880,13 @@ const Editor = () => {
             toast.error(item?.error);
           }
         });
+        // Mark images as loaded
+        imagesLoadedRef.current = true;
       } catch (e) {
         toast.error(e);
       }
     }
-  }, [ipAssetsData, authenticated, chainId]);
+  }, [ipAssetsData, isAuthenticated]);
   // IP portal end
 
   console.log(actionType);

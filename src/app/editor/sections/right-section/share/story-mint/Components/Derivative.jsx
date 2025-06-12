@@ -412,7 +412,18 @@ const Derivative = () => {
       registerDerivativeData?.data?.collection ? (
         <div className="flex flex-col gap-2 mt-4 justify-center items-center">
           <p className="text-green-500 font-bold">
-            Derivative registered successfully!
+            Derivative registered successfully!{" "}
+            <span
+              className="text-purple-500 hover:underline"
+              rel="noreferrer"
+              target="_blank"
+            >
+              <a
+                href={`https://portal.story.foundation/assets/${registerDerivativeData?.data?.ip?.IpId}`}
+              >
+                view
+              </a>
+            </span>
           </p>
           <a
             href={`${storyMainnet?.blockExplorers?.default.url}/token/${registerDerivativeData?.data?.collection?.spgNftContract}`}

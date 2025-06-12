@@ -412,14 +412,13 @@ const Derivative = () => {
       registerDerivativeData?.data?.collection ? (
         <div className="flex flex-col gap-2 mt-4 justify-center items-center">
           <p className="text-green-500 font-bold">
-            Derivative registered successfully!{" "}
-            <span
-              className="text-purple-500 hover:underline"
-              rel="noreferrer"
-              target="_blank"
-            >
+            Derivative registered successfully!{"  "}
+            <span>
               <a
-                href={`https://portal.story.foundation/assets/${registerDerivativeData?.data?.ip?.IpId}`}
+                href={`https://portal.story.foundation/assets/${registerDerivativeData?.data?.ip[0]?.IpId}`}
+                className="text-purple-500 hover:underline"
+                rel="noreferrer"
+                target="_blank"
               >
                 view
               </a>

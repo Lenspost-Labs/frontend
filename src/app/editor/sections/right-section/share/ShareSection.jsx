@@ -146,20 +146,22 @@ const ShareSection = () => {
         </Dialog.Title> */}
 
           {/* Don't add - `fixed` solved major Bug */}
-          <div className="flex flex-row justify-between top-0 w-full text-white text-xl leading-6 p-4 bg-gray-900 rounded-lg rounded-r-none ">
-            {/* For alignment */}
-            <div className=""> {""} </div>
-            <div className="">Share this Design</div>
-            <div
-              className="z-100 cursor-pointer"
-              onClick={() => {
-                setIsShareOpen(!isShareOpen);
-                setOpenBottomBar(false);
-              }}
-            >
-              <BsX size="24" />
+          {!isMobile && (
+            <div className="flex flex-row justify-between top-0 w-full text-white text-xl leading-6 p-4 bg-gray-900 rounded-lg rounded-r-none ">
+              {/* For alignment */}
+              <div className=""> {""} </div>
+              <div className="">Share this Design</div>
+              <div
+                className="z-100 cursor-pointer"
+                onClick={() => {
+                  setIsShareOpen(!isShareOpen);
+                  setOpenBottomBar(false);
+                }}
+              >
+                <BsX size="24" />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Calender For Schedule - 18Jun2023 */}
@@ -168,7 +170,7 @@ const ShareSection = () => {
             className={`
           ml-6 mr-6 mb-4`}
           >
-            <div className="m-1">Mint as collectible</div>
+            <div className="m-1">Make it Collectible</div>
             <DateTimePicker className="m-4" onChange={onCalChange} />
           </div>
 
@@ -211,7 +213,7 @@ const ShareSection = () => {
                   setOpenBottomBar(false);
                 }}
               >
-                Cast on Farcaster
+                Cast as Image
               </Button>
 
               {actionType !== "composer" && actionType !== "framev2" && (
@@ -231,9 +233,7 @@ const ShareSection = () => {
                   className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-900 text-white hover:bg-gray-800 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mx-[6px]"
                   onClick={() => setIsEvmExpanded(!isEvmExpanded)}
                 >
-                  <p className="text-lg font-medium">
-                    Mint as collectible
-                  </p>
+                  <p className="text-lg font-medium">Make it Collectible</p>
                   <motion.div
                     animate={{ rotate: isEvmExpanded ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -354,9 +354,7 @@ const ShareSection = () => {
                 className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-900 text-white hover:bg-gray-800 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mb-4 mx-1"
                 onClick={() => setIsEvmExpanded(!isEvmExpanded)}
               >
-                <p className="text-lg font-medium">
-                  Mint as Collectible
-                </p>
+                <p className="text-lg font-medium">Make it Collectible</p>
                 <motion.div
                   animate={{ rotate: isEvmExpanded ? 180 : 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}

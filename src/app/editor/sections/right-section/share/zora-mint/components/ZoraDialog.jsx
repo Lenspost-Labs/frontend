@@ -110,7 +110,7 @@ const ZoraDialog = ({
                           rel="noreferrer"
                           className="text-blue-500"
                         >
-                          Warpcast
+                          Farcaster
                         </a>
                         <BiCopy
                           onClick={() => {
@@ -131,7 +131,7 @@ const ZoraDialog = ({
                         <span className="flex gap-1 items-center">
                           Check your
                           <a
-                            href={FRAME_URL + "/frame/" + frameId}
+                            href={FRAME_URL + "/mint/" + slug}
                             target="_blank"
                             rel="noreferrer"
                             className="text-blue-500"
@@ -141,7 +141,7 @@ const ZoraDialog = ({
                           <BiCopy
                             onClick={() => {
                               navigator.clipboard.writeText(
-                                FRAME_URL + "/frame/" + frameId
+                                FRAME_URL + "/mint/" + slug
                               );
                               setIsCopy({
                                 id: 2,
@@ -235,7 +235,7 @@ const ZoraDialog = ({
                                 rel="noreferrer"
                                 className="text-blue-500"
                               >
-                                Warpcast
+                                Farcaster
                               </a>
                               <BiCopy
                                 onClick={() => {
@@ -336,7 +336,7 @@ const ZoraDialog = ({
                           rel="noreferrer"
                           className="text-blue-500"
                         >
-                          Warpcast
+                          Farcaster
                         </a>
                         <BiCopy
                           onClick={() => {

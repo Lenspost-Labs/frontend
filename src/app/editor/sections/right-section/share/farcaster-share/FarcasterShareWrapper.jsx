@@ -203,16 +203,16 @@ const FarcasterShareWrapper = () => {
               {/* Don't show Tabs header for Composer */}
               {/* {!actionType === "composer" && ( */}
               <>
-                <TabsHeader className="relative top-0 ">
-                  <Tab
+                {/* <TabsHeader className="relative top-0 "> */}
+                  {/* <Tab
                     value={"normalPost"}
                     className="appFont"
                     onClick={() => setFarcasterTab("normalPost")}
                   >
                     {" "}
                     Quick Share{" "}
-                  </Tab>
-                  {!isMobile && (
+                  </Tab> */}
+                  {/* {!isMobile && (
                     <Tab
                       value={"smartPost"}
                       className="appFont"
@@ -221,8 +221,8 @@ const FarcasterShareWrapper = () => {
                       {" "}
                       Smart Post{" "}
                     </Tab>
-                  )}
-                  {isMobile && (
+                  )} */}
+                  {/* {isMobile && (
                     <Tab
                       value={"erc1155"}
                       className="appFont"
@@ -231,8 +231,8 @@ const FarcasterShareWrapper = () => {
                       {" "}
                       Open Edition{" "}
                     </Tab>
-                  )}
-                </TabsHeader>
+                  )} */}
+                {/* </TabsHeader> */}
               </>
               {/* add components */}
               {farcasterTab === "normalPost" && <FarcasterNormalPost />}

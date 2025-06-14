@@ -87,14 +87,18 @@ const MobileTopbar = () => {
   });
 
   const stickersSections = [
-    {
-      author: "camp",
-      campaign: "camp",
-    },
+    // {
+    //   author: "camp",
+    //   campaign: "camp",
+    // },
     // {
     //   author: "$Pipe",
     //   campaign: "$Pipe",
     // },
+    {
+      author: "BizarreBeasts",
+      campaign: "BizarreBeasts",
+    },
     {
       author: "OwnTheDoge",
       campaign: "OwnTheDoge",
@@ -102,10 +106,6 @@ const MobileTopbar = () => {
     // {
     //   author: "MrMiggles",
     //   campaign: "MrMiggles",
-    // },
-    // {
-    //   author: "BizarreBeasts",
-    //   campaign: "BizarreBeasts",
     // },
     {
       author: "degen",

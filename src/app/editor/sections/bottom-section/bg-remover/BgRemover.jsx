@@ -10,11 +10,12 @@ import { Context } from "../../../../../providers/context";
 import SuReplicate from "@meronex/icons/su/SuReplicate";
 import { Typography } from "@material-tailwind/react";
 import coinImg from "../../../../../assets/svgs/Coin.svg";
+import HiOutlineSparkles from "@meronex/icons/hi/HiOutlineSparkles";
 const BgRemover = ({ inSpeedDial }) => {
   const store = useStore();
   const { isAuthenticated } = useAppAuth();
   const [stActivePageNo, setStActivePageNo] = useState(0);
-  const { parentRecipientDataRef, bgRemoverRecipientDataRef } =
+  const { parentRecipientDataRef, bgRemoverRecipientDataRef, isMobile } =
     useContext(Context);
   var varActivePageNo = 0;
 
@@ -118,17 +119,23 @@ const BgRemover = ({ inSpeedDial }) => {
   return (
     <div className="">
       {!inSpeedDial && (
-        <Button
+        <div
           id="fourth-step"
           icon="clean"
           onClick={fnCallToast}
           title={!isAuthenticated ? "" : "Please connect your wallet"}
           disabled={!isAuthenticated}
-          className="mt-2 mb-2 ml-3 py-1 px-4"
+          className={`ml-1 px-2 py-2  shadow-md rounded-lg ${
+            isMobile ? "bg-[#e1f16b] py-3 px-5" : "bg-white"
+          }`}
         >
-          {`Remove background`}
-          <img className="h-4 -mt-1 ml-2" src={coinImg} alt="" />
-        </Button>
+          <div className="flex justify-between gap-2 items-center">
+            {" "}
+            <HiOutlineSparkles size={15} />
+            {`Remove background`}
+            <img className="h-4 " src={coinImg} alt="" />
+          </div>
+        </div>
       )}
 
       {/* For Speed dial display */}

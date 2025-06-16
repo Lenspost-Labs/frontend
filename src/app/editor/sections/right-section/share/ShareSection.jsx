@@ -5,6 +5,8 @@ import { DateTimePicker } from "@atlaskit/datetime-picker";
 import { chainLogo, getFromLocalStorage } from "../../../../../utils";
 import { Context } from "../../../../../providers/context/ContextProvider";
 import BsX from "@meronex/icons/bs/BsX";
+import BsChevronDown from "@meronex/icons/bs/BsChevronDown";
+import { motion, AnimatePresence } from "motion/react";
 import { Button, Textarea, Typography } from "@material-tailwind/react";
 import logoSolana from "../../../../../assets/logos/logoSolana.png";
 import logoFarcaster from "../../../../../assets/logos/logoFarcaster.jpg";
@@ -51,6 +53,7 @@ const ShareSection = () => {
   } = useContext(Context);
   const [stClickedEmojiIcon, setStClickedEmojiIcon] = useState("");
   const [charLimitError, setCharLimitError] = useState("");
+  const [isEvmExpanded, setIsEvmExpanded] = useState(false);
   const { evmAuth } = useLocalStorage();
   const { login } = usePrivyAuth();
 
@@ -143,20 +146,22 @@ const ShareSection = () => {
         </Dialog.Title> */}
 
           {/* Don't add - `fixed` solved major Bug */}
-          <div className="flex flex-row justify-between top-0 w-full text-white text-xl leading-6 p-4 bg-gray-900 rounded-lg rounded-r-none ">
-            {/* For alignment */}
-            <div className=""> {""} </div>
-            <div className="">Share this Design</div>
-            <div
-              className="z-100 cursor-pointer"
-              onClick={() => {
-                setIsShareOpen(!isShareOpen);
-                setOpenBottomBar(false);
-              }}
-            >
-              <BsX size="24" />
+          {!isMobile && (
+            <div className="flex flex-row justify-between top-0 w-full text-white text-xl leading-6 p-4 bg-gray-900 rounded-lg rounded-r-none ">
+              {/* For alignment */}
+              <div className=""> {""} </div>
+              <div className="">Share this Design</div>
+              <div
+                className="z-100 cursor-pointer"
+                onClick={() => {
+                  setIsShareOpen(!isShareOpen);
+                  setOpenBottomBar(false);
+                }}
+              >
+                <BsX size="24" />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Calender For Schedule - 18Jun2023 */}
@@ -165,7 +170,7 @@ const ShareSection = () => {
             className={`
           ml-6 mr-6 mb-4`}
           >
-            <div className="m-1">Choose schedule time and date</div>
+            <div className="m-1">Make it Collectible</div>
             <DateTimePicker className="m-4" onChange={onCalChange} />
           </div>
 
@@ -208,7 +213,7 @@ const ShareSection = () => {
                   setOpenBottomBar(false);
                 }}
               >
-                Share on Farcaster
+                Cast as Image
               </Button>
 
               {actionType !== "composer" && actionType !== "framev2" && (
@@ -224,31 +229,55 @@ const ShareSection = () => {
               )}
 
               <div className={`relative mt-6 px-4 sm:px-6`}>
-              <p className="text-lg">Mint as an NFT on EVM</p>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                {filteredChains.map((item) => {
-                  return (
-                    <div
-                      key={item?.id}
-                      className="cursor-pointer flex flex-col items-center gap-2"
-                      onClick={() => {
-                        setChainTab(item?.id);
-                      }}
+                <div
+                  className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-900 text-white hover:bg-gray-800 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mx-[6px]"
+                  onClick={() => setIsEvmExpanded(!isEvmExpanded)}
+                >
+                  <p className="text-lg font-medium">Make it Collectible</p>
+                  <motion.div
+                    animate={{ rotate: isEvmExpanded ? 180 : 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm"
+                  >
+                    <BsChevronDown size={16} className="text-gray-600" />
+                  </motion.div>
+                </div>
+                <AnimatePresence>
+                  {isEvmExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
                     >
-                      {" "}
-                      <img
-                        className="w-10 h-10"
-                        src={chainLogo(item?.id)}
-                        alt={`${item?.name} blockchain logo`}
-                      />{" "}
-                      <Typography className="text-md font-semibold text-center">
-                        {item?.name}
-                      </Typography>
-                    </div>
-                  );
-                })}
+                      <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                        {filteredChains.map((item) => {
+                          return (
+                            <div
+                              key={item?.id}
+                              className="cursor-pointer flex flex-col items-center gap-2"
+                              onClick={() => {
+                                setChainTab(item?.id);
+                              }}
+                            >
+                              {" "}
+                              <img
+                                className="w-10 h-10"
+                                src={chainLogo(item?.id)}
+                                alt={`${item?.name} blockchain logo`}
+                              />{" "}
+                              <Typography className="text-md font-semibold text-center">
+                                {item?.name}
+                              </Typography>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
             </div>
           ))}
         {!isMobile && (
@@ -282,7 +311,7 @@ const ShareSection = () => {
                       />{" "}
                     </div>
                   </div>
-                  <div
+                  {/* <div
                     className={`flex items-center py-5 space-x-12 ${
                       !isMobile ? "ml-8" : " "
                     }`}
@@ -295,7 +324,7 @@ const ShareSection = () => {
                         alt="Lens"
                       />{" "}
                     </div>
-                  </div>
+                  </div> */}
                 </>
               </div>
             </div>
@@ -321,34 +350,58 @@ const ShareSection = () => {
             </div>
             <hr />
             <div className={`relative mt-6 px-4 sm:px-6`}>
-              <p className="text-lg">Mint as an NFT on EVM</p>
-              <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
-                {filteredChains.map((item) => {
-                  return (
-                    <div
-                      key={item?.id}
-                      className="cursor-pointer flex flex-col items-center gap-2"
-                      onClick={() => {
-                        setChainTab(item?.id);
-                      }}
-                    >
-                      {" "}
-                      <img
-                        className="w-10 h-10"
-                        src={chainLogo(item?.id)}
-                        alt={`${item?.name} blockchain logo`}
-                      />{" "}
-                      <Typography className="text-md font-semibold text-center">
-                        {item?.name}
-                      </Typography>
-                    </div>
-                  );
-                })}
+              <div
+                className="flex items-center justify-between cursor-pointer py-3 px-4 bg-gray-900 text-white hover:bg-gray-800 border border-gray-200 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md mb-4 mx-1"
+                onClick={() => setIsEvmExpanded(!isEvmExpanded)}
+              >
+                <p className="text-lg font-medium">Make it Collectible</p>
+                <motion.div
+                  animate={{ rotate: isEvmExpanded ? 180 : 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm"
+                >
+                  <BsChevronDown size={16} className="text-gray-600" />
+                </motion.div>
               </div>
+              <AnimatePresence>
+                {isEvmExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
+                      {filteredChains.map((item) => {
+                        return (
+                          <div
+                            key={item?.id}
+                            className="cursor-pointer flex flex-col items-center gap-2"
+                            onClick={() => {
+                              setChainTab(item?.id);
+                            }}
+                          >
+                            {" "}
+                            <img
+                              className="w-10 h-10"
+                              src={chainLogo(item?.id)}
+                              alt={`${item?.name} blockchain logo`}
+                            />{" "}
+                            <Typography className="text-md font-semibold text-center">
+                              {item?.name}
+                            </Typography>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <hr />
 
-            <div className={`relative mt-6 px-4 sm:px-6`}>
+            {/* <div className={`relative mt-6 px-4 sm:px-6`}>
               <p className="text-lg">Mint as an NFT on Solana</p>
               <div className="flex flex-wrap items-center gap-10 my-3">
                 <div
@@ -362,7 +415,7 @@ const ShareSection = () => {
                   </Typography>
                 </div>
               </div>
-            </div>
+            </div> */}
             <hr />
           </>
         )}

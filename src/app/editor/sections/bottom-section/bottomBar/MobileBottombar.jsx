@@ -37,8 +37,13 @@ import BgRemover from "../bg-remover/BgRemover";
 import MdcImagePlus from "@meronex/icons/mdc/MdcImagePlus";
 import FiType from "@meronex/icons/fi/FiType";
 import MdcStickerEmoji from "@meronex/icons/mdc/MdcStickerEmoji";
+import MdcPencil from "@meronex/icons/mdc/MdcPencil";
 import { ShareSection } from "../../right-section";
 import { DesignPanel } from "../../left-section/design/DesignSection";
+import clsx from "clsx";
+import { motion, AnimatePresence } from "motion/react";
+import HiOutlineSparkles from "@meronex/icons/hi/HiOutlineSparkles";
+import { Button } from "@material-tailwind/react";
 
 const MobileBottombar = () => {
   const {
@@ -47,8 +52,12 @@ const MobileBottombar = () => {
     openBottomBar,
     setOpenBottomBar,
     curOpenedTabLevel1,
+    setMenu,
+    setIsShareOpen,
+    setCurOpenedTabLevel1,
   } = useContext(Context);
   const store = useStore();
+  const [showOptions, setShowOptions] = useState(false);
 
   const { fnOpenPanel } = useMobilePanelFunctions();
 
@@ -119,45 +128,120 @@ const MobileBottombar = () => {
 
   return (
     <>
-      <div className="bg-[#F8F8F8]">
-        <div className="flex justify-between align-middle mx-6 my-2 z-[999999]">
-          <div
+      {showOptions && (
+        <motion.div layoutId="tools" className="flex justify-between w-full">
+          <BgRemover />
+
+          <Button
             onClick={() => {
-              // setOpenBottomBar(!openBottomBar);
-              // setCurOpenedPanel("mobPanelUpload");
               fnOpenPanel("mobPanelUpload");
+              setCurOpenedTabLevel1("ai");
             }}
-            className={`${
-              curOpenedPanel === "mobPanelUpload" ? "bg-[#e1f16b]" : ""
-            } p-1 rounded-lg`}
+            className="p-2 !py-0 mr-4 text-black leading-0 bg-[#e1f16b] rounded-lg"
           >
-            <MdcImagePlus size={24} />
-          </div>
-          <div
-            onClick={() => {
-              // setCurOpenedPanel("mobPanelText");
-              // setOpenBottomBar(!openBottomBar);
-              fnOpenPanel("mobPanelText");
-            }}
-            className={`${
-              curOpenedPanel === "mobPanelText" ? "bg-[#e1f16b]" : ""
-            } p-1 rounded-lg`}
-          >
-            <FiType size={24} />
-          </div>
-          <div
-            onClick={() => {
-              // setCurOpenedPanel("mobPanelStickers");
-              // setOpenBottomBar(!openBottomBar);
-              fnOpenPanel("mobPanelStickers");
-            }}
-            className={`${
-              curOpenedPanel === "mobPanelStickers" ? "bg-[#e1f16b]" : ""
-            } p-1 rounded-lg`}
-          >
-            <MdcStickerEmoji size={24} />
-          </div>
-          <ShareButton />
+            <HiOutlineSparkles size={20} />
+          </Button>
+        </motion.div>
+      )}
+      <div className={clsx(showOptions ? "bg-[#F8F8F8]" : "")}>
+        <div className="flex justify-between align-middle mx-6 my-2 z-[999999]">
+          <AnimatePresence mode="wait">
+            {!showOptions ? (
+              <motion.div
+                key="collapsed"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex justify-end w-full"
+              >
+                <motion.div layoutId="tools" className="flex justify-between w-full">
+                  <BgRemover />
+
+                  <Button
+                    onClick={() => {
+                      fnOpenPanel("mobPanelUpload");
+                      setCurOpenedTabLevel1("ai");
+                    }}
+                    className="p-2 !py-0 mr-4 text-black leading-0 bg-[#e1f16b] rounded-lg"
+                  >
+                    <HiOutlineSparkles size={20} />
+                  </Button>
+                </motion.div>
+                <div
+                  onClick={() => setShowOptions(true)}
+                  className="p-3 rounded-full bg-[#e1f16b] hover:bg-[#c7d36a] cursor-pointer transition-colors shadow-lg"
+                >
+                  <MdcPencil size={20} className="text-black" />
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="expanded"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex justify-between items-center w-full"
+              >
+                <motion.div
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.3 }}
+                  onClick={() => {
+                    fnOpenPanel("mobPanelUpload");
+                  }}
+                  className={`${
+                    curOpenedPanel === "mobPanelUpload" ? "bg-[#e1f16b]" : ""
+                  } p-1 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors`}
+                >
+                  <MdcImagePlus size={24} />
+                </motion.div>
+                <motion.div
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.15, duration: 0.3 }}
+                  onClick={() => {
+                    fnOpenPanel("mobPanelText");
+                  }}
+                  className={`${
+                    curOpenedPanel === "mobPanelText" ? "bg-[#e1f16b]" : ""
+                  } p-1 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors`}
+                >
+                  <FiType size={24} />
+                </motion.div>
+                <motion.div
+                  initial={{ x: -10, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
+                  onClick={() => {
+                    fnOpenPanel("mobPanelStickers");
+                  }}
+                  className={`${
+                    curOpenedPanel === "mobPanelStickers" ? "bg-[#e1f16b]" : ""
+                  } p-1 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors`}
+                >
+                  <MdcStickerEmoji size={24} />
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.25, duration: 0.3 }}
+                >
+                  <ShareButton />
+                </motion.div>
+                <motion.div
+                  initial={{ x: 10, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                  onClick={() => setShowOptions(false)}
+                  className="p-1 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+                >
+                  <BsX size={24} />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
           {/* <div
 						onClick={() => {
 							//  	setOpenBottomBar(false)
@@ -174,6 +258,28 @@ const MobileBottombar = () => {
 						<Share2 size={24} />
 					</div> */}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: showOptions ? 0.4 : 0.2, duration: 0.3 }}
+          className="mx-6 mb-4"
+        >
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsShareOpen(true);
+              setMenu("share");
+            }}
+            className="w-full bg-[#e1f16b] hover:bg-[#c7d36a] text-black font-semibold py-4 px-6 rounded-xl transition-colors duration-200 shadow-lg"
+          >
+            Cast
+          </button>
+          <span className="hidden">
+            <ShareButton />
+          </span>
+        </motion.div>
 
         {/* Custom Drawer for Bottom Bar - Pure tailwind CSS only */}
         <div

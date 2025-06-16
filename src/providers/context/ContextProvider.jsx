@@ -374,7 +374,7 @@ const ContextProvider = ({ children }) => {
       isCollection: false,
       collectionAddress: "",
 
-      allowedMints: "",
+      allowedMints: 214748364,
       allowedMintsIsError: false,
       allowedMintsError: "",
 
@@ -392,7 +392,7 @@ const ContextProvider = ({ children }) => {
       isExternalLinkError: false,
       externalLinkError: "",
 
-      isCustomCurrMint: false,
+      isCustomCurrMint: true,
 
       customCurrAmount: 1,
 

@@ -12,6 +12,14 @@ export const TOKEN_LIST = {
     },
     {
       id: 8453,
+      address: "0x0520bf1d3cEE163407aDA79109333aB1599b4004",
+      symbol: "BB",
+      name: "BizarreBeasts",
+      decimals: 18,
+      logoURI: "https://lenspost-r2.b-cdn.net/web-assets/photo_2025-06-24_15-34-28.jpg",
+    },
+    {
+      id: 8453,
       address: "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed",
       symbol: "DEGEN",
       name: "Degen",

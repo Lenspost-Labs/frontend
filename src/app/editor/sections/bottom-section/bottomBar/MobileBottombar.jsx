@@ -38,8 +38,8 @@ import MdcImagePlus from "@meronex/icons/mdc/MdcImagePlus";
 import FiType from "@meronex/icons/fi/FiType";
 import MdcStickerEmoji from "@meronex/icons/mdc/MdcStickerEmoji";
 import { ShareSection } from "../../right-section";
+import MdcPencil from "@meronex/icons/mdc/MdcPencil";
 import { DesignPanel } from "../../left-section/design/DesignSection";
-import clsx from "clsx";
 
 const MobileBottombar = () => {
   const {
@@ -54,6 +54,7 @@ const MobileBottombar = () => {
   const store = useStore();
 
   const { fnOpenPanel } = useMobilePanelFunctions();
+  const [showOptions, setShowOptions] = useState(false);
 
   useEffect(() => {
     const handleEscape = (event) => {
@@ -122,7 +123,7 @@ const MobileBottombar = () => {
 
   return (
     <>
-      <div className={clsx(showOptions ? "bg-[#F8F8F8]" : "")}>
+      <div className={showOptions ? "bg-[#F8F8F8]" : ""}>
         <div className="flex justify-between align-middle mx-6 my-2 z-[999999]">
           {!showOptions ? (
             <div className="flex justify-end w-full">
@@ -171,8 +172,6 @@ const MobileBottombar = () => {
               >
                 <MdcStickerEmoji size={24} />
               </div>
-              <ShareButton />
-
               <div
                 onClick={() => setShowOptions(false)}
                 className="p-1 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"

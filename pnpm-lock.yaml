@@ -43,7 +43,7 @@ importers:
         version: 2.9.1(@react-native-async-storage/async-storage@1.24.0(react-native@0.79.1(@babel/core@7.26.10)(@types/react@18.3.20)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.0(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10))(@types/react@18.3.20)(bs58@5.0.0)(bufferutil@4.0.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.4.0(react@18.3.1))(utf-8-validate@5.0.10)(zod@3.24.3)
       '@privy-io/wagmi':
         specifier: ^1.0.3
-        version: 1.0.3(m5gejmvinvafpsvzydrxrtspmu)
+        version: 1.0.3(80e789fb527cba75057f5f36a264a14d)
       '@sentry/react':
         specifier: ^7.108.0
         version: 7.120.3(react@18.3.1)
@@ -83,6 +83,9 @@ importers:
       buffer:
         specifier: ^6.0.3
         version: 6.0.3
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       emoji-picker-react:
         specifier: ^4.4.10
         version: 4.12.2(react@18.3.1)
@@ -9241,7 +9244,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@privy-io/wagmi@1.0.3(m5gejmvinvafpsvzydrxrtspmu)':
+  '@privy-io/wagmi@1.0.3(80e789fb527cba75057f5f36a264a14d)':
     dependencies:
       '@privy-io/react-auth': 2.9.1(@react-native-async-storage/async-storage@1.24.0(react-native@0.79.1(@babel/core@7.26.10)(@types/react@18.3.20)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.0(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10))(@types/react@18.3.20)(bs58@5.0.0)(bufferutil@4.0.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)(use-sync-external-store@1.4.0(react@18.3.1))(utf-8-validate@5.0.10)(zod@3.24.3)
       react: 18.3.1

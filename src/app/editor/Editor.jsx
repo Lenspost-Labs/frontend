@@ -940,19 +940,6 @@ const Editor = () => {
             {isMobile && (
               <div className="flex flex-col">
                 {/* <SpeedDialX /> */}
-                <div className="flex justify-between">
-                  <BgRemover />
-
-                  <Button
-                    onClick={() => {
-                      fnOpenPanel("mobPanelUpload");
-                      setCurOpenedTabLevel1("ai");
-                    }}
-                    className="p-2 !py-0 mr-4 mb-2 text-black leading-0 bg-[#e1f16b] rounded-lg"
-                  >
-                    <HiOutlineSparkles size={20} />
-                  </Button>
-                </div>
                 {/* <div className="flex flex-row w-full justify-between items-center rounded-lg ">
                   {!isLoggedOut && (
                     <SubscriptionModal defaultOpen={false} bottomBar={true} />

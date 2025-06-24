@@ -1066,7 +1066,7 @@ const FarcasterNormalPost = () => {
         slug={slug}
       />
 
-      {actionType !== "composer" && (
+      {actionType !== "composer" && !isMobile && (
         <div className="mb-4 mt-4">
           <div className="flex justify-between">
             <h2 className="text-lg mb-2"> Channel </h2>

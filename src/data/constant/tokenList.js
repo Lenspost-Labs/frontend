@@ -16,7 +16,7 @@ export const TOKEN_LIST = {
       symbol: "BB",
       name: "BizarreBeasts",
       decimals: 18,
-      logoURI: "",
+      logoURI: "https://lenspost-r2.b-cdn.net/web-assets/photo_2025-06-24_15-34-28.jpg",
     },
     {
       id: 8453,

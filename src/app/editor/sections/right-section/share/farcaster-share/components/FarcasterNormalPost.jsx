@@ -1146,7 +1146,7 @@ const FarcasterNormalPost = () => {
           }
         />
       </div>
-      {actionType !== "framev2" && (
+      {!isMobile && (
         <div className="mb-4 mt-4">
           <div className="flex justify-between">
             <h2 className="text-lg mb-2"> Share as Frame </h2>

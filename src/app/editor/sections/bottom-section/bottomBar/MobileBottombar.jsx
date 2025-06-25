@@ -41,7 +41,7 @@ import MdcPencil from "@meronex/icons/mdc/MdcPencil";
 import { ShareSection } from "../../right-section";
 import { DesignPanel } from "../../left-section/design/DesignSection";
 import clsx from "clsx";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import HiOutlineSparkles from "@meronex/icons/hi/HiOutlineSparkles";
 import { Button } from "@material-tailwind/react";
 import { act } from "react";

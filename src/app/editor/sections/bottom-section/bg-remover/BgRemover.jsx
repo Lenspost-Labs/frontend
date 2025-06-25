@@ -117,7 +117,7 @@ const BgRemover = ({ inSpeedDial }) => {
   };
 
   return (
-    <div className="">
+    <div className="cursor-pointer">
       {!inSpeedDial && (
         <div
           id="fourth-step"

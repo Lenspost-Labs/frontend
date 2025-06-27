@@ -126,3 +126,8 @@ export const gasFeeForOxSplitCreate = {
   1514: 0.00005, // story mainnet
   80001: 0.00009, // polygon mumbai
 };
+
+export const DEV_LABUBU_MINT_URL =
+  "https://mint.poster.fun/mint/lp-canvas-399089-f30b99c1";
+export const PROD_LABUBU_MINT_URL =
+  "https://mint.poster.fun/mint/lp-canvas-399085-12f836f4";

@@ -803,3 +803,11 @@ export const apiGetIPAssetsMetadata = async ({ queryKey }) => {
     data: result?.data,
   };
 };
+
+export const checkTokenClaimed = async (address) => {
+  const result = await api.get(`${API}/util/check-token?address=${address}`);
+
+  return {
+    data: result?.data,
+  };
+};

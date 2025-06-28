@@ -21,6 +21,7 @@ import WatermarkRemover from "./components/WatermarkRemover";
 import { baseSepolia } from "viem/chains";
 import { toast } from "react-toastify";
 import {
+  basecampTestnet,
   LP721SupportedChains,
   storyAeneidTestnet,
   storyMainnet,
@@ -64,7 +65,11 @@ const ShareSection = () => {
     switchChain,
   } = useSwitchChain();
 
-  const excludedChains = [storyAeneidTestnet?.id, storyMainnet?.id];
+  const excludedChains = [
+    storyAeneidTestnet?.id,
+    storyMainnet?.id,
+    basecampTestnet?.id,
+  ];
 
   const filteredChains = chains.filter(
     (chain) => !excludedChains.includes(chain?.id)
@@ -226,6 +231,7 @@ const ShareSection = () => {
               )}
 
               <div className={`relative mt-6 px-4 sm:px-6`}>
+
                 <p className="text-lg">Make it Collectable</p>
                 <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
                   {filteredChains.map((item) => {

@@ -14,6 +14,8 @@ import {
   Button as MatButton,
   Select,
   Option,
+  Button,
+  Dialog,
 } from "@material-tailwind/react";
 import {
   consoleLogonlyDev,
@@ -26,7 +28,9 @@ import { useStore } from "../../../../../hooks/polotno";
 import { Context } from "../../../../../providers/context";
 import { Tab, Tabs, TabsHeader, TabsBody } from "@material-tailwind/react";
 import {
+  checkTokenClaimed,
   claimReward,
+  ENVIRONMENT,
   getAIImage,
   getFalImgtoImg,
 } from "../../../../../services";
@@ -35,6 +39,8 @@ import coinImg from "../../../../../assets/svgs/Coin.svg";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocalStorage } from "../../../../../hooks/app";
 import { toast } from "react-toastify";
+import { useAccount } from "wagmi";
+import { DEV_LABUBU_MINT_URL, PROD_LABUBU_MINT_URL } from "../../../../../data";
 // Tab1 - Search Tab
 
 // const RANDOM_QUERIES = [
@@ -114,6 +120,7 @@ export const CompSearch = ({
   const store = useStore();
   const { points } = useUser();
   const { userId } = useLocalStorage();
+  const { address } = useAccount();
 
   // load data
   const [data, setData] = useState(null);
@@ -121,6 +128,7 @@ export const CompSearch = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [model, setModel] = useState("labubu");
+  const [showNftPrompt, setShowNftPrompt] = useState(false);
 
   const [query, setQuery] = useState();
   // RANDOM_QUERIES[(RANDOM_QUERIES.length * Math.random()) | 0]
@@ -160,6 +168,23 @@ export const CompSearch = ({
       setError(`Not enough Poster Gold`);
       return;
     }
+
+    console.log("model", model);
+
+    // if model is labubu, then check if the user (address) has claim the nft or not
+    if (model === "labubu") {
+      try {
+        // if user has not claimed the nft,
+        const res = await checkTokenClaimed(address);
+        console.log("res", res?.data);
+      } catch (error) {
+        console.log("error", error);
+        setError("Please claim the Labubu NFT to generate image");
+        setShowNftPrompt(true);
+        return;
+      }
+    }
+
     async function load() {
       setIsLoading(true);
       setError(null);
@@ -219,6 +244,15 @@ export const CompSearch = ({
       setIsLoading(false);
     }
     load();
+  };
+
+  const handleMintNFT = async () => {
+    window.open(
+      ENVIRONMENT === "development"
+        ? DEV_LABUBU_MINT_URL
+        : PROD_LABUBU_MINT_URL,
+      "_blank"
+    );
   };
 
   let featuredImagesToUse = StableDiffusionImages;
@@ -474,6 +508,54 @@ export const CompSearch = ({
         <MessageComponent message="You are Rate limited for now, Please check back after 60s" />
       )}
       {/* {!data && "Start exploring"} */}
+
+      {/* NFT Mint Prompt Modal */}
+      <Dialog
+        size="sm"
+        open={showNftPrompt}
+        handler={() => setShowNftPrompt(false)}
+        animate={{
+          mount: { scale: 1, y: 0 },
+          unmount: { scale: 0.9, y: -100 },
+        }}
+        className="bg-transparent shadow-none"
+      >
+        <div className="bg-white rounded-3xl shadow-2xl max-w-sm mx-auto overflow-hidden">
+          <div className="p-8 text-center">
+            <div className="relative mb-6">
+              <div className="w-20 h-20 mx-auto mb-4 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full animate-pulse"></div>
+                <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center">
+                  <div className="text-3xl animate-bounce">🪙</div>
+                </div>
+              </div>
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">
+              Labubu Locked 🔒
+            </h3>
+            <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+              You need a{" "}
+              <span className="font-semibold">License to Meme pass</span> before
+              the generator fires up. Mint one, unlock unlimited Labubu magic.
+            </p>
+            <div className="space-y-3">
+              <Button
+                onClick={handleMintNFT}
+                className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold py-4 px-6 rounded-2xl shadow-lg transition-all duration-200 transform hover:scale-[1.02] border-0 text-base"
+              >
+                MINT NOW
+              </Button>
+              <Button
+                variant="outlined"
+                className="w-full bg-gray-800 text-white hover:bg-gray-700 border-gray-800 py-4 px-6 rounded-2xl font-semibold transition-all duration-200"
+                onClick={() => setShowNftPrompt(false)}
+              >
+                CLOSE
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 };

@@ -563,9 +563,9 @@ const FarcasterNormalPost = () => {
           setIsShareSuccess(true);
 
           // Claim the task for the user
-          claimReward({
-            taskId: 3,
-          });
+          // claimReward({
+          //   taskId: 3,
+          // });
 
           // open the dialog
         } else if (res?.error || res?.reason === "REJECTED") {

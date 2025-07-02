@@ -697,9 +697,9 @@ const CompInstructImage = () => {
         //   setStDisplayMessage(response.data.error.type);
         // }
 
-        mutClaimReward({
-          taskId: 5,
-        });
+        // mutClaimReward({
+        //   taskId: 5,
+        // });
         setClicked(false);
       })
       .catch((err) => {

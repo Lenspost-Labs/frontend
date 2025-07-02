@@ -69,10 +69,10 @@ const WatermarkRemover = () => {
       });
     });
 
-    mutClaimReward({
-      taskId: 1,
-      canvasId: contextCanvasIdRef?.current,
-    });
+    // mutClaimReward({
+    //   taskId: 1,
+    //   canvasId: contextCanvasIdRef?.current,
+    // });
     setRemovedWMarkCanvas(contextCanvasIdRef?.current);
     consoleLogonlyDev("Store after watermark removed");
     consoleLogonlyDev(store?.toJSON());
@@ -87,9 +87,7 @@ const WatermarkRemover = () => {
           <div className="text-white">
             <BsDroplet size="24" />
           </div>
-          <div className="text-lg text-white">
-            Remove watermark 
-          </div>
+          <div className="text-lg text-white">Remove watermark</div>
           <div className="text-sm bg-[#FFFFFF40] text-white p-1 px-2 rounded-full ">
             <span className="mr-2">-5</span>
             <span>{posterTokenSymbol}</span>

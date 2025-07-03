@@ -301,8 +301,10 @@ const ShareSection = () => {
                     >
                       {" "}
                       <img
-                        className="w-13 cursor-pointer rounded-md"
+                        className="w-14 cursor-pointer rounded-md"
                         src={instagram_logo}
+                        height={70}
+                        width={70}
                         alt="instagram"
                       />{" "}
                       <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -321,8 +323,10 @@ const ShareSection = () => {
                     >
                       {" "}
                       <img
-                        className="w-13 cursor-pointer rounded-md"
+                        className="w-12 cursor-pointer rounded-md"
                         src={tiktok_logo}
+                        height={50}
+                        width={50}
                         alt="tiktok"
                       />{" "}
                       <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">

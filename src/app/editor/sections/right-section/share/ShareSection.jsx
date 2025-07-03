@@ -8,6 +8,8 @@ import BsX from "@meronex/icons/bs/BsX";
 import { Button, Textarea, Typography } from "@material-tailwind/react";
 import logoSolana from "../../../../../assets/logos/logoSolana.png";
 import logoFarcaster from "../../../../../assets/logos/logoFarcaster.jpg";
+import instagram_logo from "../../../../../assets/logos/instagram_logo.png";
+import tiktok_logo from "../../../../../assets/logos/tik-tok_logo.png";
 import logoTwitter from "../../../../../assets/logos/X_logo.png";
 import { InputBox } from "../../../common";
 import { X_Logo } from "../../../../../assets";
@@ -229,7 +231,8 @@ const ShareSection = () => {
               )}
 
               <div className={`relative mt-6 px-4 sm:px-6`}>
-                <p className="text-lg">Mint as an NFT on EVM</p>
+
+                <p className="text-lg">Make it Collectable</p>
                 <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
                   {filteredChains.map((item) => {
                     return (
@@ -267,7 +270,7 @@ const ShareSection = () => {
                     <div onClick={() => setCurrentMenu("farcasterShare")}>
                       {" "}
                       <img
-                        className="w-10 cursor-pointer rounded-md"
+                        className="w-11 cursor-pointer rounded-md"
                         src={logoFarcaster}
                         alt="Farcaster"
                       />{" "}
@@ -292,15 +295,50 @@ const ShareSection = () => {
                       !isMobile ? "ml-8" : " "
                     }`}
                   >
-                    <div onClick={() => setCurrentMenu("lensmonetization")}>
+                    <div
+                      className="relative group cursor-pointer"
+                      onClick={() => {}}
+                    >
                       {" "}
                       <img
-                        className="w-10 cursor-pointer"
-                        src="/other-icons/share-section/iconLens.png"
-                        alt="Lens"
+                        className="w-14 cursor-pointer rounded-md"
+                        src={instagram_logo}
+                        height={70}
+                        width={70}
+                        alt="instagram"
                       />{" "}
+                      <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        Coming soon
+                      </span>
                     </div>
                   </div>
+                  <div
+                    className={`flex items-center py-5 space-x-12 ${
+                      !isMobile ? "ml-8" : " "
+                    }`}
+                  >
+                    <div
+                      className="relative group cursor-pointer"
+                      onClick={() => {}}
+                    >
+                      {" "}
+                      <img
+                        className="w-12 cursor-pointer rounded-md"
+                        src={tiktok_logo}
+                        height={50}
+                        width={50}
+                        alt="tiktok"
+                      />{" "}
+                      <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        Coming soon
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    className={`flex items-center py-5 space-x-12 ${
+                      !isMobile ? "ml-8" : " "
+                    }`}
+                  ></div>
                 </>
               </div>
             </div>
@@ -326,7 +364,7 @@ const ShareSection = () => {
             </div>
             <hr />
             <div className={`relative mt-6 px-4 sm:px-6`}>
-              <p className="text-lg">Mint as an NFT on EVM</p>
+              <p className="text-lg">Make it Collectable</p>
               <div className="grid grid-cols-3 gap-x-10 gap-y-6 my-3">
                 {filteredChains.map((item) => {
                   return (
@@ -353,21 +391,6 @@ const ShareSection = () => {
             </div>
             <hr />
 
-            <div className={`relative mt-6 px-4 sm:px-6`}>
-              <p className="text-lg">Mint as an NFT on Solana</p>
-              <div className="flex flex-wrap items-center gap-10 my-3">
-                <div
-                  className="cursor-pointer flex flex-col items-center"
-                  onClick={() => setCurrentMenu("solanaMint")}
-                >
-                  {" "}
-                  <img className="w-10" src={logoSolana} alt="Solana" />{" "}
-                  <Typography className="text-md font-semibold">
-                    Solana
-                  </Typography>
-                </div>
-              </div>
-            </div>
             <hr />
           </>
         )}

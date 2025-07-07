@@ -198,50 +198,6 @@ const FarcasterShareWrapper = () => {
                 </div>
               </div>
             </div>
-            {/* Tabs for Smart Post / Normal */}
-            {!isMobile && (
-              <Tabs className="overflow-scroll my-2" value={farcasterTab}>
-                {/* Don't show Tabs header for Composer */}
-                {/* {!actionType === "composer" && ( */}
-                <>
-                  <TabsHeader className="relative top-0 ">
-                    <Tab
-                      value={"normalPost"}
-                      className="appFont"
-                      onClick={() => setFarcasterTab("normalPost")}
-                    >
-                      {" "}
-                      Quick Share{" "}
-                    </Tab>
-                    {!isMobile && (
-                      <Tab
-                        value={"smartPost"}
-                        className="appFont"
-                        onClick={() => setFarcasterTab("smartPost")}
-                      >
-                        {" "}
-                        Smart Post{" "}
-                      </Tab>
-                    )}
-                    {isMobile && (
-                      <Tab
-                        value={"erc1155"}
-                        className="appFont"
-                        onClick={() => setFarcasterTab("erc1155")}
-                      >
-                        {" "}
-                        Open Edition{" "}
-                      </Tab>
-                    )}
-                  </TabsHeader>
-                </>
-                {/* add components */}
-                {farcasterTab === "normalPost" && <FarcasterNormalPost />}
-
-                {farcasterTab === "smartPost" && <FarcasterSmartPost />}
-                {farcasterTab === "erc1155" && <ERC1155Edition />}
-              </Tabs>
-            )}
             <FarcasterNormalPost />
           </>
         }

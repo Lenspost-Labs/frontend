@@ -344,6 +344,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
   };
 
   // handle for input fields
+  const [isDescriptionAutoFilled, setIsDescriptionAutoFilled] = useState(true);
   const handleChange = (e, index, key) => {
     const { name, value } = e.target;
 
@@ -354,6 +355,21 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       if (name === "contractName" && value) {
         const autoSymbol = value.substring(0, 3).toUpperCase();
         updatedState["contractSymbol"] = autoSymbol;
+
+        // Auto-fill description on mobile if not manually changed
+        if (
+          isMobile &&
+          (prev.contractDescription === "" ||
+            (isDescriptionAutoFilled &&
+              prev.contractDescription === prev.contractName))
+        ) {
+          updatedState["contractDescription"] = value;
+
+          setIsDescriptionAutoFilled(true);
+        }
+      }
+      if (name === "contractDescription") {
+        setIsDescriptionAutoFilled(false);
       }
 
       return updatedState;
@@ -789,7 +805,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       setZoraErc721Enabled((prev) => ({
         ...prev,
         royaltyPercent: 5, // 5% (500 basis points)
-        maxSupply: 1000000, // confirm max value
+        maxSupply: 100000, // confirm max value
       }));
     }
   }, [isMobile, setZoraErc721Enabled]);

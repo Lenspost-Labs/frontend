@@ -15,6 +15,9 @@ const SharePanelHeaders = ({ panelHeader, menuName, panelContent }) => {
 			<div className="">
 				{/* <Dialog.Title className="w-full flex items-center gap-2 text-white text-xl leading-6 p-6 fixed bg-gray-900 z-10"> */}
 				<div className="w-full flex justify-between items-center gap-2 text-white text-xl leading-6 p-4 bg-gray-900 rounded-lg rounded-r-none">
+					{isMobile && (
+						<BsArrowLeft onClick={() => setMenu('share')} className="cursor-pointer" />
+					)}
 					{!isMobile && (
 						<>
 							<BsArrowLeft onClick={() => setMenu('share')} className="cursor-pointer" />

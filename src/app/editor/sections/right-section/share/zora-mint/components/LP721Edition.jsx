@@ -106,6 +106,8 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
 
   //symbol state
   const [showSymbol, setShowSymbol] = useState(false);
+  // mobile: show/hide description
+  const [showDescription, setShowDescription] = useState(false);
 
   const {
     error: errorSwitchNetwork,
@@ -129,6 +131,7 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     farcasterStates, // don't remove this
     lensAuthState, // don't remove this
     actionType,
+    isMobile,
   } = useContext(Context);
 
   const {
@@ -780,17 +783,18 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
     }
   }, [selectedChainId]);
 
-  // error/success handling for network switch
-  // useEffect(() => {
-  //   if (isErrorSwitchNetwork) {
-  //     console.log("isErrorSwitchNetwork", errorSwitchNetwork);
-  //     toast.error(errorSwitchNetwork?.message.split("\n")[0]);
-  //   }
+  // Set hardcoded royalty and supply for mobile
+  useEffect(() => {
+    if (isMobile) {
+      setZoraErc721Enabled((prev) => ({
+        ...prev,
+        royaltyPercent: 5, // 5% (500 basis points)
+        maxSupply: 1000000, // confirm max value
+      }));
+    }
+  }, [isMobile, setZoraErc721Enabled]);
 
-  // if (isSuccessSwitchNetwork) {
-  //   toast.success(`Network switched to ${chain?.name}`);
-  // }
-  // }, [isErrorSwitchNetwork]);
+  // If on mobile and description is empty, default to contractName
 
   console.log({ selectedChainId, chainId });
 
@@ -829,7 +833,10 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
             <FiSettings
               className="cursor-pointer text-gray-500 hover:text-gray-700"
               size={20}
-              onClick={() => setShowSymbol((prev) => !prev)}
+              onClick={() => {
+                setShowSymbol((prev) => !prev);
+                if (isMobile) setShowDescription((prev) => !prev);
+              }}
             />
           </div>
           {zoraErc721StatesError.isContractNameError && (
@@ -855,19 +862,21 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
             </div>
           )}
 
-          {/* Collectible Description */}
-          <div className="mt-2">
-            <Textarea
-              label="Collectible Description"
-              name="contractDescription"
-              onChange={handleChange}
-              value={zoraErc721Enabled.contractDescription || ""}
-            />
-          </div>
-          {zoraErc721StatesError.isContractSymbolError && (
-            <InputErrorMsg
-              message={zoraErc721StatesError.contractSymbolErrorMessage}
-            />
+          {/* Collectible Description: Desktop always, Mobile only if showDescription */}
+          {(!isMobile || showDescription) && (
+            <div className="mt-2">
+              <Textarea
+                label="Collectible Description"
+                name="contractDescription"
+                onChange={handleChange}
+                value={zoraErc721Enabled.contractDescription || ""}
+              />
+              {zoraErc721StatesError.isContractSymbolError && (
+                <InputErrorMsg
+                  message={zoraErc721StatesError.contractSymbolErrorMessage}
+                />
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -1058,72 +1067,76 @@ const LP721Edition = ({ isOpenAction, isFarcaster, selectedChainId }) => {
       {/* Splits Switch End */}
 
       {/* royalty switch start */}
-      <>
-        <div className="mb-4 mt-4">
-          <div className="flex justify-between">
-            <h2 className="text-lg mb-2"> Royalty </h2>
+      {!isMobile && (
+        <>
+          <div className="mb-4 mt-4">
+            <div className="flex justify-between">
+              <h2 className="text-lg mb-2"> Royalty </h2>
+            </div>
+            <div className="w-4/5 opacity-75">
+              {" "}
+              Set Royalty percentage for minting{" "}
+            </div>
           </div>
-          <div className="w-4/5 opacity-75">
-            {" "}
-            Set Royalty percentage for minting{" "}
-          </div>
-        </div>
 
-        <div className={`${!zoraErc721Enabled.isRoyaltyPercent && "hidden"}`}>
-          {/* <div className="flex"> */}
+          <div className={`${!zoraErc721Enabled.isRoyaltyPercent && "hidden"}`}>
+            {/* <div className="flex"> */}
+            <div className="flex flex-col py-2">
+              <NumberInputBox
+                min={"1"}
+                step={"1"}
+                label="Royalty % "
+                name="royaltyPercent"
+                onChange={(e) => handleChange(e)}
+                onFocus={(e) => handleChange(e)}
+                value={zoraErc721Enabled.royaltyPercent}
+              />
+            </div>
+            {/* </div> */}
+
+            {zoraErc721StatesError.isRoyaltyPercentError && (
+              <InputErrorMsg
+                message={zoraErc721StatesError.royaltyPercentErrorMessage}
+              />
+            )}
+          </div>
+        </>
+      )}
+      {/* royalty switch end */}
+
+      {/* Switch Number 6 Start */}
+      {!isMobile && (
+        <>
+          <div className="mb-4 mt-4">
+            <div className="flex justify-between">
+              <h2 className="text-lg mb-2"> Supply </h2>
+            </div>
+            <div className="w-4/5 opacity-75">
+              {" "}
+              Set the maximum supply limit for the mint{" "}
+            </div>
+          </div>
+
           <div className="flex flex-col py-2">
             <NumberInputBox
               min={"1"}
               step={"1"}
-              label="Royalty % "
-              name="royaltyPercent"
+              // className={"W-3/4"}
+              label="Max Supply "
+              name="maxSupply"
               onChange={(e) => handleChange(e)}
               onFocus={(e) => handleChange(e)}
-              value={zoraErc721Enabled.royaltyPercent}
+              value={zoraErc721Enabled.maxSupply}
             />
           </div>
-          {/* </div> */}
 
-          {zoraErc721StatesError.isRoyaltyPercentError && (
+          {zoraErc721StatesError.isMaxSupplyError && (
             <InputErrorMsg
-              message={zoraErc721StatesError.royaltyPercentErrorMessage}
+              message={zoraErc721StatesError.maxSupplyErrorMessage}
             />
           )}
-        </div>
-      </>
-      {/* royalty switch end */}
-
-      {/* Switch Number 6 Start */}
-      <>
-        <div className="mb-4 mt-4">
-          <div className="flex justify-between">
-            <h2 className="text-lg mb-2"> Supply </h2>
-          </div>
-          <div className="w-4/5 opacity-75">
-            {" "}
-            Set the maximum supply limit for the mint{" "}
-          </div>
-        </div>
-
-        <div className="flex flex-col py-2">
-          <NumberInputBox
-            min={"1"}
-            step={"1"}
-            // className={"W-3/4"}
-            label="Max Supply "
-            name="maxSupply"
-            onChange={(e) => handleChange(e)}
-            onFocus={(e) => handleChange(e)}
-            value={zoraErc721Enabled.maxSupply}
-          />
-        </div>
-
-        {zoraErc721StatesError.isMaxSupplyError && (
-          <InputErrorMsg
-            message={zoraErc721StatesError.maxSupplyErrorMessage}
-          />
-        )}
-      </>
+        </>
+      )}
       {/* Switch Number 6 End */}
 
       {/* Topup start */}
